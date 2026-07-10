@@ -1,0 +1,1308 @@
+---
+title: "并发更新导致的数据覆盖以及解决方案"
+description: "列举了一些常见的数据覆盖现象,以及一些解决方案."
+sourceId: "145987791"
+source: "https://blog.csdn.net/qq_45852626/article/details/145987791"
+sourceSeries: []
+category: distributed-systems
+subcategory: consistency
+tags:
+  - "JUC"
+status: draft
+difficulty: intermediate
+contentType: knowledge
+sidebar:
+  order: 145987791
+---
+
+
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145987791)（历史文章导入，当前状态为草稿）
+
+#### 并发更新导致数据覆盖
+### 前言
+
+列举了一些常见的数据覆盖现象,以及一些解决方案.  
+ 大量代码,建议按需观看.
+
+## 出现的问题
+
+### 最后写入胜出(Last-Write-Wins)问题
+
+问题描述  
+ 多个客户端同时读取同一数据，各自修改后写回，后写入的数据会覆盖先写入的数据，导致先写入的修改丢失。
+
+```
+// 用户A和用户B同时修改商品库存
+// 用户A的操作
+int stock = productDao.getStock(productId);  // 读取到库存为100
+stock = stock - 1;  // 减1后为99
+productDao.updateStock(productId, stock);  // 更新库存为99
+
+// 同时，用户B的操作
+int stock = productDao.getStock(productId);  // 也读取到库存为100
+stock = stock - 2;  // 减2后为98
+productDao.updateStock(productId, stock);  // 更新库存为98
+
+// 最终库存变为98，用户A的操作被覆盖，实际应该是97
+
+
+```
+
+### 脏读（Dirty Read ）问题
+
+问题描述  
+ 一个事务读取了另一个未提交事务修改过的数据，如果该事务回滚，则读取到的数据是无效的。
+
+```
+// 事务A
+@Transactional
+public void updateUserBalance(Long userId, BigDecimal amount) {
+    User user = userDao.findById(userId);
+    user.setBalance(user.getBalance().add(amount));
+    userDao.save(user);
+    // 假设这里出现异常，事务回滚
+    if (someCondition) {
+        throw new RuntimeException("Transaction failed");
+    }
+}
+
+// 事务B（在事务A提交前读取数据）
+public BigDecimal getUserBalance(Long userId) {
+    User user = userDao.findById(userId);
+    return user.getBalance();  // 可能读取到事务A未提交的修改
+}
+
+
+```
+
+### 丢失更新(Lost Update) 问题
+
+问题描述  
+ 两个事务同时更新同一数据，一个事务的更新会被另一个事务的更新覆盖，导致第一个事务的更新丢失。
+
+```
+// 两个管理员同时更新产品价格
+// 管理员A
+@Transactional
+public void updateProductPrice(Long productId, BigDecimal newPrice) {
+    Product product = productDao.findById(productId);  // 读取产品价格为100元
+    // 执行一些业务逻辑
+    product.setPrice(newPrice);  // 设置新价格为120元
+    productDao.save(product);
+}
+
+// 同时，管理员B
+@Transactional
+public void applyDiscount(Long productId, int discountPercent) {
+    Product product = productDao.findById(productId);  // 读取产品价格为100元
+    BigDecimal discountedPrice = product.getPrice()
+        .multiply(BigDecimal.valueOf(1 - discountPercent / 100.0));  // 打8折，价格为80元
+    product.setPrice(discountedPrice);
+    productDao.save(product);
+}
+
+// 如果管理员B后提交，最终价格为80元，管理员A的更新被覆盖
+
+
+```
+
+### 不可重复读(Non-repeatable Read\_问题
+
+问题描述  
+ 在同一事务内，多次读取同一数据，由于其他事务的更新，导致前后读取的结果不一致。
+
+```
+// 事务A
+@Transactional
+public void processOrder(Long orderId) {
+    Order order = orderDao.findById(orderId);  // 第一次读取，状态为"待支付"
+    
+    // 执行一些耗时操作
+    expensiveOperation();
+    
+    order = orderDao.findById(orderId);  // 第二次读取，状态可能已变为"已支付"
+    
+    // 基于状态执行不同逻辑
+    if ("待支付".equals(order.getStatus())) {
+        // 处理待支付订单
+    } else {
+        // 处理其他状态订单
+    }
+}
+
+// 同时，事务B
+@Transactional
+public void payOrder(Long orderId) {
+    Order order = orderDao.findById(orderId);
+    order.setStatus("已支付");
+    orderDao.save(order);
+}
+
+
+```
+
+### 幻读问题
+
+问题描述  
+ 在同一事务内，相同的查询返回了不同的结果集，通常是由于其他事务插入了新的数据。
+
+```
+// 事务A
+@Transactional
+public void processNewUsers() {
+    List<User> newUsers = userDao.findByStatus("新注册");  // 第一次查询，返回10条记录
+    
+    // 处理这些用户
+    for (User user : newUsers) {
+        processUser(user);
+    }
+    
+    // 再次查询确认所有新用户都已处理
+    List<User> remainingNewUsers = userDao.findByStatus("新注册");  // 可能返回>10条记录
+    if (!remainingNewUsers.isEmpty()) {
+        // 处理新增的用户
+    }
+}
+
+// 同时，事务B
+@Transactional
+public void registerUser(User user) {
+    user.setStatus("新注册");
+    userDao.save(user);
+}
+
+
+```
+
+### 写偏斜(Write Skew)问题
+
+问题描述  
+ 两个事务读取相同的一组数据，基于读取结果做出决策，然后更新不同的数据，导致整体约束被破坏。
+
+```
+// 医院值班系统，规定至少有一名医生在值班
+// 事务A（医生A请假）
+@Transactional
+public boolean requestTimeOff(Long doctorA) {
+    // 检查是否有其他医生值班
+    int onDutyCount = doctorDao.countByStatus("值班中");
+    if (onDutyCount <= 1) {
+        return false;  // 拒绝请假
+    }
+    
+    Doctor doctor = doctorDao.findById(doctorA);
+    doctor.setStatus("休假中");
+    doctorDao.save(doctor);
+    return true;
+}
+
+// 同时，事务B（医生B请假）
+@Transactional
+public boolean requestTimeOff(Long doctorB) {
+    // 检查是否有其他医生值班
+    int onDutyCount = doctorDao.countByStatus("值班中");
+    if (onDutyCount <= 1) {
+        return false;  // 拒绝请假
+    }
+    
+    Doctor doctor = doctorDao.findById(doctorB);
+    doctor.setStatus("休假中");
+    doctorDao.save(doctor);
+    return true;
+}
+
+// 如果初始有2名医生值班，两个事务都会通过检查并允许请假
+// 结果可能导致没有医生值班，违反了系统约束
+
+
+```
+
+### 缓存与数据库不一致问题
+
+问题描述  
+ 当使用缓存和数据库时，并发更新可能导致缓存和数据库中的数据不一致。
+
+```
+// 用户A更新商品信息
+public void updateProduct(Product product) {
+    // 更新数据库
+    productDao.update(product);
+    
+    // 更新缓存
+    redisTemplate.opsForValue().set("product:" + product.getId(), product);
+}
+
+// 同时，用户B也更新同一商品
+public void updateProductStock(Long productId, int newStock) {
+    // 从数据库读取最新数据
+    Product product = productDao.findById(productId);
+    product.setStock(newStock);
+    
+    // 更新数据库
+    productDao.update(product);
+    
+    // 更新缓存
+    redisTemplate.opsForValue().set("product:" + productId, product);
+}
+
+// 如果执行顺序为：
+// 1. 用户A更新数据库
+// 2. 用户B读取数据库、更新数据库、更新缓存
+// 3. 用户A更新缓存
+// 则用户A的缓存更新会覆盖用户B的缓存更新，导致缓存中的数据与数据库不一致
+
+
+```
+
+### 分布式系统中的时序问题
+
+问题描述  
+ 在分布式系统中，由于时钟不同步或网络延迟，可能导致操作的实际执行顺序与预期不符。
+
+```
+// 服务A（用户服务）
+public void updateUserProfile(Long userId, UserProfile profile) {
+    // 更新用户资料
+    userProfileDao.update(userId, profile);
+    
+    // 发送消息通知其他服务
+    messageBroker.send(new UserUpdatedEvent(userId, profile, System.currentTimeMillis()));
+}
+
+// 服务B（订单服务）
+public void processUserUpdatedEvent(UserUpdatedEvent event) {
+    // 更新本地用户缓存
+    userCache.put(event.getUserId(), event.getProfile());
+}
+
+// 如果用户连续快速更新两次资料，可能由于网络延迟，
+// 第二次更新的消息先于第一次更新的消息到达服务B，
+// 导致服务B最终使用的是较旧的用户资料
+
+
+```
+
+### 乐观锁失效问题
+
+问题描述  
+ 使用乐观锁时，如果并发更新频繁，可能导致大量更新操作失败，降低系统吞吐量。
+
+```
+// 使用版本号实现乐观锁
+@Transactional
+public boolean updateProductStock(Long productId, int deduction) {
+    // 查询当前商品
+    Product product = productDao.findById(productId);
+    int currentVersion = product.getVersion();
+    
+    // 检查库存是否足够
+    if (product.getStock() < deduction) {
+        return false;
+    }
+    
+    // 更新库存和版本号
+    int updatedRows = productDao.updateStockWithVersion(
+        productId, 
+        product.getStock() - deduction, 
+        currentVersion, 
+        currentVersion + 1
+    );
+    
+    // 如果更新失败（版本号已变），返回false
+    return updatedRows > 0;
+}
+
+// 在高并发场景下，大量并发请求可能导致大部分请求更新失败，
+// 客户端需要重试，增加系统负担
+
+
+```
+
+### 分布式事务中的数据不一致
+
+问题描述  
+ 在分布式事务中，如果部分服务成功而其他服务失败，可能导致系统整体数据不一致。
+
+```
+// 订单服务
+@Transactional
+public void createOrder(Order order) {
+    // 保存订单
+    orderDao.save(order);
+    
+    try {
+        // 调用库存服务扣减库存
+        inventoryClient.deductStock(order.getProductId(), order.getQuantity());
+    } catch (Exception e) {
+        // 库存服务调用失败，但订单已创建
+        log.error("Failed to deduct inventory", e);
+        // 理想情况下应该回滚整个事务，但跨服务回滚很复杂
+    }
+}
+
+// 库存服务
+@Transactional
+public void deductStock(Long productId, int quantity) {
+    Product product = productDao.findById(productId);
+    if (product.getStock() < quantity) {
+        throw new InsufficientStockException();
+    }
+    
+    product.setStock(product.getStock() - quantity);
+    productDao.save(product);
+}
+
+// 如果订单创建成功但库存扣减失败，
+// 系统中将存在订单但库存未减少的不一致状态
+
+
+```
+
+## 解决方案
+
+解决方案  
+ 针对并发更新导致的数据覆盖问题，常见的解决方案包括：
+
+* 悲观锁：在读取数据前先获取锁，防止其他事务同时修改数据
+* 乐观锁：使用版本号或时间戳检测并发冲突，只有在数据未被修改时才更新成功
+* 分布式锁：使用Redis、ZooKeeper等实现分布式锁，协调分布式系统中的并发访问
+* MVCC（多版本并发控制）：保留数据的多个版本，允许并发读写而不会相互阻塞
+* 事务隔离级别：根据业务需求选择适当的事务隔离级别，如读已提交、可重复读等
+* CAS（比较并交换）：原子性地比较和更新数据，避免并发冲突
+* 最终一致性：接受短暂的数据不一致，通过异步机制最终达到一致状态
+* 冲突检测与合并：检测并发冲突并尝试自动合并更改，如Git的合并策略
+* 业务拆分：将高并发操作拆分到不同的数据分区，减少并发冲突
+* 补偿事务：当检测到不一致时，通过补偿操作恢复数据一致性  
+   选择合适的解决方案需要根据具体业务场景、性能需求和一致性要求进行权衡。
+
+### 悲观锁实现
+
+悲观锁通过在读取数据前先获取锁，防止其他事务同时修改数据。  
+ 数据库行锁实现:
+
+```
+// MySQL实现
+BEGIN TRANSACTION;
+// 使用SELECT ... FOR UPDATE锁定行
+SELECT * FROM products WHERE id = 1 FOR UPDATE;
+// 执行更新
+UPDATE products SET stock = stock - 1 WHERE id = 1;
+COMMIT;
+
+
+```
+
+Java 
+代码实现:
+
+```
+@Transactional
+public void updateProductStock(Long productId, int deduction) {
+    // FOR UPDATE子句会获取行锁
+    Product product = productRepository.findByIdForUpdate(productId);
+    if (product.getStock() >= deduction) {
+        product.setStock(product.getStock() - deduction);
+        productRepository.save(product);
+    } else {
+        throw new InsufficientStockException();
+    }
+}
+
+// 在Repository中定义
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT p FROM Product p WHERE p.id = :id")
+    Product findByIdForUpdate(@Param("id") Long id);
+}
+
+
+```
+
+### 乐观锁实现
+
+乐观锁使用版本号或时间戳检测并发冲突，只有在数据未被修改时才更新成功。
+
+基于版本号的实现
+
+```
+@Entity
+public class Product {
+    @Id
+    private Long id;
+    private String name;
+    private int stock;
+    
+    @Version
+    private int version; // 版本号字段
+}
+
+@Transactional
+public boolean updateProductStock(Long productId, int deduction) {
+    try {
+        Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new ProductNotFoundException());
+            
+        if (product.getStock() >= deduction) {
+            product.setStock(product.getStock() - deduction);
+            productRepository.save(product);
+            return true;
+        }
+        return false;
+    } catch (ObjectOptimisticLockingFailureException e) {
+        // 版本冲突，更新失败
+        log.warn("Concurrent update detected for product {}", productId);
+        return false;
+    }
+}
+
+
+```
+
+基于条件更新的实现
+
+```
+@Transactional
+public boolean updateProductStock(Long productId, int deduction) {
+    // 读取当前库存
+    Product product = productRepository.findById(productId)
+        .orElseThrow(() -> new ProductNotFoundException());
+    int currentStock = product.getStock();
+    
+    if (currentStock < deduction) {
+        return false;
+    }
+    
+    // 使用条件更新，确保库存未被修改
+    int updatedRows = productRepository.updateStockIfMatch(
+        productId, currentStock - deduction, currentStock);
+        
+    return updatedRows > 0;
+}
+
+// 在Repository中定义
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    @Modifying
+    @Query("UPDATE Product p SET p.stock = :newStock WHERE p.id = :id AND p.stock = :currentStock")
+    int updateStockIfMatch(
+        @Param("id") Long id, 
+        @Param("newStock") int newStock, 
+        @Param("currentStock") int currentStock
+    );
+}
+
+
+```
+
+### 分布式锁实现
+
+使用Redis或ZooKeeper实现分布式锁，协调分布式系统中的并发访问。
+
+#### Redis分布式锁实现
+
+```
+@Service
+public class ProductService {
+    private final RedisTemplate<String, String> redisTemplate;
+    private final ProductRepository productRepository;
+    
+    public ProductService(RedisTemplate<String, String> redisTemplate, 
+                         ProductRepository productRepository) {
+        this.redisTemplate = redisTemplate;
+        this.productRepository = productRepository;
+    }
+    
+    public boolean updateProductStock(Long productId, int deduction) {
+        String lockKey = "lock:product:" + productId;
+        String lockValue = UUID.randomUUID().toString();
+        
+        try {
+            // 获取分布式锁，设置超时时间为10秒
+            Boolean acquired = redisTemplate.opsForValue()
+                .setIfAbsent(lockKey, lockValue, Duration.ofSeconds(10));
+                
+            if (Boolean.TRUE.equals(acquired)) {
+                // 获取锁成功，执行更新
+                Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new ProductNotFoundException());
+                    
+                if (product.getStock() >= deduction) {
+                    product.setStock(product.getStock() - deduction);
+                    productRepository.save(product);
+                    return true;
+                }
+                return false;
+            } else {
+                // 获取锁失败，可以选择重试或返回失败
+                log.warn("Failed to acquire lock for product {}", productId);
+                return false;
+            }
+        } finally {
+            // 释放锁，确保是自己的锁
+            String script = 
+                "if redis.call('get', KEYS[1]) == ARGV[1] then " +
+                "return redis.call('del', KEYS[1]) " +
+                "else return 0 end";
+            redisTemplate.execute(
+                new DefaultRedisScript<>(script, Long.class),
+                Collections.singletonList(lockKey),
+                lockValue
+            );
+        }
+    }
+}
+
+
+```
+
+#### Redisson实现分布式锁
+
+```
+@Service
+public class ProductService {
+    private final RedissonClient redissonClient;
+    private final ProductRepository productRepository;
+    
+    public ProductService(RedissonClient redissonClient, 
+                         ProductRepository productRepository) {
+        this.redissonClient = redissonClient;
+        this.productRepository = productRepository;
+    }
+    
+    public boolean updateProductStock(Long productId, int deduction) {
+        RLock lock = redissonClient.getLock("product:" + productId);
+        
+        try {
+            // 尝试获取锁，最多等待5秒，锁过期时间为10秒
+            if (lock.tryLock(5, 10, TimeUnit.SECONDS)) {
+                try {
+                    Product product = productRepository.findById(productId)
+                        .orElseThrow(() -> new ProductNotFoundException());
+                        
+                    if (product.getStock() >= deduction) {
+                        product.setStock(product.getStock() - deduction);
+                        productRepository.save(product);
+                        return true;
+                    }
+                    return false;
+                } finally {
+                    lock.unlock();
+                }
+            } else {
+                log.warn("Failed to acquire lock for product {}", productId);
+                return false;
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+    }
+}
+
+
+```
+
+### CAS （比较并交换）实现
+
+原子性地比较和更新数据，避免并发冲突。
+
+#### Java AtomicInteger实现
+
+```
+public class AtomicStockService {
+    private final Map<Long, AtomicInteger> stockMap = new ConcurrentHashMap<>();
+    private final ProductRepository productRepository;
+    
+    public AtomicStockService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+        // 初始化时加载所有商品库存到内存
+        productRepository.findAll().forEach(product -> 
+            stockMap.put(product.getId(), new AtomicInteger(product.getStock())));
+    }
+    
+    public boolean deductStock(Long productId, int deduction) {
+        AtomicInteger stock = stockMap.get(productId);
+        if (stock == null) {
+            // 商品不存在
+            return false;
+        }
+        
+        // 使用CAS操作确保原子性更新
+        int current, newStock;
+        do {
+            current = stock.get();
+            if (current < deduction) {
+                // 库存不足
+                return false;
+            }
+            newStock = current - deduction;
+        } while (!stock.compareAndSet(current, newStock));
+        
+        // 异步更新数据库
+        CompletableFuture.runAsync(() -> {
+            productRepository.updateStock(productId, newStock);
+        });
+        
+        return true;
+    }
+}
+
+
+```
+
+#### Redis CAS实现
+
+```
+@Service
+public class ProductService {
+    private final StringRedisTemplate redisTemplate;
+    private final ProductRepository productRepository;
+    
+    public ProductService(StringRedisTemplate redisTemplate, 
+                         ProductRepository productRepository) {
+        this.redisTemplate = redisTemplate;
+        this.productRepository = productRepository;
+    }
+    
+    public boolean deductStock(Long productId, int deduction) {
+        String stockKey = "product:stock:" + productId;
+        
+        // 使用Redis事务和WATCH命令实现CAS
+        return redisTemplate.execute(new SessionCallback<Boolean>() {
+            @Override
+            @SuppressWarnings("unchecked")
+            public Boolean execute(RedisOperations operations) throws DataAccessException {
+                operations.watch(stockKey);
+                
+                // 获取当前库存
+                String stockStr = operations.opsForValue().get(stockKey);
+                if (stockStr == null) {
+                    // 缓存中没有，从数据库加载
+                    Product product = productRepository.findById(productId).orElse(null);
+                    if (product == null) {
+                        return false;
+                    }
+                    stockStr = String.valueOf(product.getStock());
+                    operations.opsForValue().set(stockKey, stockStr);
+                }
+                
+                int currentStock = Integer.parseInt(stockStr);
+                if (currentStock < deduction) {
+                    // 库存不足
+                    return false;
+                }
+                
+                // 开始事务
+                operations.multi();
+                operations.opsForValue().set(stockKey, String.valueOf(currentStock - deduction));
+                
+                // 执行事务
+                List<Object> results = operations.exec();
+                
+                // 如果事务执行成功，异步更新数据库
+                if (results != null && !results.isEmpty()) {
+                    CompletableFuture.runAsync(() -> {
+                        productRepository.updateStock(productId, currentStock - deduction);
+                    });
+                    return true;
+                }
+                
+                return false;
+            }
+        });
+    }
+}
+
+
+```
+
+### 基于 消息队列 的异步更新
+
+使用消息队列处理并发更新，确保按顺序处理。
+
+```
+@Service
+public class OrderService {
+    private final RabbitTemplate rabbitTemplate;
+    
+    public OrderService(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
+    
+    public void createOrder(Order order) {
+        // 保存订单
+        orderRepository.save(order);
+        
+        // 发送库存扣减消息到队列
+        StockDeductionMessage message = new StockDeductionMessage(
+            order.getId(), order.getProductId(), order.getQuantity());
+        rabbitTemplate.convertAndSend("order-exchange", "stock.deduct", message);
+    }
+}
+
+@Component
+public class StockDeductionListener {
+    private final ProductRepository productRepository;
+    
+    public StockDeductionListener(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+    
+    @RabbitListener(queues = "stock-deduction-queue")
+    public void handleStockDeduction(StockDeductionMessage message) {
+        // 使用数据库行锁确保串行处理同一商品的库存更新
+        productRepository.updateStockWithLock(
+            message.getProductId(), message.getQuantity());
+    }
+}
+
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    @Transactional
+    @Modifying
+    @Query(value = 
+        "UPDATE products SET stock = stock - :quantity " +
+        "WHERE id = :productId AND stock >= :quantity", 
+        nativeQuery = true)
+    int updateStockWithLock(@Param("productId") Long productId, 
+                           @Param("quantity") int quantity);
+}
+
+
+```
+
+### 使用 Lua脚本 实现原子操作
+
+在Redis中使用Lua脚本实现原子性操作，避免并发问题。
+
+```
+@Service
+public class ProductService {
+    private final StringRedisTemplate redisTemplate;
+    
+    public ProductService(StringRedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+    
+    public boolean deductStock(Long productId, int deduction) {
+        String stockKey = "product:stock:" + productId;
+        
+        // Lua脚本：检查库存并扣减
+        String script = 
+            "local current = tonumber(redis.call('get', KEYS[1]) or '0') " +
+            "if current >= tonumber(ARGV[1]) then " +
+            "    redis.call('decrby', KEYS[1], ARGV[1]) " +
+            "    return 1 " +
+            "else " +
+            "    return 0 " +
+            "end";
+            
+        Long result = redisTemplate.execute(
+            new DefaultRedisScript<>(script, Long.class),
+            Collections.singletonList(stockKey),
+            String.valueOf(deduction)
+        );
+        
+        // 如果扣减成功，异步更新数据库
+        if (result != null && result == 1) {
+            CompletableFuture.runAsync(() -> {
+                productRepository.deductStock(productId, deduction);
+            });
+            return true;
+        }
+        
+        return false;
+    }
+}
+
+
+```
+
+### MVCC（多版本并发控制）实现
+
+保留数据的多个版本，允许并发读写而不会相互阻塞。
+
+```
+@Entity
+@Table(name = "products")
+public class Product {
+    @Id
+    private Long id;
+    private String name;
+    private int stock;
+    
+    @Version
+    private int version;
+    
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+}
+
+@Service
+public class ProductService {
+    private final ProductRepository productRepository;
+    
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+    
+    @Transactional
+    public boolean updateProduct(Product product) {
+        try {
+            // 设置更新时间
+            product.setUpdatedAt(LocalDateTime.now());
+            productRepository.save(product);
+            return true;
+        } catch (ObjectOptimisticLockingFailureException e) {
+            // 版本冲突，获取最新版本并合并更改
+            Product latestProduct = productRepository.findById(product.getId()).orElse(null);
+            if (latestProduct != null) {
+                // 执行自定义合并逻辑
+                mergeChanges(product, latestProduct);
+                latestProduct.setUpdatedAt(LocalDateTime.now());
+                productRepository.save(latestProduct);
+                return true;
+            }
+            return false;
+        }
+    }
+    
+    private void mergeChanges(Product source, Product target) {
+        // 根据业务规则合并变更
+        // 例如，保留较小的库存值
+        target.setStock(Math.min(source.getStock(), target.getStock()));
+        
+        // 其他字段可能采用不同的合并策略
+        if (source.getName() != null) {
+            target.setName(source.getName());
+        }
+    }
+}
+
+
+```
+
+### 分段锁实现
+
+将锁分段，减少锁竞争，提高并发性能。
+
+```
+public class SegmentedLockManager {
+    // 创建16个锁段
+    private final Object[] locks = new Object[16];
+    
+    public SegmentedLockManager() {
+        for (int i = 0; i < locks.length; i++) {
+            locks[i] = new Object();
+        }
+    }
+    
+    // 根据ID获取对应的锁对象
+    public Object getLock(Long id) {
+        int index = (id.hashCode() & 0x7fffffff) % locks.length;
+        return locks[index];
+    }
+}
+
+@Service
+public class ProductService {
+    private final ProductRepository productRepository;
+    private final SegmentedLockManager lockManager;
+    
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+        this.lockManager = new SegmentedLockManager();
+    }
+    
+    public boolean updateProductStock(Long productId, int deduction) {
+        // 获取分段锁
+        Object lock = lockManager.getLock(productId);
+        
+        synchronized (lock) {
+            Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException());
+                
+            if (product.getStock() >= deduction) {
+                product.setStock(product.getStock() - deduction);
+                productRepository.save(product);
+                return true;
+            }
+            return false;
+        }
+    }
+}
+
+
+```
+
+### 基于时间戳的冲突检测
+
+使用时间戳检测并发冲突，处理冲突时保留最新的更改。
+
+```
+@Entity
+public class Product {
+    @Id
+    private Long id;
+    private String name;
+    private int stock;
+    
+    @Column(name = "last_updated")
+    private long lastUpdated; // 时间戳
+}
+
+@Service
+public class ProductService {
+    private final ProductRepository productRepository;
+    
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+    
+    @Transactional
+    public boolean updateProduct(Product updatedProduct) {
+        Product currentProduct = productRepository.findById(updatedProduct.getId())
+            .orElseThrow(() -> new ProductNotFoundException());
+            
+        // 检查时间戳
+        if (updatedProduct.getLastUpdated() < currentProduct.getLastUpdated()) {
+            // 更新请求基于过时的数据，拒绝更新
+            return false;
+        }
+        
+        // 设置新的时间戳
+        updatedProduct.setLastUpdated(System.currentTimeMillis());
+        productRepository.save(updatedProduct);
+        return true;
+    }
+}
+
+
+```
+
+### 两阶段提交（2PC）实现
+
+在分布式系统中使用两阶段提交协议确保事务的原子性。
+
+```
+@Service
+public class DistributedTransactionService {
+    private final OrderRepository orderRepository;
+    private final InventoryClient inventoryClient;
+    private final PaymentClient paymentClient;
+    private final TransactionLogRepository txLogRepository;
+    
+    public DistributedTransactionService(OrderRepository orderRepository,
+                                        InventoryClient inventoryClient,
+                                        PaymentClient paymentClient,
+                                        TransactionLogRepository txLogRepository) {
+        this.orderRepository = orderRepository;
+        this.inventoryClient = inventoryClient;
+        this.paymentClient = paymentClient;
+        this.txLogRepository = txLogRepository;
+    }
+    
+    @Transactional
+    public boolean createOrder(Order order) {
+        String txId = UUID.randomUUID().toString();
+        
+        try {
+            // 阶段1：准备阶段 - 所有参与者准备执行事务
+            boolean orderPrepared = orderRepository.prepare(txId, order);
+            boolean inventoryPrepared = inventoryClient.prepare(txId, order.getProductId(), order.getQuantity());
+            boolean paymentPrepared = paymentClient.prepare(txId, order.getUserId(), order.getAmount());
+            
+            // 记录事务状态
+            txLogRepository.logPrepare(txId, orderPrepared, inventoryPrepared, paymentPrepared);
+            
+            // 阶段2：提交阶段 - 如果所有参与者都准备好，则提交事务
+            if (orderPrepared && inventoryPrepared && paymentPrepared) {
+                orderRepository.commit(txId);
+                inventoryClient.commit(txId);
+                paymentClient.commit(txId);
+                
+                txLogRepository.logCommit(txId);
+                return true;
+            } else {
+                // 如果有任何参与者未准备好，则回滚事务
+                orderRepository.rollback(txId);
+                inventoryClient.rollback(txId);
+                paymentClient.rollback(txId);
+                
+                txLogRepository.logRollback(txId);
+                return false;
+            }
+        } catch (Exception e) {
+            // 异常情况下回滚事务
+            try {
+                orderRepository.rollback(txId);
+                inventoryClient.rollback(txId);
+                paymentClient.rollback(txId);
+                
+                txLogRepository.logRollback(txId, e.getMessage());
+            } catch (Exception ex) {
+                // 记录回滚失败，需要人工干预
+                txLogRepository.logRollbackFailed(txId, ex.getMessage());
+            }
+            return false;
+        }
+    }
+}
+
+
+```
+
+### 基于TCC（Try-Confirm-Cancel）的分布式事务
+
+使用TCC模式实现分布式事务，提供更好的性能和灵活性。
+
+```
+@Service
+public class OrderTccService {
+    private final OrderRepository orderRepository;
+    private final InventoryTccClient inventoryClient;
+    private final PaymentTccClient paymentClient;
+    
+    public OrderTccService(OrderRepository orderRepository,
+                          InventoryTccClient inventoryClient,
+                          PaymentTccClient paymentClient) {
+        this.orderRepository = orderRepository;
+        this.inventoryClient = inventoryClient;
+        this.paymentClient = paymentClient;
+    }
+    
+    @Transactional
+    public boolean createOrder(Order order) {
+        String txId = UUID.randomUUID().toString();
+        
+        try {
+            // Try阶段 - 资源预留
+            boolean orderReserved = orderRepository.tryCreate(txId, order);
+            boolean inventoryReserved = inventoryClient.tryReserve(txId, order.getProductId(), order.getQuantity());
+            boolean paymentReserved = paymentClient.tryDeduct(txId, order.getUserId(), order.getAmount());
+            
+            if (orderReserved && inventoryReserved && paymentReserved) {
+                // Confirm阶段 - 确认执行
+                orderRepository.confirm(txId);
+                inventoryClient.confirm(txId);
+                paymentClient.confirm(txId);
+                return true;
+            } else {
+                // Cancel阶段 - 取消预留
+                if (orderReserved) orderRepository.cancel(txId);
+                if (inventoryReserved) inventoryClient.cancel(txId);
+                if (paymentReserved) paymentClient.cancel(txId);
+                return false;
+            }
+        } catch (Exception e) {
+            // 异常情况下执行Cancel
+            try {
+                orderRepository.cancel(txId);
+                inventoryClient.cancel(txId);
+                paymentClient.cancel(txId);
+            } catch (Exception ex) {
+                // 记录取消失败，需要补偿机制
+                log.error("Failed to cancel transaction {}: {}", txId, ex.getMessage());
+            }
+            return false;
+        }
+    }
+}
+
+// 库存服务TCC接口实现
+@Service
+public class InventoryTccService {
+    private final ProductRepository productRepository;
+    private final ReservationRepository reservationRepository;
+    
+    @Transactional
+    public boolean tryReserve(String txId, Long productId, int quantity) {
+        // 检查并锁定库存
+        Product product = productRepository.findByIdForUpdate(productId);
+        if (product.getStock() < quantity) {
+            return false;
+        }
+        
+        // 创建预留记录，但不实际扣减库存
+        Reservation reservation = new Reservation();
+        reservation.setTxId(txId);
+        reservation.setProductId(productId);
+        reservation.setQuantity(quantity);
+        reservation.setStatus("TRYING");
+        reservationRepository.save(reservation);
+        
+        return true;
+    }
+    
+    @Transactional
+    public void confirm(String txId) {
+        Reservation reservation = reservationRepository.findByTxId(txId);
+        if (reservation != null && "TRYING".equals(reservation.getStatus())) {
+            // 实际扣减库存
+            productRepository.deductStock(reservation.getProductId(), reservation.getQuantity());
+            
+            // 更新预留状态
+            reservation.setStatus("CONFIRMED");
+            reservationRepository.save(reservation);
+        }
+    }
+    
+    @Transactional
+    public void cancel(String txId) {
+        Reservation reservation = reservationRepository.findByTxId(txId);
+        if (reservation != null && "TRYING".equals(reservation.getStatus())) {
+            // 取消预留，不需要实际操作库存
+            reservation.setStatus("CANCELLED");
+            reservationRepository.save(reservation);
+        }
+    }
+}
+
+
+```
+
+### 基于SAGA模式的分布式事务
+
+使用SAGA模式处理长事务，通过补偿操作保证最终一致性。
+
+```
+@Service
+public class OrderSagaService {
+    private final OrderRepository orderRepository;
+    private final InventoryClient inventoryClient;
+    private final PaymentClient paymentClient;
+    private final SagaLogRepository sagaLogRepository;
+    
+    @Transactional
+    public void createOrder(Order order) {
+        String sagaId = UUID.randomUUID().toString();
+        
+        try {
+            // 步骤1：创建订单
+            orderRepository.save(order);
+            sagaLogRepository.logSuccess(sagaId, "CREATE_ORDER", order.getId());
+            
+            // 步骤2：扣减库存
+            try {
+                inventoryClient.deductStock(order.getProductId(), order.getQuantity());
+                sagaLogRepository.logSuccess(sagaId, "DEDUCT_INVENTORY", order.getProductId());
+            } catch (Exception e) {
+                // 库存扣减失败，执行补偿：取消订单
+                orderRepository.updateStatus(order.getId(), "CANCELLED");
+                sagaLogRepository.logCompensation(sagaId, "CANCEL_ORDER", order.getId());
+                throw e;
+            }
+            
+            // 步骤3：处理支付
+            try {
+                paymentClient.processPayment(order.getUserId(), order.getAmount());
+                sagaLogRepository.logSuccess(sagaId, "PROCESS_PAYMENT", order.getUserId());
+            } catch (Exception e) {
+                // 支付失败，执行补偿：恢复库存和取消订单
+                inventoryClient.addStock(order.getProductId(), order.getQuantity());
+                sagaLogRepository.logCompensation(sagaId, "RESTORE_INVENTORY", order.getProductId());
+                
+                orderRepository.updateStatus(order.getId(), "CANCELLED");
+                sagaLogRepository.logCompensation(sagaId, "CANCEL_ORDER", order.getId());
+                throw e;
+            }
+            
+            // 所有步骤成功，更新订单状态为已完成
+            orderRepository.updateStatus(order.getId(), "COMPLETED");
+            sagaLogRepository.logSuccess(sagaId, "COMPLETE_ORDER", order.getId());
+            
+        } catch (Exception e) {
+            // 记录整体失败
+            sagaLogRepository.logFailure(sagaId, e.getMessage());
+            throw e;
+        }
+    }
+    
+    // 恢复未完成的SAGA事务
+    @Scheduled(fixedRate = 60000) // 每分钟执行一次
+    public void recoverIncompleteSagas() {
+        List<SagaLog> incompleteSagas = sagaLogRepository.findIncomplete();
+        
+        for (SagaLog saga : incompleteSagas) {
+            try {
+                // 根据SAGA日志执行恢复操作
+                recoverSaga(saga);
+            } catch (Exception e) {
+                log.error("Failed to recover saga {}: {}", saga.getSagaId(), e.getMessage());
+            }
+        }
+    }
+    
+    private void recoverSaga(SagaLog saga) {
+        // 根据SAGA状态执行相应的恢复操作
+        // 实现略
+    }
+}
+
+
+```
+
+### 使用读写锁分离读写操作
+
+使用读写锁允许多个读操作并发执行，但写操作需要独占锁。
+
+```
+public class ReadWriteLockManager {
+    private final Map<Long, ReadWriteLock> lockMap = new ConcurrentHashMap<>();
+    
+    public ReadWriteLock getLock(Long resourceId) {
+        return lockMap.computeIfAbsent(resourceId, k -> new ReentrantReadWriteLock());
+    }
+    
+    public void cleanupUnusedLocks() {
+        // 定期清理不再使用的锁
+        // 实现略
+    }
+}
+
+@Service
+public class ProductService {
+    private final ProductRepository productRepository;
+    private final ReadWriteLockManager lockManager;
+    
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+        this.lockManager = new ReadWriteLockManager();
+    }
+    
+    public Product getProduct(Long productId) {
+        ReadWriteLock lock = lockManager.getLock(productId);
+        Lock readLock = lock.readLock();
+        
+        readLock.lock();
+        try {
+            return productRepository.findById(productId).orElse(null);
+        } finally {
+            readLock.unlock();
+        }
+    }
+    
+    public boolean updateProductStock(Long productId, int deduction) {
+        ReadWriteLock lock = lockManager.getLock(productId);
+        Lock writeLock = lock.writeLock();
+        
+        writeLock.lock();
+        try {
+            Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException());
+                
+            if (product.getStock() >= deduction) {
+                product.setStock(product.getStock() - deduction);
+                productRepository.save(product);
+                return true;
+            }
+            return false;
+        } finally {
+            writeLock.unlock();
+        }
+    }
+}
+
+
+```

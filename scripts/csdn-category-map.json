@@ -3,47 +3,104 @@
     "java-backend": {
       "label": "Java 后端",
       "description": "Java 语言、运行时、框架机制与后端工程实践。",
-      "base": "knowledge"
+      "base": "knowledge",
+      "defaultSubcategory": "java-language"
     },
     "database": {
       "label": "数据库",
       "description": "数据建模、查询机制、事务语义与性能诊断。",
-      "base": "knowledge"
+      "base": "knowledge",
+      "defaultSubcategory": "storage-modeling"
     },
     "distributed-systems": {
       "label": "分布式系统",
       "description": "并发、消息、任务调度与可靠性边界。",
-      "base": "knowledge"
+      "base": "knowledge",
+      "defaultSubcategory": "redis-practice"
     },
     "system-design": {
       "label": "系统设计",
       "description": "从业务约束到技术方案，记录取舍依据与演进路径。",
-      "base": "knowledge"
+      "base": "knowledge",
+      "defaultSubcategory": "business-design"
     },
     "engineering-practice": {
       "label": "工程实践",
       "description": "测试、交付、可观测性、代码质量和问题复盘方法。",
-      "base": "knowledge"
+      "base": "knowledge",
+      "defaultSubcategory": "infrastructure-tools"
     },
     "computer-fundamentals": {
       "label": "计算机基础",
       "description": "操作系统、计算机网络与 Web 基础协议。",
-      "base": "knowledge"
+      "base": "knowledge",
+      "defaultSubcategory": "networking"
     },
     "algorithms": {
       "label": "数据结构与算法",
       "description": "数据结构、图论、排序与常用算法思想。",
-      "base": "knowledge"
+      "base": "knowledge",
+      "defaultSubcategory": "algorithm-patterns"
     },
     "miscellaneous": {
       "label": "其他",
       "description": "暂时无法归入稳定专题、但仍需保留的历史文章。",
-      "base": "knowledge"
+      "base": "knowledge",
+      "defaultSubcategory": "personal-growth"
     },
     "retrospectives": {
       "label": "问题复盘",
       "description": "从现象、排查到根因、修复与预防的真实问题记录。",
-      "base": "retrospectives"
+      "base": "retrospectives",
+      "defaultSubcategory": "production-issues"
+    }
+  },
+  "subcategories": {
+    "java-backend": {
+      "java-language": { "label": "Java 语言基础" },
+      "collections": { "label": "集合框架" },
+      "concurrency": { "label": "并发编程" },
+      "jvm-runtime": { "label": "JVM 与运行时" },
+      "spring": { "label": "Spring 与安全" },
+      "design-patterns": { "label": "设计模式" },
+      "java-ecosystem": { "label": "Java 生态与工程" }
+    },
+    "database": {
+      "storage-modeling": { "label": "数据建模与存储" },
+      "query-optimization": { "label": "SQL 执行与优化" },
+      "indexes": { "label": "索引原理与优化" },
+      "transactions-locks": { "label": "事务与锁" },
+      "logs-replication": { "label": "日志、复制与高可用" }
+    },
+    "distributed-systems": {
+      "redis-internals": { "label": "Redis 数据结构与实现" },
+      "redis-reliability": { "label": "Redis 持久化与高可用" },
+      "redis-practice": { "label": "Redis 实践与性能" },
+      "consistency": { "label": "一致性与分布式协调" },
+      "kafka": { "label": "Kafka 消息系统" }
+    },
+    "computer-fundamentals": {
+      "operating-systems": { "label": "操作系统" },
+      "networking": { "label": "计算机网络" },
+      "web-infrastructure": { "label": "Web 与网络基础设施" }
+    },
+    "algorithms": {
+      "linear-structures": { "label": "数组、链表与队列" },
+      "algorithm-patterns": { "label": "算法思想与排序" },
+      "trees-graphs": { "label": "树与图论" }
+    },
+    "engineering-practice": {
+      "version-control": { "label": "版本控制" },
+      "infrastructure-tools": { "label": "工程与基础设施工具" }
+    },
+    "system-design": {
+      "business-design": { "label": "业务系统设计" }
+    },
+    "miscellaneous": {
+      "personal-growth": { "label": "个人成长" }
+    },
+    "retrospectives": {
+      "production-issues": { "label": "故障与问题复盘" }
     }
   },
   "albumToCategory": {
@@ -64,6 +121,55 @@
     "数据结构和算法": "algorithms",
     "Git": "engineering-practice"
   },
+  "albumToSubcategory": {
+    "集合": "collections",
+    "JUC": "concurrency",
+    "JUC集合": "concurrency",
+    "Java基础": "java-language",
+    "JVM": "jvm-runtime",
+    "Spring核心模块解析": "spring",
+    "设计模式": "design-patterns",
+    "Jackson": "java-ecosystem",
+    "操作系统": "operating-systems",
+    "计算机网络": "networking",
+    "数据结构和算法": "algorithm-patterns",
+    "Git": "version-control",
+    "Kafka": "kafka",
+    "mysql-bugs": "production-issues"
+  },
+  "subcategoryRules": [
+    { "category": "retrospectives", "pattern": ".*", "subcategory": "production-issues" },
+    { "category": "system-design", "pattern": ".*", "subcategory": "business-design" },
+    { "category": "miscellaneous", "pattern": ".*", "subcategory": "personal-growth" },
+    { "category": "engineering-practice", "pattern": "Git", "subcategory": "version-control" },
+    { "category": "engineering-practice", "pattern": "MinIO|工具|基础设施", "subcategory": "infrastructure-tools" },
+
+    { "category": "java-backend", "pattern": "Spring|SpringSecurity|BeanDefinition|PostProcessor|refresh\\(\\)|Aware|AOP", "subcategory": "spring" },
+    { "category": "java-backend", "pattern": "设计模式|责任链|Chain of Responsibility", "subcategory": "design-patterns" },
+    { "category": "java-backend", "pattern": "JVM|垃圾回收|类加载|对象内存布局|TLAB|G1 GC|卡表|Launcher|StackWalker", "subcategory": "jvm-runtime" },
+    { "category": "java-backend", "pattern": "JUC|并发|线程|Lock|Condition|Semaphore|CountDownLatch|CyclicBarrier|Exchanger|Phaser|ThreadLocal|CompletableFuture|Fork.?Join|FutureTask|BlockingQueue|ArrayBlockingQueue", "subcategory": "concurrency" },
+    { "category": "java-backend", "pattern": "集合|ArrayList|LinkedList|Vector|HashMap|HashSet|HashTable|Collection", "subcategory": "collections" },
+    { "category": "java-backend", "pattern": "SPI|DTO|DO|Jackson|Enumeration", "subcategory": "java-ecosystem" },
+
+    { "category": "database", "pattern": "主从|复制|undo.?Log|redo.?Log|bin.?Log|二阶段提交", "subcategory": "logs-replication" },
+    { "category": "database", "pattern": "事务|隔离|幻读|锁|加锁|临键锁", "subcategory": "transactions-locks" },
+    { "category": "database", "pattern": "索引组织表|行记录|数据页|Buffer Pool|存储引擎|数据库表设计", "subcategory": "storage-modeling" },
+    { "category": "database", "pattern": "索引", "subcategory": "indexes" },
+    { "category": "database", "pattern": "Order By|Join|Count|Group By|子查询|SQL的执行|CBO|Explain|Expalin", "subcategory": "query-optimization" },
+
+    { "category": "distributed-systems", "pattern": "Kafka", "subcategory": "kafka" },
+    { "category": "distributed-systems", "pattern": "CAP|Base|BASE|一致性|读写分离|分库分表|分布式锁|并发更新", "subcategory": "consistency" },
+    { "category": "distributed-systems", "pattern": "RDB|AOF|持久化|主从|哨兵|切片集群", "subcategory": "redis-reliability" },
+    { "category": "distributed-systems", "pattern": "数据结构|链表|压缩列表|哈希表|整数集合|跳表|quickList|listPack|对象专辑|线程模型|ZSet", "subcategory": "redis-internals" },
+
+    { "category": "computer-fundamentals", "pattern": "操作系统|用户态|内核态", "subcategory": "operating-systems" },
+    { "category": "computer-fundamentals", "pattern": "HTTP|HTTPS|RPC|Nginx", "subcategory": "web-infrastructure" },
+    { "category": "computer-fundamentals", "pattern": "计算机网络|TCP|UDP|网络层|传输层", "subcategory": "networking" },
+
+    { "category": "algorithms", "pattern": "图论|二叉树|并查集|环检测|最小生成树|Dijkstra|DFS|BFS", "subcategory": "trees-graphs" },
+    { "category": "algorithms", "pattern": "稀疏数组|线性队列|环形队列|链表|数据结构——队列", "subcategory": "linear-structures" },
+    { "category": "algorithms", "pattern": "算法|排序|回溯|贪心|动态规划|堆排序", "subcategory": "algorithm-patterns" }
+  ],
   "titleRules": [
     { "pattern": "异常.*复盘|重复问题|导出.*问题|bugs?专辑", "category": "retrospectives" },
     { "pattern": "购物车.*设计|购物车.*实现", "category": "system-design" },
@@ -105,7 +211,13 @@
     "147057384": "java-backend",
     "147133289": "computer-fundamentals",
     "147280008": "java-backend",
+    "147334606": "java-backend",
+    "147398714": "java-backend",
     "157725729": "retrospectives",
     "137556200": "miscellaneous"
+  },
+  "legacyCategoryOverrides": {
+    "147334606": "algorithms",
+    "147398714": "algorithms"
   }
 }

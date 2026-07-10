@@ -11,6 +11,7 @@ export const collections = {
 				created: z.coerce.date().optional(),
 				updated: z.coerce.date().optional(),
 				category: z.string().optional(),
+				subcategory: z.string().optional(),
 				tags: z.array(z.string()).default([]),
 				sourceId: z.string().optional(),
 				sourceSeries: z.array(z.string()).default([]),

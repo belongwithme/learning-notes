@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-10T10:33:12.998Z",
+  "generatedAt": "2026-07-10T11:32:32.708Z",
   "sourceRoot": "/Users/wangyi/csdn-article-export/exports",
   "outputRoot": "/Users/wangyi/learning-notes/src/content/docs",
   "force": true,
@@ -9,8 +9,8 @@
   "missingAssets": [],
   "missingRemoteImages": [],
   "byCategory": {
-    "algorithms": 23,
-    "java-backend": 102,
+    "algorithms": 21,
+    "java-backend": 104,
     "computer-fundamentals": 20,
     "distributed-systems": 39,
     "database": 31,
@@ -19,12 +19,46 @@
     "miscellaneous": 1,
     "retrospectives": 2
   },
+  "bySubcategory": {
+    "algorithms/linear-structures": 7,
+    "algorithms/algorithm-patterns": 6,
+    "java-backend/collections": 8,
+    "java-backend/concurrency": 43,
+    "computer-fundamentals/operating-systems": 8,
+    "distributed-systems/redis-practice": 9,
+    "java-backend/jvm-runtime": 14,
+    "java-backend/spring": 20,
+    "algorithms/trees-graphs": 8,
+    "java-backend/design-patterns": 3,
+    "database/transactions-locks": 7,
+    "engineering-practice/version-control": 2,
+    "computer-fundamentals/web-infrastructure": 3,
+    "distributed-systems/consistency": 9,
+    "system-design/business-design": 1,
+    "engineering-practice/infrastructure-tools": 1,
+    "java-backend/java-language": 11,
+    "computer-fundamentals/networking": 9,
+    "miscellaneous/personal-growth": 1,
+    "database/storage-modeling": 6,
+    "distributed-systems/redis-internals": 9,
+    "database/query-optimization": 9,
+    "database/indexes": 4,
+    "database/logs-replication": 5,
+    "distributed-systems/redis-reliability": 8,
+    "java-backend/java-ecosystem": 5,
+    "distributed-systems/kafka": 4,
+    "retrospectives/production-issues": 2
+  },
   "articles": [
     {
       "articleId": "122424649",
       "category": "algorithms",
+      "subcategory": "linear-structures",
       "title": "稀疏数组与数组的关系与转化",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-122424649/index.md",
+      "output": "src/content/docs/knowledge/algorithms/linear-structures/algorithms-122424649.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/linear-structures/assets/122424649",
+      "legacyUrl": "/knowledge/algorithms/algorithms-122424649/",
+      "url": "/knowledge/algorithms/linear-structures/algorithms-122424649/",
       "assets": 4,
       "missingAssets": [],
       "status": "imported"
@@ -32,8 +66,12 @@
     {
       "articleId": "122428951",
       "category": "algorithms",
+      "subcategory": "linear-structures",
       "title": "数据模拟线性队列",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-122428951/index.md",
+      "output": "src/content/docs/knowledge/algorithms/linear-structures/algorithms-122428951.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/linear-structures/assets/122428951",
+      "legacyUrl": "/knowledge/algorithms/algorithms-122428951/",
+      "url": "/knowledge/algorithms/linear-structures/algorithms-122428951/",
       "assets": 5,
       "missingAssets": [],
       "status": "imported"
@@ -41,8 +79,12 @@
     {
       "articleId": "122457698",
       "category": "algorithms",
+      "subcategory": "linear-structures",
       "title": "数组模拟环形队列",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-122457698/index.md",
+      "output": "src/content/docs/knowledge/algorithms/linear-structures/algorithms-122457698.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/linear-structures/assets/122457698",
+      "legacyUrl": "/knowledge/algorithms/algorithms-122457698/",
+      "url": "/knowledge/algorithms/linear-structures/algorithms-122457698/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -50,8 +92,12 @@
     {
       "articleId": "122459760",
       "category": "algorithms",
+      "subcategory": "linear-structures",
       "title": "单链表-成功敲门砖",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-122459760/index.md",
+      "output": "src/content/docs/knowledge/algorithms/linear-structures/algorithms-122459760.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/linear-structures/assets/122459760",
+      "legacyUrl": "/knowledge/algorithms/algorithms-122459760/",
+      "url": "/knowledge/algorithms/linear-structures/algorithms-122459760/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -59,8 +105,12 @@
     {
       "articleId": "122464194",
       "category": "algorithms",
+      "subcategory": "linear-structures",
       "title": "双向链表的基本用法",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-122464194/index.md",
+      "output": "src/content/docs/knowledge/algorithms/linear-structures/algorithms-122464194.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/linear-structures/assets/122464194",
+      "legacyUrl": "/knowledge/algorithms/algorithms-122464194/",
+      "url": "/knowledge/algorithms/linear-structures/algorithms-122464194/",
       "assets": 4,
       "missingAssets": [],
       "status": "imported"
@@ -68,8 +118,12 @@
     {
       "articleId": "122474868",
       "category": "algorithms",
+      "subcategory": "linear-structures",
       "title": "快速上手环形链表解决约瑟夫问题",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-122474868/index.md",
+      "output": "src/content/docs/knowledge/algorithms/linear-structures/algorithms-122474868.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/linear-structures/assets/122474868",
+      "legacyUrl": "/knowledge/algorithms/algorithms-122474868/",
+      "url": "/knowledge/algorithms/linear-structures/algorithms-122474868/",
       "assets": 9,
       "missingAssets": [],
       "status": "imported"
@@ -77,8 +131,12 @@
     {
       "articleId": "123329485",
       "category": "algorithms",
+      "subcategory": "algorithm-patterns",
       "title": "常见排序代码一览",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-123329485/index.md",
+      "output": "src/content/docs/knowledge/algorithms/algorithm-patterns/algorithms-123329485.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/algorithm-patterns/assets/123329485",
+      "legacyUrl": "/knowledge/algorithms/algorithms-123329485/",
+      "url": "/knowledge/algorithms/algorithm-patterns/algorithms-123329485/",
       "assets": 11,
       "missingAssets": [],
       "status": "imported"
@@ -86,8 +144,12 @@
     {
       "articleId": "125552009",
       "category": "java-backend",
+      "subcategory": "collections",
       "title": "集合专辑(一)：集合框架&&Collection接口介绍",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-125552009/index.md",
+      "output": "src/content/docs/knowledge/java-backend/collections/java-backend-125552009.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/collections/assets/125552009",
+      "legacyUrl": "/knowledge/java-backend/java-backend-125552009/",
+      "url": "/knowledge/java-backend/collections/java-backend-125552009/",
       "assets": 11,
       "missingAssets": [],
       "status": "imported"
@@ -95,8 +157,12 @@
     {
       "articleId": "125694580",
       "category": "java-backend",
+      "subcategory": "collections",
       "title": "集合专辑(二)：List实现类ArrayList解读",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-125694580/index.md",
+      "output": "src/content/docs/knowledge/java-backend/collections/java-backend-125694580.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/collections/assets/125694580",
+      "legacyUrl": "/knowledge/java-backend/java-backend-125694580/",
+      "url": "/knowledge/java-backend/collections/java-backend-125694580/",
       "assets": 31,
       "missingAssets": [],
       "status": "imported"
@@ -104,8 +170,12 @@
     {
       "articleId": "125743610",
       "category": "java-backend",
+      "subcategory": "collections",
       "title": "集合专辑(三)：List实现类LinkedList解读",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-125743610/index.md",
+      "output": "src/content/docs/knowledge/java-backend/collections/java-backend-125743610.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/collections/assets/125743610",
+      "legacyUrl": "/knowledge/java-backend/java-backend-125743610/",
+      "url": "/knowledge/java-backend/collections/java-backend-125743610/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -113,8 +183,12 @@
     {
       "articleId": "125781311",
       "category": "java-backend",
+      "subcategory": "collections",
       "title": "集合专辑(四)：List实现类Vector核心解读",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-125781311/index.md",
+      "output": "src/content/docs/knowledge/java-backend/collections/java-backend-125781311.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/collections/assets/125781311",
+      "legacyUrl": "/knowledge/java-backend/java-backend-125781311/",
+      "url": "/knowledge/java-backend/collections/java-backend-125781311/",
       "assets": 8,
       "missingAssets": [],
       "status": "imported"
@@ -122,8 +196,12 @@
     {
       "articleId": "125789204",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发编程JUC深度学习（一）进程与线程（文字描述部分）",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-125789204/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-125789204.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/125789204",
+      "legacyUrl": "/knowledge/java-backend/java-backend-125789204/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-125789204/",
       "assets": 15,
       "missingAssets": [],
       "status": "imported"
@@ -131,8 +209,12 @@
     {
       "articleId": "125796898",
       "category": "java-backend",
+      "subcategory": "collections",
       "title": "集合专辑(五)：Map接口&&HashMap(1.8)核心解读",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-125796898/index.md",
+      "output": "src/content/docs/knowledge/java-backend/collections/java-backend-125796898.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/collections/assets/125796898",
+      "legacyUrl": "/knowledge/java-backend/java-backend-125796898/",
+      "url": "/knowledge/java-backend/collections/java-backend-125796898/",
       "assets": 9,
       "missingAssets": [],
       "status": "imported"
@@ -140,8 +222,12 @@
     {
       "articleId": "125951275",
       "category": "java-backend",
+      "subcategory": "collections",
       "title": "集合专辑(六)：Set接口下HashSet核心源码解读",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-125951275/index.md",
+      "output": "src/content/docs/knowledge/java-backend/collections/java-backend-125951275.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/collections/assets/125951275",
+      "legacyUrl": "/knowledge/java-backend/java-backend-125951275/",
+      "url": "/knowledge/java-backend/collections/java-backend-125951275/",
       "assets": 2,
       "missingAssets": [],
       "status": "imported"
@@ -149,8 +235,12 @@
     {
       "articleId": "125968262",
       "category": "java-backend",
+      "subcategory": "collections",
       "title": "集合专辑(七)：HashTable核心源码解读",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-125968262/index.md",
+      "output": "src/content/docs/knowledge/java-backend/collections/java-backend-125968262.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/collections/assets/125968262",
+      "legacyUrl": "/knowledge/java-backend/java-backend-125968262/",
+      "url": "/knowledge/java-backend/collections/java-backend-125968262/",
       "assets": 2,
       "missingAssets": [],
       "status": "imported"
@@ -158,8 +248,12 @@
     {
       "articleId": "125979672",
       "category": "java-backend",
+      "subcategory": "collections",
       "title": "集合专辑(八)：HashMap的子类LinkedHashMap核心源码解读",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-125979672/index.md",
+      "output": "src/content/docs/knowledge/java-backend/collections/java-backend-125979672.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/collections/assets/125979672",
+      "legacyUrl": "/knowledge/java-backend/java-backend-125979672/",
+      "url": "/knowledge/java-backend/collections/java-backend-125979672/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -167,8 +261,12 @@
     {
       "articleId": "125993672",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发编程JUC深度学习(二）进程与线程（源码描述部分）",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-125993672/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-125993672.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/125993672",
+      "legacyUrl": "/knowledge/java-backend/java-backend-125993672/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-125993672/",
       "assets": 11,
       "missingAssets": [],
       "status": "imported"
@@ -176,8 +274,12 @@
     {
       "articleId": "126007233",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发编程JUC深度学习(三）共享模型之管程",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-126007233/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-126007233.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/126007233",
+      "legacyUrl": "/knowledge/java-backend/java-backend-126007233/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-126007233/",
       "assets": 26,
       "missingAssets": [],
       "status": "imported"
@@ -185,8 +287,12 @@
     {
       "articleId": "126026623",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发编程JUC深度学习(四）共享模型之管程进阶学习",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-126026623/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-126026623.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/126026623",
+      "legacyUrl": "/knowledge/java-backend/java-backend-126026623/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-126026623/",
       "assets": 11,
       "missingAssets": [],
       "status": "imported"
@@ -194,8 +300,12 @@
     {
       "articleId": "126028285",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发编程JUC深度学习(六）内存模型_1",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-126028285/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-126028285.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/126028285",
+      "legacyUrl": "/knowledge/java-backend/java-backend-126028285/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-126028285/",
       "assets": 7,
       "missingAssets": [],
       "status": "imported"
@@ -203,8 +313,12 @@
     {
       "articleId": "126028316",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发编程JUC深度学习(五）线程生命周期",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-126028316/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-126028316.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/126028316",
+      "legacyUrl": "/knowledge/java-backend/java-backend-126028316/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-126028316/",
       "assets": 1,
       "missingAssets": [],
       "status": "imported"
@@ -212,8 +326,12 @@
     {
       "articleId": "126045364",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发编程JUC深度学习(七）无锁（乐观锁）",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-126045364/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-126045364.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/126045364",
+      "legacyUrl": "/knowledge/java-backend/java-backend-126045364/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-126045364/",
       "assets": 11,
       "missingAssets": [],
       "status": "imported"
@@ -221,8 +339,12 @@
     {
       "articleId": "126050732",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发编程JUC深度学习(六）内存模型_2",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-126050732/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-126050732.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/126050732",
+      "legacyUrl": "/knowledge/java-backend/java-backend-126050732/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-126050732/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -230,8 +352,12 @@
     {
       "articleId": "126122998",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发容器（一）：普通容器&&同步容器&&并发容器",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-126122998/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-126122998.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/126122998",
+      "legacyUrl": "/knowledge/java-backend/java-backend-126122998/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-126122998/",
       "assets": 2,
       "missingAssets": [],
       "status": "imported"
@@ -239,8 +365,12 @@
     {
       "articleId": "126124080",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发容器（二）：Concurrent类下的ConcurrentHashMap源码级解析",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-126124080/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-126124080.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/126124080",
+      "legacyUrl": "/knowledge/java-backend/java-backend-126124080/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-126124080/",
       "assets": 2,
       "missingAssets": [],
       "status": "imported"
@@ -248,8 +378,12 @@
     {
       "articleId": "126131210",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发编程JUC深度学习(九）ReentrantLock源码解析",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-126131210/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-126131210.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/126131210",
+      "legacyUrl": "/knowledge/java-backend/java-backend-126131210/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-126131210/",
       "assets": 2,
       "missingAssets": [],
       "status": "imported"
@@ -257,8 +391,12 @@
     {
       "articleId": "126185809",
       "category": "algorithms",
+      "subcategory": "algorithm-patterns",
       "title": "算法——数组的魅力。",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-126185809/index.md",
+      "output": "src/content/docs/knowledge/algorithms/algorithm-patterns/algorithms-126185809.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/algorithm-patterns/assets/126185809",
+      "legacyUrl": "/knowledge/algorithms/algorithms-126185809/",
+      "url": "/knowledge/algorithms/algorithm-patterns/algorithms-126185809/",
       "assets": 13,
       "missingAssets": [],
       "status": "imported"
@@ -266,8 +404,12 @@
     {
       "articleId": "126321073",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发编程JUC深度学习(八）AbstractQueuedSynchronizer源码级解析",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-126321073/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-126321073.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/126321073",
+      "legacyUrl": "/knowledge/java-backend/java-backend-126321073/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-126321073/",
       "assets": 38,
       "missingAssets": [],
       "status": "imported"
@@ -275,8 +417,12 @@
     {
       "articleId": "126391026",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发编程JUC深度学习(十）Semaphore源码解析",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-126391026/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-126391026.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/126391026",
+      "legacyUrl": "/knowledge/java-backend/java-backend-126391026/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-126391026/",
       "assets": 1,
       "missingAssets": [],
       "status": "imported"
@@ -284,8 +430,12 @@
     {
       "articleId": "126458558",
       "category": "computer-fundamentals",
+      "subcategory": "operating-systems",
       "title": "操作系统（一）：引论",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-126458558/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-126458558.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/operating-systems/assets/126458558",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-126458558/",
+      "url": "/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-126458558/",
       "assets": 15,
       "missingAssets": [],
       "status": "imported"
@@ -293,8 +443,12 @@
     {
       "articleId": "126490915",
       "category": "computer-fundamentals",
+      "subcategory": "operating-systems",
       "title": "操作系统（二）:进程的控制与描述",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-126490915/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-126490915.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/operating-systems/assets/126490915",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-126490915/",
+      "url": "/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-126490915/",
       "assets": 10,
       "missingAssets": [],
       "status": "imported"
@@ -302,8 +456,12 @@
     {
       "articleId": "126502482",
       "category": "computer-fundamentals",
+      "subcategory": "operating-systems",
       "title": "操作系统（三）处理机调度与死锁(包含银行家算法）",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-126502482/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-126502482.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/operating-systems/assets/126502482",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-126502482/",
+      "url": "/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-126502482/",
       "assets": 7,
       "missingAssets": [],
       "status": "imported"
@@ -311,8 +469,12 @@
     {
       "articleId": "126529493",
       "category": "computer-fundamentals",
+      "subcategory": "operating-systems",
       "title": "操作系统（四）：进程同步",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-126529493/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-126529493.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/operating-systems/assets/126529493",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-126529493/",
+      "url": "/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-126529493/",
       "assets": 11,
       "missingAssets": [],
       "status": "imported"
@@ -320,8 +482,12 @@
     {
       "articleId": "126671877",
       "category": "computer-fundamentals",
+      "subcategory": "operating-systems",
       "title": "操作系统（五）：存储器管理",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-126671877/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-126671877.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/operating-systems/assets/126671877",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-126671877/",
+      "url": "/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-126671877/",
       "assets": 11,
       "missingAssets": [],
       "status": "imported"
@@ -329,8 +495,12 @@
     {
       "articleId": "127291307",
       "category": "distributed-systems",
+      "subcategory": "redis-practice",
       "title": "Redis简单操作（不定期更新）-不包含理论知识",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-127291307/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-practice/distributed-systems-127291307.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-practice/assets/127291307",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-127291307/",
+      "url": "/knowledge/distributed-systems/redis-practice/distributed-systems-127291307/",
       "assets": 4,
       "missingAssets": [],
       "status": "imported"
@@ -338,8 +508,12 @@
     {
       "articleId": "127414653",
       "category": "algorithms",
+      "subcategory": "algorithm-patterns",
       "title": "算法-回溯算法",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-127414653/index.md",
+      "output": "src/content/docs/knowledge/algorithms/algorithm-patterns/algorithms-127414653.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/algorithm-patterns/assets/127414653",
+      "legacyUrl": "/knowledge/algorithms/algorithms-127414653/",
+      "url": "/knowledge/algorithms/algorithm-patterns/algorithms-127414653/",
       "assets": 8,
       "missingAssets": [],
       "status": "imported"
@@ -347,8 +521,12 @@
     {
       "articleId": "127415551",
       "category": "algorithms",
+      "subcategory": "algorithm-patterns",
       "title": "算法-贪心算法",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-127415551/index.md",
+      "output": "src/content/docs/knowledge/algorithms/algorithm-patterns/algorithms-127415551.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/algorithm-patterns/assets/127415551",
+      "legacyUrl": "/knowledge/algorithms/algorithms-127415551/",
+      "url": "/knowledge/algorithms/algorithm-patterns/algorithms-127415551/",
       "assets": 1,
       "missingAssets": [],
       "status": "imported"
@@ -356,8 +534,12 @@
     {
       "articleId": "127416130",
       "category": "algorithms",
+      "subcategory": "algorithm-patterns",
       "title": "算法-2万字长文带你了解动态规划（包含背包问题）",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-127416130/index.md",
+      "output": "src/content/docs/knowledge/algorithms/algorithm-patterns/algorithms-127416130.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/algorithm-patterns/assets/127416130",
+      "legacyUrl": "/knowledge/algorithms/algorithms-127416130/",
+      "url": "/knowledge/algorithms/algorithm-patterns/algorithms-127416130/",
       "assets": 28,
       "missingAssets": [],
       "status": "imported"
@@ -365,8 +547,12 @@
     {
       "articleId": "127478146",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "深度学习与总结JVM专辑（一）：基础介绍&&内存结构（图文+代码）",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-127478146/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-127478146.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/127478146",
+      "legacyUrl": "/knowledge/java-backend/java-backend-127478146/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-127478146/",
       "assets": 40,
       "missingAssets": [],
       "status": "imported"
@@ -374,8 +560,12 @@
     {
       "articleId": "127583745",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "0-Spring核心模块解析—Resource与ResourceLoader接口",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-127583745/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-127583745.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/127583745",
+      "legacyUrl": "/knowledge/java-backend/java-backend-127583745/",
+      "url": "/knowledge/java-backend/spring/java-backend-127583745/",
       "assets": 7,
       "missingAssets": [],
       "status": "imported"
@@ -383,8 +573,12 @@
     {
       "articleId": "127596461",
       "category": "algorithms",
+      "subcategory": "trees-graphs",
       "title": "算法-二叉树基础知识",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-127596461/index.md",
+      "output": "src/content/docs/knowledge/algorithms/trees-graphs/algorithms-127596461.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/trees-graphs/assets/127596461",
+      "legacyUrl": "/knowledge/algorithms/algorithms-127596461/",
+      "url": "/knowledge/algorithms/trees-graphs/algorithms-127596461/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -392,8 +586,12 @@
     {
       "articleId": "127949548",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "深度学习与总结JVM专辑（二）：垃圾回收基础（图文+代码）",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-127949548/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-127949548.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/127949548",
+      "legacyUrl": "/knowledge/java-backend/java-backend-127949548/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-127949548/",
       "assets": 15,
       "missingAssets": [],
       "status": "imported"
@@ -401,8 +599,12 @@
     {
       "articleId": "127968283",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "深度学习与总结JVM专辑（三）：垃圾回收器—G1（图文+代码）",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-127968283/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-127968283.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/127968283",
+      "legacyUrl": "/knowledge/java-backend/java-backend-127968283/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-127968283/",
       "assets": 15,
       "missingAssets": [],
       "status": "imported"
@@ -410,8 +612,12 @@
     {
       "articleId": "128079372",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "深度学习与总结JVM专辑（四）：类文件结构（图文+代码）",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-128079372/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-128079372.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/128079372",
+      "legacyUrl": "/knowledge/java-backend/java-backend-128079372/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-128079372/",
       "assets": 39,
       "missingAssets": [],
       "status": "imported"
@@ -419,8 +625,12 @@
     {
       "articleId": "128098525",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "深度学习与总结JVM专辑（五）：类加载机制",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-128098525/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-128098525.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/128098525",
+      "legacyUrl": "/knowledge/java-backend/java-backend-128098525/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-128098525/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -428,8 +638,12 @@
     {
       "articleId": "128105268",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "深度学习与总结JVM专辑（六）：JVM字节码执行引擎",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-128105268/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-128105268.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/128105268",
+      "legacyUrl": "/knowledge/java-backend/java-backend-128105268/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-128105268/",
       "assets": 6,
       "missingAssets": [],
       "status": "imported"
@@ -437,8 +651,12 @@
     {
       "articleId": "128178707",
       "category": "java-backend",
+      "subcategory": "design-patterns",
       "title": "深度学习设计模式（一）：编写高质量代码的基础(多例子+代码）",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-128178707/index.md",
+      "output": "src/content/docs/knowledge/java-backend/design-patterns/java-backend-128178707.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/design-patterns/assets/128178707",
+      "legacyUrl": "/knowledge/java-backend/java-backend-128178707/",
+      "url": "/knowledge/java-backend/design-patterns/java-backend-128178707/",
       "assets": 1,
       "missingAssets": [],
       "status": "imported"
@@ -446,8 +664,12 @@
     {
       "articleId": "128187466",
       "category": "database",
+      "subcategory": "transactions-locks",
       "title": "深度整理总结MySQL——事务专辑",
-      "output": "src/content/docs/knowledge/database/database-128187466/index.md",
+      "output": "src/content/docs/knowledge/database/transactions-locks/database-128187466.md",
+      "assetDirectory": "src/content/docs/knowledge/database/transactions-locks/assets/128187466",
+      "legacyUrl": "/knowledge/database/database-128187466/",
+      "url": "/knowledge/database/transactions-locks/database-128187466/",
       "assets": 13,
       "missingAssets": [],
       "status": "imported"
@@ -455,8 +677,12 @@
     {
       "articleId": "128272455",
       "category": "engineering-practice",
+      "subcategory": "version-control",
       "title": "Git使用详解(图文+代码)：基础内容",
-      "output": "src/content/docs/knowledge/engineering-practice/engineering-practice-128272455/index.md",
+      "output": "src/content/docs/knowledge/engineering-practice/version-control/engineering-practice-128272455.md",
+      "assetDirectory": "src/content/docs/knowledge/engineering-practice/version-control/assets/128272455",
+      "legacyUrl": "/knowledge/engineering-practice/engineering-practice-128272455/",
+      "url": "/knowledge/engineering-practice/version-control/engineering-practice-128272455/",
       "assets": 30,
       "missingAssets": [],
       "status": "imported"
@@ -464,8 +690,12 @@
     {
       "articleId": "128285043",
       "category": "computer-fundamentals",
+      "subcategory": "web-infrastructure",
       "title": "Nginx学习与使用",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-128285043/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/web-infrastructure/computer-fundamentals-128285043.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/web-infrastructure/assets/128285043",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-128285043/",
+      "url": "/knowledge/computer-fundamentals/web-infrastructure/computer-fundamentals-128285043/",
       "assets": 5,
       "missingAssets": [],
       "status": "imported"
@@ -473,8 +703,12 @@
     {
       "articleId": "128675758",
       "category": "engineering-practice",
+      "subcategory": "version-control",
       "title": "Git使用详解(图文+代码)：Git分支",
-      "output": "src/content/docs/knowledge/engineering-practice/engineering-practice-128675758/index.md",
+      "output": "src/content/docs/knowledge/engineering-practice/version-control/engineering-practice-128675758.md",
+      "assetDirectory": "src/content/docs/knowledge/engineering-practice/version-control/assets/128675758",
+      "legacyUrl": "/knowledge/engineering-practice/engineering-practice-128675758/",
+      "url": "/knowledge/engineering-practice/version-control/engineering-practice-128675758/",
       "assets": 35,
       "missingAssets": [],
       "status": "imported"
@@ -482,8 +716,12 @@
     {
       "articleId": "128748042",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "1-Spring核心模块解析—BeanDifinition。",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-128748042/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-128748042.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/128748042",
+      "legacyUrl": "/knowledge/java-backend/java-backend-128748042/",
+      "url": "/knowledge/java-backend/spring/java-backend-128748042/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -491,8 +729,12 @@
     {
       "articleId": "129154492",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "Spring的核心模块：Bean的生命周期（内含依赖循环+业务场景）。",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-129154492/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-129154492.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/129154492",
+      "legacyUrl": "/knowledge/java-backend/java-backend-129154492/",
+      "url": "/knowledge/java-backend/spring/java-backend-129154492/",
       "assets": 4,
       "missingAssets": [],
       "status": "imported"
@@ -500,8 +742,12 @@
     {
       "articleId": "129154666",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "Spring核心模块 - 三大核心PostProcessor",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-129154666/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-129154666.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/129154666",
+      "legacyUrl": "/knowledge/java-backend/java-backend-129154666/",
+      "url": "/knowledge/java-backend/spring/java-backend-129154666/",
       "assets": 2,
       "missingAssets": [],
       "status": "imported"
@@ -509,8 +755,12 @@
     {
       "articleId": "129220415",
       "category": "algorithms",
+      "subcategory": "linear-structures",
       "title": "数据结构——队列（多例子+图文）",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-129220415/index.md",
+      "output": "src/content/docs/knowledge/algorithms/linear-structures/algorithms-129220415.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/linear-structures/assets/129220415",
+      "legacyUrl": "/knowledge/algorithms/algorithms-129220415/",
+      "url": "/knowledge/algorithms/linear-structures/algorithms-129220415/",
       "assets": 5,
       "missingAssets": [],
       "status": "imported"
@@ -518,8 +768,12 @@
     {
       "articleId": "129347485",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "2-Spring核心模块——Aware接口",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-129347485/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-129347485.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/129347485",
+      "legacyUrl": "/knowledge/java-backend/java-backend-129347485/",
+      "url": "/knowledge/java-backend/spring/java-backend-129347485/",
       "assets": 1,
       "missingAssets": [],
       "status": "imported"
@@ -527,8 +781,12 @@
     {
       "articleId": "129447982",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "Spring的核心模块：容器刷新refresh原理解析（六万字整理）。",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-129447982/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-129447982.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/129447982",
+      "legacyUrl": "/knowledge/java-backend/java-backend-129447982/",
+      "url": "/knowledge/java-backend/spring/java-backend-129447982/",
       "assets": 1,
       "missingAssets": [],
       "status": "imported"
@@ -536,8 +794,12 @@
     {
       "articleId": "129452385",
       "category": "java-backend",
+      "subcategory": "design-patterns",
       "title": "深度学习设计模式（二）：基本的设计模式（例子+业务场景+八股）。",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-129452385/index.md",
+      "output": "src/content/docs/knowledge/java-backend/design-patterns/java-backend-129452385.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/design-patterns/assets/129452385",
+      "legacyUrl": "/knowledge/java-backend/java-backend-129452385/",
+      "url": "/knowledge/java-backend/design-patterns/java-backend-129452385/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -545,8 +807,12 @@
     {
       "articleId": "130828424",
       "category": "distributed-systems",
+      "subcategory": "consistency",
       "title": "分布式锁Redis基础理论与落地实现与Redisson。",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-130828424/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/consistency/distributed-systems-130828424.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/consistency/assets/130828424",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-130828424/",
+      "url": "/knowledge/distributed-systems/consistency/distributed-systems-130828424/",
       "assets": 15,
       "missingAssets": [],
       "status": "imported"
@@ -554,8 +820,12 @@
     {
       "articleId": "130958636",
       "category": "system-design",
+      "subcategory": "business-design",
       "title": "购物车功能设计与实现。",
-      "output": "src/content/docs/knowledge/system-design/system-design-130958636/index.md",
+      "output": "src/content/docs/knowledge/system-design/business-design/system-design-130958636.md",
+      "assetDirectory": "src/content/docs/knowledge/system-design/business-design/assets/130958636",
+      "legacyUrl": "/knowledge/system-design/system-design-130958636/",
+      "url": "/knowledge/system-design/business-design/system-design-130958636/",
       "assets": 1,
       "missingAssets": [],
       "status": "imported"
@@ -563,8 +833,12 @@
     {
       "articleId": "131176456",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "SpringSecurity(一):权限管理设计与实现(官文英解+源码调试+基本环境搭建）",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-131176456/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-131176456.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/131176456",
+      "legacyUrl": "/knowledge/java-backend/java-backend-131176456/",
+      "url": "/knowledge/java-backend/spring/java-backend-131176456/",
       "assets": 14,
       "missingAssets": [],
       "status": "imported"
@@ -572,8 +846,12 @@
     {
       "articleId": "131230561",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "SpringSecurity(二):自定义认证(源码+落地实现)。",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-131230561/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-131230561.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/131230561",
+      "legacyUrl": "/knowledge/java-backend/java-backend-131230561/",
+      "url": "/knowledge/java-backend/spring/java-backend-131230561/",
       "assets": 33,
       "missingAssets": [],
       "status": "imported"
@@ -581,8 +859,12 @@
     {
       "articleId": "131399623",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "SpringSecurity(三):自定义认证数据源(源码+落地实现)。",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-131399623/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-131399623.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/131399623",
+      "legacyUrl": "/knowledge/java-backend/java-backend-131399623/",
+      "url": "/knowledge/java-backend/spring/java-backend-131399623/",
       "assets": 14,
       "missingAssets": [],
       "status": "imported"
@@ -590,8 +872,12 @@
     {
       "articleId": "131453315",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "SpringSecurity(四):开发认证总结案例(传统Web)",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-131453315/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-131453315.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/131453315",
+      "legacyUrl": "/knowledge/java-backend/java-backend-131453315/",
+      "url": "/knowledge/java-backend/spring/java-backend-131453315/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -599,8 +885,12 @@
     {
       "articleId": "131454099",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "SpringSecurity(五):前后端分离认证总结案例。",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-131454099/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-131454099.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/131454099",
+      "legacyUrl": "/knowledge/java-backend/java-backend-131454099/",
+      "url": "/knowledge/java-backend/spring/java-backend-131454099/",
       "assets": 1,
       "missingAssets": [],
       "status": "imported"
@@ -608,8 +898,12 @@
     {
       "articleId": "132541601",
       "category": "engineering-practice",
+      "subcategory": "infrastructure-tools",
       "title": "MinIO框架安装使用+实现上传需求",
-      "output": "src/content/docs/knowledge/engineering-practice/engineering-practice-132541601/index.md",
+      "output": "src/content/docs/knowledge/engineering-practice/infrastructure-tools/engineering-practice-132541601.md",
+      "assetDirectory": "src/content/docs/knowledge/engineering-practice/infrastructure-tools/assets/132541601",
+      "legacyUrl": "/knowledge/engineering-practice/engineering-practice-132541601/",
+      "url": "/knowledge/engineering-practice/infrastructure-tools/engineering-practice-132541601/",
       "assets": 21,
       "missingAssets": [],
       "status": "imported"
@@ -617,8 +911,12 @@
     {
       "articleId": "135635990",
       "category": "java-backend",
+      "subcategory": "java-language",
       "title": "Java基础-异常",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-135635990/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-language/java-backend-135635990.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-language/assets/135635990",
+      "legacyUrl": "/knowledge/java-backend/java-backend-135635990/",
+      "url": "/knowledge/java-backend/java-language/java-backend-135635990/",
       "assets": 17,
       "missingAssets": [],
       "status": "imported"
@@ -626,8 +924,12 @@
     {
       "articleId": "135677619",
       "category": "java-backend",
+      "subcategory": "java-language",
       "title": "Java基础—反射",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-135677619/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-language/java-backend-135677619.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-language/assets/135677619",
+      "legacyUrl": "/knowledge/java-backend/java-backend-135677619/",
+      "url": "/knowledge/java-backend/java-language/java-backend-135677619/",
       "assets": 4,
       "missingAssets": [],
       "status": "imported"
@@ -635,8 +937,12 @@
     {
       "articleId": "136016127",
       "category": "java-backend",
+      "subcategory": "java-language",
       "title": "Java基础-注解",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-136016127/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-language/java-backend-136016127.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-language/assets/136016127",
+      "legacyUrl": "/knowledge/java-backend/java-backend-136016127/",
+      "url": "/knowledge/java-backend/java-language/java-backend-136016127/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -644,8 +950,12 @@
     {
       "articleId": "136279140",
       "category": "java-backend",
+      "subcategory": "java-language",
       "title": "Java基础-内部类",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-136279140/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-language/java-backend-136279140.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-language/assets/136279140",
+      "legacyUrl": "/knowledge/java-backend/java-backend-136279140/",
+      "url": "/knowledge/java-backend/java-language/java-backend-136279140/",
       "assets": 1,
       "missingAssets": [],
       "status": "imported"
@@ -653,8 +963,12 @@
     {
       "articleId": "136664018",
       "category": "java-backend",
+      "subcategory": "java-language",
       "title": "Java基础-泛型",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-136664018/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-language/java-backend-136664018.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-language/assets/136664018",
+      "legacyUrl": "/knowledge/java-backend/java-backend-136664018/",
+      "url": "/knowledge/java-backend/java-language/java-backend-136664018/",
       "assets": 7,
       "missingAssets": [],
       "status": "imported"
@@ -662,8 +976,12 @@
     {
       "articleId": "136736487",
       "category": "java-backend",
+      "subcategory": "java-language",
       "title": "Java基础-序列化",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-136736487/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-language/java-backend-136736487.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-language/assets/136736487",
+      "legacyUrl": "/knowledge/java-backend/java-backend-136736487/",
+      "url": "/knowledge/java-backend/java-language/java-backend-136736487/",
       "assets": 7,
       "missingAssets": [],
       "status": "imported"
@@ -671,8 +989,12 @@
     {
       "articleId": "136745684",
       "category": "java-backend",
+      "subcategory": "java-language",
       "title": "Java基础-复制",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-136745684/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-language/java-backend-136745684.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-language/assets/136745684",
+      "legacyUrl": "/knowledge/java-backend/java-backend-136745684/",
+      "url": "/knowledge/java-backend/java-language/java-backend-136745684/",
       "assets": 5,
       "missingAssets": [],
       "status": "imported"
@@ -680,8 +1002,12 @@
     {
       "articleId": "136749297",
       "category": "java-backend",
+      "subcategory": "java-language",
       "title": "Java基础-lambda表达式",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-136749297/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-language/java-backend-136749297.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-language/assets/136749297",
+      "legacyUrl": "/knowledge/java-backend/java-backend-136749297/",
+      "url": "/knowledge/java-backend/java-language/java-backend-136749297/",
       "assets": 6,
       "missingAssets": [],
       "status": "imported"
@@ -689,8 +1015,12 @@
     {
       "articleId": "136862710",
       "category": "java-backend",
+      "subcategory": "java-language",
       "title": "Java基础--Stream流",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-136862710/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-language/java-backend-136862710.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-language/assets/136862710",
+      "legacyUrl": "/knowledge/java-backend/java-backend-136862710/",
+      "url": "/knowledge/java-backend/java-language/java-backend-136862710/",
       "assets": 4,
       "missingAssets": [],
       "status": "imported"
@@ -698,8 +1028,12 @@
     {
       "articleId": "137126481",
       "category": "computer-fundamentals",
+      "subcategory": "networking",
       "title": "计算机网络(一)--网络发展和协议",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-137126481/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/networking/computer-fundamentals-137126481.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/networking/assets/137126481",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-137126481/",
+      "url": "/knowledge/computer-fundamentals/networking/computer-fundamentals-137126481/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -707,8 +1041,12 @@
     {
       "articleId": "137556200",
       "category": "miscellaneous",
+      "subcategory": "personal-growth",
       "title": "雷军给年轻人的五点建议",
-      "output": "src/content/docs/knowledge/miscellaneous/miscellaneous-137556200/index.md",
+      "output": "src/content/docs/knowledge/miscellaneous/personal-growth/miscellaneous-137556200.md",
+      "assetDirectory": "src/content/docs/knowledge/miscellaneous/personal-growth/assets/137556200",
+      "legacyUrl": "/knowledge/miscellaneous/miscellaneous-137556200/",
+      "url": "/knowledge/miscellaneous/personal-growth/miscellaneous-137556200/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -716,8 +1054,12 @@
     {
       "articleId": "137580987",
       "category": "database",
+      "subcategory": "storage-modeling",
       "title": "数据库表设计",
-      "output": "src/content/docs/knowledge/database/database-137580987/index.md",
+      "output": "src/content/docs/knowledge/database/storage-modeling/database-137580987.md",
+      "assetDirectory": "src/content/docs/knowledge/database/storage-modeling/assets/137580987",
+      "legacyUrl": "/knowledge/database/database-137580987/",
+      "url": "/knowledge/database/storage-modeling/database-137580987/",
       "assets": 8,
       "missingAssets": [],
       "status": "imported"
@@ -725,8 +1067,12 @@
     {
       "articleId": "139376920",
       "category": "java-backend",
+      "subcategory": "java-language",
       "title": "Java基础八股",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-139376920/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-language/java-backend-139376920.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-language/assets/139376920",
+      "legacyUrl": "/knowledge/java-backend/java-backend-139376920/",
+      "url": "/knowledge/java-backend/java-language/java-backend-139376920/",
       "assets": 4,
       "missingAssets": [],
       "status": "imported"
@@ -734,8 +1080,12 @@
     {
       "articleId": "139535049",
       "category": "computer-fundamentals",
+      "subcategory": "operating-systems",
       "title": "八股操作系统和计算机网络",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-139535049/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-139535049.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/operating-systems/assets/139535049",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-139535049/",
+      "url": "/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-139535049/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -743,8 +1093,12 @@
     {
       "articleId": "139635659",
       "category": "java-backend",
+      "subcategory": "java-language",
       "title": "八股两场合集",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-139635659/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-language/java-backend-139635659.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-language/assets/139635659",
+      "legacyUrl": "/knowledge/java-backend/java-backend-139635659/",
+      "url": "/knowledge/java-backend/java-language/java-backend-139635659/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -752,8 +1106,12 @@
     {
       "articleId": "142023148",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "并发编程-基础八股",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-142023148/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-142023148.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/142023148",
+      "legacyUrl": "/knowledge/java-backend/java-backend-142023148/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-142023148/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -761,8 +1119,12 @@
     {
       "articleId": "143355397",
       "category": "distributed-systems",
+      "subcategory": "redis-internals",
       "title": "Redis- 对象专辑",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-143355397/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-internals/distributed-systems-143355397.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-internals/assets/143355397",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-143355397/",
+      "url": "/knowledge/distributed-systems/redis-internals/distributed-systems-143355397/",
       "assets": 17,
       "missingAssets": [],
       "status": "imported"
@@ -770,8 +1132,12 @@
     {
       "articleId": "145448311",
       "category": "database",
+      "subcategory": "query-optimization",
       "title": "深度整理总结MySQL——Order By的工作原理",
-      "output": "src/content/docs/knowledge/database/database-145448311/index.md",
+      "output": "src/content/docs/knowledge/database/query-optimization/database-145448311.md",
+      "assetDirectory": "src/content/docs/knowledge/database/query-optimization/assets/145448311",
+      "legacyUrl": "/knowledge/database/database-145448311/",
+      "url": "/knowledge/database/query-optimization/database-145448311/",
       "assets": 8,
       "missingAssets": [],
       "status": "imported"
@@ -779,8 +1145,12 @@
     {
       "articleId": "145455589",
       "category": "database",
+      "subcategory": "query-optimization",
       "title": "深度整理总结MySQL——Join的工作原理",
-      "output": "src/content/docs/knowledge/database/database-145455589/index.md",
+      "output": "src/content/docs/knowledge/database/query-optimization/database-145455589.md",
+      "assetDirectory": "src/content/docs/knowledge/database/query-optimization/assets/145455589",
+      "legacyUrl": "/knowledge/database/database-145455589/",
+      "url": "/knowledge/database/query-optimization/database-145455589/",
       "assets": 7,
       "missingAssets": [],
       "status": "imported"
@@ -788,8 +1158,12 @@
     {
       "articleId": "145461951",
       "category": "database",
+      "subcategory": "query-optimization",
       "title": "深度整理总结MySQL——Count的工作原理",
-      "output": "src/content/docs/knowledge/database/database-145461951/index.md",
+      "output": "src/content/docs/knowledge/database/query-optimization/database-145461951.md",
+      "assetDirectory": "src/content/docs/knowledge/database/query-optimization/assets/145461951",
+      "legacyUrl": "/knowledge/database/database-145461951/",
+      "url": "/knowledge/database/query-optimization/database-145461951/",
       "assets": 8,
       "missingAssets": [],
       "status": "imported"
@@ -797,8 +1171,12 @@
     {
       "articleId": "145465483",
       "category": "database",
+      "subcategory": "query-optimization",
       "title": "深度整理总结MySQL——Group By的工作原理",
-      "output": "src/content/docs/knowledge/database/database-145465483/index.md",
+      "output": "src/content/docs/knowledge/database/query-optimization/database-145465483.md",
+      "assetDirectory": "src/content/docs/knowledge/database/query-optimization/assets/145465483",
+      "legacyUrl": "/knowledge/database/database-145465483/",
+      "url": "/knowledge/database/query-optimization/database-145465483/",
       "assets": 9,
       "missingAssets": [],
       "status": "imported"
@@ -806,8 +1184,12 @@
     {
       "articleId": "145467951",
       "category": "database",
+      "subcategory": "query-optimization",
       "title": "深度整理总结MySQL——子查询的工作原理",
-      "output": "src/content/docs/knowledge/database/database-145467951/index.md",
+      "output": "src/content/docs/knowledge/database/query-optimization/database-145467951.md",
+      "assetDirectory": "src/content/docs/knowledge/database/query-optimization/assets/145467951",
+      "legacyUrl": "/knowledge/database/database-145467951/",
+      "url": "/knowledge/database/query-optimization/database-145467951/",
       "assets": 11,
       "missingAssets": [],
       "status": "imported"
@@ -815,8 +1197,12 @@
     {
       "articleId": "145474586",
       "category": "database",
+      "subcategory": "query-optimization",
       "title": "深度整理总结MySQL——SQL的执行顺序和MySQL的执行流程",
-      "output": "src/content/docs/knowledge/database/database-145474586/index.md",
+      "output": "src/content/docs/knowledge/database/query-optimization/database-145474586.md",
+      "assetDirectory": "src/content/docs/knowledge/database/query-optimization/assets/145474586",
+      "legacyUrl": "/knowledge/database/database-145474586/",
+      "url": "/knowledge/database/query-optimization/database-145474586/",
       "assets": 5,
       "missingAssets": [],
       "status": "imported"
@@ -824,8 +1210,12 @@
     {
       "articleId": "145475832",
       "category": "database",
+      "subcategory": "storage-modeling",
       "title": "深度整理总结MySQL——行记录存储",
-      "output": "src/content/docs/knowledge/database/database-145475832/index.md",
+      "output": "src/content/docs/knowledge/database/storage-modeling/database-145475832.md",
+      "assetDirectory": "src/content/docs/knowledge/database/storage-modeling/assets/145475832",
+      "legacyUrl": "/knowledge/database/database-145475832/",
+      "url": "/knowledge/database/storage-modeling/database-145475832/",
       "assets": 14,
       "missingAssets": [],
       "status": "imported"
@@ -833,8 +1223,12 @@
     {
       "articleId": "145477883",
       "category": "database",
+      "subcategory": "storage-modeling",
       "title": "深度整理总结MySQL——数据页(索引页)的结构",
-      "output": "src/content/docs/knowledge/database/database-145477883/index.md",
+      "output": "src/content/docs/knowledge/database/storage-modeling/database-145477883.md",
+      "assetDirectory": "src/content/docs/knowledge/database/storage-modeling/assets/145477883",
+      "legacyUrl": "/knowledge/database/database-145477883/",
+      "url": "/knowledge/database/storage-modeling/database-145477883/",
       "assets": 5,
       "missingAssets": [],
       "status": "imported"
@@ -842,8 +1236,12 @@
     {
       "articleId": "145478383",
       "category": "database",
+      "subcategory": "storage-modeling",
       "title": "深度整理总结MySQL——Buffer Pool工作原理",
-      "output": "src/content/docs/knowledge/database/database-145478383/index.md",
+      "output": "src/content/docs/knowledge/database/storage-modeling/database-145478383.md",
+      "assetDirectory": "src/content/docs/knowledge/database/storage-modeling/assets/145478383",
+      "legacyUrl": "/knowledge/database/database-145478383/",
+      "url": "/knowledge/database/storage-modeling/database-145478383/",
       "assets": 13,
       "missingAssets": [],
       "status": "imported"
@@ -851,8 +1249,12 @@
     {
       "articleId": "145479328",
       "category": "database",
+      "subcategory": "storage-modeling",
       "title": "MySQL的存储引擎对比(InnoDB和MyISAM)",
-      "output": "src/content/docs/knowledge/database/database-145479328/index.md",
+      "output": "src/content/docs/knowledge/database/storage-modeling/database-145479328.md",
+      "assetDirectory": "src/content/docs/knowledge/database/storage-modeling/assets/145479328",
+      "legacyUrl": "/knowledge/database/database-145479328/",
+      "url": "/knowledge/database/storage-modeling/database-145479328/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -860,8 +1262,12 @@
     {
       "articleId": "145480935",
       "category": "algorithms",
+      "subcategory": "trees-graphs",
       "title": "图论 - 临接矩阵与临接表介绍与分析对比",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-145480935/index.md",
+      "output": "src/content/docs/knowledge/algorithms/trees-graphs/algorithms-145480935.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/trees-graphs/assets/145480935",
+      "legacyUrl": "/knowledge/algorithms/algorithms-145480935/",
+      "url": "/knowledge/algorithms/trees-graphs/algorithms-145480935/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -869,8 +1275,12 @@
     {
       "articleId": "145482416",
       "category": "algorithms",
+      "subcategory": "trees-graphs",
       "title": "图论- DFS/BFS遍历",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-145482416/index.md",
+      "output": "src/content/docs/knowledge/algorithms/trees-graphs/algorithms-145482416.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/trees-graphs/assets/145482416",
+      "legacyUrl": "/knowledge/algorithms/algorithms-145482416/",
+      "url": "/knowledge/algorithms/trees-graphs/algorithms-145482416/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -878,8 +1288,12 @@
     {
       "articleId": "145485391",
       "category": "database",
+      "subcategory": "indexes",
       "title": "深度整理总结MySQL——索引工作原理",
-      "output": "src/content/docs/knowledge/database/database-145485391/index.md",
+      "output": "src/content/docs/knowledge/database/indexes/database-145485391.md",
+      "assetDirectory": "src/content/docs/knowledge/database/indexes/assets/145485391",
+      "legacyUrl": "/knowledge/database/database-145485391/",
+      "url": "/knowledge/database/indexes/database-145485391/",
       "assets": 2,
       "missingAssets": [],
       "status": "imported"
@@ -887,8 +1301,12 @@
     {
       "articleId": "145488386",
       "category": "database",
+      "subcategory": "storage-modeling",
       "title": "MySQL数据存储- 索引组织表",
-      "output": "src/content/docs/knowledge/database/database-145488386/index.md",
+      "output": "src/content/docs/knowledge/database/storage-modeling/database-145488386.md",
+      "assetDirectory": "src/content/docs/knowledge/database/storage-modeling/assets/145488386",
+      "legacyUrl": "/knowledge/database/database-145488386/",
+      "url": "/knowledge/database/storage-modeling/database-145488386/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -896,8 +1314,12 @@
     {
       "articleId": "145489856",
       "category": "database",
+      "subcategory": "indexes",
       "title": "深度整理总结MySQL——组合索引工作原理",
-      "output": "src/content/docs/knowledge/database/database-145489856/index.md",
+      "output": "src/content/docs/knowledge/database/indexes/database-145489856.md",
+      "assetDirectory": "src/content/docs/knowledge/database/indexes/assets/145489856",
+      "legacyUrl": "/knowledge/database/database-145489856/",
+      "url": "/knowledge/database/indexes/database-145489856/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -905,8 +1327,12 @@
     {
       "articleId": "145491524",
       "category": "database",
+      "subcategory": "indexes",
       "title": "深度整理总结MySQL——索引失效场景",
-      "output": "src/content/docs/knowledge/database/database-145491524/index.md",
+      "output": "src/content/docs/knowledge/database/indexes/database-145491524.md",
+      "assetDirectory": "src/content/docs/knowledge/database/indexes/assets/145491524",
+      "legacyUrl": "/knowledge/database/database-145491524/",
+      "url": "/knowledge/database/indexes/database-145491524/",
       "assets": 32,
       "missingAssets": [],
       "status": "imported"
@@ -914,8 +1340,12 @@
     {
       "articleId": "145495027",
       "category": "database",
+      "subcategory": "query-optimization",
       "title": "深度整理总结MySQL——CBO工作原理",
-      "output": "src/content/docs/knowledge/database/database-145495027/index.md",
+      "output": "src/content/docs/knowledge/database/query-optimization/database-145495027.md",
+      "assetDirectory": "src/content/docs/knowledge/database/query-optimization/assets/145495027",
+      "legacyUrl": "/knowledge/database/database-145495027/",
+      "url": "/knowledge/database/query-optimization/database-145495027/",
       "assets": 2,
       "missingAssets": [],
       "status": "imported"
@@ -923,8 +1353,12 @@
     {
       "articleId": "145496486",
       "category": "database",
+      "subcategory": "indexes",
       "title": "深度整理总结MySQL——索引正确使用姿势",
-      "output": "src/content/docs/knowledge/database/database-145496486/index.md",
+      "output": "src/content/docs/knowledge/database/indexes/database-145496486.md",
+      "assetDirectory": "src/content/docs/knowledge/database/indexes/assets/145496486",
+      "legacyUrl": "/knowledge/database/database-145496486/",
+      "url": "/knowledge/database/indexes/database-145496486/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -932,8 +1366,12 @@
     {
       "articleId": "145498578",
       "category": "algorithms",
+      "subcategory": "trees-graphs",
       "title": "图论——并查集",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-145498578/index.md",
+      "output": "src/content/docs/knowledge/algorithms/trees-graphs/algorithms-145498578.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/trees-graphs/assets/145498578",
+      "legacyUrl": "/knowledge/algorithms/algorithms-145498578/",
+      "url": "/knowledge/algorithms/trees-graphs/algorithms-145498578/",
       "assets": 8,
       "missingAssets": [],
       "status": "imported"
@@ -941,8 +1379,12 @@
     {
       "articleId": "145502422",
       "category": "algorithms",
+      "subcategory": "trees-graphs",
       "title": "图论——环检测",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-145502422/index.md",
+      "output": "src/content/docs/knowledge/algorithms/trees-graphs/algorithms-145502422.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/trees-graphs/assets/145502422",
+      "legacyUrl": "/knowledge/algorithms/algorithms-145502422/",
+      "url": "/knowledge/algorithms/trees-graphs/algorithms-145502422/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -950,8 +1392,12 @@
     {
       "articleId": "145508618",
       "category": "database",
+      "subcategory": "transactions-locks",
       "title": "深度整理总结MySQL——事务简介",
-      "output": "src/content/docs/knowledge/database/database-145508618/index.md",
+      "output": "src/content/docs/knowledge/database/transactions-locks/database-145508618.md",
+      "assetDirectory": "src/content/docs/knowledge/database/transactions-locks/assets/145508618",
+      "legacyUrl": "/knowledge/database/database-145508618/",
+      "url": "/knowledge/database/transactions-locks/database-145508618/",
       "assets": 1,
       "missingAssets": [],
       "status": "imported"
@@ -959,8 +1405,12 @@
     {
       "articleId": "145510931",
       "category": "database",
+      "subcategory": "transactions-locks",
       "title": "深度整理总结MySQL——事务隔离级别实现原理",
-      "output": "src/content/docs/knowledge/database/database-145510931/index.md",
+      "output": "src/content/docs/knowledge/database/transactions-locks/database-145510931.md",
+      "assetDirectory": "src/content/docs/knowledge/database/transactions-locks/assets/145510931",
+      "legacyUrl": "/knowledge/database/database-145510931/",
+      "url": "/knowledge/database/transactions-locks/database-145510931/",
       "assets": 15,
       "missingAssets": [],
       "status": "imported"
@@ -968,8 +1418,12 @@
     {
       "articleId": "145519650",
       "category": "database",
+      "subcategory": "transactions-locks",
       "title": "深度整理总结MySQL——可重复读隔离是否完全解决幻读",
-      "output": "src/content/docs/knowledge/database/database-145519650/index.md",
+      "output": "src/content/docs/knowledge/database/transactions-locks/database-145519650.md",
+      "assetDirectory": "src/content/docs/knowledge/database/transactions-locks/assets/145519650",
+      "legacyUrl": "/knowledge/database/database-145519650/",
+      "url": "/knowledge/database/transactions-locks/database-145519650/",
       "assets": 6,
       "missingAssets": [],
       "status": "imported"
@@ -977,8 +1431,12 @@
     {
       "articleId": "145524102",
       "category": "database",
+      "subcategory": "transactions-locks",
       "title": "深度整理总结MySQL——锁类型",
-      "output": "src/content/docs/knowledge/database/database-145524102/index.md",
+      "output": "src/content/docs/knowledge/database/transactions-locks/database-145524102.md",
+      "assetDirectory": "src/content/docs/knowledge/database/transactions-locks/assets/145524102",
+      "legacyUrl": "/knowledge/database/database-145524102/",
+      "url": "/knowledge/database/transactions-locks/database-145524102/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -986,8 +1444,12 @@
     {
       "articleId": "145552674",
       "category": "database",
+      "subcategory": "transactions-locks",
       "title": "深度整理总结MySQL——MySQL加锁工作原理",
-      "output": "src/content/docs/knowledge/database/database-145552674/index.md",
+      "output": "src/content/docs/knowledge/database/transactions-locks/database-145552674.md",
+      "assetDirectory": "src/content/docs/knowledge/database/transactions-locks/assets/145552674",
+      "legacyUrl": "/knowledge/database/database-145552674/",
+      "url": "/knowledge/database/transactions-locks/database-145552674/",
       "assets": 14,
       "missingAssets": [],
       "status": "imported"
@@ -995,8 +1457,12 @@
     {
       "articleId": "145584538",
       "category": "database",
+      "subcategory": "logs-replication",
       "title": "深度整理总结MySQL——undoLog日志工作原理",
-      "output": "src/content/docs/knowledge/database/database-145584538/index.md",
+      "output": "src/content/docs/knowledge/database/logs-replication/database-145584538.md",
+      "assetDirectory": "src/content/docs/knowledge/database/logs-replication/assets/145584538",
+      "legacyUrl": "/knowledge/database/database-145584538/",
+      "url": "/knowledge/database/logs-replication/database-145584538/",
       "assets": 2,
       "missingAssets": [],
       "status": "imported"
@@ -1004,8 +1470,12 @@
     {
       "articleId": "145585470",
       "category": "database",
+      "subcategory": "logs-replication",
       "title": "深度整理总结MySQL——redoLog日志工作原理",
-      "output": "src/content/docs/knowledge/database/database-145585470/index.md",
+      "output": "src/content/docs/knowledge/database/logs-replication/database-145585470.md",
+      "assetDirectory": "src/content/docs/knowledge/database/logs-replication/assets/145585470",
+      "legacyUrl": "/knowledge/database/database-145585470/",
+      "url": "/knowledge/database/logs-replication/database-145585470/",
       "assets": 7,
       "missingAssets": [],
       "status": "imported"
@@ -1013,8 +1483,12 @@
     {
       "articleId": "145588432",
       "category": "database",
+      "subcategory": "logs-replication",
       "title": "深度整理总结MySQL——bin Log日志工作原理",
-      "output": "src/content/docs/knowledge/database/database-145588432/index.md",
+      "output": "src/content/docs/knowledge/database/logs-replication/database-145588432.md",
+      "assetDirectory": "src/content/docs/knowledge/database/logs-replication/assets/145588432",
+      "legacyUrl": "/knowledge/database/database-145588432/",
+      "url": "/knowledge/database/logs-replication/database-145588432/",
       "assets": 1,
       "missingAssets": [],
       "status": "imported"
@@ -1022,8 +1496,12 @@
     {
       "articleId": "145589737",
       "category": "database",
+      "subcategory": "logs-replication",
       "title": "深度整理总结MySQL——二阶段提交工作原理",
-      "output": "src/content/docs/knowledge/database/database-145589737/index.md",
+      "output": "src/content/docs/knowledge/database/logs-replication/database-145589737.md",
+      "assetDirectory": "src/content/docs/knowledge/database/logs-replication/assets/145589737",
+      "legacyUrl": "/knowledge/database/database-145589737/",
+      "url": "/knowledge/database/logs-replication/database-145589737/",
       "assets": 9,
       "missingAssets": [],
       "status": "imported"
@@ -1031,8 +1509,12 @@
     {
       "articleId": "145592540",
       "category": "database",
+      "subcategory": "query-optimization",
       "title": "深度整理总结MySQL——Explain指南(一)",
-      "output": "src/content/docs/knowledge/database/database-145592540/index.md",
+      "output": "src/content/docs/knowledge/database/query-optimization/database-145592540.md",
+      "assetDirectory": "src/content/docs/knowledge/database/query-optimization/assets/145592540",
+      "legacyUrl": "/knowledge/database/database-145592540/",
+      "url": "/knowledge/database/query-optimization/database-145592540/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1040,8 +1522,12 @@
     {
       "articleId": "145594095",
       "category": "database",
+      "subcategory": "query-optimization",
       "title": "深度整理总结MySQL——Expalin指南(二)",
-      "output": "src/content/docs/knowledge/database/database-145594095/index.md",
+      "output": "src/content/docs/knowledge/database/query-optimization/database-145594095.md",
+      "assetDirectory": "src/content/docs/knowledge/database/query-optimization/assets/145594095",
+      "legacyUrl": "/knowledge/database/database-145594095/",
+      "url": "/knowledge/database/query-optimization/database-145594095/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1049,8 +1535,12 @@
     {
       "articleId": "145621525",
       "category": "algorithms",
+      "subcategory": "trees-graphs",
       "title": "图论 - 一些经典小算法思想(无题目例子)",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-145621525/index.md",
+      "output": "src/content/docs/knowledge/algorithms/trees-graphs/algorithms-145621525.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/trees-graphs/assets/145621525",
+      "legacyUrl": "/knowledge/algorithms/algorithms-145621525/",
+      "url": "/knowledge/algorithms/trees-graphs/algorithms-145621525/",
       "assets": 5,
       "missingAssets": [],
       "status": "imported"
@@ -1058,8 +1548,12 @@
     {
       "articleId": "145654066",
       "category": "algorithms",
+      "subcategory": "trees-graphs",
       "title": "图论- 经典最小生成树算法",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-145654066/index.md",
+      "output": "src/content/docs/knowledge/algorithms/trees-graphs/algorithms-145654066.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/trees-graphs/assets/145654066",
+      "legacyUrl": "/knowledge/algorithms/algorithms-145654066/",
+      "url": "/knowledge/algorithms/trees-graphs/algorithms-145654066/",
       "assets": 4,
       "missingAssets": [],
       "status": "imported"
@@ -1067,8 +1561,12 @@
     {
       "articleId": "145656720",
       "category": "algorithms",
+      "subcategory": "trees-graphs",
       "title": "图论- Dijkstra算法",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-145656720/index.md",
+      "output": "src/content/docs/knowledge/algorithms/trees-graphs/algorithms-145656720.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/trees-graphs/assets/145656720",
+      "legacyUrl": "/knowledge/algorithms/algorithms-145656720/",
+      "url": "/knowledge/algorithms/trees-graphs/algorithms-145656720/",
       "assets": 2,
       "missingAssets": [],
       "status": "imported"
@@ -1076,8 +1574,12 @@
     {
       "articleId": "145711338",
       "category": "distributed-systems",
+      "subcategory": "redis-internals",
       "title": "Redis-线程模型",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145711338/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-internals/distributed-systems-145711338.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-internals/assets/145711338",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145711338/",
+      "url": "/knowledge/distributed-systems/redis-internals/distributed-systems-145711338/",
       "assets": 8,
       "missingAssets": [],
       "status": "imported"
@@ -1085,8 +1587,12 @@
     {
       "articleId": "145724458",
       "category": "distributed-systems",
+      "subcategory": "redis-internals",
       "title": "Redis数据结构总结-链表&&压缩列表",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145724458/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-internals/distributed-systems-145724458.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-internals/assets/145724458",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145724458/",
+      "url": "/knowledge/distributed-systems/redis-internals/distributed-systems-145724458/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -1094,8 +1600,12 @@
     {
       "articleId": "145727660",
       "category": "distributed-systems",
+      "subcategory": "redis-internals",
       "title": "Redis数据结构总结-哈希表",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145727660/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-internals/distributed-systems-145727660.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-internals/assets/145727660",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145727660/",
+      "url": "/knowledge/distributed-systems/redis-internals/distributed-systems-145727660/",
       "assets": 7,
       "missingAssets": [],
       "status": "imported"
@@ -1103,8 +1613,12 @@
     {
       "articleId": "145729512",
       "category": "distributed-systems",
+      "subcategory": "redis-internals",
       "title": "Redis数据结构总结-整数集合",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145729512/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-internals/distributed-systems-145729512.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-internals/assets/145729512",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145729512/",
+      "url": "/knowledge/distributed-systems/redis-internals/distributed-systems-145729512/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -1112,8 +1626,12 @@
     {
       "articleId": "145731773",
       "category": "distributed-systems",
+      "subcategory": "redis-internals",
       "title": "Redis数据结构总结-跳表",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145731773/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-internals/distributed-systems-145731773.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-internals/assets/145731773",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145731773/",
+      "url": "/knowledge/distributed-systems/redis-internals/distributed-systems-145731773/",
       "assets": 11,
       "missingAssets": [],
       "status": "imported"
@@ -1121,8 +1639,12 @@
     {
       "articleId": "145745965",
       "category": "distributed-systems",
+      "subcategory": "redis-internals",
       "title": "Redis数据结构总结-quickList",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145745965/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-internals/distributed-systems-145745965.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-internals/assets/145745965",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145745965/",
+      "url": "/knowledge/distributed-systems/redis-internals/distributed-systems-145745965/",
       "assets": 2,
       "missingAssets": [],
       "status": "imported"
@@ -1130,8 +1652,12 @@
     {
       "articleId": "145747076",
       "category": "distributed-systems",
+      "subcategory": "redis-internals",
       "title": "Redis数据结构总结-listPack",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145747076/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-internals/distributed-systems-145747076.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-internals/assets/145747076",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145747076/",
+      "url": "/knowledge/distributed-systems/redis-internals/distributed-systems-145747076/",
       "assets": 6,
       "missingAssets": [],
       "status": "imported"
@@ -1139,8 +1665,12 @@
     {
       "articleId": "145756115",
       "category": "distributed-systems",
+      "subcategory": "redis-practice",
       "title": "Redis-缓存过期和内存淘汰",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145756115/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-practice/distributed-systems-145756115.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-practice/assets/145756115",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145756115/",
+      "url": "/knowledge/distributed-systems/redis-practice/distributed-systems-145756115/",
       "assets": 7,
       "missingAssets": [],
       "status": "imported"
@@ -1148,8 +1678,12 @@
     {
       "articleId": "145764851",
       "category": "distributed-systems",
+      "subcategory": "redis-reliability",
       "title": "Redis- 持久化",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145764851/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-reliability/distributed-systems-145764851.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-reliability/assets/145764851",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145764851/",
+      "url": "/knowledge/distributed-systems/redis-reliability/distributed-systems-145764851/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1157,8 +1691,12 @@
     {
       "articleId": "145765328",
       "category": "distributed-systems",
+      "subcategory": "redis-reliability",
       "title": "Redis-RDB",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145765328/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-reliability/distributed-systems-145765328.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-reliability/assets/145765328",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145765328/",
+      "url": "/knowledge/distributed-systems/redis-reliability/distributed-systems-145765328/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -1166,8 +1704,12 @@
     {
       "articleId": "145780555",
       "category": "distributed-systems",
+      "subcategory": "redis-reliability",
       "title": "Redis-AOF",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145780555/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-reliability/distributed-systems-145780555.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-reliability/assets/145780555",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145780555/",
+      "url": "/knowledge/distributed-systems/redis-reliability/distributed-systems-145780555/",
       "assets": 10,
       "missingAssets": [],
       "status": "imported"
@@ -1175,8 +1717,12 @@
     {
       "articleId": "145794663",
       "category": "distributed-systems",
+      "subcategory": "redis-practice",
       "title": "Redis-事务",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145794663/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-practice/distributed-systems-145794663.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-practice/assets/145794663",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145794663/",
+      "url": "/knowledge/distributed-systems/redis-practice/distributed-systems-145794663/",
       "assets": 4,
       "missingAssets": [],
       "status": "imported"
@@ -1184,8 +1730,12 @@
     {
       "articleId": "145807906",
       "category": "distributed-systems",
+      "subcategory": "redis-reliability",
       "title": "Redis-主从复制如何实现",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145807906/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-reliability/distributed-systems-145807906.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-reliability/assets/145807906",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145807906/",
+      "url": "/knowledge/distributed-systems/redis-reliability/distributed-systems-145807906/",
       "assets": 9,
       "missingAssets": [],
       "status": "imported"
@@ -1193,8 +1743,12 @@
     {
       "articleId": "145812631",
       "category": "distributed-systems",
+      "subcategory": "redis-reliability",
       "title": "Redis - 哨兵",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145812631/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-reliability/distributed-systems-145812631.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-reliability/assets/145812631",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145812631/",
+      "url": "/knowledge/distributed-systems/redis-reliability/distributed-systems-145812631/",
       "assets": 16,
       "missingAssets": [],
       "status": "imported"
@@ -1202,8 +1756,12 @@
     {
       "articleId": "145847450",
       "category": "distributed-systems",
+      "subcategory": "redis-practice",
       "title": "Redis-列表结构实操",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145847450/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-practice/distributed-systems-145847450.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-practice/assets/145847450",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145847450/",
+      "url": "/knowledge/distributed-systems/redis-practice/distributed-systems-145847450/",
       "assets": 4,
       "missingAssets": [],
       "status": "imported"
@@ -1211,8 +1769,12 @@
     {
       "articleId": "145986524",
       "category": "distributed-systems",
+      "subcategory": "consistency",
       "title": "CAP理论",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145986524/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/consistency/distributed-systems-145986524.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/consistency/assets/145986524",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145986524/",
+      "url": "/knowledge/distributed-systems/consistency/distributed-systems-145986524/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1220,8 +1782,12 @@
     {
       "articleId": "145986588",
       "category": "distributed-systems",
+      "subcategory": "consistency",
       "title": "Base理论",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145986588/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/consistency/distributed-systems-145986588.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/consistency/assets/145986588",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145986588/",
+      "url": "/knowledge/distributed-systems/consistency/distributed-systems-145986588/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1229,8 +1795,12 @@
     {
       "articleId": "145987791",
       "category": "distributed-systems",
+      "subcategory": "consistency",
       "title": "并发更新导致的数据覆盖以及解决方案",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-145987791/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/consistency/distributed-systems-145987791.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/consistency/assets/145987791",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-145987791/",
+      "url": "/knowledge/distributed-systems/consistency/distributed-systems-145987791/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1238,8 +1808,12 @@
     {
       "articleId": "146005123",
       "category": "distributed-systems",
+      "subcategory": "consistency",
       "title": "读写分离架构下的一致性挑战",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-146005123/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/consistency/distributed-systems-146005123.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/consistency/assets/146005123",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-146005123/",
+      "url": "/knowledge/distributed-systems/consistency/distributed-systems-146005123/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1247,8 +1821,12 @@
     {
       "articleId": "146005145",
       "category": "distributed-systems",
+      "subcategory": "consistency",
       "title": "缓存一致性问题",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-146005145/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/consistency/distributed-systems-146005145.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/consistency/assets/146005145",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-146005145/",
+      "url": "/knowledge/distributed-systems/consistency/distributed-systems-146005145/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1256,8 +1834,12 @@
     {
       "articleId": "146058321",
       "category": "distributed-systems",
+      "subcategory": "consistency",
       "title": "Redis-分布式锁",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-146058321/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/consistency/distributed-systems-146058321.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/consistency/assets/146058321",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-146058321/",
+      "url": "/knowledge/distributed-systems/consistency/distributed-systems-146058321/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1265,8 +1847,12 @@
     {
       "articleId": "146058369",
       "category": "distributed-systems",
+      "subcategory": "redis-practice",
       "title": "Redis - 经典业务场景",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-146058369/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-practice/distributed-systems-146058369.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-practice/assets/146058369",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-146058369/",
+      "url": "/knowledge/distributed-systems/redis-practice/distributed-systems-146058369/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1274,8 +1860,12 @@
     {
       "articleId": "146119441",
       "category": "distributed-systems",
+      "subcategory": "redis-reliability",
       "title": "Redis- 哨兵",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-146119441/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-reliability/distributed-systems-146119441.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-reliability/assets/146119441",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-146119441/",
+      "url": "/knowledge/distributed-systems/redis-reliability/distributed-systems-146119441/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1283,8 +1873,12 @@
     {
       "articleId": "146119463",
       "category": "distributed-systems",
+      "subcategory": "redis-reliability",
       "title": "Redis- 切片集群",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-146119463/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-reliability/distributed-systems-146119463.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-reliability/assets/146119463",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-146119463/",
+      "url": "/knowledge/distributed-systems/redis-reliability/distributed-systems-146119463/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1292,8 +1886,12 @@
     {
       "articleId": "146119490",
       "category": "distributed-systems",
+      "subcategory": "redis-reliability",
       "title": "Redis-主从架构",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-146119490/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-reliability/distributed-systems-146119490.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-reliability/assets/146119490",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-146119490/",
+      "url": "/knowledge/distributed-systems/redis-reliability/distributed-systems-146119490/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1301,8 +1899,12 @@
     {
       "articleId": "146119672",
       "category": "distributed-systems",
+      "subcategory": "redis-practice",
       "title": "Redis- 大key",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-146119672/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-practice/distributed-systems-146119672.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-practice/assets/146119672",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-146119672/",
+      "url": "/knowledge/distributed-systems/redis-practice/distributed-systems-146119672/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1310,8 +1912,12 @@
     {
       "articleId": "146119685",
       "category": "distributed-systems",
+      "subcategory": "redis-practice",
       "title": "Redis- 热key",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-146119685/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-practice/distributed-systems-146119685.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-practice/assets/146119685",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-146119685/",
+      "url": "/knowledge/distributed-systems/redis-practice/distributed-systems-146119685/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1319,8 +1925,12 @@
     {
       "articleId": "146119697",
       "category": "distributed-systems",
+      "subcategory": "redis-practice",
       "title": "Redis- 秒杀场景",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-146119697/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-practice/distributed-systems-146119697.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-practice/assets/146119697",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-146119697/",
+      "url": "/knowledge/distributed-systems/redis-practice/distributed-systems-146119697/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1328,8 +1938,12 @@
     {
       "articleId": "146222582",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC-Condition",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-146222582/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-146222582.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/146222582",
+      "legacyUrl": "/knowledge/java-backend/java-backend-146222582/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-146222582/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1337,8 +1951,12 @@
     {
       "articleId": "146222694",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC-锁体系",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-146222694/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-146222694.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/146222694",
+      "legacyUrl": "/knowledge/java-backend/java-backend-146222694/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-146222694/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1346,8 +1964,12 @@
     {
       "articleId": "146237586",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "线程中断如何理解",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-146237586/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-146237586.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/146237586",
+      "legacyUrl": "/knowledge/java-backend/java-backend-146237586/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-146237586/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1355,8 +1977,12 @@
     {
       "articleId": "146808069",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC并发集合-ConcurrentSkipListMap",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-146808069/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-146808069.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/146808069",
+      "legacyUrl": "/knowledge/java-backend/java-backend-146808069/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-146808069/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1364,8 +1990,12 @@
     {
       "articleId": "146808729",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC并发集合-ConcurrentLinkedQueue",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-146808729/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-146808729.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/146808729",
+      "legacyUrl": "/knowledge/java-backend/java-backend-146808729/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-146808729/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1373,8 +2003,12 @@
     {
       "articleId": "146809247",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC并发集合-ConcurrentHashMap",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-146809247/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-146809247.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/146809247",
+      "legacyUrl": "/knowledge/java-backend/java-backend-146809247/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-146809247/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1382,8 +2016,12 @@
     {
       "articleId": "146907780",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC并发集合-Java Fork/Join",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-146907780/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-146907780.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/146907780",
+      "legacyUrl": "/knowledge/java-backend/java-backend-146907780/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-146907780/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1391,8 +2029,12 @@
     {
       "articleId": "147057384",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "Java对象内存布局详解",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147057384/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-147057384.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/147057384",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147057384/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-147057384/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1400,8 +2042,12 @@
     {
       "articleId": "147133289",
       "category": "computer-fundamentals",
+      "subcategory": "web-infrastructure",
       "title": "HTTP 协议-应用层",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-147133289/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/web-infrastructure/computer-fundamentals-147133289.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/web-infrastructure/assets/147133289",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-147133289/",
+      "url": "/knowledge/computer-fundamentals/web-infrastructure/computer-fundamentals-147133289/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1409,8 +2055,12 @@
     {
       "articleId": "147141839",
       "category": "computer-fundamentals",
+      "subcategory": "networking",
       "title": "计算机网络-传输层基础概念",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-147141839/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/networking/computer-fundamentals-147141839.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/networking/assets/147141839",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-147141839/",
+      "url": "/knowledge/computer-fundamentals/networking/computer-fundamentals-147141839/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1418,8 +2068,12 @@
     {
       "articleId": "147141866",
       "category": "computer-fundamentals",
+      "subcategory": "networking",
       "title": "计算机网络-TCP协议详解",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-147141866/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/networking/computer-fundamentals-147141866.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/networking/assets/147141866",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-147141866/",
+      "url": "/knowledge/computer-fundamentals/networking/computer-fundamentals-147141866/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1427,8 +2081,12 @@
     {
       "articleId": "147141877",
       "category": "computer-fundamentals",
+      "subcategory": "networking",
       "title": "计算机网络-TCP可靠传输机制",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-147141877/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/networking/computer-fundamentals-147141877.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/networking/assets/147141877",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-147141877/",
+      "url": "/knowledge/computer-fundamentals/networking/computer-fundamentals-147141877/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1436,8 +2094,12 @@
     {
       "articleId": "147141905",
       "category": "computer-fundamentals",
+      "subcategory": "networking",
       "title": "计算机网络-TCP流量控制与拥塞控制",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-147141905/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/networking/computer-fundamentals-147141905.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/networking/assets/147141905",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-147141905/",
+      "url": "/knowledge/computer-fundamentals/networking/computer-fundamentals-147141905/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1445,8 +2107,12 @@
     {
       "articleId": "147141915",
       "category": "computer-fundamentals",
+      "subcategory": "networking",
       "title": "计算机网络- UDP协议详解",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-147141915/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/networking/computer-fundamentals-147141915.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/networking/assets/147141915",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-147141915/",
+      "url": "/knowledge/computer-fundamentals/networking/computer-fundamentals-147141915/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1454,8 +2120,12 @@
     {
       "articleId": "147141942",
       "category": "computer-fundamentals",
+      "subcategory": "networking",
       "title": "计算机网络- TCP与UDP对比与选择",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-147141942/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/networking/computer-fundamentals-147141942.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/networking/assets/147141942",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-147141942/",
+      "url": "/knowledge/computer-fundamentals/networking/computer-fundamentals-147141942/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1463,8 +2133,12 @@
     {
       "articleId": "147141963",
       "category": "computer-fundamentals",
+      "subcategory": "networking",
       "title": "计算机网络- 传输层安全性",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-147141963/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/networking/computer-fundamentals-147141963.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/networking/assets/147141963",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-147141963/",
+      "url": "/knowledge/computer-fundamentals/networking/computer-fundamentals-147141963/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1472,8 +2146,12 @@
     {
       "articleId": "147238294",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC工具类-CountDownLatch",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147238294/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147238294.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147238294",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147238294/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147238294/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1481,8 +2159,12 @@
     {
       "articleId": "147238412",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC工具类-CyclicBarrier",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147238412/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147238412.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147238412",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147238412/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147238412/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1490,8 +2172,12 @@
     {
       "articleId": "147238691",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC工具类-Exchanger",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147238691/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147238691.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147238691",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147238691/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147238691/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1499,8 +2185,12 @@
     {
       "articleId": "147240379",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC工具类-Phaser",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147240379/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147240379.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147240379",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147240379/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147240379/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1508,8 +2198,12 @@
     {
       "articleId": "147242254",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC工具类-Semaphore",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147242254/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147242254.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147242254",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147242254/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147242254/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1517,8 +2211,12 @@
     {
       "articleId": "147243211",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC工具类-ThreadLocal",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147243211/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147243211.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147243211",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147243211/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147243211/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1526,8 +2224,12 @@
     {
       "articleId": "147244662",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC线程池-ThreadPoolExecutor",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147244662/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147244662.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147244662",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147244662/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147244662/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1535,8 +2237,12 @@
     {
       "articleId": "147245941",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC线程池-FutureTask",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147245941/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147245941.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147245941",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147245941/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147245941/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1544,8 +2250,12 @@
     {
       "articleId": "147246468",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC线程池-ScheduledThreadPoolExecutor",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147246468/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147246468.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147246468",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147246468/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147246468/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1553,8 +2263,12 @@
     {
       "articleId": "147248147",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC集合-CopyOnWriteArrayList",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147248147/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147248147.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147248147",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147248147/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147248147/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1562,8 +2276,12 @@
     {
       "articleId": "147248766",
       "category": "computer-fundamentals",
+      "subcategory": "operating-systems",
       "title": "操作系统-内存管理",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-147248766/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-147248766.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/operating-systems/assets/147248766",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-147248766/",
+      "url": "/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-147248766/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1571,8 +2289,12 @@
     {
       "articleId": "147250524",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "深入学习ReentrantLock",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147250524/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147250524.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147250524",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147250524/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147250524/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1580,8 +2302,12 @@
     {
       "articleId": "147251093",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "Java Lock 深度解析",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147251093/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147251093.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147251093",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147251093/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147251093/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1589,8 +2315,12 @@
     {
       "articleId": "147251274",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "LockSupport 深度解析",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147251274/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147251274.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147251274",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147251274/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147251274/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1598,8 +2328,12 @@
     {
       "articleId": "147251482",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "深度学习ReentrantReadWriteLock",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147251482/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147251482.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147251482",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147251482/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147251482/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1607,8 +2341,12 @@
     {
       "articleId": "147251627",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "深入理解Condition接口",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147251627/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147251627.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147251627",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147251627/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147251627/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1616,8 +2354,12 @@
     {
       "articleId": "147267695",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC- CompletableFuture",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147267695/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147267695.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147267695",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147267695/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147267695/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1625,17 +2367,25 @@
     {
       "articleId": "147280008",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "Java 线程中断机制详解",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147280008/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147280008.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147280008",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147280008/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147280008/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
     },
     {
       "articleId": "147334606",
-      "category": "algorithms",
+      "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "阻塞队列-BlockingQueue",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-147334606/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147334606.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147334606",
+      "legacyUrl": "/knowledge/algorithms/algorithms-147334606/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147334606/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1643,8 +2393,12 @@
     {
       "articleId": "147380628",
       "category": "computer-fundamentals",
+      "subcategory": "web-infrastructure",
       "title": "应用层核心协议详解：HTTP, HTTPS, RPC 与 Nginx",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-147380628/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/web-infrastructure/computer-fundamentals-147380628.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/web-infrastructure/assets/147380628",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-147380628/",
+      "url": "/knowledge/computer-fundamentals/web-infrastructure/computer-fundamentals-147380628/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1652,8 +2406,12 @@
     {
       "articleId": "147392232",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "JUC线程池- ForkJoinPool",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147392232/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147392232.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147392232",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147392232/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147392232/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1661,17 +2419,25 @@
     {
       "articleId": "147397422",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "Fork/Join - ForkJoinTask",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147397422/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147397422.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147397422",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147397422/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147397422/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
     },
     {
       "articleId": "147398714",
-      "category": "algorithms",
+      "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "阻塞队列-ArrayBlockingQueue",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-147398714/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147398714.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147398714",
+      "legacyUrl": "/knowledge/algorithms/algorithms-147398714/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147398714/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1679,8 +2445,12 @@
     {
       "articleId": "147406951",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "深度学习与总结JVM专辑（七）：垃圾回收器—CMS（图文+代码）",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147406951/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-147406951.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/147406951",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147406951/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-147406951/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1688,8 +2458,12 @@
     {
       "articleId": "147441821",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "JVM-卡表",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147441821/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-147441821.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/147441821",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147441821/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-147441821/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1697,8 +2471,12 @@
     {
       "articleId": "147445092",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "深入JVM内存分配-本地分配缓冲（LAB）与TLAB详解",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147445092/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-147445092.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/147445092",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147445092/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-147445092/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1706,8 +2484,12 @@
     {
       "articleId": "147445862",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "深入理解 G1 GC：已记忆集合（RSet）与收集集合（CSet）详解",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147445862/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-147445862.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/147445862",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147445862/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-147445862/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1715,8 +2497,12 @@
     {
       "articleId": "147471419",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "JVM-类加载机制",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147471419/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-147471419.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/147471419",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147471419/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-147471419/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1724,8 +2510,12 @@
     {
       "articleId": "147478619",
       "category": "distributed-systems",
+      "subcategory": "redis-internals",
       "title": "Redis 有序集合 ZSet 深度解析教程",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-147478619/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-internals/distributed-systems-147478619.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-internals/assets/147478619",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-147478619/",
+      "url": "/knowledge/distributed-systems/redis-internals/distributed-systems-147478619/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1733,8 +2523,12 @@
     {
       "articleId": "147560796",
       "category": "distributed-systems",
+      "subcategory": "redis-practice",
       "title": "Redis 缓存并发问题深度解析：击穿、雪崩与穿透防治指南",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-147560796/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/redis-practice/distributed-systems-147560796.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/redis-practice/assets/147560796",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-147560796/",
+      "url": "/knowledge/distributed-systems/redis-practice/distributed-systems-147560796/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1742,8 +2536,12 @@
     {
       "articleId": "147563129",
       "category": "java-backend",
+      "subcategory": "concurrency",
       "title": "缓存并发更新的挑战",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-147563129/index.md",
+      "output": "src/content/docs/knowledge/java-backend/concurrency/java-backend-147563129.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/concurrency/assets/147563129",
+      "legacyUrl": "/knowledge/java-backend/java-backend-147563129/",
+      "url": "/knowledge/java-backend/concurrency/java-backend-147563129/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1751,8 +2549,12 @@
     {
       "articleId": "148368820",
       "category": "computer-fundamentals",
+      "subcategory": "networking",
       "title": "计算机网络-网络层",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-148368820/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/networking/computer-fundamentals-148368820.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/networking/assets/148368820",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-148368820/",
+      "url": "/knowledge/computer-fundamentals/networking/computer-fundamentals-148368820/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1760,8 +2562,12 @@
     {
       "articleId": "150551730",
       "category": "java-backend",
+      "subcategory": "java-ecosystem",
       "title": "DTO 与 DO 转换的三种主流方案深度解析",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-150551730/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-ecosystem/java-backend-150551730.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-ecosystem/assets/150551730",
+      "legacyUrl": "/knowledge/java-backend/java-backend-150551730/",
+      "url": "/knowledge/java-backend/java-ecosystem/java-backend-150551730/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1769,8 +2575,12 @@
     {
       "articleId": "150583196",
       "category": "java-backend",
+      "subcategory": "design-patterns",
       "title": "深度学习设计模式：责任链(Chain of Responsibility)模式（例子+业务场景+八股）",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-150583196/index.md",
+      "output": "src/content/docs/knowledge/java-backend/design-patterns/java-backend-150583196.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/design-patterns/assets/150583196",
+      "legacyUrl": "/knowledge/java-backend/java-backend-150583196/",
+      "url": "/knowledge/java-backend/design-patterns/java-backend-150583196/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -1778,8 +2588,12 @@
     {
       "articleId": "150636441",
       "category": "distributed-systems",
+      "subcategory": "consistency",
       "title": "分库分表系列-基础内容",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-150636441/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/consistency/distributed-systems-150636441.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/consistency/assets/150636441",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-150636441/",
+      "url": "/knowledge/distributed-systems/consistency/distributed-systems-150636441/",
       "assets": 3,
       "missingAssets": [],
       "status": "imported"
@@ -1787,8 +2601,12 @@
     {
       "articleId": "150639406",
       "category": "distributed-systems",
+      "subcategory": "consistency",
       "title": "分库分表系列-核心内容",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-150639406/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/consistency/distributed-systems-150639406.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/consistency/assets/150639406",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-150639406/",
+      "url": "/knowledge/distributed-systems/consistency/distributed-systems-150639406/",
       "assets": 12,
       "missingAssets": [],
       "status": "imported"
@@ -1796,8 +2614,12 @@
     {
       "articleId": "153398956",
       "category": "java-backend",
+      "subcategory": "java-ecosystem",
       "title": "Java SPI 完整加载流程详解-JAR 包到类实例化",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-153398956/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-ecosystem/java-backend-153398956.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-ecosystem/assets/153398956",
+      "legacyUrl": "/knowledge/java-backend/java-backend-153398956/",
+      "url": "/knowledge/java-backend/java-ecosystem/java-backend-153398956/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1805,8 +2627,12 @@
     {
       "articleId": "153399744",
       "category": "java-backend",
+      "subcategory": "java-ecosystem",
       "title": "Enumeration 接口详解",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-153399744/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-ecosystem/java-backend-153399744.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-ecosystem/assets/153399744",
+      "legacyUrl": "/knowledge/java-backend/java-backend-153399744/",
+      "url": "/knowledge/java-backend/java-ecosystem/java-backend-153399744/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1814,8 +2640,12 @@
     {
       "articleId": "153400057",
       "category": "java-backend",
+      "subcategory": "java-ecosystem",
       "title": "Java SPI (Service Provider Interface) 机制",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-153400057/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-ecosystem/java-backend-153400057.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-ecosystem/assets/153400057",
+      "legacyUrl": "/knowledge/java-backend/java-backend-153400057/",
+      "url": "/knowledge/java-backend/java-ecosystem/java-backend-153400057/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1823,8 +2653,12 @@
     {
       "articleId": "153469705",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "JDK9中StackWalker类解读和实战",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-153469705/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-153469705.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/153469705",
+      "legacyUrl": "/knowledge/java-backend/java-backend-153469705/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-153469705/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1832,8 +2666,12 @@
     {
       "articleId": "153470947",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "5 - SpringBoot2.7新版本SPI机制-ImportCandidates 类详细解析",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-153470947/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-153470947.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/153470947",
+      "legacyUrl": "/knowledge/java-backend/java-backend-153470947/",
+      "url": "/knowledge/java-backend/spring/java-backend-153470947/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1841,8 +2679,12 @@
     {
       "articleId": "153478165",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "refresh() 方法流程梳理图",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-153478165/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-153478165.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/153478165",
+      "legacyUrl": "/knowledge/java-backend/java-backend-153478165/",
+      "url": "/knowledge/java-backend/spring/java-backend-153478165/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1850,8 +2692,12 @@
     {
       "articleId": "153478335",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "BeanDefinition 详解",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-153478335/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-153478335.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/153478335",
+      "legacyUrl": "/knowledge/java-backend/java-backend-153478335/",
+      "url": "/knowledge/java-backend/spring/java-backend-153478335/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1859,8 +2705,12 @@
     {
       "articleId": "153630729",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "3-Spring - @Import 机制详解",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-153630729/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-153630729.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/153630729",
+      "legacyUrl": "/knowledge/java-backend/java-backend-153630729/",
+      "url": "/knowledge/java-backend/spring/java-backend-153630729/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1868,8 +2718,12 @@
     {
       "articleId": "153633467",
       "category": "java-backend",
+      "subcategory": "jvm-runtime",
       "title": "JVM 的启动器类解读 -- sun.misc.Launcher",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-153633467/index.md",
+      "output": "src/content/docs/knowledge/java-backend/jvm-runtime/java-backend-153633467.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/jvm-runtime/assets/153633467",
+      "legacyUrl": "/knowledge/java-backend/java-backend-153633467/",
+      "url": "/knowledge/java-backend/jvm-runtime/java-backend-153633467/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1877,8 +2731,12 @@
     {
       "articleId": "153635511",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "4-Spring SPI机制解读",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-153635511/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-153635511.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/153635511",
+      "legacyUrl": "/knowledge/java-backend/java-backend-153635511/",
+      "url": "/knowledge/java-backend/spring/java-backend-153635511/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1886,8 +2744,12 @@
     {
       "articleId": "153680172",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "6 - Java SPI,Spring SPI 新旧版本流程图对比学习",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-153680172/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-153680172.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/153680172",
+      "legacyUrl": "/knowledge/java-backend/java-backend-153680172/",
+      "url": "/knowledge/java-backend/spring/java-backend-153680172/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1895,8 +2757,12 @@
     {
       "articleId": "153681145",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "7 - Spring三大核心PostProcessor深度解析",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-153681145/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-153681145.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/153681145",
+      "legacyUrl": "/knowledge/java-backend/java-backend-153681145/",
+      "url": "/knowledge/java-backend/spring/java-backend-153681145/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1904,8 +2770,12 @@
     {
       "articleId": "153726679",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "Spring Bean创建流程",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-153726679/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-153726679.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/153726679",
+      "legacyUrl": "/knowledge/java-backend/java-backend-153726679/",
+      "url": "/knowledge/java-backend/spring/java-backend-153726679/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1913,8 +2783,12 @@
     {
       "articleId": "153733514",
       "category": "computer-fundamentals",
+      "subcategory": "operating-systems",
       "title": "用户态和内核态切换开销详解(了解即可)",
-      "output": "src/content/docs/knowledge/computer-fundamentals/computer-fundamentals-153733514/index.md",
+      "output": "src/content/docs/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-153733514.md",
+      "assetDirectory": "src/content/docs/knowledge/computer-fundamentals/operating-systems/assets/153733514",
+      "legacyUrl": "/knowledge/computer-fundamentals/computer-fundamentals-153733514/",
+      "url": "/knowledge/computer-fundamentals/operating-systems/computer-fundamentals-153733514/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1922,8 +2796,12 @@
     {
       "articleId": "153801123",
       "category": "algorithms",
+      "subcategory": "algorithm-patterns",
       "title": "Java 堆排序（Heap Sort）详解教程",
-      "output": "src/content/docs/knowledge/algorithms/algorithms-153801123/index.md",
+      "output": "src/content/docs/knowledge/algorithms/algorithm-patterns/algorithms-153801123.md",
+      "assetDirectory": "src/content/docs/knowledge/algorithms/algorithm-patterns/assets/153801123",
+      "legacyUrl": "/knowledge/algorithms/algorithms-153801123/",
+      "url": "/knowledge/algorithms/algorithm-patterns/algorithms-153801123/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1931,8 +2809,12 @@
     {
       "articleId": "154174195",
       "category": "database",
+      "subcategory": "transactions-locks",
       "title": "临键锁的加锁与退化机制",
-      "output": "src/content/docs/knowledge/database/database-154174195/index.md",
+      "output": "src/content/docs/knowledge/database/transactions-locks/database-154174195.md",
+      "assetDirectory": "src/content/docs/knowledge/database/transactions-locks/assets/154174195",
+      "legacyUrl": "/knowledge/database/database-154174195/",
+      "url": "/knowledge/database/transactions-locks/database-154174195/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1940,8 +2822,12 @@
     {
       "articleId": "154611263",
       "category": "java-backend",
+      "subcategory": "spring",
       "title": "Spring-AOP(理论,实战)",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-154611263/index.md",
+      "output": "src/content/docs/knowledge/java-backend/spring/java-backend-154611263.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/spring/assets/154611263",
+      "legacyUrl": "/knowledge/java-backend/java-backend-154611263/",
+      "url": "/knowledge/java-backend/spring/java-backend-154611263/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1949,8 +2835,12 @@
     {
       "articleId": "155357407",
       "category": "database",
+      "subcategory": "logs-replication",
       "title": "MySQL高并发-主从架构",
-      "output": "src/content/docs/knowledge/database/database-155357407/index.md",
+      "output": "src/content/docs/knowledge/database/logs-replication/database-155357407.md",
+      "assetDirectory": "src/content/docs/knowledge/database/logs-replication/assets/155357407",
+      "legacyUrl": "/knowledge/database/database-155357407/",
+      "url": "/knowledge/database/logs-replication/database-155357407/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1958,8 +2848,12 @@
     {
       "articleId": "156465708",
       "category": "java-backend",
+      "subcategory": "java-ecosystem",
       "title": "Jackson核心内容: 架构说明",
-      "output": "src/content/docs/knowledge/java-backend/java-backend-156465708/index.md",
+      "output": "src/content/docs/knowledge/java-backend/java-ecosystem/java-backend-156465708.md",
+      "assetDirectory": "src/content/docs/knowledge/java-backend/java-ecosystem/assets/156465708",
+      "legacyUrl": "/knowledge/java-backend/java-backend-156465708/",
+      "url": "/knowledge/java-backend/java-ecosystem/java-backend-156465708/",
       "assets": 5,
       "missingAssets": [],
       "status": "imported"
@@ -1967,8 +2861,12 @@
     {
       "articleId": "156466220",
       "category": "distributed-systems",
+      "subcategory": "kafka",
       "title": "Kafka专辑- 消息队列是什么",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-156466220/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/kafka/distributed-systems-156466220.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/kafka/assets/156466220",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-156466220/",
+      "url": "/knowledge/distributed-systems/kafka/distributed-systems-156466220/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1976,8 +2874,12 @@
     {
       "articleId": "156466401",
       "category": "distributed-systems",
+      "subcategory": "kafka",
       "title": "Kafka专辑- 整体架构",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-156466401/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/kafka/distributed-systems-156466401.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/kafka/assets/156466401",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-156466401/",
+      "url": "/knowledge/distributed-systems/kafka/distributed-systems-156466401/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1985,8 +2887,12 @@
     {
       "articleId": "156488012",
       "category": "distributed-systems",
+      "subcategory": "kafka",
       "title": "Kafka专辑: 日志存储模型",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-156488012/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/kafka/distributed-systems-156488012.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/kafka/assets/156488012",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-156488012/",
+      "url": "/knowledge/distributed-systems/kafka/distributed-systems-156488012/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -1994,8 +2900,12 @@
     {
       "articleId": "156488501",
       "category": "distributed-systems",
+      "subcategory": "kafka",
       "title": "Kafka专辑 : 生产者写入路径",
-      "output": "src/content/docs/knowledge/distributed-systems/distributed-systems-156488501/index.md",
+      "output": "src/content/docs/knowledge/distributed-systems/kafka/distributed-systems-156488501.md",
+      "assetDirectory": "src/content/docs/knowledge/distributed-systems/kafka/assets/156488501",
+      "legacyUrl": "/knowledge/distributed-systems/distributed-systems-156488501/",
+      "url": "/knowledge/distributed-systems/kafka/distributed-systems-156488501/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -2003,8 +2913,12 @@
     {
       "articleId": "157477388",
       "category": "retrospectives",
+      "subcategory": "production-issues",
       "title": "导出重复问题记录-bugs专辑",
-      "output": "src/content/docs/retrospectives/csdn-157477388/index.md",
+      "output": "src/content/docs/retrospectives/production-issues/csdn-157477388.md",
+      "assetDirectory": "src/content/docs/retrospectives/production-issues/assets/157477388",
+      "legacyUrl": "/retrospectives/csdn-157477388/",
+      "url": "/retrospectives/production-issues/csdn-157477388/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"
@@ -2012,8 +2926,12 @@
     {
       "articleId": "157725729",
       "category": "retrospectives",
+      "subcategory": "production-issues",
       "title": "异常电站导出慢问题复盘",
-      "output": "src/content/docs/retrospectives/csdn-157725729/index.md",
+      "output": "src/content/docs/retrospectives/production-issues/csdn-157725729.md",
+      "assetDirectory": "src/content/docs/retrospectives/production-issues/assets/157725729",
+      "legacyUrl": "/retrospectives/csdn-157725729/",
+      "url": "/retrospectives/production-issues/csdn-157725729/",
       "assets": 0,
       "missingAssets": [],
       "status": "imported"

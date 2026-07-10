@@ -61,6 +61,7 @@ description: 分析常见失效场景及验证方法
 created: 2026-07-10
 updated: 2026-07-10
 category: distributed-systems
+subcategory: consistency
 tags:
   - Redis
   - 并发控制
@@ -83,7 +84,18 @@ CSDN 导出文件位于 `/Users/wangyi/csdn-article-export/exports` 时，可使
 node scripts/import-csdn.mjs
 ```
 
-脚本会根据专栏和文章标题归类，生成 `src/content/docs/` 下的文章目录，补充统一元数据，清理 CSDN 代码行号和页面残留，并把正文引用的图片复制到文章旁边的 `assets/` 目录。首次导入的文章统一为 `status: draft`，导入报告写入 `scripts/csdn-import-report.json`。
+脚本会根据专栏和文章标题归类，生成“专题 / 二级知识域 / 文章”的三级结构，补充统一元数据，清理 CSDN 代码行号和页面残留，并把正文引用的图片复制到二级知识域下的 `assets/<文章ID>/` 目录。首次导入的文章统一为 `status: draft`，导入报告写入 `scripts/csdn-import-report.json`。
+
+```text
+src/content/docs/knowledge/java-backend/
+├── index.mdx
+├── java-language/
+│   ├── java-backend-135635990.md
+│   └── assets/135635990/
+├── concurrency/
+├── jvm-runtime/
+└── spring/
+```
 
 默认情况下已存在的文章会跳过；确认要重新生成时使用 `--force`。更换导出目录时使用 `--source /path/to/exports`。导入后运行 `npm run check` 和 `npm run build` 验收。
 

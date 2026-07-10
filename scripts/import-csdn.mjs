@@ -13,6 +13,7 @@ const defaults = {
 	output: path.join(projectRoot, 'src/content/docs'),
 	map: path.join(scriptDir, 'csdn-category-map.json'),
 	report: path.join(scriptDir, 'csdn-import-report.json'),
+	redirects: path.join(projectRoot, 'src/config/csdn-redirects.mjs'),
 };
 
 const args = new Set(process.argv.slice(2));
@@ -24,6 +25,7 @@ const sourceRoot = path.resolve(valueArg('--source', defaults.source));
 const outputRoot = path.resolve(valueArg('--output', defaults.output));
 const mapPath = path.resolve(valueArg('--map', defaults.map));
 const reportPath = path.resolve(valueArg('--report', defaults.report));
+const redirectsPath = path.resolve(valueArg('--redirects', defaults.redirects));
 const force = args.has('--force');
 const dryRun = args.has('--dry-run');
 
@@ -64,10 +66,38 @@ const categoryFor = metadata => {
 	return 'miscellaneous';
 };
 
+const subcategoryFor = (metadata, category) => {
+	const articleId = String(metadata.article_id);
+	const override = config.articleSubcategoryOverrides?.[articleId];
+	if (override) return override;
+
+	const title = normalizeTitle(metadata.title);
+	for (const rule of config.subcategoryRules || []) {
+		if (rule.category === category && new RegExp(rule.pattern, 'iu').test(title)) return rule.subcategory;
+	}
+
+	for (const album of metadata.albums || []) {
+		const mapped = config.albumToSubcategory?.[album.name];
+		if (mapped && config.subcategories?.[category]?.[mapped]) return mapped;
+	}
+
+	return config.categories[category]?.defaultSubcategory;
+};
+
 const baseDirFor = category => config.categories[category]?.base || 'knowledge';
 
 const slugFor = (category, articleId) =>
 	category === 'retrospectives' ? `csdn-${articleId}` : `${category}-${articleId}`;
+
+const routeFor = (category, subcategory, articleId) =>
+	category === 'retrospectives'
+		? `/retrospectives/${subcategory}/csdn-${articleId}/`
+		: `/knowledge/${category}/${subcategory}/${category}-${articleId}/`;
+
+const legacyRouteFor = (category, articleId) =>
+	category === 'retrospectives'
+		? `/retrospectives/csdn-${articleId}/`
+		: `/knowledge/${category}/${category}-${articleId}/`;
 
 const stripMarkdown = value =>
 	String(value)
@@ -154,27 +184,35 @@ const stripLeadingTitleAndToc = (body, title) => {
 		if (linkCount >= 2 && nextHeading >= 0) {
 			let removeStart = tocStart;
 			while (removeStart > 0 && !lines[removeStart - 1].trim()) removeStart--;
+			const tocHeading = lines[removeStart - 1]?.match(/^#{2,6}\s+(.+)$/);
+			if (tocHeading && /^(文章目录|目录|table of contents)$/iu.test(tocHeading[1].trim())) {
+				removeStart--;
+				while (removeStart > 0 && !lines[removeStart - 1].trim()) removeStart--;
+			}
 			const removeEnd = tocEnd;
 			lines.splice(removeStart, removeEnd - removeStart);
 		}
 	}
 
 	while (lines.length && !lines[0].trim()) lines.shift();
-	const firstHeading = lines[0]?.match(/^#{2,6}\s+(.+)$/);
-	if (firstHeading) {
+	while (lines.length) {
+		const firstHeading = lines[0]?.match(/^#{2,6}\s+(.+)$/);
+		if (!firstHeading) break;
 		const normalizeComparable = value => String(value).replace(/[\s：:—–-]+/g, '').toLowerCase();
 		const headingText = normalizeComparable(firstHeading[1]);
 		const titleText = normalizeComparable(title);
 		if (headingText.length >= 2 && titleText.includes(headingText)) {
 			lines.shift();
 			while (lines.length && !lines[0].trim()) lines.shift();
+			continue;
 		}
+		break;
 	}
 
 	return lines.join('\n').replace(/^\n+/, '').replace(/\n{4,}/g, '\n\n\n').trim();
 };
 
-const cleanBody = (rawBody, metadata) => {
+const cleanBody = (rawBody, metadata, assetPrefix) => {
 	let body = stripLeadingTitleAndToc(rawBody, metadata.title);
 	const lines = body.split(/\r?\n/);
 	const output = [];
@@ -182,6 +220,7 @@ const cleanBody = (rawBody, metadata) => {
 
 	for (const line of lines) {
 		if (/^\s*AI写代码.*$/u.test(line) || /^\s*登录后复制\s*$/u.test(line)) continue;
+		if (/^\s*运行项目并下载源码(?:java|sql|html|bash|shell)?(?:运行)?\s*$/iu.test(line)) continue;
 		if (/^\s*\*\s+\d+\s*$/.test(line)) continue;
 
 		const malformedImageFence = line.match(/^(\s*)```(!\[[^\]]*\]\([^)]*\))\s*$/);
@@ -215,8 +254,8 @@ const cleanBody = (rawBody, metadata) => {
 	if (fenceOpen) output.push('```');
 
 	body = output.join('\n')
-		.replace(/(!\[[^\]]*\]\()assets\//g, '$1./assets/')
-		.replace(/(<img\b[^>]*\bsrc=["'])assets\//gi, '$1./assets/')
+		.replace(/(!\[[^\]]*\]\()assets\//g, `$1${assetPrefix}`)
+		.replace(/(<img\b[^>]*\bsrc=["'])assets\//gi, `$1${assetPrefix}`)
 		.replace(/\n{4,}/g, '\n\n\n')
 		.trim();
 
@@ -224,16 +263,19 @@ const cleanBody = (rawBody, metadata) => {
 	return `${sourceUrl}\n${body}\n`;
 };
 
-const referencedAssets = body => {
+const referencedAssets = (body, assetPrefix) => {
 	const names = new Set();
-	for (const match of body.matchAll(/(?:\.\/)?assets\/([^\s)>'"]+)/g)) {
+	const normalizedPrefix = assetPrefix.replace(/^\.\//, '');
+	const escapedPrefix = normalizedPrefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const pattern = new RegExp(`(?:\\./)?${escapedPrefix}([^\\s)>'"]+)`, 'g');
+	for (const match of body.matchAll(pattern)) {
 		const name = decodeURIComponent(match[1]).replace(/[),.;]+$/, '');
 		if (name && !uiAssetNames.has(path.basename(name))) names.add(name);
 	}
 	return names;
 };
 
-const materializeRemoteImages = async (body, outputDir) => {
+const materializeRemoteImages = async (body, assetDirectory, assetPrefix) => {
 	const missing = [];
 	const replacements = new Map();
 	for (const match of body.matchAll(/!\[[^\]]*\]\((https?:\/\/[^)]+)\)/g)) {
@@ -247,10 +289,10 @@ const materializeRemoteImages = async (body, outputDir) => {
 			// Keep the safe PNG fallback for malformed but fetchable image URLs.
 		}
 		const filename = `remote-${crypto.createHash('sha256').update(url).digest('hex').slice(0, 16)}${extension}`;
-		const relative = `./assets/${filename}`;
+		const relative = `${assetPrefix}${filename}`;
 		replacements.set(url, relative);
 		if (dryRun) continue;
-		const target = path.join(outputDir, 'assets', filename);
+		const target = path.join(assetDirectory, filename);
 		if (fs.existsSync(target)) continue;
 		try {
 			const response = await fetch(url, { signal: AbortSignal.timeout(20000) });
@@ -267,7 +309,7 @@ const materializeRemoteImages = async (body, outputDir) => {
 
 const yamlList = values => values.length ? values.map(value => `  - ${JSON.stringify(value)}`).join('\n') : '  []';
 
-const frontmatterFor = (metadata, category, body) => {
+const frontmatterFor = (metadata, category, subcategory, body) => {
 	const title = normalizeTitle(metadata.title);
 	const published = normalizeDate(metadata.published_at);
 	const updated = normalizeDate(metadata.updated_at);
@@ -280,6 +322,7 @@ const frontmatterFor = (metadata, category, body) => {
 		`source: ${JSON.stringify(metadata.url || '')}`,
 		...(sourceSeries.length ? ['sourceSeries:', yamlList(sourceSeries)] : ['sourceSeries: []']),
 		`category: ${category}`,
+		`subcategory: ${subcategory}`,
 		'tags:',
 		yamlList(tagsFor(metadata, category)),
 		'status: draft',
@@ -298,6 +341,28 @@ if (!fs.existsSync(sourceRoot)) {
 	process.exit(1);
 }
 
+const previousReport = fs.existsSync(reportPath) ? readJson(reportPath) : null;
+if (force && !dryRun && previousReport?.articles) {
+	for (const article of previousReport.articles) {
+		if (!article.output) continue;
+		const previousFile = path.resolve(projectRoot, article.output);
+		if (!previousFile.startsWith(`${outputRoot}${path.sep}`) || !fs.existsSync(previousFile)) continue;
+		const content = fs.readFileSync(previousFile, 'utf8');
+		if (!content.includes(`sourceId: "${article.articleId}"`)) continue;
+		if (path.basename(previousFile) === 'index.md') {
+			fs.rmSync(path.dirname(previousFile), { recursive: true, force: true });
+		} else {
+			fs.rmSync(previousFile, { force: true });
+			const previousAssetDirectory = article.assetDirectory
+				? path.resolve(projectRoot, article.assetDirectory)
+				: path.join(path.dirname(previousFile), 'assets', String(article.articleId));
+			if (previousAssetDirectory.startsWith(`${outputRoot}${path.sep}`)) {
+				fs.rmSync(previousAssetDirectory, { recursive: true, force: true });
+			}
+		}
+	}
+}
+
 const report = {
 	generatedAt: new Date().toISOString(),
 	sourceRoot,
@@ -309,6 +374,7 @@ const report = {
 	missingAssets: [],
 	missingRemoteImages: [],
 	byCategory: {},
+	bySubcategory: {},
 	articles: [],
 };
 
@@ -330,30 +396,48 @@ for (const sourceDir of exportDirs) {
 	const category = categoryFor(metadata);
 	const categoryConfig = config.categories[category];
 	if (!categoryConfig) throw new Error(`No category config for ${category} (${articleId})`);
+	const subcategory = subcategoryFor(metadata, category);
+	if (!subcategory || !config.subcategories?.[category]?.[subcategory]) {
+		throw new Error(`No subcategory config for ${category}/${subcategory} (${articleId})`);
+	}
 	const outputCategoryDir = category === 'retrospectives'
 		? path.join(outputRoot, 'retrospectives')
 		: path.join(outputRoot, baseDirFor(category), category);
-	const outputDir = path.join(outputCategoryDir, slugFor(category, articleId));
-	const outputFile = path.join(outputDir, 'index.md');
+	const outputDir = path.join(outputCategoryDir, subcategory);
+	const outputFile = path.join(outputDir, `${slugFor(category, articleId)}.md`);
+	const assetDirectory = path.join(outputDir, 'assets', articleId);
+	const assetPrefix = `./assets/${articleId}/`;
+	const legacyCategory = config.legacyCategoryOverrides?.[articleId] || category;
+	const legacyUrl = legacyRouteFor(legacyCategory, articleId);
+	const url = routeFor(category, subcategory, articleId);
 	const exists = fs.existsSync(outputFile);
 	if (exists && !force) {
 		report.skipped++;
-		report.articles.push({ articleId, category, output: path.relative(projectRoot, outputFile), status: 'skipped' });
+		report.articles.push({
+			articleId,
+			category,
+			subcategory,
+			output: path.relative(projectRoot, outputFile),
+			assetDirectory: path.relative(projectRoot, assetDirectory),
+			legacyUrl,
+			url,
+			status: 'skipped',
+		});
 		continue;
 	}
 
 	const rawBody = fs.readFileSync(path.join(sourceDir, 'article.md'), 'utf8');
-	let body = cleanBody(rawBody, metadata);
-	const remoteImages = await materializeRemoteImages(body, outputDir);
+	let body = cleanBody(rawBody, metadata, assetPrefix);
+	const remoteImages = await materializeRemoteImages(body, assetDirectory, assetPrefix);
 	body = remoteImages.body;
 	if (remoteImages.missing.length) report.missingRemoteImages.push({ articleId, images: remoteImages.missing });
-	const destinationBody = `${frontmatterFor(metadata, category, body)}${body}`;
-	const assets = referencedAssets(body);
+	const destinationBody = `${frontmatterFor(metadata, category, subcategory, body)}${body}`;
+	const assets = referencedAssets(body, assetPrefix);
 	const missingAssets = [];
 	if (!dryRun) ensureDir(outputDir);
 	for (const asset of assets) {
 		const sourceAsset = path.join(sourceDir, 'assets', asset);
-		const targetAsset = path.join(outputDir, 'assets', asset);
+		const targetAsset = path.join(assetDirectory, asset);
 		if (!fs.existsSync(sourceAsset)) {
 			if (dryRun || fs.existsSync(targetAsset)) continue;
 			missingAssets.push(asset);
@@ -369,11 +453,17 @@ for (const sourceDir of exportDirs) {
 
 	report.imported++;
 	report.byCategory[category] = (report.byCategory[category] || 0) + 1;
+	const subcategoryKey = `${category}/${subcategory}`;
+	report.bySubcategory[subcategoryKey] = (report.bySubcategory[subcategoryKey] || 0) + 1;
 	report.articles.push({
 		articleId,
 		category,
+		subcategory,
 		title: metadata.title,
 		output: path.relative(projectRoot, outputFile),
+		assetDirectory: path.relative(projectRoot, assetDirectory),
+		legacyUrl,
+		url,
 		assets: assets.size,
 		missingAssets,
 		status: 'imported',
@@ -383,6 +473,19 @@ for (const sourceDir of exportDirs) {
 if (!dryRun) {
 	ensureDir(path.dirname(reportPath));
 	fs.writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+	const redirects = Object.fromEntries(
+		report.articles
+			.filter(article => article.legacyUrl && article.url && article.legacyUrl !== article.url)
+			.map(article => [article.legacyUrl, article.url])
+			.sort(([left], [right]) => left.localeCompare(right)),
+	);
+	const redirectsModule = [
+		'// Generated by scripts/import-csdn.mjs. Do not edit manually.',
+		`export const CsdnRedirects = ${JSON.stringify(redirects, null, 2)};`,
+		'',
+	].join('\n');
+	ensureDir(path.dirname(redirectsPath));
+	fs.writeFileSync(redirectsPath, redirectsModule, 'utf8');
 }
 
 console.log(JSON.stringify({
@@ -392,6 +495,7 @@ console.log(JSON.stringify({
 	missingAssets: report.missingAssets.length,
 	missingRemoteImages: report.missingRemoteImages.length,
 	byCategory: report.byCategory,
+	bySubcategory: report.bySubcategory,
 	dryRun,
 }, null, 2));
 
