@@ -1,0 +1,150 @@
+<section class="module" id="module-4" style="background: var(--color-bg)">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">04</span>
+      <h1 class="module-title">配置、域名与环境变量</h1>
+      <p class="module-subtitle">学会管理站点的“配电间”：运行版本、固定入口和不能写进代码的秘密。</p>
+    </header>
+
+    <div class="module-body">
+      <section class="screen animate-in">
+        <h2 class="screen-heading">三类东西，放在三个位置</h2>
+        <p><span class="term" data-definition="代码仓库保存项目文件和完整修改历史，并让 GitHub、Vercel 与协作者读取同一份事实。">代码仓库</span>像公开施工图，<span class="term" data-definition="Project Settings 是 Vercel 项目级设置区，用于配置构建环境、Git 连接、域名和安全选项。">Vercel Settings</span> 像配电间，<span class="term" data-definition="Environment Variable（环境变量）是在代码之外注入的配置值，常用于 API 密钥、数据库地址和不同环境的开关。">环境变量</span> 像上锁的柜子。放错位置，轻则构建失败，重则泄露密钥。</p>
+
+        <div class="pattern-cards">
+          <div class="pattern-card" style="border-top: 3px solid var(--color-actor-1)">
+            <div class="pattern-icon" style="background: var(--color-actor-1)">⑂</div>
+            <h4 class="pattern-title">仓库内配置</h4>
+            <p class="pattern-desc">package.json、astro.config.mjs、工作流；可审查、可追踪，不放秘密。</p>
+          </div>
+          <div class="pattern-card" style="border-top: 3px solid var(--color-actor-2)">
+            <div class="pattern-icon" style="background: var(--color-actor-2)">⚙</div>
+            <h4 class="pattern-title">Project Settings</h4>
+            <p class="pattern-desc">框架、根目录、构建命令、Node 版本、Git 连接和访问保护。</p>
+          </div>
+          <div class="pattern-card" style="border-top: 3px solid var(--color-actor-5)">
+            <div class="pattern-icon" style="background: var(--color-actor-5)">🔐</div>
+            <h4 class="pattern-title">Environment Variables</h4>
+            <p class="pattern-desc">API 密钥等敏感值，并按 Production、Preview、Development 隔离。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">真实隐患：本地用 Node 22，Vercel 项目现在是 24.x</h2>
+        <p>你的仓库声明“至少 22.12.0”，而不是锁定 22 主版本。<span class="term" data-definition="Node.js 是在浏览器之外运行 JavaScript 的环境。Astro 构建和许多前端工具都需要它。">Node.js</span> 的主版本可能带来不兼容变化；最新构建日志已经提示 Vercel 将来可能自动升级。</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">package.json</span>
+            <pre><code><span class="code-line">{</span>
+<span class="code-line">  <span class="code-property">"name"</span>: <span class="code-string">"learning-notes"</span>,</span>
+<span class="code-line">  <span class="code-property">"type"</span>: <span class="code-string">"module"</span>,</span>
+<span class="code-line">  <span class="code-property">"version"</span>: <span class="code-string">"0.0.1"</span>,</span>
+<span class="code-line">  <span class="code-property">"private"</span>: <span class="code-keyword">true</span>,</span>
+<span class="code-line">  <span class="code-property">"engines"</span>: {</span>
+<span class="code-line">    <span class="code-property">"node"</span>: <span class="code-string">"&gt;=22.12.0"</span></span>
+<span class="code-line">  },</span></code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">说人话</span>
+            <div class="translation-lines">
+              <p class="tl">这是项目说明书的开始。</p>
+              <p class="tl">项目名叫 learning-notes。</p>
+              <p class="tl">代码使用现代 JavaScript 模块格式。</p>
+              <p class="tl">当前项目版本是 0.0.1。</p>
+              <p class="tl">它不是准备发布到 npm 的公共包。</p>
+              <p class="tl">下面声明需要的运行环境。</p>
+              <p class="tl">Node 不能低于 22.12.0，但更高主版本也允许。</p>
+              <p class="tl">运行环境声明到这里结束。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content"><strong class="callout-title">版本漂移不会立刻报错，但会积累不确定性</strong><p>GitHub Actions 使用 Node 22，Vercel 项目显示 24.x。最好让 package.json、CI 与 Vercel Project Settings 使用同一主版本，再由你主动安排升级。</p></div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">环境变量必须按环境隔离</h2>
+        <p><span class="term" data-definition="Environment Scope（环境作用域）决定某个变量只在生产、预览或本地开发中可见。隔离作用域能避免测试代码碰到真实生产资源。">作用域</span> 就像三套不同钥匙：预览版本不应该拿到生产数据库的万能钥匙。你的当前站点是纯静态 Astro 站，暂时没有业务密钥，但未来接入 <span class="term" data-definition="API 是软件之间约定好的通信入口。接入外部 API 时通常需要密钥来证明身份和控制额度。">API</span> 时必须先守住这条边界。</p>
+
+        <div class="badge-list">
+          <div class="badge-item"><code class="badge-code">Production</code><span class="badge-desc">正式域名使用；只放线上真实配置。</span></div>
+          <div class="badge-item"><code class="badge-code">Preview</code><span class="badge-desc">分支和 PR 使用；应连接测试资源或使用受限密钥。</span></div>
+          <div class="badge-item"><code class="badge-code">Development</code><span class="badge-desc">本地开发使用；通过 vercel env pull 拉到本机。</span></div>
+          <div class="badge-item"><code class="badge-code">PUBLIC_*</code><span class="badge-desc">Astro 会允许客户端代码读取；它会暴露给浏览器，绝不能放秘密。</span></div>
+          <div class="badge-item"><code class="badge-code">无 PUBLIC_ 前缀</code><span class="badge-desc">用于服务端或构建过程；仍需避免把值手动写进输出页面。</span></div>
+        </div>
+
+        <div class="flow-steps">
+          <div class="flow-step"><div class="flow-step-num">1</div><p>在 Vercel Dashboard 添加变量并选择作用域</p></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-step-num">2</div><p>重新部署，让新变量进入构建或运行环境</p></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-step-num">3</div><p>本地执行 vercel env pull .env.local 同步</p></div>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-icon">🚨</div>
+          <div class="callout-content"><strong class="callout-title">先补 .gitignore，再拉取 .env.local</strong><p>当前仓库只忽略了 .env 与 .env.production，没有明确忽略 .env.local。不要在修正忽略规则前把密钥拉到仓库目录，更不要提交任何真实密钥。</p></div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">域名是固定门牌，部署是门后的房间</h2>
+        <p><span class="term" data-definition="Custom Domain（自定义域名）是你拥有并绑定到 Vercel 项目的网址，例如 notes.ian2000.xyz。它比随机的 vercel.app 地址更稳定、更有品牌识别。">自定义域名</span> 不保存网页文件。它通过 <span class="term" data-definition="DNS 是互联网的地址簿，把 notes.ian2000.xyz 这样的名字解析到负责提供网站的服务。">DNS</span> 把访客送到 Vercel，再由 Vercel 把流量交给当前生产部署；<span class="term" data-definition="HTTPS 是加密的网页传输协议，浏览器地址栏的锁形图标表示连接内容不容易被途中窃听或篡改。">HTTPS</span> 证书则保护传输过程。</p>
+
+        <div class="step-cards">
+          <div class="step-card"><div class="step-num">1</div><div class="step-body"><strong>在 Domains 添加域名</strong><p>你的项目目前已经绑定 notes.ian2000.xyz。</p></div></div>
+          <div class="step-card"><div class="step-num">2</div><div class="step-body"><strong>按提示配置 DNS</strong><p>如果域名不由 Vercel 托管，就在原 DNS 服务商添加 Vercel 要求的记录。</p></div></div>
+          <div class="step-card"><div class="step-num">3</div><div class="step-body"><strong>等待验证与 HTTPS</strong><p>Vercel 验证所有权并自动签发证书，状态正常后浏览器显示安全连接。</p></div></div>
+          <div class="step-card"><div class="step-num">4</div><div class="step-body"><strong>生产发布更新指向</strong><p>新部署 READY 后，固定门牌指向新的生产成品。</p></div></div>
+        </div>
+
+        <div class="badge-list">
+          <div class="badge-item"><code class="badge-code">notes.ian2000.xyz</code><span class="badge-desc">当前主自定义域名。</span></div>
+          <div class="badge-item"><code class="badge-code">learning-notes-ian2000.vercel.app</code><span class="badge-desc">Vercel 提供的稳定项目域名。</span></div>
+          <div class="badge-item"><code class="badge-code">learning-notes-1r6gnwvor-ian2000.vercel.app</code><span class="badge-desc">这一次具体部署的不可变地址。</span></div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">实战判断：配置放哪里才安全？</h2>
+        <div class="quiz-container" id="quiz-module4">
+          <div class="quiz-question-block" data-correct="m4-q1-b" data-explanation-right="完全正确。浏览器可见的变量不是秘密；真正密钥应放 Vercel 环境变量，并只给需要的作用域。" data-explanation-wrong="变量名带 PUBLIC_ 就意味着客户端可以读取。秘密一旦进入浏览器，就不再是秘密。">
+            <h3 class="quiz-question">未来接入付费 API，私钥应该放在哪里？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m4-q1-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>写进 PUBLIC_API_KEY 并提交 GitHub</span></button>
+              <button class="quiz-option" data-value="m4-q1-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Vercel Environment Variables，并限制作用域</span></button>
+              <button class="quiz-option" data-value="m4-q1-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>写进页面注释，用户看不到</span></button>
+            </div><div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-correct="m4-q2-c" data-explanation-right="对。先统一 Node 主版本，能减少本地、CI 和云端之间只在某处出现的问题。" data-explanation-wrong="缓存和域名不会解决运行时主版本不一致。应该先统一执行环境。">
+            <h3 class="quiz-question">某依赖在 GitHub Actions 正常、Vercel 构建异常，而且两边 Node 主版本不同。先做什么？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m4-q2-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>删除自定义域名</span></button>
+              <button class="quiz-option" data-value="m4-q2-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>反复 Force Redeploy</span></button>
+              <button class="quiz-option" data-value="m4-q2-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>统一 package.json、CI 与 Vercel 的 Node 主版本</span></button>
+            </div><div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-correct="m4-q3-a" data-explanation-right="正确。环境变量通常在构建或运行时注入，已存在的旧成品不会自动变化。" data-explanation-wrong="改变量不会重写已经生成的部署成品。需要让 Vercel 创建新部署。">
+            <h3 class="quiz-question">你在 Dashboard 修改了生产环境变量，线上却仍是旧值。下一步是什么？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m4-q3-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>重新部署生产版本并验证</span></button>
+              <button class="quiz-option" data-value="m4-q3-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>等待浏览器自己改写旧文件</span></button>
+              <button class="quiz-option" data-value="m4-q3-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>重新注册 GitHub 账号</span></button>
+            </div><div class="quiz-feedback"></div>
+          </div>
+
+          <button class="quiz-check-btn" onclick="checkQuiz('quiz-module4')">检查答案</button>
+          <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module4')">再想一次</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>

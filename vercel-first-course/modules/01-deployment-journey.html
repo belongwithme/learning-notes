@@ -1,0 +1,138 @@
+<section class="module" id="module-1" style="background: var(--color-bg-warm)">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">01</span>
+      <h1 class="module-title">一次上线，究竟发生了什么？</h1>
+      <p class="module-subtitle">从你推送搜索样式，到所有人能访问新页面，完整走一遍真实链路。</p>
+    </header>
+
+    <div class="module-body">
+      <section class="screen animate-in">
+        <h2 class="screen-heading">先看结果：你的站点已经完成一次标准生产发布</h2>
+        <p><span class="term" data-definition="Vercel 是托管和发布网站的云平台。它连接代码仓库，自动构建网站，并把成品分发给访问者。">Vercel</span> 像一条自动装配线：你把代码交给 <span class="term" data-definition="Git 是保存代码历史的版本管理工具。一次提交就像给当前代码拍一张带说明的快照。">Git</span>，它负责取代码、安装<span class="term" data-definition="依赖是项目借用的外部软件包，例如 Astro 和 Starlight。安装依赖就是把施工所需的工具与零件准备齐。">依赖</span>、执行构建，再把成品送到访问者附近。</p>
+
+        <div class="pattern-cards stagger-children">
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-success)">
+            <div class="pattern-icon" style="background: var(--color-success)">✓</div>
+            <h4 class="pattern-title">READY</h4>
+            <p class="pattern-desc">生产版本已经构建并可以正常提供访问。</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-2)">
+            <div class="pattern-icon" style="background: var(--color-actor-2)">⑂</div>
+            <h4 class="pattern-title">2c75033</h4>
+            <p class="pattern-desc">这次发布对应“Refine documentation search styling”。</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-4)">
+            <div class="pattern-icon" style="background: var(--color-actor-4)">◎</div>
+            <h4 class="pattern-title">notes.ian2000.xyz</h4>
+            <p class="pattern-desc"><span class="term" data-definition="域名是人容易记住的网站地址，例如 notes.ian2000.xyz；它会被解析到实际提供网站内容的服务。">自定义域名</span>已经指向这次生产发布。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">点击“下一步”，看一次发布怎样穿过整条流水线</h2>
+        <p>这条动画展示的是一次 <span class="term" data-definition="部署（deployment）是把代码变成可访问网站的完整过程。每次部署都有独立编号、构建日志和访问地址。">部署</span> 的真实数据流。最后交付的不是源代码，而是 <span class="term" data-definition="Astro 是用于构建内容型网站的 Web 框架。这个项目用它把 Markdown、MDX 和样式生成静态网页。">Astro</span> 生成的静态文件。</p>
+
+        <div class="flow-animation" data-steps='[
+          {"highlight":"flow-actor-1","label":"你提交搜索样式并推送 main 分支"},
+          {"highlight":"flow-actor-2","label":"GitHub 记录提交 2c75033","packet":true,"from":"actor-1","to":"actor-2"},
+          {"highlight":"flow-actor-3","label":"Vercel 克隆 main 分支并恢复构建缓存","packet":true,"from":"actor-2","to":"actor-3"},
+          {"highlight":"flow-actor-4","label":"Astro 执行 npm run build，生成 11 个 HTML 页面","packet":true,"from":"actor-3","to":"actor-4"},
+          {"highlight":"flow-actor-5","label":"域名指向 READY 的生产成品","packet":true,"from":"actor-4","to":"actor-5"}
+        ]'>
+          <div class="flow-actors">
+            <div class="flow-actor" id="flow-actor-1"><div class="flow-actor-icon">✎</div><span>你的电脑</span></div>
+            <div class="flow-actor" id="flow-actor-2"><div class="flow-actor-icon">⑂</div><span>GitHub</span></div>
+            <div class="flow-actor" id="flow-actor-3"><div class="flow-actor-icon">V</div><span>Vercel</span></div>
+            <div class="flow-actor" id="flow-actor-4"><div class="flow-actor-icon">A</div><span>Astro 构建</span></div>
+            <div class="flow-actor" id="flow-actor-5"><div class="flow-actor-icon">◎</div><span>访问者</span></div>
+          </div>
+          <div class="flow-packet" id="flow-packet"></div>
+          <div class="flow-step-label" id="flow-label">点击“下一步”开始</div>
+          <div class="flow-controls">
+            <button class="btn flow-next-btn">下一步</button>
+            <button class="btn flow-reset-btn">重新播放</button>
+            <span class="flow-progress"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Vercel 怎么知道该执行什么？答案就在 package.json</h2>
+        <p><span class="term" data-definition="package.json 是 Node.js 项目的说明书，记录依赖、可执行命令和运行环境要求。">package.json</span> 里的 <span class="term" data-definition="scripts 是 package.json 里给常用命令起名字的区域。这样工具只需运行 npm run build，而不用记住底层命令。">scripts</span> 是项目提供给工具使用的命令菜单。Vercel 识别到 Astro 后，会调用其中的 build 命令。</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">REAL PROJECT CODE</span>
+            <pre><code><span class="code-line">  <span class="code-property">"scripts"</span>: {</span>
+<span class="code-line">    <span class="code-property">"dev"</span>: <span class="code-string">"astro dev"</span>,</span>
+<span class="code-line">    <span class="code-property">"start"</span>: <span class="code-string">"astro dev"</span>,</span>
+<span class="code-line">    <span class="code-property">"build"</span>: <span class="code-string">"astro build"</span>,</span>
+<span class="code-line">    <span class="code-property">"check"</span>: <span class="code-string">"astro check"</span>,</span>
+<span class="code-line">    <span class="code-property">"preview"</span>: <span class="code-string">"astro preview"</span>,</span>
+<span class="code-line">    <span class="code-property">"astro"</span>: <span class="code-string">"astro"</span></span>
+<span class="code-line">  },</span></code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">说人话</span>
+            <div class="translation-lines">
+              <p class="tl">下面是一组可执行命令。</p>
+              <p class="tl">dev 与 start 用于本地边改边看。</p>
+              <p class="tl">build 把源文件做成可上线的网页成品。</p>
+              <p class="tl">check 在上线前检查类型与内容问题。</p>
+              <p class="tl">preview 在本地预览生产构建结果。</p>
+              <p class="tl">最后一项允许直接调用 Astro 工具。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-accent">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <strong class="callout-title">关键认知：Vercel 保存的是“每一次成品”</strong>
+            <p>每次推送都会产生一个不可变的 <span class="term" data-definition="构建产物（artifact）是构建命令生成、真正用于发布的文件集合；你的项目里就是 dist 目录里的 HTML、CSS 和 JavaScript。">构建产物</span>。因此预览、晋级和回滚都可以围绕同一份成品进行，而不必现场修改服务器文件。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">实战判断：改完代码后，哪里最先接棒？</h2>
+        <div class="quiz-container" id="quiz-module1">
+          <div class="quiz-question-block" data-correct="m1-q1-b" data-explanation-right="正是这样。GitHub 保存提交，Vercel 的 Git 集成随后读取 main 分支并开始构建。" data-explanation-wrong="再沿着数据流想一遍：Vercel 需要先看到远程仓库中的新提交，才能开始工作。">
+            <h3 class="quiz-question">你只在本地修改 CSS，但没有推送。线上会发生什么？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m1-q1-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Vercel 会自动读取我的本地文件</span></button>
+              <button class="quiz-option" data-value="m1-q1-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>线上不变，因为 GitHub 还没有新提交</span></button>
+              <button class="quiz-option" data-value="m1-q1-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>自定义域名会暂时失效</span></button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-correct="m1-q2-c" data-explanation-right="对。构建命令决定源文件如何变成部署成品；先确认本地 npm run build 能否成功。" data-explanation-wrong="页面打不开不一定是域名问题。如果 READY 前失败，应先关注从代码到成品的构建步骤。">
+            <h3 class="quiz-question">一次发布在 READY 之前失败，最有价值的本地验证是什么？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m1-q2-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>清空浏览器历史</span></button>
+              <button class="quiz-option" data-value="m1-q2-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>重新购买域名</span></button>
+              <button class="quiz-option" data-value="m1-q2-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>运行 npm run check 与 npm run build</span></button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-correct="m1-q3-a" data-explanation-right="完全正确。域名像固定门牌，部署像不断更换的房间布置；Vercel 更新门牌指向的生产成品。" data-explanation-wrong="域名不会因为每次构建而重新购买。它保持稳定，只改变背后指向的生产版本。">
+            <h3 class="quiz-question">为什么每次部署 URL 都不同，但 notes.ian2000.xyz 始终可用？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m1-q3-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>固定域名会被重新指向最新生产部署</span></button>
+              <button class="quiz-option" data-value="m1-q3-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>所有部署其实共用同一个文件夹</span></button>
+              <button class="quiz-option" data-value="m1-q3-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>浏览器会猜测最新版本地址</span></button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <button class="quiz-check-btn" onclick="checkQuiz('quiz-module1')">检查答案</button>
+          <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module1')">再想一次</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>

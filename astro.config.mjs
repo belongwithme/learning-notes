@@ -8,6 +8,9 @@ export default defineConfig({
 		starlight({
 			title: '学习档案',
 			description: '记录、验证和沉淀可复用的技术知识',
+			components: {
+				Head: './src/components/SpeedInsights.astro',
+			},
 			locales: {
 				root: { label: '简体中文', lang: 'zh-CN' },
 			},

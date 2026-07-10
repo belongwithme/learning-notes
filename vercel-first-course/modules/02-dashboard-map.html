@@ -1,0 +1,161 @@
+<section class="module" id="module-2" style="background: var(--color-bg)">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">02</span>
+      <h1 class="module-title">看懂 Vercel 控制台</h1>
+      <p class="module-subtitle">把 Overview、Deployments、Logs、Domains 从“菜单”变成一张可操作的地图。</p>
+    </header>
+
+    <div class="module-body">
+      <section class="screen animate-in">
+        <h2 class="screen-heading">把控制台想成机场塔台</h2>
+        <p><span class="term" data-definition="Project（项目）是 Vercel 管理网站的长期容器，保存 Git 仓库连接、域名、环境变量和部署历史。">Project</span> 是整座机场，<span class="term" data-definition="Deployment（部署）是某一时刻由某次代码提交生成的独立网站版本。它有自己的状态、日志和 URL。">Deployment</span> 是一次具体航班，<span class="term" data-definition="Domain（域名）是用户长期访问的固定网站地址，可以在背后切换到不同部署版本。">域名</span>则是旅客长期记住的航站楼入口。</p>
+
+        <div class="arch-diagram">
+          <div class="arch-zone arch-zone-browser">
+            <h4 class="arch-zone-label">你正在管理的长期对象</h4>
+            <div class="arch-component" data-desc="learning-notes 是项目容器；框架为 Astro，关联 GitHub 仓库 belongwithme/learning-notes。" onclick="showArchDesc(this)">
+              <div class="arch-icon">📦</div><span>Project · learning-notes</span>
+            </div>
+            <div class="arch-component" data-desc="Production 是正式环境；当前从 main 分支接收代码。" onclick="showArchDesc(this)">
+              <div class="arch-icon">🏁</div><span>Environment · Production</span>
+            </div>
+          </div>
+          <div class="arch-zone arch-zone-external">
+            <h4 class="arch-zone-label">项目下面不断产生的版本与入口</h4>
+            <div class="arch-component" data-desc="最新部署 dpl_2em... 对应提交 2c75033，状态 READY。" onclick="showArchDesc(this)">
+              <div class="arch-icon">🚀</div><span>Deployment · 2c75033</span>
+            </div>
+            <div class="arch-component" data-desc="notes.ian2000.xyz 是自定义域名，当前指向最新生产部署。" onclick="showArchDesc(this)">
+              <div class="arch-icon">🌐</div><span>Domain · notes.ian2000.xyz</span>
+            </div>
+          </div>
+          <div class="arch-description" id="arch-desc">点击任意组件，查看它在你的项目里扮演什么角色</div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">让四个角色自己解释一次上线</h2>
+        <p>这段对话揭示了 <span class="term" data-definition="Git Integration（Git 集成）是 Vercel 与 GitHub 仓库之间的自动连接：推送分支后，Vercel 自动创建对应部署。">Git 集成</span> 的边界：GitHub 保存代码历史，Vercel 负责把某次历史快照变成可访问版本。</p>
+
+        <div class="chat-window" id="chat-module2">
+          <div class="chat-messages">
+            <div class="chat-message" data-msg="0" data-sender="developer" style="display:none">
+              <div class="chat-avatar" style="background: var(--color-actor-1)">你</div>
+              <div class="chat-bubble"><span class="chat-sender" style="color: var(--color-actor-1)">开发者</span><p>搜索样式改好了，我把提交 2c75033 推到 main。</p></div>
+            </div>
+            <div class="chat-message" data-msg="1" data-sender="github" style="display:none">
+              <div class="chat-avatar" style="background: var(--color-actor-2)">G</div>
+              <div class="chat-bubble"><span class="chat-sender" style="color: var(--color-actor-2)">GitHub</span><p>已记录新提交。Vercel，你订阅的 main 分支更新了。</p></div>
+            </div>
+            <div class="chat-message" data-msg="2" data-sender="vercel" style="display:none">
+              <div class="chat-avatar" style="background: var(--color-actor-3)">V</div>
+              <div class="chat-bubble"><span class="chat-sender" style="color: var(--color-actor-3)">Vercel</span><p>收到。我会克隆代码、恢复缓存、执行 astro build，并保留完整日志。</p></div>
+            </div>
+            <div class="chat-message" data-msg="3" data-sender="vercel" style="display:none">
+              <div class="chat-avatar" style="background: var(--color-actor-3)">V</div>
+              <div class="chat-bubble"><span class="chat-sender" style="color: var(--color-actor-3)">Vercel</span><p>11 个页面和 Pagefind 搜索索引已生成，状态变成 READY。</p></div>
+            </div>
+            <div class="chat-message" data-msg="4" data-sender="domain" style="display:none">
+              <div class="chat-avatar" style="background: var(--color-actor-5)">◎</div>
+              <div class="chat-bubble"><span class="chat-sender" style="color: var(--color-actor-5)">自定义域名</span><p>我现在把 notes.ian2000.xyz 的访客带到这份新成品。</p></div>
+            </div>
+          </div>
+          <div class="chat-typing" style="display:none">
+            <div class="chat-avatar" id="chat-module2-typing-avatar">?</div>
+            <div class="chat-typing-dots"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>
+          </div>
+          <div class="chat-controls">
+            <button class="btn chat-next-btn">下一条</button>
+            <button class="btn chat-all-btn">自动播放</button>
+            <button class="btn chat-reset-btn">重播</button>
+            <span class="chat-progress"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">为什么 Vercel 识别出这是 Astro 项目？</h2>
+        <p>仓库入口处的 <span class="term" data-definition="配置文件用代码或数据描述工具应该怎样工作。它不是页面内容，而是项目行为的说明书。">配置文件</span> 明确引入 <span class="term" data-definition="Astro 是将内容和组件构建成网站的框架，特别适合文档与内容站。">Astro</span> 和 <span class="term" data-definition="Starlight 是 Astro 的文档网站工具包，提供侧边栏、搜索、主题和内容结构。">Starlight</span>。再结合 <span class="term" data-definition="package.json 是 Node.js 项目的说明书，记录依赖、命令和运行环境。">package.json</span> 的依赖与 build 命令，Vercel 能自动选择合适的构建方式。</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">astro.config.mjs</span>
+            <pre><code><span class="code-line"><span class="code-comment">// @ts-check</span></span>
+<span class="code-line"><span class="code-keyword">import</span> { defineConfig } <span class="code-keyword">from</span> <span class="code-string">'astro/config'</span>;</span>
+<span class="code-line"><span class="code-keyword">import</span> starlight <span class="code-keyword">from</span> <span class="code-string">'@astrojs/starlight'</span>;</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment">// https://astro.build/config</span></span>
+<span class="code-line"><span class="code-keyword">export default</span> defineConfig({</span>
+<span class="code-line">  integrations: [</span>
+<span class="code-line">    starlight({</span></code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">说人话</span>
+            <div class="translation-lines">
+              <p class="tl">让编辑器检查配置中的类型问题。</p>
+              <p class="tl">载入 Astro 的配置工具。</p>
+              <p class="tl">载入专门做文档网站的 Starlight。</p>
+              <p class="tl">这里留一行，让文件更易读。</p>
+              <p class="tl">注释给出官方配置文档入口。</p>
+              <p class="tl">开始导出整个站点的配置。</p>
+              <p class="tl">列出要接入 Astro 的扩展。</p>
+              <p class="tl">开始配置 Starlight 文档站。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">左侧菜单什么时候用？记住这张“任务 → 入口”表</h2>
+        <div class="icon-rows">
+          <div class="icon-row"><div class="icon-circle" style="background: var(--color-actor-1)">⌂</div><div><strong>Overview</strong><p>确认当前生产版本、域名、提交和整体健康度。</p></div></div>
+          <div class="icon-row"><div class="icon-circle" style="background: var(--color-actor-2)">↻</div><div><strong>Deployments</strong><p>查看每一次版本、构建状态、预览地址，或选择回滚候选。</p></div></div>
+          <div class="icon-row"><div class="icon-circle" style="background: var(--color-actor-3)">≡</div><div><strong>Logs</strong><p>排查运行时错误；构建失败则进入具体 Deployment 查看 Build Logs。</p></div></div>
+          <div class="icon-row"><div class="icon-circle" style="background: var(--color-actor-4)">◎</div><div><strong>Domains</strong><p>管理自定义域名、证书和 DNS 验证状态。</p></div></div>
+          <div class="icon-row"><div class="icon-circle" style="background: var(--color-actor-5)">⚙</div><div><strong>Settings</strong><p>管理 Git、构建命令、Node 版本、环境变量与访问保护。</p></div></div>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🧭</div>
+          <div class="callout-content"><strong class="callout-title">先判断对象，再点菜单</strong><p>“项目怎么配置”去 Settings；“某次为什么失败”去 Deployments；“上线后请求为什么报错”去 Logs。对象分清，排查就不会在控制台里迷路。</p></div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">实战判断：你应该打开哪个入口？</h2>
+        <div class="quiz-container" id="quiz-module2">
+          <div class="quiz-question-block" data-correct="m2-q1-b" data-explanation-right="正确。构建属于某一次部署，选择那次失败的 Deployment 才能看到 Build Logs。" data-explanation-wrong="Logs 更偏向上线后的请求与函数输出；构建失败要回到对应部署本身。">
+            <h3 class="quiz-question">GitHub 已推送，但 Vercel 显示构建失败。第一站去哪里？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m2-q1-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Domains</span></button>
+              <button class="quiz-option" data-value="m2-q1-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Deployments → 失败版本 → Build Logs</span></button>
+              <button class="quiz-option" data-value="m2-q1-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Analytics</span></button>
+            </div><div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-correct="m2-q2-a" data-explanation-right="对。域名是项目级入口，不属于某一个源代码文件或某一次临时构建。" data-explanation-wrong="域名长期服务于项目，Deployment 只是它当前指向的某个版本。">
+            <h3 class="quiz-question">要确认 notes.ian2000.xyz 是否仍指向项目，应该查看什么？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m2-q2-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Domains</span></button>
+              <button class="quiz-option" data-value="m2-q2-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>某篇 Markdown 的 frontmatter</span></button>
+              <button class="quiz-option" data-value="m2-q2-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Git commit message</span></button>
+            </div><div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-correct="m2-q3-c" data-explanation-right="正解。先确认版本状态和对应提交，能排除“看错部署”这种最常见的误判。" data-explanation-wrong="不要一上来就改配置。先用 Overview 建立当前事实：哪次提交、哪个状态、哪些域名。">
+            <h3 class="quiz-question">用户说“线上看起来还是旧样式”，最先确认什么？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m2-q3-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>立刻删除项目</span></button>
+              <button class="quiz-option" data-value="m2-q3-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>重写全部 CSS</span></button>
+              <button class="quiz-option" data-value="m2-q3-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Overview 中生产部署的提交和 READY 状态</span></button>
+            </div><div class="quiz-feedback"></div>
+          </div>
+
+          <button class="quiz-check-btn" onclick="checkQuiz('quiz-module2')">检查答案</button>
+          <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module2')">再想一次</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>

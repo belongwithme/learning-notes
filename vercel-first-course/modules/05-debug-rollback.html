@@ -1,0 +1,184 @@
+<section class="module" id="module-5" style="background: var(--color-bg-warm)">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">05</span>
+      <h1 class="module-title">日志、排障与回滚</h1>
+      <p class="module-subtitle">出问题时先分诊，再取证，最后决定修复、重部署还是回滚。</p>
+    </header>
+
+    <div class="module-body">
+      <section class="screen animate-in">
+        <h2 class="screen-heading">像急诊分诊一样，先判断故障发生在哪一段</h2>
+        <p>不要看到“网站不对”就立刻重写代码。先把症状分到构建、运行、域名或性能四个区域，再去拿对应的 <span class="term" data-definition="Log（日志）是工具在工作过程中留下的时间顺序记录。排障时，它比猜测更接近真实发生的事情。">日志</span> 和状态证据。</p>
+
+        <div class="pattern-cards">
+          <div class="pattern-card" style="border-top: 3px solid var(--color-error)">
+            <div class="pattern-icon" style="background: var(--color-error)">🔨</div>
+            <h4 class="pattern-title">构建失败</h4>
+            <p class="pattern-desc">Deployment → Build Logs。看依赖安装、Node 版本和 astro build 的第一条错误。</p>
+          </div>
+          <div class="pattern-card" style="border-top: 3px solid var(--color-actor-2)">
+            <div class="pattern-icon" style="background: var(--color-actor-2)">≡</div>
+            <h4 class="pattern-title">上线后请求报错</h4>
+            <p class="pattern-desc">Logs 或 vercel logs。关注函数输出、状态码、请求路径和时间。</p>
+          </div>
+          <div class="pattern-card" style="border-top: 3px solid var(--color-actor-4)">
+            <div class="pattern-icon" style="background: var(--color-actor-4)">◎</div>
+            <h4 class="pattern-title">域名打不开</h4>
+            <p class="pattern-desc">Domains。检查 DNS、证书和域名是否指向当前项目。</p>
+          </div>
+          <div class="pattern-card" style="border-top: 3px solid var(--color-actor-5)">
+            <div class="pattern-icon" style="background: var(--color-actor-5)">⌁</div>
+            <h4 class="pattern-title">页面很慢</h4>
+            <p class="pattern-desc">Speed Insights。用真实用户的核心网页指标定位具体页面。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">你的仓库与 Vercel，其实在做两次互补检查</h2>
+        <p>GitHub Actions 先在独立机器上验证项目；Vercel 再在自己的构建环境生成发布成品。两边的日志可以帮助你判断：问题来自代码本身，还是只在云端配置中出现。</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">.github/workflows/validate.yml</span>
+            <pre><code><span class="code-line">    <span class="code-property">steps</span>:</span>
+<span class="code-line">      - <span class="code-keyword">uses</span>: actions/checkout@v4</span>
+<span class="code-line"></span>
+<span class="code-line">      - <span class="code-keyword">uses</span>: actions/setup-node@v4</span>
+<span class="code-line">        <span class="code-property">with</span>:</span>
+<span class="code-line">          <span class="code-property">node-version</span>: <span class="code-number">22</span></span>
+<span class="code-line">          <span class="code-property">cache</span>: npm</span>
+<span class="code-line"></span>
+<span class="code-line">      - <span class="code-keyword">run</span>: npm ci</span>
+<span class="code-line">      - <span class="code-keyword">run</span>: npm run check</span>
+<span class="code-line">      - <span class="code-keyword">run</span>: npm run build</span></code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">说人话</span>
+            <div class="translation-lines">
+              <p class="tl">下面是一串按顺序执行的步骤。</p>
+              <p class="tl">先把当前提交的代码取下来。</p>
+              <p class="tl">空行让不同动作更容易阅读。</p>
+              <p class="tl">准备 Node.js 运行环境。</p>
+              <p class="tl">下面给这一步传入配置。</p>
+              <p class="tl">固定使用 Node 22。</p>
+              <p class="tl">缓存 npm 下载内容，加快下次运行。</p>
+              <p class="tl">配置结束，进入实际检查。</p>
+              <p class="tl">严格按锁文件安装依赖。</p>
+              <p class="tl">检查 Astro 类型和内容问题。</p>
+              <p class="tl">确认生产构建能完整成功。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">学会读你这次真实 Build Logs</h2>
+        <p><span class="term" data-definition="Build Log（构建日志）记录 Vercel 如何克隆代码、安装依赖、执行构建和上传成品。构建失败时应从最后往前寻找第一条真正错误。">Build Logs</span> 显示这次部署在华盛顿区域构建，恢复了上次缓存，执行 npm run build，6 秒完成并生成 11 个页面。</p>
+
+        <div class="badge-list">
+          <div class="badge-item"><code class="badge-code">Cloning ... main, Commit: 2c75033</code><span class="badge-desc">证明构建的是你预期的提交，不是旧代码。</span></div>
+          <div class="badge-item"><code class="badge-code">Restored build cache</code><span class="badge-desc">复用上次依赖与构建缓存，节省时间；它不是浏览器缓存。</span></div>
+          <div class="badge-item"><code class="badge-code">output: "static"</code><span class="badge-desc">Astro 生成静态文件，不需要每次访问都运行服务端函数。</span></div>
+          <div class="badge-item"><code class="badge-code">11 page(s) built</code><span class="badge-desc">所有预期页面和搜索索引均已生成。</span></div>
+          <div class="badge-item"><code class="badge-code">Deployment completed</code><span class="badge-desc">构建产物已上传，随后域名别名可以指向它。</span></div>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content"><strong class="callout-title">警告不等于失败，但应该进入待办</strong><p>这次日志有两条非阻塞警告：Node 主版本可能自动升级；astro.config.mjs 没有 site 配置，因此 sitemap 被跳过。它们没有阻止 READY，但值得后续修正。</p></div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">为什么 Logs 里可能几乎没有函数记录？</h2>
+        <p>你的 Astro 站点输出为 <span class="term" data-definition="Static Site（静态站点）在构建时就生成 HTML、CSS 和 JavaScript 文件。访问时主要由 CDN 直接返回文件，不必运行后端函数。">静态站点</span>。当前控制台显示 Edge Requests 339、Function Invocations 0、Error Rate 0%，这与架构完全一致。</p>
+
+        <div class="flow-steps">
+          <div class="flow-step"><div class="flow-step-num">1</div><p>浏览器请求 /knowledge/</p></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-step-num">2</div><p><span class="term" data-definition="CDN 是分布在不同地区的内容分发网络，会从离访问者更近的位置返回静态文件。">CDN</span> 找到构建好的 HTML</p></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-step-num">3</div><p>直接返回页面，函数无需启动</p></div>
+        </div>
+
+        <div class="icon-rows">
+          <div class="icon-row"><div class="icon-circle" style="background: var(--color-actor-2)">≡</div><div><strong>Runtime Logs</strong><p>未来增加服务端 API 或 Functions 后，用它看 console 输出、状态码和请求耗时。</p></div></div>
+          <div class="icon-row"><div class="icon-circle" style="background: var(--color-actor-4)">↗</div><div><strong><span class="term" data-definition="Web Analytics 是 Vercel 的访问统计工具，用于查看页面访问量、来源、国家地区和热门路径。">Web Analytics</span></strong><p>看访问量、来源和热门页面；当前生产项目尚未启用。</p></div></div>
+          <div class="icon-row"><div class="icon-circle" style="background: var(--color-actor-5)">⌁</div><div><strong><span class="term" data-definition="Speed Insights 是 Vercel 的真实用户性能监测工具，用 Core Web Vitals 判断页面加载、交互和布局稳定性。">Speed Insights</span></strong><p>看真实用户的 LCP、INP、CLS 等体验指标；本地工作区已接入组件，推送部署后开始采集。</p></div></div>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📈</div>
+          <div class="callout-content"><strong class="callout-title">你正在做的下一步：接入 Speed Insights</strong><p>当前工作区新增了 src/components/SpeedInsights.astro，并在 Starlight 的 Head 中注册。等这组改动通过检查、推送并部署后，Speed Insights 页面才会逐步出现真实访问数据。</p></div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">出事故时：先止血，再修复历史</h2>
+        <p><span class="term" data-definition="Rollback（回滚）是把生产域名重新指向之前已验证的部署成品，通常几乎瞬间完成。它不会自动修改 Git 仓库。">Instant Rollback</span> 很像把电闸切回上一套稳定线路。它能迅速恢复访问，但 Git 的 main 仍可能保留有问题的提交。</p>
+
+        <div class="step-cards">
+          <div class="step-card"><div class="step-num">1</div><div class="step-body"><strong>确认影响范围</strong><p>记录故障页面、开始时间和当前生产 Deployment。</p></div></div>
+          <div class="step-card"><div class="step-num">2</div><div class="step-body"><strong>回滚到上一份 READY 成品</strong><p>Dashboard 使用 Instant Rollback，或终端运行 vercel rollback。</p></div></div>
+          <div class="step-card"><div class="step-num">3</div><div class="step-body"><strong>验证域名恢复</strong><p>访问核心页面并观察错误率，不要只相信按钮提示。</p></div></div>
+          <div class="step-card"><div class="step-num">4</div><div class="step-body"><strong>修复 Git 历史中的问题</strong><p>创建修复提交或安全地撤销坏提交，避免下一次推送把故障重新带回来。</p></div></div>
+          <div class="step-card"><div class="step-num">5</div><div class="step-body"><strong>重新走 Preview → Production</strong><p>验证新成品，再恢复正常发布节奏。</p></div></div>
+        </div>
+
+        <div class="callout callout-accent">
+          <div class="callout-icon">🧠</div>
+          <div class="callout-content"><strong class="callout-title">回滚恢复服务，修复恢复事实</strong><p>只回滚不修 Git，会留下“线上稳定、main 有毒”的分裂状态。下一次自动部署可能再次把问题带回来。</p></div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">你的 Vercel 日常操作清单</h2>
+        <div class="badge-list">
+          <div class="badge-item"><code class="badge-code">开发前</code><span class="badge-desc">从最新 main 建分支；如果项目用了秘密，再同步 Development 环境变量。</span></div>
+          <div class="badge-item"><code class="badge-code">推送前</code><span class="badge-desc">npm run check && npm run build。</span></div>
+          <div class="badge-item"><code class="badge-code">Preview 后</code><span class="badge-desc">打开关键路径，检查桌面与手机，确认 GitHub Actions 通过。</span></div>
+          <div class="badge-item"><code class="badge-code">Production 后</code><span class="badge-desc">确认提交、READY、自定义域名和核心页面。</span></div>
+          <div class="badge-item"><code class="badge-code">出问题</code><span class="badge-desc">先分诊：Build Logs、Runtime Logs、Domains 或 Speed Insights。</span></div>
+          <div class="badge-item"><code class="badge-code">影响用户</code><span class="badge-desc">先回滚止血，再修复 main 并重新发布。</span></div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">毕业判断：你会怎么处理真实故障？</h2>
+        <div class="quiz-container" id="quiz-module5">
+          <div class="quiz-question-block" data-correct="m5-q1-c" data-explanation-right="正确。先确认部署提交与状态，再从 Build Logs 找到第一条真正失败原因，避免盲目改代码。" data-explanation-wrong="构建阶段失败与浏览器缓存、Analytics 无关。证据就在那次部署的 Build Logs。">
+            <h3 class="quiz-question">新提交在 Vercel 停在 ERROR，正式站仍是旧版本。第一步是什么？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m5-q1-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>清除所有用户浏览器缓存</span></button>
+              <button class="quiz-option" data-value="m5-q1-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>开启 Web Analytics</span></button>
+              <button class="quiz-option" data-value="m5-q1-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>打开失败 Deployment 的 Build Logs</span></button>
+            </div><div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-correct="m5-q2-a" data-explanation-right="完全正确。静态站点主要由 CDN 提供文件，0 次函数调用不是异常。" data-explanation-wrong="不要把没有函数日志误判为故障。先结合 output: static 理解站点架构。">
+            <h3 class="quiz-question">站点访问正常，但 Function Invocations 一直是 0。需要修复吗？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m5-q2-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>不需要；当前是静态 Astro 输出</span></button>
+              <button class="quiz-option" data-value="m5-q2-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>需要；每个页面都必须调用函数</span></button>
+              <button class="quiz-option" data-value="m5-q2-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>需要；先删除 CDN</span></button>
+            </div><div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-correct="m5-q3-b" data-explanation-right="正解。回滚负责快速恢复服务，随后必须修复 main，才能让未来自动部署继续可靠。" data-explanation-wrong="只回滚会留下坏的 main；只等新构建又会让用户继续受影响。两步都要做。">
+            <h3 class="quiz-question">生产改版导致首页完全打不开。最成熟的处理方式是？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m5-q3-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>保持故障，慢慢研究一整天</span></button>
+              <button class="quiz-option" data-value="m5-q3-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>回滚止血 → 验证恢复 → 修复 main → 重新发布</span></button>
+              <button class="quiz-option" data-value="m5-q3-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>删除 GitHub 仓库，重新开始</span></button>
+            </div><div class="quiz-feedback"></div>
+          </div>
+
+          <button class="quiz-check-btn" onclick="checkQuiz('quiz-module5')">检查答案</button>
+          <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module5')">再想一次</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,138 @@
+<section class="module" id="module-3" style="background: var(--color-bg-warm)">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">03</span>
+      <h1 class="module-title">Git 与预览发布工作流</h1>
+      <p class="module-subtitle">把“直接改线上”升级成“先彩排、再正式演出”的安全习惯。</p>
+    </header>
+
+    <div class="module-body">
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Preview 是彩排，Production 是正式演出</h2>
+        <p><span class="term" data-definition="Preview Deployment（预览部署）是非生产分支或 Pull Request 自动生成的独立网站版本，适合在合并前测试和分享。">Preview Deployment</span> 不会替换正式域名；<span class="term" data-definition="Production Deployment（生产部署）是正式服务用户的版本，通常由生产分支 main 触发。">Production Deployment</span> 才会更新 notes.ian2000.xyz。<span class="term" data-definition="main 是这个仓库的生产分支名称。推送或合并到它，会触发正式部署。">main</span> 应被当作随时可以发布的稳定主线。</p>
+
+        <div class="pattern-cards">
+          <div class="pattern-card" style="border-top: 3px solid var(--color-actor-2)">
+            <div class="pattern-icon" style="background: var(--color-actor-2)">🎭</div>
+            <h4 class="pattern-title">功能分支 / PR</h4>
+            <p class="pattern-desc">每次推送生成独立预览 URL。你可以先检查页面、搜索和移动端样式。</p>
+          </div>
+          <div class="pattern-card" style="border-top: 3px solid var(--color-actor-5)">
+            <div class="pattern-icon" style="background: var(--color-actor-5)">🎬</div>
+            <h4 class="pattern-title">main 分支</h4>
+            <p class="pattern-desc">推送或合并后触发生产部署，READY 后自定义域名切换到新版本。</p>
+          </div>
+        </div>
+
+        <div class="callout callout-accent">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content"><strong class="callout-title">推荐原则：main 永远保持可上线</strong><p>即使是个人项目，也优先在分支拿到预览地址，验证后再合并。这样失败只影响彩排，不影响正在访问网站的人。</p></div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">一次稳妥改版的六步节奏</h2>
+        <p><span class="term" data-definition="Branch（分支）是从当前代码历史分出的一条独立修改线。它让你试验新功能而不直接碰 main。">分支</span> 像独立排练厅；<span class="term" data-definition="Pull Request（PR）是请求把一个分支的改动合并到另一个分支，同时集中展示差异、检查结果和讨论。">PR</span> 是正式演出前的验收单。</p>
+
+        <div class="step-cards">
+          <div class="step-card"><div class="step-num">1</div><div class="step-body"><strong>从 main 创建功能分支</strong><p>例如 codex/improve-search，改动先与生产版本隔离。</p></div></div>
+          <div class="step-card"><div class="step-num">2</div><div class="step-body"><strong>本地检查与构建</strong><p>运行 npm run check 和 npm run build，提前拦截基础错误。</p></div></div>
+          <div class="step-card"><div class="step-num">3</div><div class="step-body"><strong>提交并推送分支</strong><p>GitHub 收到新快照，Vercel 自动创建 Preview Deployment。</p></div></div>
+          <div class="step-card"><div class="step-num">4</div><div class="step-body"><strong>打开预览 URL 验证</strong><p>检查核心路径、手机尺寸、交互和控制台报错。</p></div></div>
+          <div class="step-card"><div class="step-num">5</div><div class="step-body"><strong>创建 PR 并等待检查</strong><p>确认 GitHub Actions 与 Vercel 两边都通过。</p></div></div>
+          <div class="step-card"><div class="step-num">6</div><div class="step-body"><strong>合并 main</strong><p>Vercel 生成生产部署，域名切换后再做一次线上抽查。</p></div></div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">你的仓库已经有一道自动质量门</h2>
+        <p><span class="term" data-definition="CI（持续集成）是在每次推送或 PR 时自动安装依赖、运行检查和构建的流程。它把重复验证交给机器完成。">CI</span> 工作流同时监听 PR 和 main。也就是说：预览前能检查，正式部署前还能再检查一次。</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">.github/workflows/validate.yml</span>
+            <pre><code><span class="code-line"><span class="code-property">on</span>:</span>
+<span class="code-line">  <span class="code-property">pull_request</span>:</span>
+<span class="code-line">  <span class="code-property">push</span>:</span>
+<span class="code-line">    <span class="code-property">branches</span>:</span>
+<span class="code-line">      - main</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">jobs</span>:</span>
+<span class="code-line">  <span class="code-property">validate</span>:</span>
+<span class="code-line">    <span class="code-property">runs-on</span>: ubuntu-latest</span></code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">说人话</span>
+            <div class="translation-lines">
+              <p class="tl">下面定义“什么时候启动”。</p>
+              <p class="tl">有人创建或更新 PR 时启动。</p>
+              <p class="tl">直接推送代码时也可能启动。</p>
+              <p class="tl">但推送只关注指定分支。</p>
+              <p class="tl">这里指定的是 main。</p>
+              <p class="tl">空行把触发条件与任务分开。</p>
+              <p class="tl">下面开始列出自动任务。</p>
+              <p class="tl">这个任务名叫 validate。</p>
+              <p class="tl">它在 GitHub 提供的 Ubuntu 机器上运行。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Git 自动部署是主路，Vercel CLI 是工具箱</h2>
+        <p><span class="term" data-definition="CLI（命令行界面）是通过终端输入命令来操作软件的方式。它适合重复任务、排障和自动化。">Vercel CLI</span> 不必替代 Git 工作流。日常用 Git 推送；需要查询、临时预览、拉取环境变量或回滚时，再打开命令行工具箱。</p>
+
+        <div class="badge-list">
+          <div class="badge-item"><code class="badge-code">npm i -g vercel</code><span class="badge-desc">安装 Vercel 命令行工具。</span></div>
+          <div class="badge-item"><code class="badge-code">vercel login</code><span class="badge-desc">通过浏览器完成账号登录。</span></div>
+          <div class="badge-item"><code class="badge-code">vercel link --yes --project learning-notes --scope ian2000</code><span class="badge-desc">明确把当前目录连接到你的项目与团队。</span></div>
+          <div class="badge-item"><code class="badge-code">vercel</code><span class="badge-desc">从当前代码创建一个预览部署。</span></div>
+          <div class="badge-item"><code class="badge-code">vercel ls</code><span class="badge-desc">列出最近的部署及状态。</span></div>
+          <div class="badge-item"><code class="badge-code">vercel inspect &lt;url&gt;</code><span class="badge-desc">检查某次部署的元数据与构建信息。</span></div>
+          <div class="badge-item"><code class="badge-code">vercel --prod</code><span class="badge-desc">直接创建生产部署；日常更推荐通过 main 分支触发。</span></div>
+          <div class="badge-item"><code class="badge-code">vercel rollback</code><span class="badge-desc">把生产域名退回上一份可用成品。</span></div>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content"><strong class="callout-title">不要同时发起两条生产路径</strong><p>如果 GitHub main 正在自动部署，就不要又手动运行 vercel --prod。否则会同时出现两次生产部署，排查“到底哪次生效”会变得困难。</p></div>
+        </div>
+      </section>
+
+      <section class="screen animate-in">
+        <h2 class="screen-heading">实战判断：怎样安全交付一次大改版？</h2>
+        <div class="quiz-container" id="quiz-module3">
+          <div class="quiz-question-block" data-correct="m3-q1-c" data-explanation-right="很好。预览部署把风险隔离在独立 URL，合并 main 才会更新正式域名。" data-explanation-wrong="大改动最怕未经验证直接替换生产。先用分支和预览 URL 建立安全缓冲。">
+            <h3 class="quiz-question">你要重做首页，但不想影响当前用户。最合理的顺序是？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m3-q1-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>直接在 Vercel 删除生产部署</span></button>
+              <button class="quiz-option" data-value="m3-q1-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>在 main 改一半就推送一次</span></button>
+              <button class="quiz-option" data-value="m3-q1-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>功能分支 → Preview → 验证 → PR → main</span></button>
+            </div><div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-correct="m3-q2-b" data-explanation-right="正确。Preview READY 只说明 Vercel 构建成功，还要等待仓库自己的 check/build 质量门。" data-explanation-wrong="部署平台和代码仓库的检查是两条证据。两边都通过，才说明交付链完整。">
+            <h3 class="quiz-question">Preview 已显示 READY，但 GitHub Actions 的 check 失败。应该合并吗？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m3-q2-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>应该，READY 就代表所有检查通过</span></button>
+              <button class="quiz-option" data-value="m3-q2-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>不应该，先修复 CI 失败并重新验证</span></button>
+              <button class="quiz-option" data-value="m3-q2-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>先改域名再决定</span></button>
+            </div><div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-correct="m3-q3-a" data-explanation-right="正是如此。Git 负责日常可审查的交付历史，CLI 更适合查询、应急和自动化。" data-explanation-wrong="CLI 很强，但日常协作仍需要清晰的提交、分支与 PR 记录。">
+            <h3 class="quiz-question">什么时候优先使用 Vercel CLI，而不是再推一次无意义提交？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="m3-q3-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>查询部署、拉环境变量或执行回滚时</span></button>
+              <button class="quiz-option" data-value="m3-q3-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>每改一个标点都手动 vercel --prod</span></button>
+              <button class="quiz-option" data-value="m3-q3-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>用它绕过所有代码审查</span></button>
+            </div><div class="quiz-feedback"></div>
+          </div>
+
+          <button class="quiz-check-btn" onclick="checkQuiz('quiz-module3')">检查答案</button>
+          <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module3')">再想一次</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
