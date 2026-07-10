@@ -1,0 +1,193 @@
+---
+title: "异常电站导出慢问题复盘"
+description: "范围：投资中心导出异常电站报表（PROPSTATIONANOMALYEXPORT）"
+sourceId: "157725729"
+source: "https://blog.csdn.net/qq_45852626/article/details/157725729"
+sourceSeries: []
+category: retrospectives
+tags:
+  - "问题复盘"
+status: draft
+difficulty: intermediate
+contentType: retrospective
+sidebar:
+  order: 157725729
+---
+
+
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/157725729)（历史文章导入，当前状态为草稿）
+
+范围：投资中心导出异常电站报表（`PROP_STATION_ANOMALY_EXPORT`）
+
+---
+
+### 1. 现象
+
+* 正式环境导出耗时很长（单页/单次导出 10s+）。
+* 触发路径：`ReportServiceImpl.downloadReportTask` → `OutStationServiceImpl.exportAnomalyStation`。
+
+---
+
+### 2. 代码链路梳理
+
+**入口**
+
+* `ReportServiceImpl.downloadReportTask` 在 `PROP_STATION_ANOMALY_EXPORT` 分支调用：
+  + `outStationService.exportAnomalyStation(reportInfo)`
+
+**导出核心**
+
+* `OutStationServiceImpl.exportAnomalyStation`
+  + 查询数量 `queryCount`
+  + 调用 `reportDownload.exportDataParallelNew` 分页导出
+  + 每页回调 `queryAnomalyStationListForExport`
+
+**单页处理**
+
+* `queryAnomalyStationListForExport`
+  + 拉取电站分页数据 `queryAnomalyStationList`
+  + 对每条记录拼装导出 VO
+  + 调用 `fillAnomalyStatus` 计算异常状态
+
+---
+
+### 3. 线上排查过程（Arthas）
+
+#### 3.1 入口耗时确认
+
+* `trace OutStationServiceImpl queryAnomalyStationListForExport -n 3`
+  + 单页（1000 条）耗时 ~13s
+  + 其中 `fillAnomalyStatus` 占比 >80%
+
+#### 3.2 单条耗时分析
+
+* `trace OutStationServiceImpl fillAnomalyStatus -n 5`
+  + 单条耗时 15~25ms
+  + 主要耗时来源：
+    - `loadAnomalyDetails()`（Feign 调异常明细）
+    - `loadRiskLevelMap()`（Feign 调风险等级配置）
+
+#### 3.3 远程调用频次确认
+
+* `monitor -c 5 OutStationServiceImpl loadAnomalyDetails`
+  + 5 秒内 300~500 次
+* `monitor -c 5 OutStationServiceImpl loadRiskLevelMap`
+  + 5 秒内 300~580 次
+
+**结论：**
+
+* 每条记录都会调用两次远程接口（异常明细 + 风险配置）。
+* 单次不慢，但调用次数巨大 → 形成总耗时 10s+。
+
+---
+
+### 4. 根因总结
+
+1. **`loadRiskLevelMap()` 每条调用一次**
+   * 实际是全局配置，可缓存。
+2. **`loadAnomalyDetails()` 每条调用一次**
+   * 导出每页 1000 条 → 1000 次 RPC。
+
+---
+
+### 5. 优化方案与落地
+
+#### 5.1 风险配置缓存（已实现）
+
+**优化点：**
+
+* 每页仅调用一次 `loadRiskLevelMap()`。
+* 通过重载 `fillAnomalyStatus` 传入缓存。
+
+**收益：**
+
+* 每页减少 1000 次 Feign 调用。
+
+#### 5.2 异常明细批量查询（已实现）
+
+**优化点：**
+
+* 增加 `/queryDetailsByStationIds` 接口。
+* 每页按 `stationIds` 一次拉取异常明细，再按 `stationId` 分组。
+* 导出侧使用批量结果，避免每条单独请求。
+
+**收益：**
+
+* 每页 1000 次 RPC → 1 次 RPC。
+* 预期单页耗时从 10~20s 降到 2~4s（主要保留本地计算）。
+
+#### 5.3 可选兜底（未实现，必要时可补）
+
+* 若批量接口失败，可回退到逐条查询。
+* 防止单页请求失败导致全部站点明细为空。
+
+---
+
+### 6. 重点代码改动
+
+#### 6.1 投资中心（导出侧）
+
+* `OutStationServiceImpl.queryAnomalyStationListForExport`
+  + 新增风险配置缓存
+  + 新增异常明细批量查询
+* 新增方法：
+  + `loadAnomalyDetailsMap(List<Long> stationIds)`
+  + `fillAnomalyStatus(reportVo, stationInfo, riskLevelMap, details)`
+
+#### 6.2 物业中心（后端接口）
+
+* 新增批量查询接口：
+  + `PropStationAnomalyController.queryDetailsByStationIds`
+  + `PropStationAnomalyDetailService.queryAnomalyDetailsByStationIds`
+  + `PropStationAnomalyDetailMapper.selectAnomalyDetailsByStationIds`
+  + `PropStationAnomalyDetailMapper.xml` 新增 SQL
+
+#### 6.3 Feign & DTO
+
+* `IPropStationAnomalyDetailServiceFeign` 新增 `queryDetailsByStationIds`
+* `PropStationAnomalyDetailFeignFallback` 新增兜底实现
+* `AnomalyDetailDTO` 增加字段 `stationId`（用于分组）
+
+---
+
+### 7. 验证建议（上线后）
+
+1. **确认风险配置调用次数下降**
+
+   ```
+   monitor -c 5 com.baie.investment.service.impl.OutStationServiceImpl loadRiskLevelMap
+
+
+   ```
+
+   预期：调用次数接近“每页 1 次”。
+2. **确认异常明细调用次数下降**
+
+   ```
+   monitor -c 5 com.baie.investment.service.impl.OutStationServiceImpl loadAnomalyDetails
+
+
+   ```
+
+   预期：调用次数显著下降（批量后接近 0）。
+3. **确认页级耗时下降**
+
+   ```
+   watch com.baie.investment.service.impl.OutStationServiceImpl queryAnomalyStationListForExport "{returnObj==null?0:returnObj.size()}" -n 3
+
+
+   ```
+
+---
+
+### 8. 风险与注意事项
+
+* 新增批量接口需要 **property-center 与 investmentplant-center 同步发布**。
+* 若批量接口异常，会影响整页明细结果（建议补兜底回退）。
+* `IN (...)` 大小受 DB 限制，当前 1000 条安全，未来如扩大需注意。
+
+---
+
+### 9. 结论
+
+本次导出慢问题的根因是“每条记录远程调用次数过多”。通过缓存风险配置 + 批量异常明细查询，显著减少 RPC 调用数量，从而大幅缩短导出耗时。

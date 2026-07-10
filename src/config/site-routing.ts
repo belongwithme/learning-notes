@@ -52,6 +52,27 @@ export const KnowledgeCategories: CategoryItem[] = [
     url: '/knowledge/engineering-practice/', 
     desc: '测试、交付、可观测性、代码质量和问题复盘方法。' 
   },
+  {
+    id: 'computer-fundamentals',
+    label: '计算机基础',
+    slug: 'knowledge/computer-fundamentals',
+    url: '/knowledge/computer-fundamentals/',
+    desc: '操作系统、计算机网络与 Web 基础协议。'
+  },
+  {
+    id: 'algorithms',
+    label: '数据结构与算法',
+    slug: 'knowledge/algorithms',
+    url: '/knowledge/algorithms/',
+    desc: '数据结构、图论、排序与常用算法思想。'
+  },
+  {
+    id: 'miscellaneous',
+    label: '其他',
+    slug: 'knowledge/miscellaneous',
+    url: '/knowledge/miscellaneous/',
+    desc: '暂时无法归入稳定专题、但仍需保留的历史文章。'
+  },
 ];
 
 export const TopLevelSections: CategoryItem[] = [

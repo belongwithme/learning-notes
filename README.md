@@ -60,7 +60,7 @@ title: Redis 分布式锁实践
 description: 分析常见失效场景及验证方法
 created: 2026-07-10
 updated: 2026-07-10
-category: distributed-system
+category: distributed-systems
 tags:
   - Redis
   - 并发控制
@@ -75,10 +75,21 @@ source: project-practice
 
 `contentType` 可选值：`knowledge`、`practice`、`retrospective`、`source-analysis`、`learning-path`。
 
+## CSDN 历史文章导入
+
+CSDN 导出文件位于 `/Users/wangyi/csdn-article-export/exports` 时，可使用项目内的可重复导入脚本：
+
+```bash
+node scripts/import-csdn.mjs
+```
+
+脚本会根据专栏和文章标题归类，生成 `src/content/docs/` 下的文章目录，补充统一元数据，清理 CSDN 代码行号和页面残留，并把正文引用的图片复制到文章旁边的 `assets/` 目录。首次导入的文章统一为 `status: draft`，导入报告写入 `scripts/csdn-import-report.json`。
+
+默认情况下已存在的文章会跳过；确认要重新生成时使用 `--force`。更换导出目录时使用 `--source /path/to/exports`。导入后运行 `npm run check` 和 `npm run build` 验收。
+
 ## 下一步
 
-1. 盘点现有 Markdown 笔记。
-2. 确认一级分类和标签边界。
-3. 选择首批 15～30 篇内容。
-4. 将审核通过的内容复制到本仓库。
-5. 配置 GitHub 远程仓库与线上部署。
+1. 按专题逐篇检查当前的 `draft` 文章。
+2. 为需要长期维护的文章补充版本边界、实验条件和验证证据。
+3. 将确认可靠的文章改为 `verified` 或 `evergreen`。
+4. 配置 GitHub 远程仓库与线上部署。

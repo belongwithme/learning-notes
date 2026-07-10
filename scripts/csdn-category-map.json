@@ -1,0 +1,111 @@
+{
+  "categories": {
+    "java-backend": {
+      "label": "Java 后端",
+      "description": "Java 语言、运行时、框架机制与后端工程实践。",
+      "base": "knowledge"
+    },
+    "database": {
+      "label": "数据库",
+      "description": "数据建模、查询机制、事务语义与性能诊断。",
+      "base": "knowledge"
+    },
+    "distributed-systems": {
+      "label": "分布式系统",
+      "description": "并发、消息、任务调度与可靠性边界。",
+      "base": "knowledge"
+    },
+    "system-design": {
+      "label": "系统设计",
+      "description": "从业务约束到技术方案，记录取舍依据与演进路径。",
+      "base": "knowledge"
+    },
+    "engineering-practice": {
+      "label": "工程实践",
+      "description": "测试、交付、可观测性、代码质量和问题复盘方法。",
+      "base": "knowledge"
+    },
+    "computer-fundamentals": {
+      "label": "计算机基础",
+      "description": "操作系统、计算机网络与 Web 基础协议。",
+      "base": "knowledge"
+    },
+    "algorithms": {
+      "label": "数据结构与算法",
+      "description": "数据结构、图论、排序与常用算法思想。",
+      "base": "knowledge"
+    },
+    "miscellaneous": {
+      "label": "其他",
+      "description": "暂时无法归入稳定专题、但仍需保留的历史文章。",
+      "base": "knowledge"
+    },
+    "retrospectives": {
+      "label": "问题复盘",
+      "description": "从现象、排查到根因、修复与预防的真实问题记录。",
+      "base": "retrospectives"
+    }
+  },
+  "albumToCategory": {
+    "MySQL": "database",
+    "mysql-bugs": "retrospectives",
+    "Redis": "distributed-systems",
+    "Kafka": "distributed-systems",
+    "JUC": "java-backend",
+    "JUC集合": "java-backend",
+    "集合": "java-backend",
+    "Java基础": "java-backend",
+    "JVM": "java-backend",
+    "Spring核心模块解析": "java-backend",
+    "设计模式": "java-backend",
+    "Jackson": "java-backend",
+    "操作系统": "computer-fundamentals",
+    "计算机网络": "computer-fundamentals",
+    "数据结构和算法": "algorithms",
+    "Git": "engineering-practice"
+  },
+  "titleRules": [
+    { "pattern": "异常.*复盘|重复问题|导出.*问题|bugs?专辑", "category": "retrospectives" },
+    { "pattern": "购物车.*设计|购物车.*实现", "category": "system-design" },
+    { "pattern": "数据库表设计|MySQL|mysql", "category": "database" },
+    { "pattern": "Redis|Kafka|CAP|BASE|缓存一致性|读写分离|分库分表|分布式", "category": "distributed-systems" },
+    { "pattern": "操作系统|计算机网络|HTTP|TCP|UDP|Nginx|用户态|内核态", "category": "computer-fundamentals" },
+    { "pattern": "算法|图论|队列|链表|数组|排序|堆排序|并查集|环检测|Dijkstra|DFS|BFS", "category": "algorithms" },
+    { "pattern": "Spring|Java|JUC|线程|并发|Lock|Condition|CompletableFuture|ThreadLocal|对象内存布局|DTO|DO|Enumeration|StackWalker|BeanDefinition|JDK|JVM", "category": "java-backend" },
+    { "pattern": "MinIO|交付", "category": "engineering-practice" }
+  ],
+  "articleOverrides": {
+    "128285043": "computer-fundamentals",
+    "128178707": "java-backend",
+    "129154666": "java-backend",
+    "129220415": "algorithms",
+    "130828424": "distributed-systems",
+    "131176456": "java-backend",
+    "131230561": "java-backend",
+    "131399623": "java-backend",
+    "131453315": "java-backend",
+    "131454099": "java-backend",
+    "132541601": "engineering-practice",
+    "137580987": "database",
+    "139635659": "java-backend",
+    "142023148": "java-backend",
+    "145480935": "algorithms",
+    "145482416": "algorithms",
+    "145498578": "algorithms",
+    "145502422": "algorithms",
+    "145621525": "algorithms",
+    "145654066": "algorithms",
+    "145656720": "algorithms",
+    "145986524": "distributed-systems",
+    "145986588": "distributed-systems",
+    "145987791": "distributed-systems",
+    "146005123": "distributed-systems",
+    "146005145": "distributed-systems",
+    "146237586": "java-backend",
+    "147057384": "java-backend",
+    "147133289": "computer-fundamentals",
+    "147280008": "java-backend",
+    "157725729": "retrospectives",
+    "137556200": "miscellaneous"
+  }
+}

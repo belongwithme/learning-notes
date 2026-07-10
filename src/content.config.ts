@@ -12,6 +12,8 @@ export const collections = {
 				updated: z.coerce.date().optional(),
 				category: z.string().optional(),
 				tags: z.array(z.string()).default([]),
+				sourceId: z.string().optional(),
+				sourceSeries: z.array(z.string()).default([]),
 				status: z.enum(['draft', 'verified', 'evergreen', 'outdated']).optional(),
 				difficulty: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
 				contentType: z

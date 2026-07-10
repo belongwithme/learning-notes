@@ -18,23 +18,27 @@ export default defineConfig({
 			},
 			customCss: ['./src/styles/custom.css'],
 			credits: false,
-			lastUpdated: true,
-			sidebar: [
-				{
-					label: '专题索引',
-					items: [
-						{ label: '全部专题', slug: TopLevelSections.find(s => s.id === 'knowledge')?.slug || 'knowledge' },
-						...KnowledgeCategories.map(cat => ({ label: cat.label, slug: cat.slug })),
-					],
-				},
-				{
-					label: '探索',
-					items: TopLevelSections.filter(s => s.id !== 'knowledge').map(s => ({
-						label: s.label,
-						slug: s.slug,
-					})),
-				},
-			],
+				lastUpdated: true,
+				sidebar: [
+					{
+						label: '专题索引',
+						items: [
+							{ label: '全部专题', slug: TopLevelSections.find(s => s.id === 'knowledge')?.slug || 'knowledge' },
+							...KnowledgeCategories.map(cat => ({
+								label: cat.label,
+								items: [{ autogenerate: { directory: cat.slug, collapsed: true } }],
+							})),
+						],
+					},
+					{
+						label: '探索',
+						items: [
+							{ label: '学习路线', slug: 'learning-paths' },
+							{ label: '问题复盘', items: [{ autogenerate: { directory: 'retrospectives', collapsed: true } }] },
+							{ label: '关于本站', slug: 'about' },
+						],
+					},
+				],
 		}),
 	],
 });
