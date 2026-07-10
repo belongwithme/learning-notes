@@ -1,9 +1,9 @@
 ---
-// HomeCardGrid.astro
+import { Routes } from '../config/site-routing';
 ---
 
 <div class="home-card-grid">
-  <a class="home-card home-card--dark home-card--large" href="/knowledge/">
+  <a class="home-card home-card--dark home-card--large" href={Routes.Knowledge}>
     <div class="home-card-topline">
       <span>01 / KNOWLEDGE</span>
       <span aria-hidden="true">↗</span>
@@ -15,7 +15,7 @@
     </div>
   </a>
 
-  <a class="home-card home-card--soft" href="/learning-paths/">
+  <a class="home-card home-card--soft" href={Routes.LearningPaths}>
     <div class="home-card-topline">
       <span>02 / PATHS</span>
       <span aria-hidden="true">↗</span>
@@ -27,7 +27,7 @@
     </div>
   </a>
 
-  <a class="home-card home-card--blue" href="/retrospectives/">
+  <a class="home-card home-card--blue" href={Routes.Retrospectives}>
     <div class="home-card-topline">
       <span>03 / RETROSPECTIVES</span>
       <span aria-hidden="true">↗</span>
@@ -39,3 +39,161 @@
     </div>
   </a>
 </div>
+
+<style>
+.home-card-grid {
+	display: grid;
+	grid-template-columns: 1.28fr 0.72fr;
+	gap: 1.25rem;
+}
+
+.home-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	min-height: 34rem;
+	padding: clamp(1.7rem, 3vw, 2.6rem);
+	border: 0;
+	border-radius: 2rem;
+	overflow: hidden;
+	text-decoration: none;
+	box-shadow: none;
+	transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 320ms ease;
+}
+
+.home-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 24px 60px rgba(0, 0, 0, 0.1);
+}
+
+.home-card:focus-visible {
+	outline: 3px solid #0071e3;
+	outline-offset: 4px;
+}
+
+.home-card-topline {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.7rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	opacity: 0.72;
+}
+
+.home-card-topline span:last-child {
+	font-size: 1.15rem;
+	font-weight: 400;
+	letter-spacing: 0;
+	transition: transform 240ms ease;
+}
+
+.home-card:hover .home-card-topline span:last-child {
+	transform: translate(3px, -3px);
+}
+
+.home-card-label {
+	margin-bottom: 1rem !important;
+	font-size: 0.9rem;
+	font-weight: 600;
+	opacity: 0.74;
+}
+
+.home-card h3 {
+	max-width: 10ch;
+	font-size: clamp(2.5rem, 4.8vw, 4.7rem);
+	font-weight: 620;
+	line-height: 0.98;
+	letter-spacing: -0.06em;
+}
+
+.home-card > div:last-child > p:last-child {
+	max-width: 34rem;
+	margin-top: 1.7rem;
+	font-size: 1.04rem;
+	line-height: 1.5;
+	opacity: 0.7;
+}
+
+.home-card--dark {
+	color: #f5f5f7;
+	background:
+		radial-gradient(circle at 84% 18%, rgba(255, 255, 255, 0.14), transparent 15rem),
+		#000000;
+}
+
+.home-card--dark :is(h3, p, span),
+.home-card--blue :is(h3, p, span) {
+	color: inherit;
+}
+
+.home-card--soft {
+	color: #1d1d1f;
+	background: #f5f5f7;
+}
+
+.home-card--soft h3 {
+	font-size: clamp(2.3rem, 4vw, 3.9rem);
+}
+
+.home-card--blue {
+	grid-column: 1 / -1;
+	min-height: 31rem;
+	color: #ffffff;
+	background:
+		radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.28), transparent 19rem),
+		linear-gradient(145deg, #0071e3 0%, #0062c4 100%);
+}
+
+.home-card--blue h3 {
+	max-width: 13ch;
+}
+
+:global(:root[data-theme='dark']) .home-card--soft {
+	color: #f5f5f7;
+	background: #1c1c1e;
+}
+
+@media (max-width: 50rem) {
+	.home-card-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.home-card,
+	.home-card--blue {
+		grid-column: auto;
+		min-height: 29rem;
+		border-radius: 1.6rem;
+	}
+
+	.home-card h3,
+	.home-card--soft h3 {
+		font-size: clamp(2.4rem, 11vw, 3.7rem);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.home-card,
+	.home-card-topline span:last-child {
+		transition: none;
+	}
+}
+
+.home-card--dark {
+	background:
+		radial-gradient(circle at 84% 18%, rgba(255, 254, 242, 0.12), transparent 15rem),
+		var(--home-ink);
+}
+
+.home-card--soft,
+:global(:root[data-theme='dark']) .home-card--soft {
+	color: var(--home-ink);
+	background: var(--home-paper-deep);
+}
+
+.home-card--blue {
+	background:
+		radial-gradient(circle at 78% 18%, rgba(255, 254, 242, 0.18), transparent 19rem),
+		linear-gradient(145deg, #315a45 0%, var(--home-green) 100%);
+}
+</style>

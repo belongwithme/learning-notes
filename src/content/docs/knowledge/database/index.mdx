@@ -9,16 +9,23 @@ tableOfContents:
   maxHeadingLevel: 2
 ---
 
-<p class="archive-kicker">COLLECTION 02 · DATABASE</p>
+import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
+import ArchiveScopeList from '../../../../components/ArchiveScopeList.astro';
+import ArchiveStatus from '../../../../components/ArchiveStatus.astro';
+
+<ArchiveKicker title="COLLECTION 02 · DATABASE" />
 
 ## 收录范围
 
-<div class="archive-scope-list">
-	<div><span>01</span><strong>数据建模</strong><p>表结构、约束、生命周期和业务语义。</p></div>
-	<div><span>02</span><strong>查询机制</strong><p>索引、执行计划与性能诊断。</p></div>
-	<div><span>03</span><strong>事务一致性</strong><p>隔离级别、锁和并发修改边界。</p></div>
-</div>
+<ArchiveScopeList items={[
+	{ number: '01', title: '数据建模', description: '表结构、约束、生命周期和业务语义。' },
+	{ number: '02', title: '查询机制', description: '索引、执行计划与性能诊断。' },
+	{ number: '03', title: '事务一致性', description: '隔离级别、锁和并发修改边界。' }
+]} />
 
 ## 内容状态
 
-<div class="archive-empty"><span>ARCHIVE IN PROGRESS</span><div><strong>目录已经建立，文章正在筛选和整理。</strong><p>内容发布前会补齐数据依据、实验条件与验证方法。</p></div></div>
+<ArchiveStatus 
+	title="目录已经建立，文章正在筛选和整理。" 
+	description="内容发布前会补齐数据依据、实验条件与验证方法。" 
+/>

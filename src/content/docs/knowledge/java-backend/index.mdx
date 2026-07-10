@@ -9,19 +9,23 @@ tableOfContents:
   maxHeadingLevel: 2
 ---
 
-<p class="archive-kicker">COLLECTION 01 · JAVA BACKEND</p>
+import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
+import ArchiveScopeList from '../../../../components/ArchiveScopeList.astro';
+import ArchiveStatus from '../../../../components/ArchiveStatus.astro';
+
+<ArchiveKicker title="COLLECTION 01 · JAVA BACKEND" />
 
 ## 收录范围
 
-<div class="archive-scope-list">
-	<div><span>01</span><strong>语言与运行时</strong><p>JVM、并发、内存模型与语言机制。</p></div>
-	<div><span>02</span><strong>框架机制</strong><p>Spring、事务、拦截器与框架边界。</p></div>
-	<div><span>03</span><strong>工程问题</strong><p>从真实现象到根因、修复与验证。</p></div>
-</div>
+<ArchiveScopeList items={[
+	{ number: '01', title: '语言与运行时', description: 'JVM、并发、内存模型与语言机制。' },
+	{ number: '02', title: '框架机制', description: 'Spring、事务、拦截器与框架边界。' },
+	{ number: '03', title: '工程问题', description: '从真实现象到根因、修复与验证。' }
+]} />
 
 ## 内容状态
 
-<div class="archive-empty">
-	<span>ARCHIVE IN PROGRESS</span>
-	<div><strong>目录已经建立，文章正在筛选和整理。</strong><p>首批内容将优先选择经过代码、实验或项目结果验证的笔记。</p></div>
-</div>
+<ArchiveStatus 
+	title="目录已经建立，文章正在筛选和整理。" 
+	description="首批内容将优先选择经过代码、实验或项目结果验证的笔记。" 
+/>

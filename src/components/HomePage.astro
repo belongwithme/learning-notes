@@ -1,0 +1,278 @@
+---
+import HomeCardGrid from './HomeCardGrid.astro';
+import PrincipleList from './PrincipleList.astro';
+import { Routes } from '../config/site-routing';
+---
+
+<div class="home-page">
+	<section class="home-intro" aria-labelledby="home-intro-title">
+		<p class="home-kicker">WHY THIS EXISTS</p>
+		<h2 id="home-intro-title">不是收藏更多。<br />是理解得更深。</h2>
+		<p class="home-intro-copy">
+			这里记录的不只是答案，还有问题从哪里来、判断如何形成，以及结论怎样被验证。
+			每一条知识都应该能被找到、被复用，也经得起时间的重新审视。
+		</p>
+	</section>
+
+	<PrincipleList
+		className="home-principles"
+		ariaLabel="内容原则"
+		principles={[
+			{ number: "01", title: "结构化", desc: "从零散记录到清晰的知识边界。" },
+			{ number: "02", title: "可验证", desc: "区分理解、证据与实践结果。" },
+			{ number: "03", title: "持续更新", desc: "让知识保持状态，而不是被遗忘。" },
+		]}
+	/>
+
+	<section class="home-section" aria-labelledby="explore-title">
+		<div class="home-section-heading">
+			<p class="home-kicker">EXPLORE</p>
+			<h2 id="explore-title">沿着思考的脉络，<br />找到真正需要的内容。</h2>
+		</div>
+
+		<HomeCardGrid />
+	</section>
+
+	<section class="home-process" aria-labelledby="process-title">
+		<div class="home-section-heading home-section-heading--light">
+			<p class="home-kicker">THE METHOD</p>
+			<h2 id="process-title">知识不是写完的。<br />是逐步成熟的。</h2>
+		</div>
+
+		<ol class="home-process-list">
+			<li>
+				<span>01</span>
+				<div><strong>记录</strong><p>保留问题发生时最真实的上下文。</p></div>
+			</li>
+			<li>
+				<span>02</span>
+				<div><strong>验证</strong><p>用资料、代码、实验或项目结果确认判断。</p></div>
+			</li>
+			<li>
+				<span>03</span>
+				<div><strong>连接</strong><p>补充前置知识、相关主题与适用边界。</p></div>
+			</li>
+			<li>
+				<span>04</span>
+				<div><strong>维护</strong><p>持续标记变化，让过期结论不再伪装成答案。</p></div>
+			</li>
+		</ol>
+	</section>
+
+	<section class="home-closing" aria-labelledby="closing-title">
+		<p class="home-kicker">KEEP LEARNING</p>
+		<h2 id="closing-title">每一次认真记录，<br />都在构建未来的判断力。</h2>
+		<a class="home-text-link" href={Routes.Knowledge}>进入知识库 <span aria-hidden="true">→</span></a>
+	</section>
+</div>
+
+<style>
+.home-page {
+	--home-max: 76rem;
+	color: #1d1d1f;
+}
+
+.home-page :is(h2, h3, p) {
+	margin: 0;
+}
+
+.home-intro,
+.home-section,
+.home-closing {
+	max-width: var(--home-max);
+	margin: 0 auto;
+	padding-inline: clamp(1.5rem, 5vw, 3rem);
+}
+
+.home-intro {
+	padding-top: clamp(8rem, 15vw, 13rem);
+	padding-bottom: clamp(5rem, 10vw, 8rem);
+}
+
+.home-kicker {
+	font-size: 0.72rem;
+	font-weight: 700;
+	line-height: 1.2;
+	letter-spacing: 0.16em;
+	color: #86868b;
+}
+
+.home-intro h2,
+.home-section-heading h2,
+.home-closing h2 {
+	margin-top: 1.35rem;
+	font-size: clamp(3rem, 6.4vw, 6rem);
+	font-weight: 650;
+	line-height: 0.98;
+	letter-spacing: -0.065em;
+}
+
+.home-intro-copy {
+	max-width: 42rem;
+	margin-top: clamp(2.5rem, 5vw, 4.5rem) !important;
+	margin-left: auto !important;
+	font-size: clamp(1.15rem, 2vw, 1.45rem);
+	line-height: 1.55;
+	letter-spacing: -0.028em;
+	color: #6e6e73;
+}
+
+.home-section {
+	padding-bottom: clamp(8rem, 14vw, 13rem);
+}
+
+.home-section-heading {
+	max-width: 62rem;
+	margin-bottom: clamp(3rem, 6vw, 5.5rem);
+}
+
+.home-section-heading h2 {
+	font-size: clamp(2.8rem, 5.8vw, 5.4rem);
+}
+
+.home-process {
+	padding: clamp(8rem, 14vw, 13rem) max(1.5rem, calc((100vw - 70rem) / 2));
+	color: #f5f5f7;
+	background: #000000;
+}
+
+.home-section-heading--light .home-kicker,
+.home-section-heading--light h2 {
+	color: #f5f5f7;
+}
+
+.home-process-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border-top: 1px solid #424245;
+}
+
+.home-process-list li {
+	display: grid;
+	grid-template-columns: 5rem 1fr;
+	gap: 1rem;
+	padding: 2rem 0;
+	border-bottom: 1px solid #2c2c2e;
+}
+
+.home-process-list > li > span {
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	color: #86868b;
+}
+
+.home-process-list li div {
+	display: grid;
+	grid-template-columns: minmax(10rem, 0.6fr) 1fr;
+	gap: 2rem;
+}
+
+.home-process-list strong {
+	font-size: clamp(1.55rem, 2.6vw, 2.25rem);
+	font-weight: 550;
+	letter-spacing: -0.035em;
+}
+
+.home-process-list p {
+	max-width: 28rem;
+	font-size: 1rem;
+	line-height: 1.55;
+	color: #a1a1a6;
+}
+
+.home-closing {
+	padding-top: clamp(9rem, 17vw, 16rem);
+	padding-bottom: clamp(9rem, 17vw, 16rem);
+	text-align: center;
+}
+
+.home-closing h2 {
+	max-width: 14ch;
+	margin-inline: auto;
+	font-size: clamp(3rem, 6.6vw, 6.2rem);
+}
+
+.home-text-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: 2.8rem;
+	font-size: 1.12rem;
+	font-weight: 500;
+	color: #0066cc;
+	text-decoration: none;
+}
+
+.home-text-link span {
+	transition: transform 180ms ease;
+}
+
+.home-text-link:hover span {
+	transform: translateX(4px);
+}
+
+:global(:root[data-theme='dark']) .home-page {
+	color: #f5f5f7;
+}
+
+:global(:root[data-theme='dark']) .home-intro,
+:global(:root[data-theme='dark']) .home-section,
+:global(:root[data-theme='dark']) .home-closing {
+	color: #f5f5f7;
+}
+
+@media (max-width: 50rem) {
+	.home-process-list li {
+		grid-template-columns: 2.5rem 1fr;
+	}
+
+	.home-process-list li div {
+		grid-template-columns: 1fr;
+		gap: 0.7rem;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.home-text-link span {
+		transition: none;
+	}
+}
+
+.home-page,
+:global(:root[data-theme='dark']) .home-page,
+:global(:root[data-theme='dark']) .home-intro,
+:global(:root[data-theme='dark']) .home-section,
+:global(:root[data-theme='dark']) .home-closing {
+	color: var(--home-ink);
+}
+
+.home-kicker {
+	color: var(--home-green);
+}
+
+.home-intro-copy {
+	color: var(--home-muted);
+}
+
+.home-process {
+	background: var(--home-ink);
+}
+
+.home-process-list {
+	border-top-color: #56544c;
+}
+
+.home-process-list li {
+	border-bottom-color: #34342f;
+}
+
+.home-process-list p {
+	color: #aaa79b;
+}
+
+.home-text-link {
+	color: var(--home-green);
+}
+</style>

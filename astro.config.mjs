@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import { KnowledgeCategories, TopLevelSections } from './src/config/site-routing';
 
 // https://astro.build/config
 export default defineConfig({
@@ -22,21 +23,16 @@ export default defineConfig({
 				{
 					label: '专题索引',
 					items: [
-						{ label: '全部专题', slug: 'knowledge' },
-						{ label: 'Java 后端', slug: 'knowledge/java-backend' },
-						{ label: '数据库', slug: 'knowledge/database' },
-						{ label: '分布式系统', slug: 'knowledge/distributed-systems' },
-						{ label: '系统设计', slug: 'knowledge/system-design' },
-						{ label: '工程实践', slug: 'knowledge/engineering-practice' },
+						{ label: '全部专题', slug: TopLevelSections.find(s => s.id === 'knowledge')?.slug },
+						...KnowledgeCategories.map(cat => ({ label: cat.label, slug: cat.slug })),
 					],
 				},
 				{
 					label: '探索',
-					items: [
-						{ label: '学习路线', slug: 'learning-paths' },
-						{ label: '问题复盘', slug: 'retrospectives' },
-						{ label: '关于本站', slug: 'about' },
-					],
+					items: TopLevelSections.filter(s => s.id !== 'knowledge').map(s => ({
+						label: s.label,
+						slug: s.slug,
+					})),
 				},
 			],
 		}),

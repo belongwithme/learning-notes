@@ -13,19 +13,14 @@ sidebar:
 
 import ArchiveDirectory from '../../../components/ArchiveDirectory.astro';
 import PrincipleList from '../../../components/PrincipleList.astro';
+import { KnowledgeCategories } from '../../../config/site-routing';
 
 <p class="archive-kicker">COLLECTION INDEX · 2026</p>
 
 ## 专题目录
 
 <ArchiveDirectory 
-	categories={[
-		{ title: 'Java 后端', desc: '语言与运行时、框架机制、数据一致性和真实工程问题。', url: '/knowledge/java-backend/' },
-		{ title: '数据库', desc: '数据建模、查询机制、事务语义和性能诊断。', url: '/knowledge/database/' },
-		{ title: '分布式系统', desc: '并发、消息、任务调度、可靠性与系统边界。', url: '/knowledge/distributed-systems/' },
-		{ title: '系统设计', desc: '从业务约束到技术方案，记录取舍依据与演进路径。', url: '/knowledge/system-design/' },
-		{ title: '工程实践', desc: '测试、交付、可观测性、代码质量和问题复盘方法。', url: '/knowledge/engineering-practice/' }
-	]}
+	categories={KnowledgeCategories.map(cat => ({ title: cat.label, desc: cat.desc, url: cat.url }))}
 />
 
 ## 建设原则

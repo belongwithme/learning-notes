@@ -23,3 +23,88 @@ const { className = "home-principles", ariaLabel, principles } = Astro.props;
     </div>
   ))}
 </div>
+
+<style>
+.home-principles {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	max-width: var(--home-max);
+	margin: 0 auto clamp(9rem, 15vw, 14rem);
+	padding-inline: clamp(1.5rem, 5vw, 3rem);
+}
+
+.home-principles > div {
+	padding: 2rem 2.2rem 2.4rem;
+	border-top: 1px solid #d2d2d7;
+}
+
+.home-principles > div + div {
+	border-left: 1px solid #e8e8ed;
+}
+
+.home-principles span {
+	display: block;
+	margin-bottom: 3.5rem;
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	color: #86868b;
+}
+
+.home-principles strong {
+	display: block;
+	font-size: 1.2rem;
+	font-weight: 600;
+}
+
+.home-principles p {
+	margin-top: 0.65rem;
+	font-size: 0.98rem;
+	line-height: 1.5;
+	color: #6e6e73;
+}
+
+:global(:root[data-theme='dark']) .home-principles {
+	color: #f5f5f7;
+}
+
+:global(:root[data-theme='dark']) .home-principles > div {
+	border-color: #424245;
+}
+
+:global(:root[data-theme='dark']) .home-principles > div + div {
+	border-left-color: #2c2c2e;
+}
+
+@media (max-width: 50rem) {
+	.home-principles {
+		grid-template-columns: 1fr;
+	}
+
+	.home-principles > div {
+		padding-inline: 0;
+	}
+
+	.home-principles > div + div {
+		border-left: 0;
+	}
+
+	.home-principles span {
+		margin-bottom: 1.7rem;
+	}
+}
+
+.home-principles p {
+	color: var(--home-muted);
+}
+
+.home-principles > div,
+:global(:root[data-theme='dark']) .home-principles > div {
+	border-color: var(--home-line);
+}
+
+.home-principles > div + div,
+:global(:root[data-theme='dark']) .home-principles > div + div {
+	border-left-color: #e4dfcf;
+}
+</style>

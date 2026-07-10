@@ -9,16 +9,23 @@ tableOfContents:
   maxHeadingLevel: 2
 ---
 
-<p class="archive-kicker">COLLECTION 03 · DISTRIBUTED SYSTEMS</p>
+import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
+import ArchiveScopeList from '../../../../components/ArchiveScopeList.astro';
+import ArchiveStatus from '../../../../components/ArchiveStatus.astro';
+
+<ArchiveKicker title="COLLECTION 03 · DISTRIBUTED SYSTEMS" />
 
 ## 收录范围
 
-<div class="archive-scope-list">
-	<div><span>01</span><strong>协调与并发</strong><p>锁、幂等、状态竞争与正确性边界。</p></div>
-	<div><span>02</span><strong>消息与任务</strong><p>异步处理、调度、重试和背压控制。</p></div>
-	<div><span>03</span><strong>可靠性</strong><p>故障隔离、降级、恢复与可观测性。</p></div>
-</div>
+<ArchiveScopeList items={[
+	{ number: '01', title: '协调与并发', description: '锁、幂等、状态竞争与正确性边界。' },
+	{ number: '02', title: '消息与任务', description: '异步处理、调度、重试和背压控制。' },
+	{ number: '03', title: '可靠性', description: '故障隔离、降级、恢复与可观测性。' }
+]} />
 
 ## 内容状态
 
-<div class="archive-empty"><span>ARCHIVE IN PROGRESS</span><div><strong>目录已经建立，文章正在筛选和整理。</strong><p>每篇内容会明确故障模型、适用范围与验证证据。</p></div></div>
+<ArchiveStatus 
+	title="目录已经建立，文章正在筛选和整理。" 
+	description="每篇内容会明确故障模型、适用范围与验证证据。" 
+/>

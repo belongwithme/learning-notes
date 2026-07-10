@@ -9,16 +9,23 @@ tableOfContents:
   maxHeadingLevel: 2
 ---
 
-<p class="archive-kicker">COLLECTION 05 · ENGINEERING PRACTICE</p>
+import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
+import ArchiveScopeList from '../../../../components/ArchiveScopeList.astro';
+import ArchiveStatus from '../../../../components/ArchiveStatus.astro';
+
+<ArchiveKicker title="COLLECTION 05 · ENGINEERING PRACTICE" />
 
 ## 收录范围
 
-<div class="archive-scope-list">
-	<div><span>01</span><strong>质量验证</strong><p>测试策略、验收证据和回归检查。</p></div>
-	<div><span>02</span><strong>交付流程</strong><p>版本、自动化构建与发布纪律。</p></div>
-	<div><span>03</span><strong>问题复盘</strong><p>现象、排查、根因、修复与预防。</p></div>
-</div>
+<ArchiveScopeList items={[
+	{ number: '01', title: '质量验证', description: '测试策略、验收证据和回归检查。' },
+	{ number: '02', title: '交付流程', description: '版本、自动化构建与发布纪律。' },
+	{ number: '03', title: '问题复盘', description: '现象、排查、根因、修复与预防。' }
+]} />
 
 ## 内容状态
 
-<div class="archive-empty"><span>ARCHIVE IN PROGRESS</span><div><strong>目录已经建立，文章正在筛选和整理。</strong><p>首批内容会优先沉淀可以直接复用的检查方法与实践模板。</p></div></div>
+<ArchiveStatus 
+	title="目录已经建立，文章正在筛选和整理。" 
+	description="首批内容会优先沉淀可以直接复用的检查方法与实践模板。" 
+/>

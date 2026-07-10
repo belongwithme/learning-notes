@@ -1,0 +1,20 @@
+---
+interface ScopeItem {
+	number: string;
+	title: string;
+	description: string;
+}
+interface Props {
+	items: ScopeItem[];
+}
+const { items } = Astro.props;
+---
+<div class="archive-scope-list">
+	{items.map(item => (
+		<div>
+			<span>{item.number}</span>
+			<strong>{item.title}</strong>
+			<p>{item.description}</p>
+		</div>
+	))}
+</div>

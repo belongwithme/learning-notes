@@ -1,0 +1,15 @@
+---
+interface Props {
+	status?: string;
+	title: string;
+	description: string;
+}
+const { status = 'ARCHIVE IN PROGRESS', title, description } = Astro.props;
+---
+<div class="archive-empty">
+	<span>{status}</span>
+	<div>
+		<strong>{title}</strong>
+		<p>{description}</p>
+	</div>
+</div>
