@@ -14,6 +14,9 @@ hero:
       variant: minimal
 ---
 
+import HomeCardGrid from '../../components/HomeCardGrid.astro';
+import PrincipleList from '../../components/PrincipleList.astro';
+
 <div class="home-page">
 	<section class="home-intro" aria-labelledby="home-intro-title">
 		<p class="home-kicker">WHY THIS EXISTS</p>
@@ -24,23 +27,15 @@ hero:
 		</p>
 	</section>
 
-	<section class="home-principles" aria-label="内容原则">
-		<div>
-			<span>01</span>
-			<strong>结构化</strong>
-			<p>从零散记录到清晰的知识边界。</p>
-		</div>
-		<div>
-			<span>02</span>
-			<strong>可验证</strong>
-			<p>区分理解、证据与实践结果。</p>
-		</div>
-		<div>
-			<span>03</span>
-			<strong>持续更新</strong>
-			<p>让知识保持状态，而不是被遗忘。</p>
-		</div>
-	</section>
+	<PrincipleList
+		className="home-principles"
+		ariaLabel="内容原则"
+		principles={[
+			{ number: "01", title: "结构化", desc: "从零散记录到清晰的知识边界。" },
+			{ number: "02", title: "可验证", desc: "区分理解、证据与实践结果。" },
+			{ number: "03", title: "持续更新", desc: "让知识保持状态，而不是被遗忘。" },
+		]}
+	/>
 
 	<section class="home-section" aria-labelledby="explore-title">
 		<div class="home-section-heading">
@@ -48,43 +43,7 @@ hero:
 			<h2 id="explore-title">沿着思考的脉络，<br />找到真正需要的内容。</h2>
 		</div>
 
-		<div class="home-card-grid">
-			<a class="home-card home-card--dark home-card--large" href="/knowledge/">
-				<div class="home-card-topline">
-					<span>01 / KNOWLEDGE</span>
-					<span aria-hidden="true">↗</span>
-				</div>
-				<div>
-					<p class="home-card-label">知识专题</p>
-					<h3>理解原理，<br />也理解边界。</h3>
-					<p>按稳定的技术领域，组织经过整理和验证的长期知识。</p>
-				</div>
-			</a>
-
-			<a class="home-card home-card--soft" href="/learning-paths/">
-				<div class="home-card-topline">
-					<span>02 / PATHS</span>
-					<span aria-hidden="true">↗</span>
-				</div>
-				<div>
-					<p class="home-card-label">学习路线</p>
-					<h3>从一篇笔记，<br />走向完整能力。</h3>
-					<p>明确目标、前置知识与阅读顺序，让学习不再随机发生。</p>
-				</div>
-			</a>
-
-			<a class="home-card home-card--blue" href="/retrospectives/">
-				<div class="home-card-topline">
-					<span>03 / RETROSPECTIVES</span>
-					<span aria-hidden="true">↗</span>
-				</div>
-				<div>
-					<p class="home-card-label">问题复盘</p>
-					<h3>结论很重要。<br />抵达结论的过程更重要。</h3>
-					<p>完整保留现象、排查、根因、方案与验证，让经验真正可复用。</p>
-				</div>
-			</a>
-		</div>
+		<HomeCardGrid />
 	</section>
 
 	<section class="home-process" aria-labelledby="process-title">

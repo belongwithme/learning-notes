@@ -1,0 +1,25 @@
+---
+interface Principle {
+  number: string;
+  title: string;
+  desc: string;
+}
+
+interface Props {
+  className?: string;
+  ariaLabel?: string;
+  principles: Principle[];
+}
+
+const { className = "home-principles", ariaLabel, principles } = Astro.props;
+---
+
+<div class={className} aria-label={ariaLabel}>
+  {principles.map(p => (
+    <div>
+      <span>{p.number}</span>
+      <strong>{p.title}</strong>
+      <p>{p.desc}</p>
+    </div>
+  ))}
+</div>

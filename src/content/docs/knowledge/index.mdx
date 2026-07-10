@@ -11,79 +11,30 @@ sidebar:
   order: 1
 ---
 
+import ArchiveDirectory from '../../../components/ArchiveDirectory.astro';
+import PrincipleList from '../../../components/PrincipleList.astro';
+
 <p class="archive-kicker">COLLECTION INDEX · 2026</p>
 
 ## 专题目录
 
-<div class="archive-directory" role="list">
-	<div class="archive-directory-head" aria-hidden="true">
-		<span>编号</span>
-		<span>知识领域</span>
-		<span>建设状态</span>
-	</div>
-
-	<a class="archive-directory-row" href="/knowledge/java-backend/" role="listitem">
-		<span class="archive-directory-number">01</span>
-		<span class="archive-directory-main">
-			<strong>Java 后端</strong>
-			<small>语言与运行时、框架机制、数据一致性和真实工程问题。</small>
-		</span>
-		<span class="archive-directory-status">目录就绪</span>
-	</a>
-
-	<a class="archive-directory-row" href="/knowledge/database/" role="listitem">
-		<span class="archive-directory-number">02</span>
-		<span class="archive-directory-main">
-			<strong>数据库</strong>
-			<small>数据建模、查询机制、事务语义和性能诊断。</small>
-		</span>
-		<span class="archive-directory-status">目录就绪</span>
-	</a>
-
-	<a class="archive-directory-row" href="/knowledge/distributed-systems/" role="listitem">
-		<span class="archive-directory-number">03</span>
-		<span class="archive-directory-main">
-			<strong>分布式系统</strong>
-			<small>并发、消息、任务调度、可靠性与系统边界。</small>
-		</span>
-		<span class="archive-directory-status">目录就绪</span>
-	</a>
-
-	<a class="archive-directory-row" href="/knowledge/system-design/" role="listitem">
-		<span class="archive-directory-number">04</span>
-		<span class="archive-directory-main">
-			<strong>系统设计</strong>
-			<small>从业务约束到技术方案，记录取舍依据与演进路径。</small>
-		</span>
-		<span class="archive-directory-status">目录就绪</span>
-	</a>
-
-	<a class="archive-directory-row" href="/knowledge/engineering-practice/" role="listitem">
-		<span class="archive-directory-number">05</span>
-		<span class="archive-directory-main">
-			<strong>工程实践</strong>
-			<small>测试、交付、可观测性、代码质量和问题复盘方法。</small>
-		</span>
-		<span class="archive-directory-status">目录就绪</span>
-	</a>
-</div>
+<ArchiveDirectory 
+	categories={[
+		{ title: 'Java 后端', desc: '语言与运行时、框架机制、数据一致性和真实工程问题。', url: '/knowledge/java-backend/' },
+		{ title: '数据库', desc: '数据建模、查询机制、事务语义和性能诊断。', url: '/knowledge/database/' },
+		{ title: '分布式系统', desc: '并发、消息、任务调度、可靠性与系统边界。', url: '/knowledge/distributed-systems/' },
+		{ title: '系统设计', desc: '从业务约束到技术方案，记录取舍依据与演进路径。', url: '/knowledge/system-design/' },
+		{ title: '工程实践', desc: '测试、交付、可观测性、代码质量和问题复盘方法。', url: '/knowledge/engineering-practice/' }
+	]}
+/>
 
 ## 建设原则
 
-<div class="archive-principles">
-	<div>
-		<span>01</span>
-		<strong>从问题出发</strong>
-		<p>先说明要解决什么，再展开原理、方案和适用边界。</p>
-	</div>
-	<div>
-		<span>02</span>
-		<strong>保留证据</strong>
-		<p>区分个人理解、资料结论、代码验证与项目实践结果。</p>
-	</div>
-	<div>
-		<span>03</span>
-		<strong>持续维护</strong>
-		<p>明确内容状态，让过期知识不再伪装成可靠答案。</p>
-	</div>
-</div>
+<PrincipleList 
+	className="archive-principles"
+	principles={[
+		{ number: '01', title: '从问题出发', desc: '先说明要解决什么，再展开原理、方案和适用边界。' },
+		{ number: '02', title: '保留证据', desc: '区分个人理解、资料结论、代码验证与项目实践结果。' },
+		{ number: '03', title: '持续维护', desc: '明确内容状态，让过期知识不再伪装成可靠答案。' }
+	]}
+/>

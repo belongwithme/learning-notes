@@ -10,6 +10,7 @@ export default defineConfig({
 			description: '记录、验证和沉淀可复用的技术知识',
 			components: {
 				Head: './src/components/SpeedInsights.astro',
+				PageTitle: './src/components/CustomPageTitle.astro',
 			},
 			locales: {
 				root: { label: '简体中文', lang: 'zh-CN' },

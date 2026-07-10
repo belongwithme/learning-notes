@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Category {
+  title: string;
+  desc: string;
+  url: string;
+}
+
+interface Props {
+  categories: Category[];
+}
+
+const { categories } = Astro.props;
+
+// 获取所有的 docs
+const allDocs = await getCollection('docs');
+
+// 根据分类路径计算统计信息
+function getCategoryStats(urlPrefix: string) {
+  // Starlight 路由格式通常与文件夹结构一致
+  // 例如 urlPrefix 是 '/knowledge/java-backend/'，则对应的目录结构前缀是 'knowledge/java-backend'
+  const prefix = urlPrefix.replace(/^\//, '').replace(/\/$/, '');
+  
+  // 过滤出该分类下的文档，通常还要剔除该分类的首页自身（如 knowledge/java-backend/index.mdx）
+  const categoryDocs = allDocs.filter(doc => {
+    return doc.id.startsWith(prefix) && doc.id !== `${prefix}/index.mdx` && doc.id !== `${prefix}.mdx` && doc.id !== `${prefix}.md`;
+  });
+  
+  const count = categoryDocs.length;
+  
+  // 如果分类下有文章，显示文章数量；如果没有，显示“目录就绪”
+  return count > 0 ? `${count} 篇内容` : '目录就绪';
+}
+---
+
+<div class="archive-directory" role="list">
+	<div class="archive-directory-head" aria-hidden="true">
+		<span>编号</span>
+		<span>知识领域</span>
+		<span>建设状态</span>
+	</div>
+
+	{categories.map((category, index) => (
+		<a class="archive-directory-row" href={category.url} role="listitem">
+			<span class="archive-directory-number">{String(index + 1).padStart(2, '0')}</span>
+			<span class="archive-directory-main">
+				<strong>{category.title}</strong>
+				<small>{category.desc}</small>
+			</span>
+			<span class="archive-directory-status">{getCategoryStats(category.url)}</span>
+		</a>
+	))}
+</div>

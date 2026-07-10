@@ -688,7 +688,7 @@ html[data-has-sidebar] body {
 
 html[data-has-sidebar] header.header {
 	border-bottom: 1px solid var(--archive-line);
-	background: var(--sl-color-bg-nav);
+	background: color-mix(in srgb, var(--archive-paper) 94%, transparent);
 	backdrop-filter: saturate(120%) blur(14px);
 	-webkit-backdrop-filter: saturate(120%) blur(14px);
 }
@@ -723,10 +723,13 @@ html site-search dialog {
 	width: min(42rem, calc(100% - 2rem));
 	min-height: 18rem;
 	max-height: calc(100% - 4rem);
-	border: 1px solid var(--archive-line);
+	border: 1px solid var(--archive-line, var(--home-line));
 	border-radius: 0.25rem;
-	background: var(--archive-paper);
+	background: var(--archive-paper, var(--home-paper));
 	box-shadow: 0 1.5rem 4rem rgba(27, 27, 24, 0.18);
+	--sl-color-black: var(--archive-paper-deep, var(--home-paper-deep));
+	--sl-color-accent-low: var(--archive-accent-soft, var(--home-green-light));
+	--sl-color-accent-high: var(--archive-accent, var(--home-green));
 }
 
 html site-search dialog::backdrop {
@@ -742,31 +745,31 @@ html site-search .dialog-frame {
 
 html #starlight__search {
 	--pagefind-ui-scale: 1;
-	--pagefind-ui-primary: var(--archive-accent);
-	--pagefind-ui-text: var(--archive-ink);
-	--pagefind-ui-font: var(--archive-sans);
-	--pagefind-ui-background: var(--archive-paper);
-	--pagefind-ui-border: var(--archive-line);
+	--pagefind-ui-primary: var(--archive-accent, var(--home-green));
+	--pagefind-ui-text: var(--archive-ink, var(--home-ink));
+	--pagefind-ui-font: var(--archive-sans, var(--sl-font));
+	--pagefind-ui-background: var(--archive-paper, var(--home-paper));
+	--pagefind-ui-border: var(--archive-line, var(--home-line));
 	--pagefind-ui-border-width: 1px;
 	--pagefind-ui-border-radius: 0.25rem;
-	--pagefind-ui-tag: var(--archive-accent-soft);
+	--pagefind-ui-tag: var(--archive-accent-soft, var(--home-green-light));
 }
 
 html #starlight__search .pagefind-ui__search-input {
 	height: 3.25rem;
 	padding: 0 3rem 0 3.25rem;
-	border-color: var(--archive-line);
+	border-color: var(--archive-line, var(--home-line));
 	border-radius: 0.25rem;
-	background: var(--archive-paper);
-	color: var(--archive-ink);
+	background: var(--archive-paper, var(--home-paper));
+	color: var(--archive-ink, var(--home-ink));
 	font-size: 1rem;
 	font-weight: 400;
 	letter-spacing: 0;
 }
 
 html #starlight__search .pagefind-ui__search-input:focus {
-	border-color: var(--archive-accent);
-	outline: 2px solid color-mix(in srgb, var(--archive-accent) 18%, transparent);
+	border-color: var(--archive-accent, var(--home-green));
+	outline: 2px solid color-mix(in srgb, var(--archive-accent, var(--home-green)) 18%, transparent);
 	outline-offset: 2px;
 }
 
@@ -775,7 +778,7 @@ html #starlight__search .pagefind-ui__form::before {
 	height: 1rem;
 	top: 1.125rem;
 	left: 1.125rem;
-	background-color: var(--archive-muted);
+	background-color: var(--archive-muted, var(--home-muted));
 }
 
 html #starlight__search .pagefind-ui__search-clear {
@@ -787,17 +790,19 @@ html #starlight__search .pagefind-ui__search-clear {
 	border: 0;
 	border-radius: 50%;
 	background: transparent;
+	font-size: 0;
+	color: transparent;
 }
 
 html #starlight__search .pagefind-ui__search-clear:hover {
-	background: var(--archive-accent-soft);
+	background: var(--archive-accent-soft, var(--home-green-light));
 }
 
 html #starlight__search .pagefind-ui__search-clear::before {
 	width: 0.875rem;
 	height: 0.875rem;
 	margin: auto;
-	background-color: var(--archive-muted);
+	background-color: var(--archive-muted, var(--home-muted));
 	-webkit-mask-size: contain;
 	mask-size: contain;
 }
@@ -808,7 +813,7 @@ html #starlight__search .pagefind-ui__results-area {
 
 html #starlight__search .pagefind-ui__message {
 	font-size: 0.875rem;
-	color: var(--archive-muted);
+	color: var(--archive-muted, var(--home-muted));
 }
 
 html[data-has-sidebar] .sidebar-pane {
@@ -1380,7 +1385,7 @@ html:not([data-has-sidebar]) body {
 
 html:not([data-has-sidebar]) header.header {
 	border-bottom-color: color-mix(in srgb, var(--home-line) 72%, transparent);
-	background: var(--sl-color-bg-nav);
+	background: color-mix(in srgb, var(--home-paper) 92%, transparent);
 }
 
 html:not([data-has-sidebar]) header.header .site-title {

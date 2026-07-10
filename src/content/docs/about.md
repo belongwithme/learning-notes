@@ -1,6 +1,9 @@
 ---
 title: 关于本站
 description: 个人学习知识库的建设目标与内容维护原则。
+status: verified
+difficulty: beginner
+tags: ["文档", "建设目标", "原则"]
 ---
 
 这个网站用于把零散学习记录整理成可以检索、验证和持续维护的知识体系。
