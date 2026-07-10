@@ -1,49 +1,84 @@
-# Starlight Starter Kit: Basics
+# 个人学习知识库
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+基于 Astro Starlight 构建的个人学习与知识管理网站，用于整理知识专题、学习路线和问题复盘。
 
+## 当前阶段
+
+仓库已经完成最小可运行基线：
+
+- Astro Starlight 站点
+- 知识专题、学习路线、问题复盘和关于本站四个入口
+- 统一的笔记元数据校验
+- GitHub Actions 自动检查和构建
+
+现阶段只建立内容框架，具体分类将在现有笔记盘点后确定。
+
+## 本地环境
+
+- Node.js 22.12 或更高版本
+- npm 10 或更高版本
+
+使用 nvm 时可以执行：
+
+```bash
+nvm install
+nvm use
 ```
-npm create astro@latest -- --template starlight
+
+## 本地运行
+
+```bash
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+生产构建：
 
-## 🚀 Project Structure
-
-Inside of your Astro + Starlight project, you'll see the following folders and files:
-
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+```bash
+npm run check
+npm run build
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+## 内容目录
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+```text
+src/content/docs/
+├── index.mdx
+├── knowledge/
+├── learning-paths/
+├── retrospectives/
+└── about.md
+```
 
-Static assets, like favicons, can be placed in the `public/` directory.
+Markdown 和 MDX 文件会根据 `src/content/docs/` 下的路径生成对应页面。
 
-## 🧞 Commands
+## 笔记元数据
 
-All commands are run from the root of the project, from a terminal:
+```yaml
+---
+title: Redis 分布式锁实践
+description: 分析常见失效场景及验证方法
+created: 2026-07-10
+updated: 2026-07-10
+category: distributed-system
+tags:
+  - Redis
+  - 并发控制
+status: verified
+difficulty: intermediate
+contentType: practice
+source: project-practice
+---
+```
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+`status` 可选值：`draft`、`verified`、`evergreen`、`outdated`。
 
-## 👀 Want to learn more?
+`contentType` 可选值：`knowledge`、`practice`、`retrospective`、`source-analysis`、`learning-path`。
 
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+## 下一步
+
+1. 盘点现有 Markdown 笔记。
+2. 确认一级分类和标签边界。
+3. 选择首批 15～30 篇内容。
+4. 将审核通过的内容复制到本仓库。
+5. 配置 GitHub 远程仓库与线上部署。

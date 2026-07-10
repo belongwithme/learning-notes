@@ -1,40 +1,121 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
+title: 学习档案
+description: 把零散学习记录整理成可以检索、验证和持续维护的知识体系。
+template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
-  image:
-    file: ../../assets/houston.webp
+  title: '把学习，变成<br><span>可复用的能力。</span>'
+  tagline: 不追逐信息的数量，只沉淀经过思考、实践与验证的知识。
   actions:
-    - text: Example Guide
-      link: /guides/example/
+    - text: 开始探索
+      link: /knowledge/
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
+    - text: 了解方法
+      link: /about/
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+<div class="home-page">
+	<section class="home-intro" aria-labelledby="home-intro-title">
+		<p class="home-kicker">WHY THIS EXISTS</p>
+		<h2 id="home-intro-title">不是收藏更多。<br />是理解得更深。</h2>
+		<p class="home-intro-copy">
+			这里记录的不只是答案，还有问题从哪里来、判断如何形成，以及结论怎样被验证。
+			每一条知识都应该能被找到、被复用，也经得起时间的重新审视。
+		</p>
+	</section>
 
-## Next steps
+	<section class="home-principles" aria-label="内容原则">
+		<div>
+			<span>01</span>
+			<strong>结构化</strong>
+			<p>从零散记录到清晰的知识边界。</p>
+		</div>
+		<div>
+			<span>02</span>
+			<strong>可验证</strong>
+			<p>区分理解、证据与实践结果。</p>
+		</div>
+		<div>
+			<span>03</span>
+			<strong>持续更新</strong>
+			<p>让知识保持状态，而不是被遗忘。</p>
+		</div>
+	</section>
 
-<CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
-	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
-	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
-</CardGrid>
+	<section class="home-section" aria-labelledby="explore-title">
+		<div class="home-section-heading">
+			<p class="home-kicker">EXPLORE</p>
+			<h2 id="explore-title">沿着思考的脉络，<br />找到真正需要的内容。</h2>
+		</div>
+
+		<div class="home-card-grid">
+			<a class="home-card home-card--dark home-card--large" href="/knowledge/">
+				<div class="home-card-topline">
+					<span>01 / KNOWLEDGE</span>
+					<span aria-hidden="true">↗</span>
+				</div>
+				<div>
+					<p class="home-card-label">知识专题</p>
+					<h3>理解原理，<br />也理解边界。</h3>
+					<p>按稳定的技术领域，组织经过整理和验证的长期知识。</p>
+				</div>
+			</a>
+
+			<a class="home-card home-card--soft" href="/learning-paths/">
+				<div class="home-card-topline">
+					<span>02 / PATHS</span>
+					<span aria-hidden="true">↗</span>
+				</div>
+				<div>
+					<p class="home-card-label">学习路线</p>
+					<h3>从一篇笔记，<br />走向完整能力。</h3>
+					<p>明确目标、前置知识与阅读顺序，让学习不再随机发生。</p>
+				</div>
+			</a>
+
+			<a class="home-card home-card--blue" href="/retrospectives/">
+				<div class="home-card-topline">
+					<span>03 / RETROSPECTIVES</span>
+					<span aria-hidden="true">↗</span>
+				</div>
+				<div>
+					<p class="home-card-label">问题复盘</p>
+					<h3>结论很重要。<br />抵达结论的过程更重要。</h3>
+					<p>完整保留现象、排查、根因、方案与验证，让经验真正可复用。</p>
+				</div>
+			</a>
+		</div>
+	</section>
+
+	<section class="home-process" aria-labelledby="process-title">
+		<div class="home-section-heading home-section-heading--light">
+			<p class="home-kicker">THE METHOD</p>
+			<h2 id="process-title">知识不是写完的。<br />是逐步成熟的。</h2>
+		</div>
+
+		<ol class="home-process-list">
+			<li>
+				<span>01</span>
+				<div><strong>记录</strong><p>保留问题发生时最真实的上下文。</p></div>
+			</li>
+			<li>
+				<span>02</span>
+				<div><strong>验证</strong><p>用资料、代码、实验或项目结果确认判断。</p></div>
+			</li>
+			<li>
+				<span>03</span>
+				<div><strong>连接</strong><p>补充前置知识、相关主题与适用边界。</p></div>
+			</li>
+			<li>
+				<span>04</span>
+				<div><strong>维护</strong><p>持续标记变化，让过期结论不再伪装成答案。</p></div>
+			</li>
+		</ol>
+	</section>
+
+	<section class="home-closing" aria-labelledby="closing-title">
+		<p class="home-kicker">KEEP LEARNING</p>
+		<h2 id="closing-title">每一次认真记录，<br />都在构建未来的判断力。</h2>
+		<a class="home-text-link" href="/knowledge/">进入知识库 <span aria-hidden="true">→</span></a>
+	</section>
+</div>
