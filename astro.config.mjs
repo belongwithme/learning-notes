@@ -23,7 +23,7 @@ export default defineConfig({
 				{
 					label: '专题索引',
 					items: [
-						{ label: '全部专题', slug: TopLevelSections.find(s => s.id === 'knowledge')?.slug },
+						{ label: '全部专题', slug: TopLevelSections.find(s => s.id === 'knowledge')?.slug || 'knowledge' },
 						...KnowledgeCategories.map(cat => ({ label: cat.label, slug: cat.slug })),
 					],
 				},
