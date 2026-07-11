@@ -18,12 +18,12 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131453315)（历史文章导入，当前状态为草稿）
 
-#### 传统Web开发认证总结案例
-### 前言
+## 传统Web开发认证总结案例
+## 前言
 
 这是一个WEB的案例，我写的思路就是，你从上倒下复制粘贴，这个案例可以跑起来，方便后面学知识的时候用。由于视频文档这部分没有显示，所以看这篇会省很多时间。
 
-### POM.xml部分
+## POM.xml部分
 
 注意我的数据库版本是8.0，如果你是8以下的版本，可以看视频里怎么处理的，或者看我上一篇文章的内容。
 
@@ -81,7 +81,7 @@ sidebar:
 
 ```
 
-### properties部分
+## properties部分
 
 ```
 server.port= 9091
@@ -107,7 +107,7 @@ logging.level.com.example = debug
 
 ```
 
-### 实体类entity
+## 实体类entity
 
 * Role
 
@@ -256,7 +256,7 @@ public class User implements UserDetails {
 
 ```
 
-### Dao层
+## Dao层
 
 ```
 import com.wang.entity.Role;
@@ -277,11 +277,11 @@ public interface UserDao {
 
 ```
 
-### resources层
+## resources层
 
-#### mapper层
+### mapper层
 
-##### UserDaoMapper
+#### UserDaoMapper
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -317,9 +317,9 @@ public interface UserDao {
 
 ```
 
-#### templates层
+### templates层
 
-##### index.html
+#### index.html
 
 ```
 <!DOCTYPE html>
@@ -345,7 +345,7 @@ public interface UserDao {
 
 ```
 
-##### login.html
+#### login.html
 
 ```
 <!DOCTYPE html>
@@ -372,7 +372,7 @@ public interface UserDao {
 
 ```
 
-### service层
+## service层
 
 ```
 import com.wang.dao.UserDao;
@@ -413,7 +413,7 @@ public class MyUserDetailService implements UserDetailsService {
 
 ```
 
-### Controller层
+## Controller层
 
 ```
 import org.springframework.security.core.Authentication;
@@ -440,9 +440,9 @@ public class TestController {
 
 ```
 
-### Config层
+## Config层
 
-#### MvcConfigure
+### MvcConfigure
 
 ```
 import org.springframework.context.annotation.Configuration;
@@ -460,7 +460,7 @@ public class MvcConfigure implements WebMvcConfigurer {
 
 ```
 
-#### SecuritConfigure
+### SecuritConfigure
 
 ```
 import com.wang.service.MyUserDetailService;
@@ -514,6 +514,6 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter {
 
 ```
 
-### 结尾
+## 结尾
 
 请确保所有内容都贴上去后，再运行程序，数据库相关的配置记得修改为自己的内容

@@ -19,13 +19,13 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145747076)（历史文章导入，当前状态为草稿）
 
-### 前言
+## 前言
 
 quicklist 虽然通过控制 quicklistNode 结构里的压缩列表的大小或者元素个数，来减少连锁更新带来的性能影响，但是并没有完全解决连锁更新的问题。  
  因为 quicklistNode 还是用了压缩列表来保存元素，压缩列表连锁更新的问题，来源于它的结构设计，所以要想彻底解决这个问题，需要设计一个新的数据结构。  
  Redis 在 5.0 新设计一个数据结构叫 listpack，目的是替代压缩列表，它最大特点是 listpack 中每个节点不再包含前一个节点的长度了，压缩列表每个节点正因为需要保存前一个节点的长度字段，就会有连锁更新的隐患.
 
-### 什么是listPack
+## 什么是listPack
 
 listpack 也叫紧凑列表，它的特点就是用一块连续的内存空间来紧凑地保存数据，同时为了节省内存空间，**listpack 列表项使用了多种编码方式，来表示不同长度的数据**，这些
 数据包 
@@ -41,7 +41,7 @@ Redis
 
 ![在这里插入图片描述](./assets/145747076/695b968c3f5e60c7d59b225d.png)
 
-#### 结构
+### 结构
 
 ```
 /* Each entry in the listpack is either a string or an integer. */
@@ -62,11 +62,11 @@ typedef struct {
 
 关于 listpack 列表项的设计，你需要重点掌握两方面的要点，分别是列表项元素的编码类型，以及列表项避免连锁更新的方法.
 
-#### 列表项元素的编码类型
+### 列表项元素的编码类型
 
 **listpack 元素会对不同长度的整数和字符串进行编码.**
 
-##### 整数编码
+#### 整数编码
 
 * LP\_ENCODING\_7BIT\_UINT  
    对于整数编码来说，当 listpack 元素的编码类型为 `LP_ENCODING_7BIT_UINT` 时，表示元素的实际数据是一个 7 bit 的无符号整数。  
@@ -80,7 +80,7 @@ typedef struct {
    在了解了 LP\_ENCODING\_7BIT\_UINT 和 LP\_ENCODING\_13BIT\_INT 这两种编码类型后，剩下的 LP\_ENCODING\_16BIT\_INT、LP\_ENCODING\_24BIT\_INT、LP\_ENCODING\_32BIT\_INT 和 LP\_ENCODING\_64BIT\_INT，你应该也就能知道它们的编码方式了。  
    这四种类型是分别用 2 字节（16 bit）、3 字节（24 bit）、4 字节（32 bit）和 8 字节（64 bit）来保存整数数据。同时，它们的编码类型本身占 1 字节，编码类型值分别是它们的宏定义值。
 
-##### 字符串编码
+#### 字符串编码
 
 对于字符串编码来说，一共有三种类型，分别是 `LP_ENCODING_6BIT_STR、LP_ENCODING_12BIT_STR 和 LP_ENCODING_32BIT_STR`。从刚才的介绍中，你可以看到，整数编码类型名称中 BIT 前面的数字，表示的是整数的长度。因此类似的，字符串编码类型名称中 BIT 前的数字，表示的就是字符串的长度。
 
@@ -89,14 +89,14 @@ typedef struct {
    下面的图展示了三种字符串编码类型和数据的布局，你可以看下  
    ![在这里插入图片描述](./assets/145747076/8727f3a2192fe85f1c105941.png)
 
-#### 避免连锁更新的实现方式
+### 避免连锁更新的实现方式
 
 在 listpack 中，因为每个列表项只记录自己的长度，而不会像 ziplist 中的列表项那样，会记录前一项的长度。所以，当我们在 listpack 中新增或修改元素时，**实际上只会涉及每个列表项自己的操作**，而不会影响后续列表项的长度变化，这就避免了连锁更新。  
  你可能会有疑问：**如果 listpack 列表项只记录当前项的长度，那么 listpack 支持从左向右正向查询列表，或是从右向左反向查询列表吗？**  
  listpack 是能支持正、反向查询列表的。  
  下面的内容第一次看会有点难理解,多看几次就好了.
 
-##### 从左向右查询
+#### 从左向右查询
 
 当应用程序从左向右正向查询 listpack 时，我们可以先调用 lpFirst 函数。该函数的参数是指向 listpack 头的指针，它在执行时，会让指针向右偏移 LP\_HDR\_SIZE 大小，也就是跳过 listpack 头。你可以看下 lpFirst 函数的代码，如下所示：
 
@@ -134,7 +134,7 @@ unsigned char *lpNext(unsigned char *lp, unsigned char *p) {
 
 ![在这里插入图片描述](./assets/145747076/40a9fb73b71044784029ac83.png)
 
-##### 从右向左
+#### 从右向左
 
 我们根据 listpack 头中记录的 listpack 总长度，就可以直接定位到 listapck 的尾部结束标记。  
  然后，我们可以调用 lpPrev 函数，该函数的参数包括指向某个列表项的指针，并返回指向当前列表项前一项的指针。  
@@ -150,6 +150,6 @@ unsigned char *lpNext(unsigned char *lp, unsigned char *p) {
    这也是 lpDecodeBacklen 函数的返回值。而从刚才的介绍中，我们知道 entry-len 记录了编码类型和实际数据的长度之和。  
    因此，lpPrev 函数会再调用 lpEncodeBacklen 函数，来计算得到 entry-len 本身长度，这样一来，我们就可以得到前一项的总长度，而 lpPrev 函数也就可以将指针指向前一项的起始位置了。所以按照这个方法，listpack 就实现了从右向左的查询功能。
 
-### 总结
+## 总结
 
 Redis 在内存紧凑型列表的设计与实现上，从 ziplist 到 quicklist，再到 listpack，我们可以看到 Redis 在内存空间开销和访问性能之间的设计取舍.

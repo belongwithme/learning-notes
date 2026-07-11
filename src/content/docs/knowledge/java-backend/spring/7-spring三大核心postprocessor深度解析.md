@@ -32,7 +32,7 @@ Spring的后处理器(PostProcessor)是Spring
 
 ---
 
-### 📚 知识体系概览
+## 📚 知识体系概览
 
 ```
 Spring PostProcessor体系
@@ -55,13 +55,13 @@ Spring PostProcessor体系
 
 ---
 
-### 一、BeanFactoryPostProcessor (工厂后处理器)
+## 一、BeanFactoryPostProcessor (工厂后处理器)
 
-#### 1.1 基本介绍
+### 1.1 基本介绍
 
 `BeanFactoryPostProcessor` 是Spring提供的第一个核心扩展点,它允许我们在**所有BeanDefinition加载完成之后,Bean实例化之前**对BeanDefinition进行修改。
 
-##### 🔍 核心 接口源码
+#### 🔍 核心 接口源码
 
 ```
 @FunctionalInterface
@@ -79,7 +79,7 @@ public interface BeanFactoryPostProcessor {
 
 ```
 
-#### 1.2 执行时机
+### 1.2 执行时机
 
 ```
 Spring容器启动
@@ -221,9 +221,9 @@ postProcessBeanDefinitionRegistry
 
 结束
 
-#### 1.3 核心源码分析
+### 1.3 核心源码分析
 
-##### AbstractApplicationContext.refresh() 方法中的调用
+#### AbstractApplicationContext.refresh() 方法中的调用
 
 ```
 public abstract class AbstractApplicationContext extends DefaultResourceLoader
@@ -281,7 +281,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 ```
 
-##### PostProcessorRegistrationDelegate 执行细节
+#### PostProcessorRegistrationDelegate 执行细节
 
 ```
 final class PostProcessorRegistrationDelegate {
@@ -470,7 +470,7 @@ final class PostProcessorRegistrationDelegate {
 
 ```
 
-#### 1.4 能力与限制
+### 1.4 能力与限制
 
 | 能力 | 支持 | 说明 |
 | --- | --- | --- |
@@ -480,9 +480,9 @@ final class PostProcessorRegistrationDelegate {
 | **注册新的BeanDefinition** | ❌ | **这是关键限制!** |
 | 实例化Bean | ❌ | 此时Bean还未开始实例化 |
 
-#### 1.5 经典应用场景
+### 1.5 经典应用场景
 
-##### 场景1: 属性占位符替换
+#### 场景1: 属性占位符替换
 
 Spring内置的 `PropertySourcesPlaceholderConfigurer` 就是一个典型的 `BeanFactoryPostProcessor` 实现。
 
@@ -606,7 +606,7 @@ public class AppConfig {
 
 ```
 
-##### 场景2: 自定义修改BeanDefinition
+#### 场景2: 自定义修改BeanDefinition
 
 ```
 /**
@@ -653,15 +653,15 @@ public class CustomScopeModifier implements BeanFactoryPostProcessor {
 
 ---
 
-### 二、BeanDefinitionRegistryPostProcessor (注册后处理器) ⭐⭐⭐
+## 二、BeanDefinitionRegistryPostProcessor (注册后处理器) ⭐⭐⭐
 
-#### 2.1 基本介绍
+### 2.1 基本介绍
 
 `BeanDefinitionRegistryPostProcessor` 是 `BeanFactoryPostProcessor` 的子接口,它在父接口的基础上**新增了一个更早执行的方法**,允许我们**动态注册新的BeanDefinition**。
 
 这是Spring中**最强大的扩展点之一**!
 
-##### 🔍 核心接口源码
+#### 🔍 核心接口源码
 
 ```
 public interface BeanDefinitionRegistryPostProcessor extends BeanFactoryPostProcessor {
@@ -683,7 +683,7 @@ public interface BeanDefinitionRegistryPostProcessor extends BeanFactoryPostProc
 
 ```
 
-#### 2.2 执行时机对比
+### 2.2 执行时机对比
 
 ```
 Spring容器启动
@@ -718,7 +718,7 @@ Spring容器启动
 2. `postProcessBeanDefinitionRegistry()` **先执行** → 可以注册新BeanDefinition
 3. `postProcessBeanFactory()` **后执行** → 可以修改BeanDefinition
 
-#### 2.3 ConfigurationClassPostProcessor 源码深度剖析 ⭐⭐⭐
+### 2.3 ConfigurationClassPostProcessor 源码深度剖析 ⭐⭐⭐
 
 这是Spring中**最重要的一个PostProcessor**,它负责处理:
 
@@ -727,7 +727,7 @@ Spring容器启动
 * `@Import` 导入 (自动装配的核心!)
 * `@Bean` 方法
 
-##### 类 定义
+#### 类 定义
 
 ```
 public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPostProcessor,
@@ -965,7 +965,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 ```
 
-##### ConfigurationClassParser 解析逻辑
+#### ConfigurationClassParser 解析逻辑
 
 ```
 class ConfigurationClassParser {
@@ -1206,7 +1206,7 @@ class ConfigurationClassParser {
 
 ```
 
-#### 2.4 执行流程图
+### 2.4 执行流程图
 
 是
 
@@ -1309,9 +1309,9 @@ loadBeanDefinitions
 
 开始实例化Bean
 
-#### 2.5 实战示例
+### 2.5 实战示例
 
-##### 示例1: 动态注册BeanDefinition
+#### 示例1: 动态注册BeanDefinition
 
 ```
 /**
@@ -1383,7 +1383,7 @@ public class DynamicDataSourceRegistrar implements BeanDefinitionRegistryPostPro
 
 ```
 
-##### 示例2: 自定义注解扫描器
+#### 示例2: 自定义注解扫描器
 
 ```
 /**
@@ -1475,13 +1475,13 @@ public class MyComponentScanner implements BeanDefinitionRegistryPostProcessor,
 
 ---
 
-### 三、BeanPostProcessor (Bean后处理器)
+## 三、BeanPostProcessor (Bean后处理器)
 
-#### 3.1 基本介绍
+### 3.1 基本介绍
 
 `BeanPostProcessor` 是在**Bean实例化之后,初始化前后**执行的后处理器。它操作的是**已经创建好的Bean实例**,而不是BeanDefinition。
 
-##### 🔍 核心接口源码
+#### 🔍 核心接口源码
 
 ```
 public interface BeanPostProcessor {
@@ -1520,7 +1520,7 @@ public interface BeanPostProcessor {
 
 ```
 
-#### 3.2 执行时机
+### 3.2 执行时机
 
 ```
 Bean生命周期
@@ -1554,9 +1554,9 @@ Bean生命周期
 
 ```
 
-#### 3.3 核心源码分析
+### 3.3 核心源码分析
 
-##### AbstractAutowireCapableBeanFactory 中的调用
+#### AbstractAutowireCapableBeanFactory 中的调用
 
 ```
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
@@ -1705,9 +1705,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 ```
 
-#### 3.4 重要的BeanPostProcessor实现
+### 3.4 重要的BeanPostProcessor实现
 
-##### 1. AutowiredAnnotationBeanPostProcessor (处理@Autowired)
+#### 1. AutowiredAnnotationBeanPostProcessor (处理@Autowired)
 
 ```
 public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBeanPostProcessorAdapter
@@ -1818,7 +1818,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 ```
 
-##### 2. AbstractAutoProxyCreator (AOP代理生成)
+#### 2. AbstractAutoProxyCreator (AOP代理生成)
 
 ```
 public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
@@ -1914,7 +1914,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 ```
 
-##### 3. CommonAnnotationBeanPostProcessor (处理@PostConstruct和@PreDestroy)
+#### 3. CommonAnnotationBeanPostProcessor (处理@PostConstruct和@PreDestroy)
 
 ```
 public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBeanPostProcessor
@@ -1952,9 +1952,9 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 ```
 
-#### 3.5 实战示例
+### 3.5 实战示例
 
-##### 示例1: 日志增强
+#### 示例1: 日志增强
 
 ```
 /**
@@ -2014,7 +2014,7 @@ public class LoggingBeanPostProcessor implements BeanPostProcessor {
 
 ```
 
-##### 示例2: 性能监控
+#### 示例2: 性能监控
 
 ```
 /**
@@ -2083,7 +2083,7 @@ public class PerformanceMonitorBeanPostProcessor implements BeanPostProcessor {
 
 ```
 
-##### 示例3: Bean验证
+#### 示例3: Bean验证
 
 ```
 /**
@@ -2144,9 +2144,9 @@ public class BeanValidationPostProcessor implements BeanPostProcessor {
 
 ---
 
-### 四、三大PostProcessor执行顺序总结
+## 四、三大PostProcessor执行顺序总结
 
-#### 4.1 完整执行流程图
+### 4.1 完整执行流程图
 
 Application
 
@@ -2305,7 +2305,7 @@ BeanPostProcessor
 
 Bean实例
 
-#### 4.2 关键时间点对比表
+### 4.2 关键时间点对比表
 
 | 时间点 | PostProcessor | 调用方法 | 操作对象 | 能力 |
 | --- | --- | --- | --- | --- |
@@ -2315,7 +2315,7 @@ Bean实例
 | **T4** | BeanPostProcessor | postProcessBeforeInitialization() | Bean实例 | ✅修改Bean ✅返回代理 |
 | **T5** | BeanPostProcessor | postProcessAfterInitialization() | Bean实例 | ✅修改Bean ✅返回代理 |
 
-#### 4.3 优先级规则
+### 4.3 优先级规则
 
 ```
 执行顺序 = 接口类型 + 优先级接口
@@ -2360,7 +2360,7 @@ public class ConfigurationClassPostProcessor
 
 ```
 
-#### 4.4 实际运行示例
+### 4.4 实际运行示例
 
 ```
 @SpringBootApplication
@@ -2462,9 +2462,9 @@ class MyService {
 
 ---
 
-### 五、常见面试题解析
+## 五、常见面试题解析
 
-#### Q1: BeanFactoryPostProcessor和BeanPostProcessor的区别?
+### Q1: BeanFactoryPostProcessor和BeanPostProcessor的区别?
 
 **回答:**
 
@@ -2481,7 +2481,7 @@ class MyService {
 * **Factory**PostProcessor在Bean**实例化之前**,修改**定义**
 * **Bean**PostProcessor在Bean**实例化之后**,修改**实例**
 
-#### Q2: 为什么ConfigurationClassPostProcessor最先执行?
+### Q2: 为什么ConfigurationClassPostProcessor最先执行?
 
 **回答:**
 
@@ -2521,7 +2521,7 @@ VIP客户 (PriorityOrdered)
 
 ```
 
-#### Q3: @Autowired是在哪个阶段注入的?
+### Q3: @Autowired是在哪个阶段注入的?
 
 **回答:**
 
@@ -2565,7 +2565,7 @@ public class AutowiredAnnotationBeanPostProcessor
 
 ```
 
-#### Q4: AOP代理是在什么时候生成的?
+### Q4: AOP代理是在什么时候生成的?
 
 **回答:**
 
@@ -2594,7 +2594,7 @@ AOP代理在**Bean初始化之后**生成,具体在`AbstractAutoProxyCreator.pos
 
 因为需要等Bean完全初始化完成,所有属性都设置好,才能安全地创建代理。
 
-#### Q5: 如何自定义一个starter的自动装配?
+### Q5: 如何自定义一个starter的自动装配?
 
 **回答:**
 
@@ -2683,9 +2683,9 @@ selectImports()读取所有jar的spring.factories
 
 ---
 
-### 六、总结与最佳实践
+## 六、总结与最佳实践
 
-#### 6.1 核心要点回顾
+### 6.1 核心要点回顾
 
 ```
 三大PostProcessor的本质:
@@ -2708,9 +2708,9 @@ BeanPostProcessor
 
 ```
 
-#### 6.2 使用建议
+### 6.2 使用建议
 
-##### 1️⃣ 选择合适的PostProcessor
+#### 1️⃣ 选择合适的PostProcessor
 
 ```
 需求                          选择
@@ -2725,7 +2725,7 @@ BeanPostProcessor
 
 ```
 
-##### 2️⃣ 性能优化
+#### 2️⃣ 性能优化
 
 ```
 // ❌ 不好的做法: 每次都遍历所有Bean
@@ -2768,7 +2768,7 @@ public class GoodBeanPostProcessor implements BeanPostProcessor {
 
 ```
 
-##### 3️⃣ 避免循环依赖
+#### 3️⃣ 避免循环依赖
 
 ```
 // ❌ 不好的做法: BeanPostProcessor依赖其他Bean
@@ -2811,7 +2811,7 @@ public class GoodBeanPostProcessor implements BeanPostProcessor, BeanFactoryAwar
 
 ```
 
-##### 4️⃣ 正确处理代理
+#### 4️⃣ 正确处理代理
 
 ```
 @Component
@@ -2845,7 +2845,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
 
 ```
 
-### 结语
+## 结语
 
 希望本文能帮助你深入理解Spring的核心机制!如果有任何疑问,欢迎留言讨论。🙏
 

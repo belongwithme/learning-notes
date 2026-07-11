@@ -20,7 +20,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251093)（历史文章导入，当前状态为草稿）
 
-### 前言
+## 前言
 
 在 Java 并发编程里，`synchronized` 关键字是我们最早接触也最常用的同步机制。它简单易用，能解决大部分场景下的线程安全问题。然而，随着业务场景的复杂化和对性能、灵活性的更高要求，`synchronized` 的局限性也逐渐显现。此时，`java.util.concurrent.locks` 包下的 `Lock` 接口及其实现类应运而生，提供了更强大、更灵活的锁机制。
 
@@ -31,9 +31,9 @@ sidebar:
 * 了解 `volatile` 关键字和 Java 内存模型（JMM）的基本概念。
 * 了解 `CAS (Compare-and-Swap)` 原子操作的基本概念。
 
-### 第一章：初识 Lock 接口
+## 第一章：初识 Lock 接口
 
-#### 1.1 什么是 Lock 接口？
+### 1.1 什么是 Lock 接口？
 
 想象一下，你家里有一个很重要的房间（共享资源），同一时间只允许一个人（线程）进入。为了管理进入权限，你设立了一个门卫。
 
@@ -113,7 +113,7 @@ try {
 
 ```
 
-#### 1.2 Lock 的核心原理：AQS (AbstractQueuedSynchronizer)
+### 1.2 Lock 的核心原理：AQS (AbstractQueuedSynchronizer)
 
 `Lock` 接口之所以能提供如此丰富的功能，其背后离不开一个强大的基础框架——`AbstractQueuedSynchronizer`（简称 AQS）。你可以将 AQS 理解为一个**同步状态管理器**和**线程排队控制器**。几乎所有 `java.util.concurrent` 包下的同步组件（`Lock`, `Semaphore`, `CountDownLatch`, `ReentrantReadWriteLock` 等）都是基于 AQS 构建的。
 
@@ -165,7 +165,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
 
 ---
 
-### 第二章：Lock 与 synchronized 的深度对比
+## 第二章：Lock 与 synchronized 的深度对比
 
 `Lock` 接口和 `synchronized` 关键字是 Java 中实现线程同步的两种主要方式。虽然它们的目标相同——保证共享资源在并发访问时的线程安全，但在使用方式、功能特性和底层实现上存在显著差异。
 
@@ -183,7 +183,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
 
 下面我们详细展开对比：
 
-#### 2.1 使用方式与锁的释放
+### 2.1 使用方式与锁的释放
 
 * **`synchronized`**：使用非常简单，只需在方法或代码块前加上 `synchronized` 关键字。JVM 会自动在进入同步代码块时获取锁，在退出同步代码块（正常结束或抛出异常）时自动释放锁。开发者无需关心锁的释放问题。
 
@@ -240,7 +240,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
 
   **易错点：** 新手使用 `Lock` 时最容易犯的错误就是忘记在 `finally` 中调用 `unlock()`，这会导致严重的后果。
 
-#### 2.2 锁获取的灵活性
+### 2.2 锁获取的灵活性
 
 * **`synchronized`**：当一个线程尝试获取 `synchronized` 锁而被阻塞时，它只能一直等待，直到持有锁的线程释放锁。这个等待过程是**不可中断**的，也**不能设置超时**。如果持有锁的线程因为某种原因一直不释放锁（例如死锁），等待的线程会无限期地阻塞下去。
 * **`Lock`**：提供了更灵活的锁获取方式：
@@ -342,7 +342,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
     - 13
     ```
 
-#### 2.3 公平性
+### 2.3 公平性
 
 * **`synchronized`**：是非公平锁。当锁被释放时，JVM 会从等待队列中（大致可以理解为）随机选择一个线程来获取锁，而不是严格按照线程请求锁的顺序。这种方式可能会导致某些线程长时间得不到执行机会（线程饥饿）。
 * **`Lock`**（以 `ReentrantLock` 为例）：可以选择是公平锁还是非公平锁。
@@ -365,7 +365,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
 
   **选择建议：** 大部分情况下，非公平锁的性能优于公平锁。只有在确实需要保证线程获取锁的顺序性，或者担心发生线程饥饿的场景下，才考虑使用公平锁。
 
-#### 2.4 性能
+### 2.4 性能
 
 在早期的 JDK 版本中（如 JDK 1.5），`ReentrantLock` 的性能通常优于 `synchronized`。但从 JDK 1.6 开始，JVM 对 `synchronized` 进行了大量的优化，引入了偏向锁、轻量级锁、自旋锁等机制，使得 `synchronized` 在低竞争或无竞争情况下的性能甚至可能超过 `ReentrantLock`。
 
@@ -377,7 +377,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
 
 **结论：** 在现代 JDK 版本中，两者性能差距不大。选择 `Lock` 还是 `synchronized` 更多地应基于功能需求而非性能考量。优先考虑使用 `synchronized`，因为它更简单、不易出错。只有当需要 `synchronized` 不具备的高级功能（如可中断、超时、公平性、条件变量）时，才选用 `Lock`。
 
-#### 2.5 条件变量 (Condition)
+### 2.5 条件变量 (Condition)
 
 * **`synchronized`**：与 `Object` 类内置的 `wait()`, `notify()`, `notifyAll()` 方法配合使用，实现线程间的等待/通知机制。一个锁对象（`synchronized` 锁定的对象监视器 Monitor）只能关联一个隐式的条件队列。
 * **`Lock`**：通过 `Condition` 接口提供更强大的等待/通知机制。一个 `Lock` 对象可以通过 `newCondition()` 方法创建**多个** `Condition` 对象。每个 `Condition` 对象都维护着一个独立的等待队列。
@@ -456,7 +456,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
 
 我们将在后续章节详细介绍 `Condition` 的使用和原理。
 
-#### 2.6 小结
+### 2.6 小结
 
 `Lock` 接口提供了比 `synchronized` 更强大、更灵活的锁机制，但使用也更复杂，需要开发者手动管理锁的释放。选择哪种同步方式取决于具体的应用场景和需求：
 
@@ -470,11 +470,11 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
 
 ---
 
-### 第三章：深入 ReentrantLock
+## 第三章：深入 ReentrantLock
 
 `ReentrantLock`（可重入锁）是 `Lock` 接口最常用、最经典的实现类。它提供了与 `synchronized` 类似的互斥和内存可见性保证，但功能更强大、更灵活。
 
-#### 3.1 什么是“可重入”？
+### 3.1 什么是“可重入”？
 
 “可重入”指的是：**同一个线程**可以**多次**获取**同一个锁**而不会被自己阻塞。
 
@@ -507,7 +507,7 @@ public class Widget {
 
 `ReentrantLock` 的可重入性是由 AQS 的 `state` 字段和 `exclusiveOwnerThread` 字段（记录当前持有锁的线程）共同实现的。
 
-#### 3.2 `ReentrantLock` 的使用
+### 3.2 `ReentrantLock` 的使用
 
 基本用法与 `Lock` 接口定义一致：
 
@@ -585,7 +585,7 @@ public class ReentrantLockExample {
 
 在上面的例子中，`increment()` 方法内部调用了 `anotherIncrement()`。当线程执行到 `anotherIncrement()` 内部的 `lock.lock()` 时，由于该线程已经持有了 `lock`，它可以成功再次获取锁（重入），`ReentrantLock` 内部的持有计数（可以通过 `getHoldCount()` 查看）会增加。每次调用 `unlock()` 都会使计数减一，只有当计数减到 0 时，锁才会被真正释放。
 
-#### 3.3 公平锁 vs 非公平锁
+### 3.3 公平锁 vs 非公平锁
 
 `ReentrantLock` 提供了两种模式：公平锁和非公平锁，通过构造函数指定：
 
@@ -697,7 +697,7 @@ protected final boolean tryAcquire(int acquires) {
 * 除非有明确的公平性需求（例如，防止饥饿是首要目标），否则**优先使用默认的非公平锁**，以获得更好的性能。
 * 公平锁会显著降低吞吐量，仅在必要时使用。
 
-#### 3.4 `ReentrantLock` 的核心源码解读（简化）
+### 3.4 `ReentrantLock` 的核心源码解读（简化）
 
 理解 `ReentrantLock` 的工作原理，离不开对其底层 AQS (`AbstractQueuedSynchronizer`) 使用的理解。我们来看一下最核心的 `lock()` 和 `unlock()` 流程（以非公平锁为例）。
 
@@ -829,7 +829,7 @@ protected final boolean tryRelease(int releases) {
 
 ---
 
-### 第四章：读写锁 ReadWriteLock 与 ReentrantReadWriteLock
+## 第四章：读写锁 ReadWriteLock 与 ReentrantReadWriteLock
 
 在某些场景下，我们对共享资源的操作可以区分为“读操作”和“写操作”。这些场景通常具有以下特点：
 
@@ -841,7 +841,7 @@ protected final boolean tryRelease(int releases) {
 
 为了解决这个问题，Java 提供了 `ReadWriteLock`（读写锁）接口。
 
-#### 4.1 `ReadWriteLock` 接口
+### 4.1 `ReadWriteLock` 接口
 
 `ReadWriteLock` 接口定义了获取“读锁”和“写锁”的方法：
 
@@ -864,7 +864,7 @@ public interface ReadWriteLock {
 
 **核心思想：** 允许多个读线程并发访问，提高读操作的吞吐量，同时保证写操作的独占性以及读写操作之间的数据一致性。
 
-#### 4.2 `ReentrantReadWriteLock` 实现
+### 4.2 `ReentrantReadWriteLock` 实现
 
 `ReentrantReadWriteLock` 是 `ReadWriteLock` 接口最常用的实现类。它具有以下特性：
 
@@ -912,7 +912,7 @@ public interface ReadWriteLock {
 
   这种设计使得 AQS 可以通过位运算来管理两种不同类型的锁状态。
 
-#### 4.3 `ReentrantReadWriteLock` 的使用示例
+### 4.3 `ReentrantReadWriteLock` 的使用示例
 
 假设我们有一个缓存类，读取操作很频繁，写入（更新缓存）操作相对较少。
 
@@ -1032,7 +1032,7 @@ public class Cache<K, V> {
 3. 当 `Writer-1` 释放写锁后，等待的读线程或写线程才能继续执行。
 4. `Writer-Clear` 获取写锁执行 `clear` 时，也会阻塞其他所有读写线程。
 
-#### 4.4 读写锁的核心源码解读（简化）
+### 4.4 读写锁的核心源码解读（简化）
 
 `ReentrantReadWriteLock` 的读锁和写锁共享同一个 AQS 实例 (`Sync`)。
 
@@ -1096,7 +1096,7 @@ public class Cache<K, V> {
 * `tryAcquire` (获取写锁) 会检查是否有读锁 (`sharedCount != 0`) 以及是否有其他线程持有写锁。
 * 释放最后一个读锁或释放写锁时，都需要唤醒等待队列中的后继者。
 
-#### 4.5 何时使用读写锁？
+### 4.5 何时使用读写锁？
 
 `ReentrantReadWriteLock` 适用于**读操作远多于写操作**，并且**读操作耗时较长**（相比锁的开销）的场景。如果读操作非常快，或者写操作非常频繁，使用读写锁带来的额外开销（管理读写状态、更复杂的 AQS 逻辑）可能抵消其并发优势，甚至性能不如简单的 `ReentrantLock` 或 `synchronized`。
 
@@ -1104,13 +1104,13 @@ public class Cache<K, V> {
 
 ---
 
-### 第五章：条件变量 Condition
+## 第五章：条件变量 Condition
 
 在并发编程中，除了保证共享资源的互斥访问外，我们经常还需要实现线程之间的**协作**，比如一个线程需要等待某个条件满足后才能继续执行，而这个条件的满足需要由另一个线程来触发。这就是**等待/通知（Wait/Notify）机制**。
 
 `synchronized` 使用 `Object` 监视器上的 `wait()`, `notify()`, `notifyAll()` 方法来实现等待/通知。而 `Lock` 接口则通过 `Condition` 接口提供了更强大、更灵活的替代方案。
 
-#### 5.1 `Condition` 接口
+### 5.1 `Condition` 接口
 
 `Condition` 接口从 `Lock` 中分离出来，用于描述与锁相关的条件。一个 `Lock` 对象可以创建**一个或多个** `Condition` 实例。每个 `Condition` 实例内部维护着一个**独立的等待队列**，用于存放等待该特定条件的线程。
 
@@ -1160,7 +1160,7 @@ public interface Condition {
 3. **`await()` 自动释放锁**：当线程调用 `await()` (及其变种) 时，它会**自动释放**当前持有的 `Lock`，然后进入该 `Condition` 的等待队列并挂起。
 4. **唤醒后需重新获取锁**：当线程被 `signal()` / `signalAll()` 唤醒，或者因中断、超时而结束等待时，它**不能**立即从 `await()` 返回，而是需要**重新参与竞争获取 `Lock`**。只有当它成功**重新获取**到 `Lock` 之后，`await()` 方法才能真正返回。
 
-#### 5.2 使用 `Condition` 实现生产者-消费者模型
+### 5.2 使用 `Condition` 实现生产者-消费者模型
 
 `Condition` 最经典的用途是解决生产者-消费者问题，特别是当需要区分不同等待条件时。下面是一个使用 `ReentrantLock` 和两个 `Condition` 实现的有界阻塞队列的例子：
 
@@ -1293,7 +1293,7 @@ public class BoundedBuffer<T> {
 * **精确唤醒**：可以为不同的等待条件创建不同的 `Condition` 对象，使用 `signal()` 只唤醒等待特定条件的线程，避免了 `synchronized` 中 `notify()` 可能唤醒错误类型线程或 `notifyAll()` 唤醒所有线程带来的“惊群效应”和不必要的竞争。
 * **功能更丰富**：提供了可中断等待 (`awaitInterruptibly`)、超时等待 (`awaitNanos`, `awaitUntil`) 等更灵活的等待方式。
 
-#### 5.3 `Condition` 的底层原理（基于 AQS）
+### 5.3 `Condition` 的底层原理（基于 AQS）
 
 `Condition` 的实现通常是作为 AQS 的内部类 `ConditionObject`。
 
@@ -1323,11 +1323,11 @@ public class BoundedBuffer<T> {
 
 ---
 
-### 第六章：再探 AQS (AbstractQueuedSynchronizer)
+## 第六章：再探 AQS (AbstractQueuedSynchronizer)
 
 前面我们多次提到 `Lock` 的核心原理是 AQS。为了更深入地理解 `Lock` 的行为，有必要对 AQS 的设计和工作流程有更清晰的认识。AQS 是 Java 并发包的基石，理解它有助于我们理解 `ReentrantLock`, `ReentrantReadWriteLock`, `Semaphore`, `CountDownLatch` 等众多同步工具的内部运作。
 
-#### 6.1 AQS 的设计目标与核心组件
+### 6.1 AQS 的设计目标与核心组件
 
 **设计目标：** 提供一个通用的、可扩展的同步基础框架，让开发者能够相对容易地构建出各种不同的同步器，而无需关心底层的线程排队、阻塞、唤醒等复杂细节。
 
@@ -1352,7 +1352,7 @@ public class BoundedBuffer<T> {
    * 共享：`acquireShared`, `releaseShared`, `tryAcquireShared`, `tryReleaseShared`
 5. **模板方法模式**：AQS 定义了同步过程的骨架 (`acquire`, `release` 等)，而将具体的同步状态判断逻辑 (`tryAcquire`, `tryRelease` 等) 交给子类实现。
 
-#### 6.2 AQS 工作流程：独占模式 (以 `ReentrantLock` 为例)
+### 6.2 AQS 工作流程：独占模式 (以 `ReentrantLock` 为例)
 
 **获取锁 (`acquire`)**
 
@@ -1483,7 +1483,7 @@ unlock 返回
    * 调用 `LockSupport.unpark(S.thread)` 唤醒该节点对应的线程。
 4. **返回**: `unlock()` 方法结束。
 
-#### 6.3 AQS 工作流程：共享模式 (以 `Semaphore.acquire` 为例)
+### 6.3 AQS 工作流程：共享模式 (以 `Semaphore.acquire` 为例)
 
 共享模式与独占模式类似，但有关键区别：
 
@@ -1496,7 +1496,7 @@ unlock 返回
 
 共享模式的“传播”特性使得一次 `releaseShared` 操作可能导致队列中多个等待线程被唤醒并成功获取资源。
 
-#### 6.4 `LockSupport`: AQS 的底层支撑
+### 6.4 `LockSupport`: AQS 的底层支撑
 
 AQS 中线程的挂起和唤醒，最终依赖于 `java.util.concurrent.locks.LockSupport` 工具类。`LockSupport` 提供了基本的线程阻塞和唤醒原语，它与 `Object` 的 `wait/notify` 不同：
 
@@ -1509,13 +1509,13 @@ AQS 中线程的挂起和唤醒，最终依赖于 `java.util.concurrent.locks.Lo
 
 AQS 正是利用 `LockSupport.park()` 来挂起等待队列中的线程，利用 `LockSupport.unpark()` 来唤醒它们。
 
-#### 6.5 AQS 小结
+### 6.5 AQS 小结
 
 AQS 是一个设计精巧、功能强大的同步基础框架。它通过 `state` 变量、CLH 等待队列、模板方法模式以及底层的 `CAS` 和 `LockSupport`，为上层同步工具（如 `Lock`, `Semaphore` 等）提供了一套标准化的线程管理和同步状态控制机制。理解 AQS 的原理，是深入掌握 Java 并发包的关键。
 
 ---
 
-### 第七章：`LockSupport` vs `Lock`
+## 第七章：`LockSupport` vs `Lock`
 
 有时初学者会混淆 `Lock` 接口和 `LockSupport` 工具类。虽然名字相似，且都与线程阻塞/唤醒有关，但它们的层级和用途完全不同。
 
@@ -1545,7 +1545,7 @@ AQS 是一个设计精巧、功能强大的同步基础框架。它通过 `state
 
 ---
 
-### 第八章：总结与最佳实践
+## 第八章：总结与最佳实践
 
 **核心知识点回顾：**
 

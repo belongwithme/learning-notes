@@ -20,7 +20,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147248147)（历史文章导入，当前状态为草稿）
 
-### 1. 引言：并发环境中的 List 缺点
+## 1. 引言：并发环境中的 List 缺点
 
 **在多线程编程成为常态的今天，如何安全、高效地处理共享数据是每个 Java 仔必须面对的课题。**
 
@@ -49,7 +49,7 @@ sidebar:
 
 `CopyOnWriteArrayList` 的核心理念可以概括为：**读写分离，牺牲写性能和内存换取极致的读性能和无锁读取**。它允许并发的读操作完全无锁进行，而写操作则通过复制整个底层数组的方式来保证线程安全和数据一致性。
 
-### 2. 核心思想：写时复制（Copy-On-Write）机制
+## 2. 核心思想：写时复制（Copy-On-Write）机制
 
 要理解 `CopyOnWriteArrayList`，首先必须掌握其核心机制——**写时复制（Copy-On-Write, COW）**。  
  这是一种在计算机科学中广泛应用的优化策略(真的很广泛!!!)，尤其在处理并发读写和资源共享时非常有效。
@@ -99,11 +99,11 @@ sidebar:
 
 通过这个过程，`CopyOnWriteArrayList` 完美地实现了读写分离：读操作畅通无阻，写操作虽然需要复制和加锁，但保证了线程安全和数据一致性（对于写操作完成后的新读取而言）。这种设计使得它成为处理“读多写少”并发场景的理想选择。
 
-### 3. 深入内部：`CopyOnWriteArrayList` 实现原理与源码剖析
+## 3. 深入内部：`CopyOnWriteArrayList` 实现原理与源码剖析
 
 现在，让我们深入 `CopyOnWriteArrayList` 的内部，结合源码（基于 JDK 8，但核心机制在后续版本中保持一致）来理解其具体实现细节。
 
-#### 3.1 核心成员变量
+### 3.1 核心成员变量
 
 ```
 /**
@@ -126,7 +126,7 @@ final transient ReentrantLock lock = new ReentrantLock();
 * `array`: 这是 `CopyOnWriteArrayList` 存储数据的核心。`volatile` 关键字至关重要，它确保了当一个线程修改了 `array` 的引用（指向一个新的数组副本）后，其他线程能够 **立即** 看到这个更新。没有 `volatile`，读线程可能长时间持有旧的数组引用，导致数据可见性问题。
 * `lock`: 这是一个 `ReentrantLock` 实例，用于保证 **写操作之间的互斥**。任何想要修改列表（`add`, `remove`, `set` 等）的线程，都必须先成功获取这把锁。这防止了多个线程同时复制和修改数组，从而避免了数据竞争和状态混乱。注意，**读操作完全不涉及这把锁**。
 
-#### 3.2 构造函数
+### 3.2 构造函数
 
 `CopyOnWriteArrayList` 提供了几个构造函数：
 
@@ -208,7 +208,7 @@ final transient ReentrantLock lock = new ReentrantLock();
 
 所有构造函数的核心目的都是初始化内部的 `array` 字段，为后续操作准备好初始数据（或空数组）。
 
-#### 3.3 读操作 (`get`, `size` 等)
+### 3.3 读操作 (`get`, `size` 等)
 
 读操作是 `CopyOnWriteArrayList` 的性能优势所在。它们非常简单直接，**完全不需要加锁**。
 
@@ -272,11 +272,11 @@ public boolean isEmpty() {
 
 这三点结合起来，保证了 `CopyOnWriteArrayList` 的读操作即使在并发环境下也是线程安全的，且性能极高。
 
-#### 3.4 写操作 (`add`, `remove`, `set` 等)
+### 3.4 写操作 (`add`, `remove`, `set` 等)
 
 写操作是 `CopyOnWriteArrayList` 中成本较高但保证线程安全的关键部分。它们都遵循类似的模式：**加锁 -> 获取当前数组 -> 创建新数组 -> 复制元素 -> 在新数组上修改 -> 更新数组引用 -> 解锁**。
 
-##### 3.4.1 `add(E e)` - 添加元素到末尾
+#### 3.4.1 `add(E e)` - 添加元素到末尾
 
 ```
 /**
@@ -325,7 +325,7 @@ public boolean add(E e) {
 * **`setArray(newElements)`**: 将 `CopyOnWriteArrayList` 内部的 `array` 引用指向这个刚创建并修改好的 `newElements`。这是一个原子性的引用赋值操作。由于 `array` 是 `volatile` 的，一旦这个赋值完成，其他线程通过 `getArray()` 就能看到这个新数组了。旧的 `elements` 数组如果没有其他引用指向它，将在后续的垃圾回收中被清理。
 * **`finally { lock.unlock() }`**: 保证锁一定会被释放，即使在 `try` 块中发生异常（例如 `OutOfMemoryError`）。这是规范的锁使用模式。
 
-##### 3.4.2 `add(int index, E element)` - 在指定位置插入元素
+#### 3.4.2 `add(int index, E element)` - 在指定位置插入元素
 
 ```
 /**
@@ -393,7 +393,7 @@ public void add(int index, E element) {
 * 最后在新数组的 `index` 位置放入 `element`，更新引用，释放锁。
 * **性能开销**：同样是 **O(n)**，因为涉及整个数组的复制（无论是用 `Arrays.copyOf` 还是 `System.arraycopy`）。
 
-##### 3.4.3 `remove(int index)` - 删除指定位置的元素
+#### 3.4.3 `remove(int index)` - 删除指定位置的元素
 
 ```
 /**
@@ -456,7 +456,7 @@ public E remove(int index) {
 * 更新引用，释放锁，返回 `oldValue`。
 * **性能开销**：依然是 **O(n)**，因为涉及数组复制。
 
-##### 3.4.4 `set(int index, E element)` - 替换指定位置的元素
+#### 3.4.4 `set(int index, E element)` - 替换指定位置的元素
 
 ```
 /**
@@ -519,7 +519,7 @@ public E set(int index, E element) {
 4. **原子更新引用**：`volatile` 保证引用更新的可见性。
 5. **`finally` 释放锁**：保证锁总能被释放。
 
-#### 3.5 迭代器 (`iterator`, `listIterator`)
+### 3.5 迭代器 (`iterator`, `listIterator`)
 
 `CopyOnWriteArrayList` 的迭代器是其另一个显著特点，它提供了 **弱一致性 (Weak Consistency)** 或称为 **快照 (Snapshot) 迭代器**。
 
@@ -673,7 +673,7 @@ static final class COWIterator<E> implements ListIterator<E> {
 
 `COWIterator` 的 `remove()`, `set(E e)`, `add(E e)` 方法都直接抛出 `UnsupportedOperationException`。这是因为修改操作会违反 COW 的原则（修改应该创建新副本），并且在快照上进行修改也没有意义（不会反映到原始列表中）。如果你需要在迭代时修改列表，`CopyOnWriteArrayList` 的迭代器无法满足需求。
 
-#### 3.6 线程安全机制总结
+### 3.6 线程安全机制总结
 
 `CopyOnWriteArrayList` 的线程安全主要依赖以下几个机制的协同工作：
 
@@ -684,11 +684,11 @@ static final class COWIterator<E> implements ListIterator<E> {
 
 这些机制共同确保了 `CopyOnWriteArrayList` 在并发环境下的线程安全，同时为读操作提供了极高的性能。
 
-### 4. 性能深度剖析
+## 4. 性能深度剖析
 
 理解 `CopyOnWriteArrayList` 的性能特点对于正确使用它至关重要。它的性能表现呈现出明显的两面性。
 
-#### 4.1 优势：读操作和迭代性能
+### 4.1 优势：读操作和迭代性能
 
 * **读操作 (`get`, `size`, `isEmpty`, `contains` 等)**：
   + **时间复杂度：O(1)** （对于 `get`, `size`, `isEmpty`）或 **O(n)** （对于 `contains`, `indexOf` 等需要遍历的操作）。
@@ -700,7 +700,7 @@ static final class COWIterator<E> implements ListIterator<E> {
 
 **核心优势来源：无锁读取 + 数据不变性。**
 
-#### 4.2 劣势：写操作性能和内存消耗
+### 4.2 劣势：写操作性能和内存消耗
 
 * **写操作 (`add`, `remove`, `set` (值改变时))**：
   + **时间复杂度：O(n)**。每次写操作都需要复制整个底层数组，成本与列表当前大小成正比。
@@ -712,7 +712,7 @@ static final class COWIterator<E> implements ListIterator<E> {
 
 **核心劣势来源：数组复制 O(n) 开销 + 写操作锁竞争 + 额外内存占用。**
 
-#### 4.3 与其他列表实现的性能对比
+### 4.3 与其他列表实现的性能对比
 
 | 特性 | `CopyOnWriteArrayList` | `ArrayList` (非同步) | `Vector` | `Collections.synchronizedList` | `ConcurrentLinkedQueue` (非 List) |
 | --- | --- | --- | --- | --- | --- |
@@ -740,11 +740,11 @@ static final class COWIterator<E> implements ListIterator<E> {
 3. **需要强一致性读取**。
 4. **内存极度敏感的应用**：需要严格控制内存占用和 GC 行为。
 
-### 5. 实际应用场景与最佳实践
+## 5. 实际应用场景与最佳实践
 
 理论结合实际，我们来看看 `CopyOnWriteArrayList` 在哪些具体的场景中能够发挥优势，以及使用时需要注意的最佳实践。
 
-#### 5.1 典型应用场景
+### 5.1 典型应用场景
 
 1. **事件监听器 (Listener) 管理**：
 
@@ -764,7 +764,7 @@ static final class COWIterator<E> implements ListIterator<E> {
    * **场景特点**：某些后台任务需要定期遍历一个共享列表进行处理，且处理逻辑不能被 `ConcurrentModificationException` 中断，即使在遍历时列表可能被修改。
    * **为何适用**：快照迭代器保证了迭代过程的稳定性。
 
-#### 5.2 使用最佳实践与注意事项
+### 5.2 使用最佳实践与注意事项
 
 1. **明确读写比例**：在使用前，务必评估或监控应用的实际读写比例。只有在读操作显著多于写操作时，`CopyOnWriteArrayList` 才能发挥优势。不要凭感觉选用。
 2. **关注列表大小**：监控列表的最大预期大小。如果列表可能增长到非常大（例如，超过几万或几十万个元素，具体阈值取决于应用性能要求和硬件），谨慎使用，或者考虑分片、使用其他数据结构等策略。
@@ -798,7 +798,7 @@ static final class COWIterator<E> implements ListIterator<E> {
    * 如果写操作也比较频繁，但仍需并发安全，可以考虑 `ConcurrentLinkedQueue`（如果队列语义适用，它是无锁的，性能好），或者使用 `ReadWriteLock` 保护的 `ArrayList`（允许多个读线程并发，但读写、写写互斥）。
    * 如果需要根据 key 快速查找，并且读多写少，`ConcurrentHashMap` 是一个非常好的选择。它的 `keySet()` 或 `values()` 视图也提供弱一致性的迭代器。
 
-### 6. 潜在陷阱与常见误区
+## 6. 潜在陷阱与常见误区
 
 虽然 `CopyOnWriteArrayList` 是一个强大的工具，但如果理解不当或使用不慎，也可能掉入一些陷阱。
 
@@ -808,7 +808,7 @@ static final class COWIterator<E> implements ListIterator<E> {
 4. **对 `size()` 的实时性期望过高**：`size()` 方法返回的是某个快照数组的长度，它不一定反映调用时刻列表的精确大小（如果在调用 `size()` 的同时发生了写操作）。如果需要精确计数，可能需要其他机制（如 `AtomicLong` 配合写操作维护）。
 5. **迭代器不支持修改的困惑**：习惯了 `ArrayList` 迭代器可以在迭代时 `remove()` 的开发者，可能会对 `CopyOnWriteArrayList` 迭代器抛出 `UnsupportedOperationException` 感到困惑。需要记住这是 COW 设计的固有结果。
 
-### 7. 总结
+## 7. 总结
 
 `CopyOnWriteArrayList` 是 Java 并发包 (JUC) 提供的一个非常有特色的线程安全列表实现。它通过**写时复制 (Copy-On-Write)** 机制，巧妙地实现了**读写分离**：
 

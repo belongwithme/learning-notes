@@ -20,7 +20,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153470947)（历史文章导入，当前状态为草稿）
 
-### 介绍
+## 介绍
 
 `ImportCandidates` 是 **Spring Boot 2.7+ 版本引入的自动配置类加载器**,用于替代旧版 `SpringFactoriesLoader` 的部分功能。
 
@@ -35,11 +35,11 @@ sidebar:
 
 ---
 
-### 一、为什么会出现这个类?
+## 一、为什么会出现这个类?
 
-#### 背景原因
+### 背景原因
 
-##### 1. 旧机制的问题 (Spring Boot 2.7 之前)
+#### 1. 旧机制的问题 (Spring Boot 2.7 之前)
 
 ```
 配置路径: META-INF/spring.factories
@@ -57,7 +57,7 @@ sidebar:
 * 不同 jar 包的配置会合并,容易冲突
 * 不利于模块化管理
 
-##### 2. 新机制的优势 (Spring Boot 2.7+)
+#### 2. 新机制的优势 (Spring Boot 2.7+)
 
 ```
 配置路径: META-INF/spring/注解全限定名.imports
@@ -78,7 +78,7 @@ sidebar:
 
 ---
 
-### 二、上下游关系图
+## 二、上下游关系图
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -142,9 +142,9 @@ sidebar:
 
 ---
 
-### 三、核心代码分析
+## 三、核心代码分析
 
-#### 1. 调用入口 (上游)
+### 1. 调用入口 (上游)
 
 **文件:** `AutoConfigurationImportSelector.java:200-210`
 
@@ -172,7 +172,7 @@ protected List<String> getCandidateConfigurations(
 
 ```
 
-#### 2. 加载逻辑 (ImportCandidates 核心方法)
+### 2. 加载逻辑 (ImportCandidates 核心方法)
 
 **文件:** `ImportCandidates.java:82-93`
 
@@ -201,7 +201,7 @@ public static ImportCandidates load(Class<?> annotation, @Nullable ClassLoader c
 
 ```
 
-#### 3. 文件解析逻辑
+### 3. 文件解析逻辑
 
 **文件:** `ImportCandidates.java:111-129`
 
@@ -234,7 +234,7 @@ private static List<String> readCandidateConfigurations(URL url) {
 
 ```
 
-#### 4. 注释处理
+### 4. 注释处理
 
 **文件:** `ImportCandidates.java:131-137`
 
@@ -252,9 +252,9 @@ private static String stripComment(String line) {
 
 ---
 
-### 四、实际配置文件示例
+## 四、实际配置文件示例
 
-#### 1. 核心配置文件
+### 1. 核心配置文件
 
 **文件:** `core/spring-boot-autoconfigure/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`
 
@@ -284,7 +284,7 @@ org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration
 
 ```
 
-#### 2. 模块化配置示例
+### 2. 模块化配置示例
 
 **文件:** `module/spring-boot-jdbc/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`
 
@@ -304,7 +304,7 @@ org.springframework.boot.jdbc.autoconfigure.metrics.DataSourcePoolMetricsAutoCon
 
 ---
 
-### 五、新旧机制对比
+## 五、新旧机制对比
 
 | 对比项 | 旧机制 (spring.factories) | 新机制 (.imports) |
 | --- | --- | --- |
@@ -316,7 +316,7 @@ org.springframework.boot.jdbc.autoconfigure.metrics.DataSourcePoolMetricsAutoCon
 | **可读性** | ⭐⭐ | ⭐⭐⭐⭐⭐ |
 | **兼容性** | Spring Boot < 2.7 | Spring Boot >= 2.7 |
 
-#### 旧格式示例 (spring.factories)
+### 旧格式示例 (spring.factories)
 
 ```
 # Auto Configure
@@ -333,7 +333,7 @@ com.example.project.listener.ShutdownListener
 
 ```
 
-#### 新格式示例 (.imports)
+### 新格式示例 (.imports)
 
 **文件1:** `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`
 
@@ -359,7 +359,7 @@ com.example.project.listener.ShutdownListener
 
 ---
 
-### 六、工作流程时序图
+## 六、工作流程时序图
 
 ```
 用户应用启动
@@ -402,9 +402,9 @@ com.example.project.listener.ShutdownListener
 
 ---
 
-### 七、关键设计特点
+## 七、关键设计特点
 
-#### 1. 不可变设计
+### 1. 不可变设计
 
 ```
 private ImportCandidates(List<String> candidates) {
@@ -416,7 +416,7 @@ private ImportCandidates(List<String> candidates) {
 
 ```
 
-#### 2. 迭代器支持
+### 2. 迭代器支持
 
 ```
 public final class ImportCandidates implements Iterable<String> {
@@ -436,7 +436,7 @@ public final class ImportCandidates implements Iterable<String> {
 
 ```
 
-#### 3. 异常处理
+### 3. 异常处理
 
 ```
 // 文件路径查找失败
@@ -464,7 +464,7 @@ private static List<String> readCandidateConfigurations(URL url) {
 
 ```
 
-#### 4. 静态工厂方法
+### 4. 静态工厂方法
 
 ```
 // 使用静态工厂方法而非公共构造函数
@@ -483,9 +483,9 @@ private ImportCandidates(List<String> candidates) {
 
 ---
 
-### 八、完整的自动配置加载流程
+## 八、完整的自动配置加载流程
 
-#### 阶段1: 配置文件扫描
+### 阶段1: 配置文件扫描
 
 ```
 1. Spring Boot 启动
@@ -496,7 +496,7 @@ private ImportCandidates(List<String> candidates) {
 
 ```
 
-#### 阶段2: 配置类收集
+### 阶段2: 配置类收集
 
 ```
 2. ImportCandidates.load() 调用
@@ -511,7 +511,7 @@ private ImportCandidates(List<String> candidates) {
 
 ```
 
-#### 阶段3: 配置类过滤
+### 阶段3: 配置类过滤
 
 ```
 3. AutoConfigurationImportSelector 处理
@@ -530,7 +530,7 @@ private ImportCandidates(List<String> candidates) {
 
 ```
 
-#### 阶段4: 配置类排序与注册
+### 阶段4: 配置类排序与注册
 
 ```
 4. 最终处理
@@ -546,9 +546,9 @@ private ImportCandidates(List<String> candidates) {
 
 ---
 
-### 九、常见使用场景
+## 九、常见使用场景
 
-#### 1. 自定义自动配置
+### 1. 自定义自动配置
 
 **步骤1: 创建自动配置类**
 
@@ -584,7 +584,7 @@ com.example.myproject.autoconfigure.MyServiceAutoConfiguration
 
 其他项目引入该 jar 后,`MyServiceAutoConfiguration` 会自动生效。
 
-#### 2. 测试自动配置
+### 2. 测试自动配置
 
 ```
 package com.example.myproject.autoconfigure;
@@ -611,9 +611,9 @@ com.example.myproject.autoconfigure.TestAutoConfiguration
 
 ---
 
-### 十、迁移指南 (从 spring.factories 到 .imports)
+## 十、迁移指南 (从 spring.factories 到 .imports)
 
-#### 迁移前 (旧方式)
+### 迁移前 (旧方式)
 
 **文件:** `META-INF/spring.factories`
 
@@ -629,7 +629,7 @@ com.example.processor.CustomEnvironmentPostProcessor
 
 ```
 
-#### 迁移后 (新方式)
+### 迁移后 (新方式)
 
 **文件1:** `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`
 
@@ -649,7 +649,7 @@ com.example.processor.CustomEnvironmentPostProcessor
 
 ```
 
-#### 迁移注意事项
+### 迁移注意事项
 
 1. ✅ **保持向后兼容**: Spring Boot 2.7+ 同时支持两种方式
 2. ✅ **逐步迁移**: 可以先保留 spring.factories,新配置使用 .imports
@@ -660,9 +660,9 @@ com.example.processor.CustomEnvironmentPostProcessor
 
 ---
 
-### 十一、调试技巧
+## 十一、调试技巧
 
-#### 1. 查看加载的配置类
+### 1. 查看加载的配置类
 
 ```
 @SpringBootApplication
@@ -688,7 +688,7 @@ debug=true
 
 ```
 
-#### 2. 断点调试
+### 2. 断点调试
 
 在以下位置设置断点:
 
@@ -697,7 +697,7 @@ debug=true
 * `AutoConfigurationImportSelector.getCandidateConfigurations()` - 查看配置获取
 * `AutoConfigurationImportSelector.getAutoConfigurationEntry()` - 查看过滤过程
 
-#### 3. 日志输出
+### 3. 日志输出
 
 添加日志配置:
 

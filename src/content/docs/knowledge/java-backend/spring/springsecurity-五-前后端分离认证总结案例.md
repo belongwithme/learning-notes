@@ -18,11 +18,11 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131454099)（历史文章导入，当前状态为草稿）
 
-### 前言
+## 前言
 
 和上一篇一样，从上倒下复制粘贴，所有代码贴完再运行，代码没有问题，只要贴对，都可以顺利跑出来的。
 
-### 难点分析
+## 难点分析
 
 前端系统给后端传递的数据为json，就会导致后端系统不能再用`request.getParameter`获取用户数据。  
  所以我们要将请求中json格式转换为对象，提取用户数据，然后进行认证。  
@@ -54,7 +54,7 @@ sidebar:
  但是security里面是有一系列的过滤器的，我们要确保`LoginFilter`替换`UsernamePasswordAuthenticationFilter`后位置不变。  
  ![请添加图片描述](./assets/131454099/dec6c5f88449b7ed241922ed.png)
 
-### Controller层
+## Controller层
 
 `TestController`方法：
 
@@ -75,9 +75,9 @@ public class test {
 
 ```
 
-### eneity层
+## eneity层
 
-#### Role
+### Role
 
 ```
 public class Role {
@@ -114,7 +114,7 @@ public class Role {
 
 ```
 
-#### User
+### User
 
 ```
 import org.springframework.security.core.GrantedAuthority;
@@ -224,7 +224,7 @@ public class User implements UserDetails {
 
 ```
 
-### dao层
+## dao层
 
 ```
 import com.wang.entity.Role;
@@ -245,7 +245,7 @@ public interface UserDao {
 
 ```
 
-### service层
+## service层
 
 ```
 import com.wang.dao.UserDao;
@@ -286,9 +286,9 @@ public class MyUserDetailService implements UserDetailsService {
 
 ```
 
-### config层
+## config层
 
-#### LoginFilter
+### LoginFilter
 
 ```
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -336,7 +336,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 ```
 
-#### SecurityConfig
+### SecurityConfig
 
 ```
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -465,9 +465,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 ```
 
-### resources
+## resources
 
-#### mapper
+### mapper
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -503,7 +503,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 ```
 
-### properties
+## properties
 
 ```
 server.port= 9092
@@ -529,7 +529,7 @@ logging.level.com.example = debug
 
 ```
 
-### pom.xml
+## pom.xml
 
 ```
     <dependencies>
@@ -580,6 +580,6 @@ logging.level.com.example = debug
 
 ```
 
-### 结尾
+## 结尾
 
 所有代码都是测试过的，保证没有问题，如果存在错误，请仔细检查，欢迎留言讨论，结合编程不良人视频配套更佳。

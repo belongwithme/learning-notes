@@ -28,9 +28,9 @@ Java
  项目就整了一个很简单了,能跑就行,代码什么的不用纠结,用AI随便生成一个就能跑.  
  本篇文章不太适合纯新手阅读,最好有读源码的经验,不然可能会比较懵.
 
-### 一、项目结构示例
+## 一、项目结构示例
 
-#### 假设我们有这样的项目结构：
+### 假设我们有这样的项目结构：
 
 ```
 my-app/
@@ -55,9 +55,9 @@ my-app/
 
 ```
 
-#### 代码示例
+### 代码示例
 
-##### 1. 服务接口 (service-api.jar)
+#### 1. 服务接口 (service-api.jar)
 
 ```
 package com.example.spi;
@@ -69,7 +69,7 @@ public interface MyService {
 
 ```
 
-##### 2. 服务提供者1 (provider1.jar)
+#### 2. 服务提供者1 (provider1.jar)
 
 ```
 package com.example.spi.impl;
@@ -94,7 +94,7 @@ com.example.spi.impl.Provider1
 
 ```
 
-##### 3. 服务提供者2 (provider2.jar)
+#### 3. 服务提供者2 (provider2.jar)
 
 ```
 package com.example.spi.impl;
@@ -119,7 +119,7 @@ com.example.spi.impl.Provider2
 
 ```
 
-##### 4. 应用程序 (app.jar)
+#### 4. 应用程序 (app.jar)
 
 ```
 package com.example;
@@ -143,9 +143,9 @@ public class App {
 
 ---
 
-### 二、完整的加载流程（源码级别）
+## 二、完整的加载流程（源码级别）
 
-#### 第1步：调用 ServiceLoader.load()
+### 第1步：调用 ServiceLoader.load()
 
 ```
 // 应用程序代码
@@ -172,7 +172,7 @@ public static <S> ServiceLoader<S> load(Class<S> service, ClassLoader loader) {
 
 ```
 
-#### 第2步：ServiceLoader 构造方法
+### 第2步：ServiceLoader 构造方法
 
 ```
 // ServiceLoader.java:122-180
@@ -206,7 +206,7 @@ public void reload() {
 
 ---
 
-#### 第3步：开始遍历（触发延迟加载）
+### 第3步：开始遍历（触发延迟加载）
 
 ```
 // 应用程序代码
@@ -244,7 +244,7 @@ public Iterator<S> iterator() {
 
 ---
 
-#### 第4步：LazyIterator.hasNext() - 查找配置文件
+### 第4步：LazyIterator.hasNext() - 查找配置文件
 
 **这是关键！** 这里是从 JAR 包中查找配置文件的地方：
 
@@ -302,7 +302,7 @@ private boolean hasNextService() {
 
 ---
 
-#### 第5步：ClassLoader.getResources() - 扫描 JAR 包
+### 第5步：ClassLoader.getResources() - 扫描 JAR 包
 
 **这是你问题的核心答案！**
 
@@ -313,7 +313,7 @@ configs = loader.getResources("META-INF/services/com.example.spi.MyService");
 
 ```
 
-##### ClassLoader.getResources() 的工作原理：
+#### ClassLoader.getResources() 的工作原理：
 
 ```
 // ClassLoader.java:1017-1028
@@ -338,7 +338,7 @@ public Enumeration<URL> getResources(String name) throws IOException {
 
 ```
 
-##### AppClassLoader 如何查找资源：
+#### AppClassLoader 如何查找资源：
 
 AppClassLoader 继承自 URLClassLoader，它的 `findResources()` 方法会：
 
@@ -387,7 +387,7 @@ URL 2: jar:file:/path/to/provider2.jar!/META-INF/services/com.example.spi.MyServ
 
 ---
 
-#### 第6步：parse() - 读取配置文件内容
+### 第6步：parse() - 读取配置文件内容
 
 ```
 // ServiceLoader.java:231-253
@@ -422,7 +422,7 @@ private Iterator<String> parse(Class<?> service, URL u) {
 
 ```
 
-##### URL.openStream() 如何从 JAR 包读取文件：
+#### URL.openStream() 如何从 JAR 包读取文件：
 
 ```
 // 当 URL 是 jar:file:/path/to/provider1.jar!/META-INF/services/com.example.spi.MyService 时
@@ -440,7 +440,7 @@ InputStream in = url.openStream();
 
 ---
 
-#### 第7步：parseLine() - 解析每一行
+### 第7步：parseLine() - 解析每一行
 
 ```
 // ServiceLoader.java:202-229
@@ -489,7 +489,7 @@ private int parseLine(Class<?> service, URL u, BufferedReader r, int lc,
 
 ---
 
-#### 第8步：LazyIterator.next() - 加载并实例化 类
+### 第8步：LazyIterator.next() - 加载并实例化 类
 
 ```
 // ServiceLoader.java:296-321 (LazyIterator.nextService)
@@ -547,7 +547,7 @@ private S nextService() {
 
 ---
 
-### 三、完整的调用链可视化
+## 三、完整的调用链可视化
 
 ```
 应用程序
@@ -601,9 +601,9 @@ private S nextService() {
 
 ---
 
-### 四、关键技术点详解
+## 四、关键技术点详解
 
-#### 1. ClassLoader.getResources() 如何扫描 JAR 包
+### 1. ClassLoader.getResources() 如何扫描 JAR 包
 
 ```
 // AppClassLoader 的 classpath 包含所有 JAR 包:
@@ -627,7 +627,7 @@ configs = loader.getResources("META-INF/services/com.example.spi.MyService");
 
 ```
 
-#### 2. URL.openStream() 如何读取 JAR 包内的文件
+### 2. URL.openStream() 如何读取 JAR 包内的文件
 
 ```
 URL url = new URL("jar:file:/path/to/provider1.jar!/META-INF/services/com.example.spi.MyService");
@@ -644,7 +644,7 @@ InputStream in = url.openStream();
 
 ```
 
-#### 3. Class.forName() 如何从 JAR 包加载类
+### 3. Class.forName() 如何从 JAR 包加载类
 
 ```
 Class<?> c = Class.forName("com.example.spi.impl.Provider1", false, loader);
@@ -669,9 +669,9 @@ Class<?> c = Class.forName("com.example.spi.impl.Provider1", false, loader);
 
 ---
 
-### 五、实际执行流程示例
+## 五、实际执行流程示例
 
-#### 启动命令
+### 启动命令
 
 ```
 java -cp app.jar:service-api.jar:provider1.jar:provider2.jar com.example.App
@@ -679,7 +679,7 @@ java -cp app.jar:service-api.jar:provider1.jar:provider2.jar com.example.App
 
 ```
 
-#### 执行步骤
+### 执行步骤
 
 1. **JVM 启动，创建 AppClassLoader**
 
@@ -731,9 +731,9 @@ java -cp app.jar:service-api.jar:provider1.jar:provider2.jar com.example.App
 
 ---
 
-### 六、总结：SPI 如何加载 JAR 包中的类
+## 六、总结：SPI 如何加载 JAR 包中的类
 
-#### 核心机制
+### 核心机制
 
 1. **配置发现**: `ClassLoader.getResources()`
 
@@ -759,7 +759,7 @@ java -cp app.jar:service-api.jar:provider1.jar:provider2.jar com.example.App
    * 避免重复加载
    * 保持实例化顺序
 
-#### 关键点
+### 关键点
 
 * **JAR 包就是 ZIP 文件**，可以像访问文件系统一样访问其中的内容
 * **ClassLoader 知道 classpath 上的所有 JAR 包**

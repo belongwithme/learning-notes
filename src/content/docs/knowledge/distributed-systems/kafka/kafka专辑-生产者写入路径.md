@@ -19,7 +19,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156488501)（历史文章导入，当前状态为草稿）
 
-### 必要前置知识
+## 必要前置知识
 
 * **Java NIO**：非阻塞 I/O，Selector 多路复用机制。
 * **Java 内存模型**：堆内存（Heap）与垃圾回收（GC）带来的 STW（Stop-The-World）风险。
@@ -27,7 +27,7 @@ sidebar:
 
 ---
 
-### 生产者写入链路全景：双线程架构
+## 生产者写入链路全景：双线程架构
 
 Kafka Producer 是典型的 **“主线程-子线程”** 异步架构，将“业务逻辑”与“网络 I/O”彻底解耦。
 
@@ -80,9 +80,9 @@ Broker2
 
 ---
 
-### 关键组件深度解析
+## 关键组件深度解析
 
-#### RecordAccumulator 与 BufferPool（内存池）
+### RecordAccumulator 与 BufferPool（内存池）
 
 为了避免高频创建和销毁 `byte[]` 导致 Java **Young GC** 频繁，Kafka 设计了一套内存池机制。
 
@@ -95,7 +95,7 @@ Broker2
 
 * **阻塞风险**：如果 `buffer.memory` 耗尽，`send()` 方法会阻塞，直到有内存归还或超时（`max.block.ms`）。
 
-#### 分区器与粘性分区（Sticky Partitioning）
+### 分区器与粘性分区（Sticky Partitioning）
 
 分区器决定了消息去哪个 Partition。
 
@@ -104,7 +104,7 @@ Broker2
 * **机制**：随机选择一个分区，**一直填，直到填满一个批次（batch.size）或超时（linger.ms）**，然后才切换到下一个分区。
 * **优势**：相比旧版的轮询（Round-Robin），粘性分区能更快凑满 Batch，减少请求次数，显著降低延迟。
 
-#### Sender 线程（NIO 模型）
+### Sender 线程（NIO 模型）
 
 Sender 是一个单线程 loop。
 
@@ -113,7 +113,7 @@ Sender 是一个单线程 loop。
 
 ---
 
-### 吞吐调优：批处理与压缩
+## 吞吐调优：批处理与压缩
 
 核心理念：**用 CPU 和内存换取网络带宽和磁盘 I/O**。
 
@@ -125,34 +125,34 @@ Sender 是一个单线程 loop。
 
 ---
 
-### 可靠性体系：Acks、重试与超时
+## 可靠性体系：Acks、重试与超时
 
 可靠性不仅仅是一个开关，而是一套组合拳。
 
-#### acks 的三个级别
+### acks 的三个级别
 
 * `acks=0`：**发后即忘**。吞吐最高，数据丢失风险最大。
 * `acks=1`：**Leader 落盘即成功**。Leader 挂掉且 Follower 未同步时会丢数据。
 * `acks=all`（或 -1）：**ISR 所有副本确认**。配合 `min.insync.replicas > 1` 使用，可靠性最高，但延迟最高。
 
-#### 超时双保险
+### 超时双保险
 
 1. `request.timeout.ms`：单次网络请求的超时。超时后 Producer 会尝试重试。
 2. `delivery.timeout.ms`：**总超时**（默认 2 分钟）。从 `send()` 开始，包括所有重试、排队的时间。一旦超过这个时间，Producer 放弃并抛出异常。
 
 ---
 
-### 进阶：幂等性与顺序性
+## 进阶：幂等性与顺序性
 
 网络抖动可能导致 Broker 没收到 Ack，Producer 重试，从而导致**重复写入**或**乱序**。
 
-#### 幂等性（Idempotence）
+### 幂等性（Idempotence）
 
 * **开启**：`enable.idempotence=true`（Kafka 3.0+ 默认开启）。
 * **原理**：Producer 分配 PID，每条消息带序列号（Sequence Number）。Broker 发现 `SN <= 已提交 SN` 则视为重复，直接丢弃。
 * **限制**：只能保证**单分区、单会话**内的精确一次（Exactly-Once）。
 
-#### 乱序问题与 max.in.flight
+### 乱序问题与 max.in.flight
 
 如果允许 5 个请求同时在飞（In-Flight），请求 A 失败重试，B 成功，A 重试成功 -> 顺序变成 B, A（乱序）。
 

@@ -19,7 +19,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147280008)（历史文章导入，当前状态为草稿）
 
-### 1. 引言：为什么需要线程中断？
+## 1. 引言：为什么需要线程中断？
 
 在并发编程中，我们经常需要协调不同线程的执行。  
  有时，一个线程需要通知另一个线程停止其当前正在执行的任务。  
@@ -32,7 +32,7 @@ sidebar:
  它允许一个线程向另一个线程发送一个“请求停止”的信号，而被请求的线程可以自行决定如何以及何时响应这个信号，从而有机会进行必要的清理工作，实现“优雅地”停止。  
  请在具备 Java 基础和多线程的基本概念（如 `Thread` 类的使用、`Runnable` 接口、锁等）知识后阅读体验最佳。
 
-### 2. 核心概念：中断状态与关键方法
+## 2. 核心概念：中断状态与关键方法
 
 理解线程中断的关键在于掌握它的核心组成部分：
 
@@ -40,13 +40,13 @@ sidebar:
 2. 操作标志位
 3. 检查标志位
 
-#### 2.1 中断状态 (Interrupt Status)
+### 2.1 中断状态 (Interrupt Status)
 
 每个 Java `Thread` 对象内部都有一个 `boolean` 类型的**中断状态 (interrupt status)** 标志位。默认情况下，这个标志位是 `false`。当中断发生时，这个标志位会被设置为 `true`。
 
 这个状态位是线程中断机制的核心，后续的所有操作都围绕着检查和修改这个状态位进行。
 
-#### 2.2 `thread.interrupt()` 方法
+### 2.2 `thread.interrupt()` 方法
 
 * **作用**: 这是发起中断请求的主要方法。当你调用一个线程实例 `t` 的 `t.interrupt()` 方法时，虚拟机会尝试设置线程 `t` 的中断状态位为 `true`。
 * **特性**:
@@ -113,7 +113,7 @@ sidebar:
 
   **解释**: `interrupt()` 方法首先进行权限检查。然后，它会检查线程是否因为阻塞在某个 `Interruptible` 对象（通常是 NIO Channel）上。如果是，它会调用本地方法 `interrupt0()` 来设置底层的中断状态，并调用 `Interruptible` 对象的 `interrupt()` 方法来中断 I/O 操作。如果线程没有阻塞在 `Interruptible` 上，它就只调用 `interrupt0()` 来设置中断状态。这个本地方法 `interrupt0()` 负责实际设置线程的中断标志，并且如果线程当前正在 `sleep`, `wait` 或 `join`，则会唤醒该线程（进而导致 `InterruptedException`）。
 
-#### 2.3 `thread.isInterrupted()` 方法
+### 2.3 `thread.isInterrupted()` 方法
 
 * **作用**: 检查**目标线程**的中断状态位。
 * **特性**:
@@ -147,7 +147,7 @@ sidebar:
 
   **解释**: `isInterrupted()` 方法内部调用了一个本地方法 `isInterrupted(boolean clearInterrupted)`，并传递 `false` 作为参数。这个 `false` 告诉本地方法：在检查中断状态后，**不要**清除它。因此，`isInterrupted()` 是一个只读操作。
 
-#### 2.4 `Thread.interrupted()` 方法 (**静态方法**)
+### 2.4 `Thread.interrupted()` 方法 (**静态方法**)
 
 * **作用**: 检查**当前正在执行该方法的线程**的中断状态，并**清除**该状态。
 * **特性**:
@@ -184,7 +184,7 @@ sidebar:
 
   **解释**: 静态方法 `interrupted()` 内部获取当前线程 (`currentThread()`)，然后调用其本地方法 `isInterrupted(boolean clearInterrupted)`，并传递 `true` 作为参数。这个 `true` 告诉本地方法：在检查中断状态后，**必须**清除它（将其设置为 `false`）。
 
-#### 2.5 `isInterrupted()` vs `Thread.interrupted()` 对比
+### 2.5 `isInterrupted()` vs `Thread.interrupted()` 对比
 
 | 特性 | `thread.isInterrupted()` | `Thread.interrupted()` |
 | --- | --- | --- |
@@ -200,18 +200,18 @@ sidebar:
 
 在普通的任务循环中检查中断信号时，**几乎总是应该使用 `isInterrupted()`**。如果你错误地使用了 `Thread.interrupted()`，并且中断碰巧发生，第一次检查会返回 `true`，但同时状态被清除了，下一次循环检查时就会返回 `false`，导致你的线程无法正确停止。
 
-#### 2.6 `InterruptedException` 异常
+### 2.6 `InterruptedException` 异常
 
 * **本质**: 它是一个**受检异常 (Checked Exception)**，继承自 `Exception`。
 * **抛出时机**: 当一个线程因为调用了 `Object.wait()`, `Thread.sleep()`, `Thread.join()` 等方法而进入阻塞状态时，如果其他线程调用了该阻塞线程的 `interrupt()` 方法，那么阻塞调用会**立即**被唤醒并抛出 `InterruptedException`。某些可中断的 NIO 操作也会在中断时抛出类似异常。
 * **中断状态清除**: 如前所述，当 JVM 抛出 `InterruptedException` 时，它会**自动清除**线程的中断状态位（设置为 `false`）。这是一个非常重要的行为！
 * **为什么需要处理**: 因为它是受检异常，编译器强制你必须捕获或声明抛出它。更重要的是，它传递了一个明确的信号：“你的线程被请求中断了”。忽略这个信号（例如，捕获后什么都不做）通常是错误的做法，会导致中断请求丢失。
 
-### 3. 如何正确响应中断 (Responding to Interrupts)
+## 3. 如何正确响应中断 (Responding to Interrupts)
 
 仅仅调用 `interrupt()` 是不够的，目标线程需要有相应的逻辑来**检测**和**响应**这个中断信号。
 
-#### 3.1 在任务代码中检查中断状态
+### 3.1 在任务代码中检查中断状态
 
 如果你的线程执行的是一个循环任务或者包含多个步骤的计算，你应该在合适的时机（例如循环的开始处或耗时操作之前）检查中断状态。
 
@@ -287,11 +287,11 @@ public class InterruptCheckExample {
 * `Thread.sleep(100)` 是一个可中断的阻塞方法。如果在此期间 `taskThread.interrupt()` 被调用，`sleep()` 会抛出 `InterruptedException`。
 * `catch (InterruptedException e)` 块是处理中断的关键。
 
-#### 3.2 处理 `InterruptedException` 的策略
+### 3.2 处理 `InterruptedException` 的策略
 
 当你的代码调用了可中断的阻塞方法（如 `sleep`, `wait`, `join`, `BlockingQueue.take` 等）并捕获到 `InterruptedException` 时，你有几种处理策略：
 
-##### 策略一：恢复中断状态并退出/处理 (推荐)
+#### 策略一：恢复中断状态并退出/处理 (推荐)
 
 这是**最推荐**的做法，特别是当你的代码是一个库或框架的一部分，或者当前方法不是线程任务的顶层时。因为捕获 `InterruptedException` 时中断状态已被清除，如果不恢复它，上层调用栈就无法得知中断的发生。
 
@@ -334,7 +334,7 @@ private void cleanupResources() {
 
 **为什么恢复状态很重要？** 假设 `someMethod()` 被另一个方法 `outerMethod()` 调用，而 `outerMethod()` 也依赖中断信号来停止。如果 `someMethod()` 捕获了 `InterruptedException` 但没有恢复状态，`outerMethod()` 在 `someMethod()` 返回后调用 `isInterrupted()` 将得到 `false`，从而无法正确响应中断。
 
-##### 策略二：向上抛出 `InterruptedException`
+#### 策略二：向上抛出 `InterruptedException`
 
 如果当前方法不适合处理中断（例如，它只是一个工具方法或中间层），可以将异常直接向上抛给调用者处理。这需要你的方法签名包含 `throws InterruptedException`。
 
@@ -374,7 +374,7 @@ public void run() {
 
 这种方式将处理中断的责任沿着调用栈向上传递，直到某个合适的层级进行处理。
 
-##### 策略三：捕获并终止任务 (仅在顶层任务逻辑中适用)
+#### 策略三：捕获并终止任务 (仅在顶层任务逻辑中适用)
 
 如果捕获 `InterruptedException` 的地方就是线程任务的最高层逻辑（例如 `Runnable` 的 `run()` 方法），并且你知道中断意味着整个任务应该结束，那么可以直接进行清理并终止。
 
@@ -410,7 +410,7 @@ private void finalCleanup() {
 
 ```
 
-##### **不推荐：捕获并忽略**
+#### **不推荐：捕获并忽略**
 
 **绝对不要**这样做：
 
@@ -429,11 +429,11 @@ try {
 
 这种做法被称为“吞掉 (swallowing)”中断异常。它会导致中断信号丢失，使得发起中断的线程无法得知目标线程是否真正响应了中断，目标线程也可能无法按预期停止，导致程序行为异常或资源泄露。
 
-### 4. 发起中断的常见方式
+## 4. 发起中断的常见方式
 
 除了直接调用 `thread.interrupt()`，还有其他一些场景和 API 会间接地使用中断机制。
 
-#### 4.1 直接调用 `thread.interrupt()`
+### 4.1 直接调用 `thread.interrupt()`
 
 这是最基本、最直接的方式，适用于你持有目标线程 `Thread` 对象引用的情况。
 
@@ -460,7 +460,7 @@ worker.interrupt();
 
 ```
 
-#### 4.2 `ExecutorService` 和 `Future`
+### 4.2 `ExecutorService` 和 `Future`
 
 当你使用 Java 的线程池 (`ExecutorService`) 时，管理线程生命周期（包括中断）通常更加规范。
 
@@ -517,7 +517,7 @@ public class FutureCancelExample {
 
 ```
 
-#### 4.3 基于超时的中断
+### 4.3 基于超时的中断
 
 某些场景下，我们可能希望在操作超时后中断相关线程。这通常需要结合超时机制和手动调用 `interrupt()`。
 
@@ -562,11 +562,11 @@ public class FutureCancelExample {
 
 需要注意的是，这些超时机制本身**不直接**导致中断，它们只是提供了一个判断超时的点，你需要在超时发生后**显式地调用 `interrupt()`** 来发起中断请求。
 
-### 5. 中断与不可中断的阻塞 (Interruptible vs. Uninterruptible Blocking)
+## 5. 中断与不可中断的阻塞 (Interruptible vs. Uninterruptible Blocking)
 
 并非所有的阻塞操作都能响应 `interrupt()` 调用。理解哪些阻塞是可中断的，哪些是不可中断的，对于设计健壮的并发程序至关重要。
 
-#### 5.1 可中断的阻塞 (Interruptible Blocking)
+### 5.1 可中断的阻塞 (Interruptible Blocking)
 
 这些操作在阻塞期间如果线程被中断，会抛出 `InterruptedException` (或类似的与中断相关的异常) 并唤醒线程。
 
@@ -583,7 +583,7 @@ public class FutureCancelExample {
 
 当线程阻塞在这些方法上时，可以通过调用 `interrupt()` 来“叫醒”它们。
 
-#### 5.2 不可中断的阻塞 (Uninterruptible Blocking)
+### 5.2 不可中断的阻塞 (Uninterruptible Blocking)
 
 这些操作在阻塞期间**不会**响应 `interrupt()` 调用。即使线程的中断状态被设置为 `true`，它们也会继续阻塞，直到阻塞条件解除。
 
@@ -592,7 +592,7 @@ public class FutureCancelExample {
 * **传统的阻塞 I/O (`java.io.*`)**: 大部分 `java.io` 包下的阻塞方法（如 `InputStream.read()`, `OutputStream.write()` 在网络或文件上的操作）通常是**不可中断**的。线程会一直阻塞在 I/O 调用上，直到 I/O 操作完成、出现错误或流被关闭。调用 `interrupt()` 仅设置中断状态，不会唤醒线程。
 * **某些 JVM 内部操作**
 
-#### 5.3 如何处理不可中断的阻塞？
+### 5.3 如何处理不可中断的阻塞？
 
 如果你的线程可能阻塞在不可中断的操作上，并且你需要一种方法来停止它，那么 `interrupt()` 可能不够用。你需要采取其他策略：
 
@@ -612,7 +612,7 @@ public class FutureCancelExample {
 
 **理解难点**: 很多开发者默认 `interrupt()` 可以中断一切阻塞，这是一个常见的误解。记住 `synchronized` 和传统 IO 阻塞是中断的“盲区”。
 
-### 6. 最佳实践和注意事项
+## 6. 最佳实践和注意事项
 
 * **中断优先**: 始终将线程中断作为首选的、标准的线程间“请求停止”的协作机制。避免使用已废弃的 `stop()`, `suspend()`。
 * **正确处理 `InterruptedException`**: 这是关键。要么恢复中断状态 (`Thread.currentThread().interrupt()`)，要么向上抛出。**永远不要“吞掉”它**。
@@ -623,7 +623,7 @@ public class FutureCancelExample {
 * **中断的语义**: `interrupt()` 的核心语义是“请求停止”。不要滥用它作为线程间的通用事件通知机制，这会使代码意图混淆。对于通用的线程间通信，应使用 `wait/notify/notifyAll`, `Condition`, `BlockingQueue` 等更合适的工具。
 * **资源清理**: 确保在响应中断退出时，执行必要的资源清理操作（关闭文件、释放锁、回滚事务等），通常在 `finally` 块或 `catch` 块中完成。
 
-### 7. 示例：优雅关闭的生产者-消费者模型
+## 7. 示例：优雅关闭的生产者-消费者模型
 
 下面是一个简化的生产者-消费者示例，展示如何使用中断来请求生产者和消费者线程停止。
 
@@ -725,7 +725,7 @@ public class ProducerConsumerInterrupt {
 * `catch (InterruptedException e)` 块处理中断信号，并准备退出。
 * 我们还使用了一个 `volatile boolean running` 标志，虽然在这个特定例子中 `cancel(true)` 更直接，但在某些不依赖阻塞方法中断的场景下，volatile 标志是另一种协作停止的方式。
 
-### 8. 总结
+## 8. 总结
 
 Java 线程中断是一种强大而优雅的线程协作机制，用于请求线程停止其当前任务。它并非强制终止，而是依赖于目标线程的主动响应。
 

@@ -1,17 +1,16 @@
 ---
-import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/PageTitle.astro';
 
 const entry = Astro.locals.starlightRoute?.entry || Astro.props.entry;
 const data = entry?.data || {};
 const { status, difficulty, tags } = data;
 
-// 定义状态映射
-const statusMap: Record<string, { label: string, icon: string, class: string }> = {
-  verified: { label: '已验证', icon: '✅', class: 'status-verified' },
-  outdated: { label: '已过期', icon: '⚠️', class: 'status-outdated' },
-  draft: { label: '草稿', icon: '📝', class: 'status-draft' },
-  evergreen: { label: '常青树', icon: '🌲', class: 'status-evergreen' },
+// 页面标题是文章的唯一主视觉层，状态元信息保持安静。
+const statusMap: Record<string, { label: string, class: string }> = {
+  verified: { label: '已验证', class: 'status-verified' },
+  outdated: { label: '已过期', class: 'status-outdated' },
+  draft: { label: '草稿', class: 'status-draft' },
+  evergreen: { label: '持续维护', class: 'status-evergreen' },
 };
 
 // 定义难度映射
@@ -30,13 +29,14 @@ const currentDiff = difficulty ? diffMap[difficulty] : null;
 {(currentStatus || currentDiff || (tags && tags.length > 0)) && (
   <div class="page-meta-badges">
     {currentStatus && (
-      <span class={`badge ${currentStatus.class}`}>
-        <span aria-hidden="true">{currentStatus.icon}</span> {currentStatus.label}
+      <span class={`badge badge-status ${currentStatus.class}`}>
+        <span class="status-dot" aria-hidden="true"></span>
+        {currentStatus.label}
       </span>
     )}
     {currentDiff && (
       <span class="badge badge-difficulty">
-        <span aria-hidden="true">🧠</span> 难度: {currentDiff}
+        难度：{currentDiff}
       </span>
     )}
     {tags && tags.map((tag: string) => (
@@ -49,35 +49,44 @@ const currentDiff = difficulty ? diffMap[difficulty] : null;
   .page-meta-badges {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 1rem;
-    margin-bottom: 2rem;
+    align-items: center;
+    gap: 0.35rem 0.7rem;
+    margin-top: 1.15rem;
+    margin-bottom: 0.25rem;
   }
   .badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.25rem 0.6rem;
-    font-size: 0.85rem;
+    gap: 0.4rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--archive-muted, var(--sl-color-gray-3));
+    font-family: var(--archive-sans, var(--sl-font));
+    font-size: 0.78rem;
     font-weight: 500;
-    border-radius: 99px;
-    border: 1px solid var(--sl-color-hairline);
-    background: var(--sl-color-bg-nav);
-    color: var(--sl-color-text-muted);
+    line-height: 1.4;
   }
-  .status-verified, .status-evergreen {
-    border-color: var(--archive-accent, var(--sl-color-text-accent));
-    color: var(--archive-accent, var(--sl-color-text-accent));
-    background: color-mix(in srgb, var(--archive-accent, var(--sl-color-text-accent)) 10%, transparent);
+  .badge + .badge::before {
+    content: '·';
+    margin-inline-end: 0.35rem;
+    color: var(--archive-line, var(--sl-color-hairline));
   }
-  .status-outdated {
-    border-color: #d97706;
-    color: #b45309;
-    background: color-mix(in srgb, #f59e0b 10%, transparent);
+  .status-dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--archive-muted, var(--sl-color-gray-3));
+  }
+  .status-verified .status-dot,
+  .status-evergreen .status-dot {
+    background: var(--archive-accent, var(--sl-color-text-accent));
+  }
+  .status-outdated .status-dot {
+    background: #b45309;
   }
   .badge-tag {
-    font-family: var(--sl-font-mono);
-    font-size: 0.8rem;
-    color: var(--sl-color-gray-3);
+    color: var(--archive-muted, var(--sl-color-gray-3));
   }
 </style>

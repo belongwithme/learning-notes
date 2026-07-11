@@ -19,7 +19,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147245941)（历史文章导入，当前状态为草稿）
 
-### 引言
+## 引言
 
 在现代软件开发中，尤其是后端服务开发，高并发和高性能是永恒的追求。为了充分利用多核处理器的能力，提升应用的响应速度和吞吐量，异步编程和
 多线程 
@@ -38,9 +38,9 @@ sidebar:
 
 为了简化异步编程，Java 5 在 `java.util.concurrent` (JUC) 包中引入了一系列强大的并发工具，`FutureTask` 就是其中一颗璀璨的明珠。它巧妙地将**待执行的任务** (Runnable) 和**未来可获取的结果** (Future) 结合起来，提供了一种标准、高效且易于使用的异步任务处理机制。
 
-### 一、 基础概念：为什么需要 FutureTask？
+## 一、 基础概念：为什么需要 FutureTask？
 
-#### 1.1 异步计算的痛点
+### 1.1 异步计算的痛点
 
 在没有 `FutureTask` 的年代，实现一个简单的异步计算并获取结果，需要开发者手动处理很多底层细节。让我们来看一个例子：主线程需要启动一个子线程执行一个耗时 3 秒的计算（返回整数 42），并在计算完成后获取结果。
 
@@ -150,7 +150,7 @@ public class WithoutFutureTaskExample {
 
 真让哥们天天敲这些真的会疯掉了(崩溃脸).
 
-#### 1.2 FutureTask 的优雅解决方案
+### 1.2 FutureTask 的优雅解决方案
 
 `FutureTask` 的出现，正是为了解决上述痛点，提供一套标准、简洁、健壮的异步任务处理方案。  
  它将任务的执行逻辑 (`Callable` 或 `Runnable`) 封装起来，并提供了一系列方法来控制任务的生命周期（执行、取消）和获取结果（阻塞、超时、非阻塞）。
@@ -258,7 +258,7 @@ public class WithFutureTaskExample {
 * **任务与结果的解耦**：将任务的执行过程和结果的获取过程分离开，主线程提交任务后可以继续做其他事情，提高了程序的并发性和响应性。
 * **并发任务的生命周期管理**：提供了标准化的方法来控制任务的开始、结束、取消，并查询任务状态。
 
-#### 1.3 核心接口：Runnable 和 Future
+### 1.3 核心接口：Runnable 和 Future
 
 `FutureTask` 的强大功能源于它巧妙地实现了两个核心接口：`Runnable` 和 `Future<V>`。实际上，它实现的是 `RunnableFuture<V>` 接口，而 `RunnableFuture<V>` 同时继承了 `Runnable` 和 `Future<V>`。
 
@@ -339,11 +339,11 @@ public interface Future<V> {
 
 通过同时实现这两个接口，`FutureTask` 成为了连接任务执行和结果获取的桥梁，极大地简化了 Java 异步编程。
 
-### 二、 内部实现：深入 FutureTask 的原理
+## 二、 内部实现：深入 FutureTask 的原理
 
 理解 `FutureTask` 的内部工作原理对于更高效、更安全地使用它至关重要。其内部实现涉及到精巧的状态管理、原子操作和线程同步机制。
 
-#### 2.1 核心状态变量：`state`
+### 2.1 核心状态变量：`state`
 
 `FutureTask` 的所有行为都围绕着一个核心的状态变量 `state` 来进行协调。这是一个 `volatile int` 类型的变量，`volatile` 关键字确保了该变量在多线程环境下的**可见性**，即一个线程修改了 `state`，其他线程能立刻看到最新的值。
 
@@ -404,7 +404,7 @@ INTERRUPTING --> INTERRUPTED ---> (Done)
 
 *(注意：实际的 `run()` 方法执行期间 `state` 仍是 `NEW`，直到 `call()` 结束后才尝试变为 `COMPLETING` 或 `cancel()` 介入变为 `CANCELLED`/`INTERRUPTING`)*
 
-#### 2.2 线程安全基石：`volatile` 与 CAS
+### 2.2 线程安全基石：`volatile` 与 CAS
 
 `FutureTask` 需要在多线程环境中安全地运行：主线程可能调用 `get()` 或 `cancel()`，而工作线程正在执行 `run()`。它是如何保证线程安全的呢？主要依靠以下机制：
 
@@ -542,7 +542,7 @@ INTERRUPTING --> INTERRUPTED ---> (Done)
     `synchronized` 是悲观锁，它假设总会发生并发冲突，所以在访问共享资源前先加锁，阻塞其他线程。在高并发场景下，线程阻塞和唤醒的开销可能很大。  
     CAS 是乐观锁的思想，它假设冲突是小概率事件，先尝试更新，如果失败了（说明有冲突），再重试或采取其他策略。在很多并发场景下，CAS 比 `synchronized` 具有更好的性能，因为它避免了线程上下文切换的开销。`FutureTask` 的设计者选择了基于 CAS 的无锁（或称轻量级锁）方案来实现核心状态管理，以追求更高的执行效率。
 
-#### 2.3 等待/通知机制：`WaitNode` 与 `LockSupport`
+### 2.3 等待/通知机制：`WaitNode` 与 `LockSupport`
 
 当主线程调用 `futureTask.get()` 而任务尚未完成时，主线程需要阻塞等待。`FutureTask` 没有使用传统的 `Object.wait()` / `notify()` / `notifyAll()`，而是采用了一种类似于 `AbstractQueuedSynchronizer` (AQS) 的机制，基于 `LockSupport.park()` 和 `LockSupport.unpark()` 实现。
 
@@ -679,7 +679,7 @@ private void removeWaiter(WaitNode node) {
 
 这种基于 `volatile` + CAS + `LockSupport` 的无锁/轻量级锁设计，是 JUC 包中许多并发工具（如 AQS、`ConcurrentHashMap` 部分实现）的典型模式，体现了 Java 并发编程的高级技巧。
 
-#### 2.4 任务取消处理 (`cancel`)
+### 2.4 任务取消处理 (`cancel`)
 
 `cancel(boolean mayInterruptIfRunning)` 方法的逻辑在 CAS 部分已经有所提及，这里再总结一下关键点：
 
@@ -729,7 +729,7 @@ Callable<String> interruptibleTask = () -> {
 
 ```
 
-#### 2.5 结果与异常的存储 (`outcome`)
+### 2.5 结果与异常的存储 (`outcome`)
 
 `FutureTask` 使用一个 `volatile Object outcome` 字段来存储任务的最终结果或执行过程中抛出的异常。
 
@@ -756,7 +756,7 @@ private V report(int s) throws ExecutionException {
 
 这种设计确保了无论是正常结果还是异常，都只会被设置一次，并且 `get()` 方法能根据任务的最终状态给出正确的响应。
 
-#### 2.6 确保任务只执行一次 (`run()`)
+### 2.6 确保任务只执行一次 (`run()`)
 
 `run()` 方法是 `FutureTask` 的执行入口。它必须确保即使被多个线程调用，内部的 `Callable` 或 `Runnable` 任务也只会被执行一次。
 
@@ -816,11 +816,11 @@ public void run() {
 
 通过这种 CAS + `volatile runner` 的机制，`FutureTask` 完美地实现了任务的“执行一次”语义。
 
-### 三、 使用场景与实践
+## 三、 使用场景与实践
 
 掌握了 `FutureTask` 的内部原理后，我们来看看它在实际开发中的典型应用场景。
 
-#### 3.1 在线程池中使用 FutureTask
+### 3.1 在线程池中使用 FutureTask
 
 `FutureTask` 与 `ExecutorService` (线程池) 是天作之合。将 `FutureTask` 提交给线程池执行是最常见的用法。
 
@@ -913,7 +913,7 @@ public class FutureTaskInThreadPool {
 * `executor.submit(futureTask)` 是推荐的提交方式，它明确返回了你传入的 `FutureTask` 对象。虽然 `executor.execute(futureTask)` 也能执行，但 `execute` 的设计初衷是用于提交不需要返回值的 `Runnable`。
 * 获取结果的顺序：上面的例子是按照任务提交的顺序调用 `get()`。这意味着如果第一个任务执行很慢，即使后面的任务已经完成了，主线程也需要等待第一个任务完成后才能继续获取后面的结果。
 
-#### 3.2 处理需要返回结果的异步计算
+### 3.2 处理需要返回结果的异步计算
 
 这是 `FutureTask` 最核心的应用场景：执行一个耗时操作，并在稍后获取其结果，期间主线程可以做其他事情。
 
@@ -994,7 +994,7 @@ public class AsyncCalculationExample {
 
 这个例子展示了典型的异步处理流程：提交任务 -> 做其他事 -> 获取结果 -> 处理结果/异常。
 
-#### 3.3 利用 `ExecutorCompletionService` 获取先完成的任务
+### 3.3 利用 `ExecutorCompletionService` 获取先完成的任务
 
 当提交了大量任务到线程池，并且希望**哪个任务先完成就先处理哪个**时，`FutureTask` 结合 `ExecutorCompletionService` 非常有用。`ExecutorCompletionService` 内部维护一个完成队列，任务完成后其对应的 `Future` 会被放入队列中。
 
@@ -1087,7 +1087,7 @@ public class CompletionServiceExample {
 
 `ExecutorCompletionService` 简化了处理异构耗时任务结果的场景，使得程序能更快地响应已完成的任务。
 
-#### 3.4 实现简单的 缓存
+### 3.4 实现简单的 缓存
 
 `FutureTask` 可以用来构建一个简单的“计算一次，后续复用”的缓存机制。当多个线程请求同一个计算结果时，只有一个线程实际执行计算，其他线程等待该计算完成并复用结果。
 
@@ -1167,7 +1167,7 @@ public class SimpleCache<K, V> {
 
 这个简单的缓存利用了 `ConcurrentHashMap` 的原子操作 `putIfAbsent` 和 `FutureTask` 的执行一次性语义，确保了对于同一个 `key`，`computation` 只会被执行一次。
 
-### 四、 FutureTask 与 CompletableFuture
+## 四、 FutureTask 与 CompletableFuture
 
 Java 8 引入了 `CompletableFuture`，它提供了比 `FutureTask` 更强大、更灵活的异步编程能力。理解它们的区别有助于选择合适的工具。
 
@@ -1275,7 +1275,7 @@ System.out.println("Main thread finished.");
 
 总的来说，`CompletableFuture` 是 Java 异步编程的未来趋势，但 `FutureTask` 作为一个基础且经典的并发工具，在很多场景下仍然非常有用且易于理解。
 
-### 五、 源码分析：揭秘关键方法
+## 五、 源码分析：揭秘关键方法
 
 通过分析 `FutureTask` 的核心方法源码（基于 
 OpenJDK
@@ -1283,7 +1283,7 @@ OpenJDK
 
 *(注意：以下源码分析中的 `UNSAFE` 相关操作是对 `sun.misc.Unsafe` 类方法的调用，用于执行底层的、非安全的内存操作，如 CAS 和 `volatile` 读写。直接使用 `Unsafe` 通常不被推荐，但在 JUC 包内部为了性能被广泛使用。)*
 
-#### 5.1 `run()` 方法
+### 5.1 `run()` 方法
 
 ```
 public void run() {
@@ -1340,7 +1340,7 @@ public void run() {
 3. 根据 `call()` 的执行情况（正常返回或抛出异常），调用 `set()` 或 `setException()` 来设置最终结果和状态。
 4. **`finally` 块**确保 `runner` 字段被清理，并处理可能的任务中断情况。
 
-#### 5.2 `set(V v)` 和 `setException(Throwable t)`
+### 5.2 `set(V v)` 和 `setException(Throwable t)`
 
 这两个方法逻辑非常相似，负责在任务执行完成后设置最终状态和结果/异常。
 
@@ -1390,7 +1390,7 @@ protected void setException(Throwable t) {
 3. **设置最终状态 (`NORMAL` / `EXCEPTIONAL`)**: 使用 `putOrderedInt` 优化性能，同时保证内存可见性。
 4. **调用 `finishCompletion()`**: 唤醒所有等待 `get()` 的线程。
 
-#### 5.3 `get()` 和 `awaitDone()`
+### 5.3 `get()` 和 `awaitDone()`
 
 `get()` 方法负责获取结果，如果任务未完成则阻塞。核心的等待逻辑在 `awaitDone()` 中。
 
@@ -1491,7 +1491,7 @@ private int awaitDone(boolean timed, long nanos) throws InterruptedException {
 6. **阻塞**: 使用 `LockSupport.park()` (无限期) 或 `LockSupport.parkNanos()` (带超时) 阻塞当前线程。
 7. **超时处理**: 如果带超时，计算剩余时间，超时则移除节点并返回。
 
-#### 5.4 `finishCompletion()` 和 `removeWaiter()`
+### 5.4 `finishCompletion()` 和 `removeWaiter()`
 
 `finishCompletion()` 在任务状态变为最终态（`NORMAL`, `EXCEPTIONAL`, `CANCELLED`, `INTERRUPTED`）时被调用，负责唤醒所有等待者。`removeWaiter()` 则在等待者不再需要等待时（中断、超时）将其从队列移除。
 
@@ -1571,7 +1571,7 @@ private void removeWaiter(WaitNode node) {
 * **`finishCompletion`**: 使用 CAS 原子地取下整个 `waiters` 链表，然后遍历链表并 `unpark` 每个节点中的线程。最后调用 `done()` 并清理 `callable`。
 * **`removeWaiter`**: 在 `waiters` 链表中查找并安全地移除指定的 `WaitNode`，需要处理并发和链表操作的复杂性。
 
-#### 5.5 `cancel(boolean mayInterruptIfRunning)`
+### 5.5 `cancel(boolean mayInterruptIfRunning)`
 
 ```
 public boolean cancel(boolean mayInterruptIfRunning) {
@@ -1620,7 +1620,7 @@ public boolean cancel(boolean mayInterruptIfRunning) {
 
 通过以上源码分析，我们可以看到 `FutureTask` 内部实现的精妙之处：利用 `volatile` 保证可见性，利用 CAS 实现无锁或轻量级锁的状态管理和原子操作，利用 `LockSupport` 实现高效的线程阻塞与唤醒。这些技术的结合，使得 `FutureTask` 成为一个高效、可靠的异步编程基础组件。
 
-### 六、 总结与展望
+## 六、 总结与展望
 
 **核心要点回顾：**
 

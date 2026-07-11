@@ -19,10 +19,10 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/127291307)（历史文章导入，当前状态为草稿）
 
-#### Redis实操
-#### 启动Redis
+## Redis实操
+## 启动Redis
 
-##### Redis启动
+### Redis启动
 
 方式一：默认启动
 
@@ -89,9 +89,9 @@ systemctl enable redis.service
 
 ![在这里插入图片描述](./assets/127291307/39f869d952f195a220102bb3.png)
 
-##### Redis客户端
+### Redis客户端
 
-###### Redis命令行客户端 （自带redis—cli）
+#### Redis命令行客户端 （自带redis—cli）
 
 `redis-cli [option] [commonds]`
 

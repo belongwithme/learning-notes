@@ -18,7 +18,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153478335)（历史文章导入，当前状态为草稿）
 
-### 一、什么是 BeanDefinition？
+## 一、什么是 BeanDefinition？
 
 **BeanDefinition 是 Spring 框架中用来描述 Bean 的元数据接口**，它包含了创建和管理 Bean 所需的所有配置信息。
 
@@ -39,9 +39,9 @@ sidebar:
 
 ---
 
-### 二、BeanDefinition 的核心作用
+## 二、BeanDefinition 的核心作用
 
-#### 2.1 在 Spring 容器中的位置
+### 2.1 在 Spring 容器中的位置
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -71,9 +71,9 @@ sidebar:
 
 ---
 
-### 三、BeanDefinition 接口源码分析
+## 三、BeanDefinition 接口源码分析
 
-#### 3.1 核心接口定义
+### 3.1 核心接口定义
 
 ```
 package org.springframework.beans.factory.config;
@@ -125,7 +125,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
 ```
 
-#### 3.2 主要实现类
+### 3.2 主要实现类
 
 Spring 提供了几个重要的实现类：
 
@@ -147,9 +147,9 @@ BeanDefinition (接口)
 
 ---
 
-### 四、BeanDefinition 的上下游关系
+## 四、BeanDefinition 的上下游关系
 
-#### 4.1 上游：BeanDefinition 的来源
+### 4.1 上游：BeanDefinition 的来源
 
 ```
 ┌──────────────────────────────────────────────────────┐
@@ -174,7 +174,7 @@ BeanDefinition (接口)
 
 ```
 
-#### 4.2 中游：BeanDefinition 的注册和存储
+### 4.2 中游：BeanDefinition 的注册和存储
 
 ```
 // BeanDefinitionRegistry 接口（核心注册表）
@@ -221,7 +221,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 ```
 
-#### 4.3 下游：从 BeanDefinition 到 Bean 实例
+### 4.3 下游：从 BeanDefinition 到 Bean 实例
 
 ```
 BeanDefinition
@@ -255,9 +255,9 @@ AbstractAutowireCapableBeanFactory.createBean()
 
 ---
 
-### 五、实战案例：完整流程演示
+## 五、实战案例：完整流程演示
 
-#### 5.1 创建示例类
+### 5.1 创建示例类
 
 ```
 package com.example.demo.service;
@@ -305,7 +305,7 @@ class UserRepository {
 
 ```
 
-#### 5.2 查看 BeanDefinition 信息
+### 5.2 查看 BeanDefinition 信息
 
 ```
 package com.example.demo;
@@ -387,7 +387,7 @@ Bean类名: com.example.demo.service.UserService
 
 ```
 
-#### 5.3 编程方式创建 BeanDefinition
+### 5.3 编程方式创建 BeanDefinition
 
 ```
 package com.example.demo.config;
@@ -455,7 +455,7 @@ class CustomService {
 
 ---
 
-### 六、BeanDefinition 的修改：BeanFactoryPostProcessor
+## 六、BeanDefinition 的修改：BeanFactoryPostProcessor
 
 Spring 允许在 Bean 实例化之前修改 BeanDefinition：
 
@@ -511,9 +511,9 @@ public class CustomBeanFactoryPostProcessor implements BeanFactoryPostProcessor 
 
 ---
 
-### 七、关键源码流程
+## 七、关键源码流程
 
-#### 7.1 注解扫描生成 BeanDefinition
+### 7.1 注解扫描生成 BeanDefinition
 
 ```
 // ClassPathBeanDefinitionScanner.doScan() 核心代码
@@ -556,7 +556,7 @@ protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
 
 ```
 
-#### 7.2 根据 BeanDefinition 创建实例
+### 7.2 根据 BeanDefinition 创建实例
 
 ```
 // AbstractAutowireCapableBeanFactory.createBean() 简化版
@@ -580,9 +580,9 @@ protected Object doCreateBean(String beanName, RootBeanDefinition mbd, Object[] 
 
 ---
 
-### 八、总结
+## 八、总结
 
-#### 8.1 BeanDefinition 的本质
+### 8.1 BeanDefinition 的本质
 
 | 概念 | 说明 |
 | --- | --- |
@@ -590,7 +590,7 @@ protected Object doCreateBean(String beanName, RootBeanDefinition mbd, Object[] 
 | **作用** | 作为 Spring 容器和 Bean 实例之间的桥梁 |
 | **时机** | 在Bean实例化之前存在，用于指导Bean的创建过程 |
 
-#### 8.2 核心要点
+### 8.2 核心要点
 
 ```
 1. 配置来源多样化
@@ -612,14 +612,14 @@ protected Object doCreateBean(String beanName, RootBeanDefinition mbd, Object[] 
 
 ```
 
-#### 8.3 关键接口
+### 8.3 关键接口
 
 * **BeanDefinition**：定义Bean元数据的接口
 * **BeanDefinitionRegistry**：注册和管理BeanDefinition
 * **BeanDefinitionReader**：读取配置并生成BeanDefinition
 * **BeanFactoryPostProcessor**：在实例化前修改BeanDefinition
 
-#### 8.4 生命周期位置
+### 8.4 生命周期位置
 
 ```
 应用启动

@@ -19,14 +19,14 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126391026)（历史文章导入，当前状态为草稿）
 
-##### 前言
+## 前言
 
 一般我们使用锁的时候，在多线程下严格要求只能一个线程获取到锁，但是在某些场景下，我们需要有多个线程获取到锁，但是这个时候其实称之为资源最好。  
 举个模型就是生产者和消费者模型（多个生产者和多个消费者），如果使用互斥锁，那么只能一次让一个线程去生产或者消费，效率太低，JDK提供了同步工具Semaphore可以帮我们解决这个难题，Semaphore也可以看做是AQS的共享模式实现。
 
 插一句：我建议可以和ReentrantLock和AQS结合着去学。
 
-##### 什么是Semaphore
+## 什么是Semaphore
 
 1：Semaphore是JDK提供的一个同步工具，也是计数信号量，它通过维护若干个许可证来控制线程对共享资源的访问。  
 2：如果许可证剩余数量大于零时，线程则允许访问该共享资源；  
@@ -34,7 +34,7 @@ sidebar:
 3：Semaphore所维护的许可证数量就是允许访问共享资源的最大线程数量。  
 所以，线程想要访问共享资源必须从Semaphore中获取到许可证。
 
-##### 继承结构
+## 继承结构
 
 ![在这里插入图片描述](./assets/126391026/3310b779360d75211887ea6f.png)  
 代码实现：
@@ -47,7 +47,7 @@ public class Semaphore implements java.io.Serializable
 
 1：Serializable-实现可序列化
 
-##### Doc解析
+## Doc解析
 
 ```
 /**
@@ -170,7 +170,7 @@ public class Semaphore implements java.io.Serializable
 
 ```
 
-##### 内部类
+## 内部类
 
 内部类有三个：抽象类Sync，NonfairSync，FairSync  
 一：Sync  
@@ -292,7 +292,7 @@ Semaphore基于AQS实现。
 
 ```
 
-##### 构造方法
+## 构造方法
 
 1:参数为信号量
 
@@ -314,6 +314,6 @@ public Semaphore(int permits, boolean fair) {
 
 ```
 
-##### 总结
+## 总结
 
 其实还有一些方法，但是我们要知道，Semaphore本质上是基于AQS实现的，它里面很多方法都是来源于AQS，里面的所有方法在AQS里都有提到过，建议先去学AQS再来看本篇，不再赘述了。

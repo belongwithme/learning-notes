@@ -20,7 +20,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136749297)（历史文章导入，当前状态为草稿）
 
-### 前言
+## 前言
 
 函数式编程，曾经有过一段黄金时代，后来又因面向对象范式的崛起而逐步变为小众范式。但是，函数式编程目前又开始在不同的语言中流行起来了，像Java 8、JS、Rust等语言都有对函数式编程的支持。  
  面向对象编程是对数据进行抽象,而函数式编程是对行为进行抽象.  
@@ -28,13 +28,13 @@ sidebar:
  在写回调函数和事件处理器时,我们不用再纠缠于匿名内部类的冗繁和可读性.  
  **核心思想: 使用不可变值和函数,函数对一个值进行处理,映射成另一个值**
 
-### 前置知识
+## 前置知识
 
-#### λ小故事
+### λ小故事
 
 这块有时间填坑
 
-#### 函数式编程起源: λ演算法
+### 函数式编程起源: λ演算法
 
 λ演算(读作lambda演算),它从数理逻辑(Mathematical logic)发展而来,使用变量绑定(binding)和代换规则(substitution)来研究函数如何抽象化定义(define),函数如何被应用(
 apply 
@@ -76,7 +76,7 @@ add括号里面的i和j就是形参
  上面的内容看不太明白也没关系,可以去看一下这个b站视频:【4. 用“λ演算法”去理解，为什么函数式编程会有更少的bug】https://www.bilibili.com/video/BV1d34y1v7xr?vd\_source=e69b8b220e292b8e4922bf6622e13c51  
  受限于时间和篇幅,没办法把视频中的思想很好的表达出来,不妨直接去看一下这个视频,相信就可以更好理解了.
 
-### 概念
+## 概念
 
 lambda表达式,也称λ表达式,是一种匿名函数,即没有函数名的函数.  
  它是基于数学中的λ演算得名,直接对应其中的lambda抽象.  
@@ -88,11 +88,11 @@ lambda表达式,也称λ表达式,是一种匿名函数,即没有函数名的函
 JVM 
 内部通过invokedynamic指令来实现lambda表达式的.
 
-### Lambda && 匿名类
+## Lambda && 匿名类
 
 lambda表达式可以简化匿名内部类的书写,但lambda表达式并不能取代所有的匿名内部类,只能用来取代函数接口(Functional Interface)的简写.
 
-#### 无参类型的简写
+### 无参类型的简写
 
 如果需要一个线程,常见的写法是:
 
@@ -119,7 +119,7 @@ new Thread(
 
 上述代码和匿名内部类作用是一样的,但比匿名内部类更进一步,连着接口名和函数名都一同省掉了.
 
-#### 带参函数的简写
+### 带参函数的简写
 
 如果给一个字符串列表通过自定义比较器,按照字符串长度进行排序,JDK7书写形式
 
@@ -162,7 +162,7 @@ Collections.sort(list,(s1,s2)->{
  得益于javac的类型推断机制,编译期能够根据上下文信息推断出参数的类型,当然也有推断失败的时候,这时候就需要手动指明参数类型了.  
  注意: Java是强类型语言,每个变量和对象都必需有明确的类型.
 
-### 简写的依据
+## 简写的依据
 
 并不是所有的接口都可以使用lambda简写,能够使用lambda的依据是必须有相应的函数接口(函数接口,是指内部只有一个抽象方法的接口).这一点跟Java是强类型语言吻合,也就是说你并不能在代码的任何地方任性的写lambda表达式.  
  lambda的类型就是对应函数接口的类型.  
@@ -182,7 +182,7 @@ BinaryOperator<Long> addImplicit = (x, y) -> x + y;// 5 类型推断机制
 
 ```
 
-### 自定义函数接口
+## 自定义函数接口
 
 自定义函数接口很容易,只需要编写一个只有一个抽象方法的接口即可
 
@@ -220,12 +220,12 @@ stream.myForEach(str -> System.out.println(str)); // 自定义函数接口书写
 
 ```
 
-### lambda && 匿名类JVM层面区别
+## lambda && 匿名类JVM层面区别
 
 lambda表达式似乎只是为了简化匿名内部类书写,看起来仅仅是通过语法糖在编译阶段把所有的lambda表达式替换成匿名内部类就可以了.  
  但其实并非如此,在JVM层面,lambda表达式和匿名内部类有着明显的差别.
 
-#### 匿名内部类实现
+### 匿名内部类实现
 
 匿名内部类仍然是一个类,只是不需要程序员显示指定类名,编译期会自动为该类取名,编译之后会产生两个class文件:
 
@@ -266,7 +266,7 @@ public class MainAnonymousClass {
 
 ```
 
-#### Lambda表达式实现
+### Lambda表达式实现
 
 Lambda表达式通过invokedynamic指令实现,书写lambda表达式不会产生新的类,如果有如下代码,编译之后只有一个class文件:
 
@@ -312,7 +312,7 @@ public class MainLambda {
 
 反编译之后我们发现lambda表达式被封装了主类的一个私有方法,并通过i`nvokedynamic`指令进行调用
 
-#### 推论, this 引用的意义
+### 推论, this 引用的意义
 
 既然lambda表达式不是内部类的简写,那么lambda内部的this引用和内部类对象没关系了.  
  在Lambda表达式中this的意义跟在表达式外部完全一样。因此下列代码将输出两遍Hello Hoolee，而不是两个引用地址。
@@ -337,7 +337,7 @@ public class Hello {
 * r1的lambda表达式中,this直接引用了Hello类实例,并调用了toString方法(当你尝试打印一个对象时,Java会自动调用该对象的toString方法)
 * 在 r2 的 Lambda 表达式中，你调用了 toString() 方法，没有显式使用 this，但由于 toString() 是 Hello 类的一个成员方法，它隐式地使用了 this 来调用该方法。
 
-### lambda && 集合
+## lambda && 集合
 
 为引入lambda表达式,Java8新增了`java.util.function`包,里面包含常用函数接口,这是lambda表达式的基础,java集合框架也新增部分接口,以便与lambda表达式对接.  
  回顾一下Java集合框架的接口继承结构:  
@@ -352,11 +352,11 @@ public class Hello {
 | 这些新加入的方法大部分都要用到`java.util.function`包下的接口,意味着这些方法大部分都跟lambda表达式相关. |  |
 | 下面我们逐一学习这些方法. |  |
 
-#### Collection中的新方法
+### Collection中的新方法
 
 接口Collection和List新加入了一些方法,我们是以List的子类ArrayList为例来说明.
 
-##### forEach()
+#### forEach()
 
 ```
   default void forEach(Consumer<? super T> action) {
@@ -430,7 +430,7 @@ list.forEach( str -> {
 
 我们不需要知道accept方法,也不需要知道Consumer接口,类型推导帮我们做了一切.
 
-##### removeIf()
+#### removeIf()
 
 ```
     default boolean removeIf(Predicate<? super E> filter) {
@@ -508,7 +508,7 @@ list.removeIf(str -> str.length() >3); //删除长度大于3的元素
 
 看的出来,使用`lambda`不需要记忆`Predicate`接口名,也不需要记忆`test()`方法名,只需要知道此处需要一个返回布尔类型的`lambda`表达式就可以了.
 
-##### replaceAll()
+#### replaceAll()
 
 ```
   public void replaceAll(UnaryOperator<E> operator) {
@@ -577,7 +577,7 @@ return str;
 
 ```
 
-##### sort()
+#### sort()
 
 该方法定义在List接口中,方法签名为`void sort(Comparator<? super E> c)`,根据`c`指定的比较规则对容器元素进行排序.
 
@@ -620,11 +620,11 @@ list.sort((str1, str2) -> str1.length() - str2.length());
 
 ```
 
-#### Map中的新方法
+### Map中的新方法
 
 相比于`Collection`,Map加入了更多的方法,我们以`HashMap`为例来看
 
-##### forEach()
+#### forEach()
 
 ```
        public final void forEach(Consumer<? super K> action) {
@@ -695,7 +695,7 @@ map.forEach((k,v) -> System.out.println(k+ "=" + v));
 
 ```
 
-##### replaceAll()
+#### replaceAll()
 
 ```
   @Override
@@ -771,7 +771,7 @@ map.replaceAll((k,v) -> v.toUpperCase());
 
 非常简洁!!!
 
-##### computeIfAbsent()
+#### computeIfAbsent()
 
 ```
    @Override
@@ -855,7 +855,7 @@ map.computeIfAbsent(1, v -> new HashSet<String>()).add("yi");
 
 ```
 
-##### computeIfPresent()
+#### computeIfPresent()
 
 作用是:当前Map中存在key值的映射且非null时,才调用`remappingFunction`,如果`remappingFunction`执行结果为null,  
  则删除key的映射,否则使用该结果替换key原来的映射

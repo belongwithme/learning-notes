@@ -19,14 +19,14 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125796898)（历史文章导入，当前状态为草稿）
 
-#### Map与HashMap一文解决
-### 前言：
+## Map与HashMap一文解决
+## 前言：
 
 本来按顺序来解读的话呢，这节应该分享的是Collection接口下Set接口下的HashSet实现
 类 
 ，但是HashSet的本质实际上是HashMap，我觉得不如先把本质分析一下，到时候回头看HashSet就简单很多了，也避免了HashSet和HashMap分不清的问题。
 
-### Map实现类
+## Map实现类
 
 一：简单介绍、
 
@@ -56,13 +56,13 @@ sidebar:
 
 ```
 
-### HashMap核心解读
+## HashMap核心解读
 
 兄弟们，重头戏来了，这个太重要了，面试必问的重头戏☆☆☆☆☆。
 
-#### 简单介绍
+### 简单介绍
 
-##### HashMap的本质是hash表。
+#### HashMap的本质是hash表。
 
 hash表是一种数据结构（关联数组抽象数据类型），**在hash表中增删查操作性能非常高**，在不考虑hash冲突情况下，**通过hash函数计算桶单元或槽位数组中的索引来一次定位即可完成，时间复杂度O(1)。**
 
@@ -72,14 +72,14 @@ JDK1.8之前，采用的是数组+链表，链表主要是解决hash碰撞（两
 
 Jdk1.8之后，采用的是数组+链表/红黑树，之所以改为**红黑树，是为了提高查询效率，因为遍历链表的时间复杂度是O(n)，而遍历红黑树的时间复杂度是O(logn)**,顺便一提，对于HashMap根据key来查找的时间复杂度则取决于桶里的数据结构
 
-##### HashMap的基本结构
+#### HashMap的基本结构
 
 我们需要理解几个概念，以便我们更好的了解HashMap。  
  bucket：HashMap中数组对应的索引位置（槽位）。  
  bin：在HashMap中，有多个元素的key都计算到同一个bucket中，我们会通过链表或红黑树的方式来存储，这个链表或者红黑树就是bin。  
  ![在这里插入图片描述](./assets/125796898/7d2746549717d547153d3a31.png)
 
-#### 继承关系
+### 继承关系
 
 ![在这里插入图片描述](./assets/125796898/feb781cdd4ef69d0f08df24f.png)  
  代码如下：
@@ -96,9 +96,9 @@ public class HashMap<K,V> extends AbstractMap<K,V>
  3:Serializable: 提供可序列化功能。  
  在这里的描述都不细致，因为在ArrayList那节都已经解读过了，感兴趣可以去看看前面的ArrayList解读。
 
-#### 源码分析
+### 源码分析
 
-##### javaDoc分析
+#### javaDoc分析
 
 ```
 /**
@@ -226,7 +226,7 @@ Thus, in the face of concurrent  modification, the iterator fails quickly and cl
 
 ```
 
-##### 静态变量
+#### 静态变量
 
 ```
 //序列化Id，作为唯一识别标志，用于序列化和反序列化
@@ -286,7 +286,7 @@ Thus, in the face of concurrent  modification, the iterator fails quickly and cl
 
 ```
 
-##### 成员变量
+#### 成员变量
 
 ```
    /**
@@ -352,7 +352,7 @@ Thus, in the face of concurrent  modification, the iterator fails quickly and cl
 
 ```
 
-##### 构造函数
+#### 构造函数
 
 HashMap的构造函数一共有四种：  
  1.无参
@@ -487,9 +487,9 @@ HashMap的构造函数一共有四种：
 
 ```
 
-##### 重点内部类解读
+#### 重点内部类解读
 
-###### Node ：
+##### Node ：
 
 Node是构成桶中链表的基本元素。
 
@@ -535,12 +535,12 @@ Node是构成桶中链表的基本元素。
 
 ```
 
-###### TreeNode
+##### TreeNode
 
 TreeNode是hashMap树化后组成树的基本节点，继承了LInkedHashMap.Entry，而LInkedHashMap.Entry又继承Node。  
  它里面方法主要是红黑树的各种该操作，代码量很大，难度较高，后面我们整体分析玩集合后单开一节去说它，这里有个概念就行。
 
-###### keySet
+##### keySet
 
 keySet是一个成员变量,它的类型是Set,用于存储HashMap中所有的键.  
  它继承于AbstractSet，里面的元素还是Map.Entry<K,V>.  
@@ -733,7 +733,7 @@ t：保存hash数组的table
  AbstractMap中的toString方法：  
  ![在这里插入图片描述](./assets/125796898/36ea30c0ddd05875c8773322.png)
 
-##### EntrySet
+#### EntrySet
 
 这个和keySet很相似。  
  Map中采用Entry内部类来表示一个映射项，映射项包含key和value（其实键值对就是Entry）  
@@ -787,7 +787,7 @@ t：保存hash数组的table
 
 它的细节基本和keySet一样。
 
-###### values
+##### values
 
 和EntrySet与KeySet同理，只是accept中的参数是e.value而不是上面两个内部类的e.key  
  代码如下：
@@ -820,7 +820,7 @@ final class Values extends AbstractCollection<V> {
 
 ```
 
-#### HashMap 的扩容。☆☆☆☆☆
+### HashMap 的扩容。☆☆☆☆☆
 
 现在我们来解读这里面最最最重要的内容了！  
  看到这我们再明确HashMap的几个名词：
@@ -845,7 +845,7 @@ final class Values extends AbstractCollection<V> {
     注意transient修饰符，HashMap本身有特别的序列化操作，不是传统的序列化方式  
     `transient Node<K,V>[] table;`
 
-##### Put方法
+#### Put方法
 
 我们以put函数举例子进行扩容：
 
@@ -949,7 +949,7 @@ final class Values extends AbstractCollection<V> {
 6. 插入成功，判断hashmap的size是否超过threshold的值，超过则扩容。  
     ![在这里插入图片描述](./assets/125796898/be3a39423726db1d4c50c6a5.png)
 
-##### resize扩容方法
+#### resize扩容方法
 
 接下来我们解析resize核心扩容方法,如果触发了阈值threshold，则会调用resize方法进行扩容，容量规则为2的幂次：  
  变量定义：
@@ -1075,6 +1075,6 @@ final class Values extends AbstractCollection<V> {
 
 ```
 
-### 结尾
+## 结尾
 
 以上核心的HashMap已经梳理完毕了，后面等我们聊到并发集合时候，会将不同jdk版本的HashMap进行比较，目前我们只做基本的了解。

@@ -10,7 +10,8 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "check": "astro check",
+		"check": "npm run check:headings && astro check",
+		"check:headings": "node scripts/normalize-markdown-headings.mjs --check",
     "preview": "astro preview",
     "astro": "astro"
   },

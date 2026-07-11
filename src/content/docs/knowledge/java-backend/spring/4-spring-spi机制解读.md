@@ -20,9 +20,9 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153635511)（历史文章导入，当前状态为草稿）
 
-### Spring为什么要自己实现SPI
+## Spring为什么要自己实现SPI
 
-#### Java SPI的不足
+### Java SPI的不足
 
 虽然Java SPI机制很强大,但在实际应用中存在一些限制:
 
@@ -75,7 +75,7 @@ ServiceLoader<Driver> loader = ServiceLoader.load(Driver.class);
 
 ```
 
-#### Spring SPI的改进
+### Spring SPI的改进
 
 Spring设计了自己的SPI机制,主要改进:
 
@@ -102,9 +102,9 @@ Spring SPI流程:
 
 ```
 
-### SpringFactoriesLoader核心 类
+## SpringFactoriesLoader核心 类
 
-#### 类的基本信息
+### 类的基本信息
 
 **位置:** `org.springframework.core.io.support.SpringFactoriesLoader`
 
@@ -122,7 +122,7 @@ public final class SpringFactoriesLoader {
 
 ```
 
-#### 核心常量和字段
+### 核心常量和字段
 
 ```
 public final class SpringFactoriesLoader {
@@ -167,9 +167,9 @@ cache (ConcurrentReferenceHashMap)
 
 ---
 
-#### SpringFactoriesLoader源码完整解析
+### SpringFactoriesLoader源码完整解析
 
-##### 核心方法1: loadFactoryNames()
+#### 核心方法1: loadFactoryNames()
 
 **作用:** 加载指定接口的所有实现类名(不实例化)
 
@@ -218,7 +218,7 @@ List<String> configNames = SpringFactoriesLoader.loadFactoryNames(
 
 ---
 
-##### 核心方法2: loadFactories()
+#### 核心方法2: loadFactories()
 
 **作用:** 加载并实例化指定接口的所有实现类
 
@@ -308,7 +308,7 @@ private static <T> T instantiateFactory(String factoryImplementationName,
 
 ---
 
-##### 核心方法3: loadSpringFactories() - 最重要!
+#### 核心方法3: loadSpringFactories() - 最重要!
 
 **这是整个Spring SPI机制的核心方法!**
 
@@ -479,9 +479,9 @@ result = {
 
 ---
 
-### spring.factories配置文件详解
+## spring.factories配置文件详解
 
-#### 文件位置和格式
+### 文件位置和格式
 
 **位置:** `META-INF/spring.factories`
 
@@ -529,7 +529,7 @@ org.springframework.boot.env.YamlPropertySourceLoader
 
 ```
 
-#### 格式规则
+### 格式规则
 
 **1. Key-Value结构**
 
@@ -582,7 +582,7 @@ com.example.Listener2
 
 ---
 
-### 完整执行流程图
+## 完整执行流程图
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -657,13 +657,13 @@ com.example.Listener2
 
 ---
 
-### 上下游流程关系图
+## 上下游流程关系图
 
-#### 上游调用者(谁在用它)
+### 上游调用者(谁在用它)
 
 下面我指举例了一些比较常见的,还有其他上游路径没有展示~
 
-##### SpringBoot启动流程核心入口
+#### SpringBoot启动流程核心入口
 
 流程如下:
 
@@ -698,7 +698,7 @@ private <T> Collection<T> getSpringFactoriesInstances(Class<T> type) {
 
 ```
 
-##### 自动配置核心流程
+#### 自动配置核心流程
 
 流程如下:
 
@@ -728,9 +728,9 @@ protected List<String> getCandidateConfigurations(AnnotationMetadata metadata,
 
 ```
 
-#### 下游被加载内容(它加载了什么)
+### 下游被加载内容(它加载了什么)
 
-##### EnableAutoConfiguration - 自动配置类(最重要!)
+#### EnableAutoConfiguration - 自动配置类(最重要!)
 
 spring.factories配置示例:
 
@@ -752,7 +752,7 @@ org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
 * 自动创建Bean
 * 配置默认属性
 
-##### ApplicationContextInitializer - 容器初始化器
+#### ApplicationContextInitializer - 容器初始化器
 
 ```
 org.springframework.context.ApplicationContextInitializer=\
@@ -765,7 +765,7 @@ org.springframework.boot.context.config.DelegatingApplicationContextInitializer
 
 作用时机: 在容器刷新(refresh)之前执行
 
-##### ApplicationListener - 应用监听器
+#### ApplicationListener - 应用监听器
 
 ```
 org.springframework.context.ApplicationListener=\
@@ -781,7 +781,7 @@ org.springframework.boot.context.logging.LoggingApplicationListener
 
 还有其他下游,不一一显示了,遇见应该也能认出来的.
 
-#### 完整上下游调用链路图
+### 完整上下游调用链路图
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -866,7 +866,7 @@ org.springframework.boot.context.logging.LoggingApplicationListener
 
 ```
 
-#### 时序调用关系
+### 时序调用关系
 
 ```
 时间线 (Spring Boot启动过程)
@@ -910,9 +910,9 @@ T5: 启动失败(如果有)
 
 ```
 
-### Spring SPI vs Java SPI对比总结
+## Spring SPI vs Java SPI对比总结
 
-#### 核心区别表
+### 核心区别表
 
 | 对比项 | Java SPI | Spring SPI |
 | --- | --- | --- |
@@ -926,7 +926,7 @@ T5: 启动失败(如果有)
 | **排序支持** | ❌ | ✅ 支持@Order排序 |
 | **条件过滤** | ❌ | ✅ 配合@Conditional使用 |
 
-#### 代码对比
+### 代码对比
 
 **场景: 获取所有自动配置类**  
  **Java SPI方式:**

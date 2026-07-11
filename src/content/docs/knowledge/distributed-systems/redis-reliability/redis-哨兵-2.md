@@ -19,7 +19,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146119441)（历史文章导入，当前状态为草稿）
 
-#### 哨兵模式
+## 哨兵模式
 ## 哨兵模式
 
 ### 什么是哨兵模式

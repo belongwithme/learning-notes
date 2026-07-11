@@ -20,13 +20,13 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136736487)（历史文章导入，当前状态为草稿）
 
-### 前言
+## 前言
 
 数据的最小单元是比特(bit),8个bit组成一个字节(Byte),也就是像00110011,在ASCII编码里A这个字为65->01000001(二进制).  
  我们在电脑上和朋友打字聊天时,传输的文字都是像01000001这种(序列化),但电脑自动帮我们转换为对应的文字(反序列化)  
  ![在这里插入图片描述](./assets/136736487/ad9fea996ec82e5bc7fe10c6.png)
 
-### 什么是序列化和反序列化
+## 什么是序列化和反序列化
 
 序列化的意图是希望对一个Java对象做一下变换,变成字节序列,这样方便持久化存储到磁盘,避免程序运行结束后对象就从内存里消失,另外变换成字节序列也更便于网络运输和传播.  
  概念:
@@ -37,7 +37,7 @@ sidebar:
 
 序列化机制从某种意义上来说也弥补了平台化的一些差异,毕竟转换后的字节流可以在其他平台上进行反序列化来恢复对象.
 
-### 如何让对象序列化和反序列化
+## 如何让对象序列化和反序列化
 
 在Java中,对象想实现序列化,必须要实现下面两个接口之一:
 
@@ -45,7 +45,7 @@ sidebar:
 * Externalizable接口  
    我们分别介绍这两个接口
 
-#### Serializable接口
+### Serializable接口
 
 Serializable接口是一个标记接口,不用实现任何方法.一旦实现了此接口,该类的对象就是可序列化的  
  具体操作一下
@@ -119,11 +119,11 @@ public static void deserialize(  ) throws IOException, ClassNotFoundException {
  ![在这里插入图片描述](./assets/136736487/0a40a133d1871ba2637b8873.png)  
  如果一个对象既不是字符串、数组、枚举，而且也没有实现Serializable接口的话，在序列化时就会抛出`NotSerializableException`异常.
 
-#### Externalizable 接口
+### Externalizable 接口
 
 它是Serializable接口的子类,用户必须要实现其中的`writeExternal()`和`readExternal()`方法,用来决定如何序列化和反序列化.
 
-##### 普通序列化
+#### 普通序列化
 
 ```
 public interface Externalizable extends java.io.Serializable {    
@@ -155,7 +155,7 @@ public void readExternal(ObjectInput in) throws IOException, ClassNotFoundExcept
 
 ```
 
-##### 成员是引用的序列化
+#### 成员是引用的序列化
 
 在Java中基本类型（如int, double, boolean等）和String类型都是可序列化的.  
  所以如果一个可序列化类的成员不是基本类型,也不算String类型,那这个引用类型也必须是可序列化的;否则会导致此类不能序列化
@@ -183,7 +183,7 @@ private Person person;
 ![在这里插入图片描述](./assets/136736487/263546b0a2f919cf8c594b3f.png)  
  程序直接报错，因为Person类的对象是不可序列化的，这导致了Teacher的对象不可序列化
 
-##### 同一对象序列化多次的机制
+#### 同一对象序列化多次的机制
 
 同一对象序列化多次，会将这个对象序列化多次吗？答案是否定的。
 
@@ -239,7 +239,7 @@ public class ReadTeacher {
 
 从输出结果可以看出，Java序列化同一对象，并不会将此对象序列化多次得到多个对象。
 
-##### java序列化算法
+#### java序列化算法
 
 我们先聊一下Java序列化的算法
 
@@ -249,12 +249,12 @@ public class ReadTeacher {
     图示上述序列化过程  
     ![在这里插入图片描述](./assets/136736487/36793d4f7db24be6c13794c7.png)
 
-##### java序列化算法潜在的问题
+#### java序列化算法潜在的问题
 
 由于Java序列化算法不会重复序列化同一个对象,只会记录序列化对象的编号.  
  如果序列化一个可变对象(对象内的内容可更改)后,更改了对象内容,再次序列化,并不会再次将次对象转换为字节序列,而是保存序列化编号
 
-#### 对比
+### 对比
 
 | 实现Serializable接口 | 实现Externalizable接口 |
 | --- | --- |
@@ -264,7 +264,7 @@ public class ReadTeacher {
 
 虽然实现`Externalizable`接口能带来一定的性能提升,但由于实现`Externalizable`接口导致编程复杂度增加,所以大部分时候都是采用实现`Externalizable`接口方式来实现序列化.
 
-#### transient关键字
+### transient关键字
 
 有些时候,我们有特殊的需求,某些属性不需要序列化,那么使用transient关键字就可以选择不需要序列化的字段  
  反序列化出的对象中,被transient修饰的属性是默认值.  
@@ -272,7 +272,7 @@ public class ReadTeacher {
  对于基本类型,值为0  
  对于boolean类型,值为false
 
-#### 序列化版本号serialVersionUID
+### 序列化版本号serialVersionUID
 
 反序列化必须拥有class文件,但随着项目的升级,class文件也会升级,序列化怎么保证升级前后的兼容性呢?
 

@@ -19,7 +19,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251274)（历史文章导入，当前状态为草稿）
 
-### 1. 引言：为什么需要 LockSupport？
+## 1. 引言：为什么需要 LockSupport？
 
 在 Java 的并发世界中，线程同步是保证数据一致性和程序正确性的核心。  
  我们熟悉的 `synchronized` 关键字和 `Object` 类提供的 `wait()`, `notify()`, `notifyAll()` 方法，是 Java 内建的线程同步和通信机制。然而，它们在使用上存在一些固有的限制和不便之处：
@@ -44,7 +44,7 @@ sidebar:
 
 虽然我们可能不会频繁地直接使用 `LockSupport` 来编写业务代码（通常我们会使用更高级的 `ReentrantLock`, `Semaphore` 等），但理解 `LockSupport` 的原理和机制，对于深入掌握 JUC 并发组件的工作方式、排查并发问题以及设计自定义同步器都至关重要。它揭示了 JUC 如何在 JVM 和操作系统层面实现高效、灵活的线程调度。
 
-### 2. 核心概念：许可证（Permit）机制
+## 2. 核心概念：许可证（Permit）机制
 
 `LockSupport` 的核心在于其 **许可证（Permit）** 机制。可以将其理解为与每个线程关联的一个 **二值信号量（Binary Semaphore）**，也就是说，这个许可证只有两种状态：**存在（值为 1）** 或 **不存在（值为 0）**。
 
@@ -99,11 +99,11 @@ sidebar:
 
 理解了这个核心的许可证机制，我们就能更好地掌握 `LockSupport` 的各个方法。
 
-### 3. 核心方法详解
+## 3. 核心方法详解
 
 `LockSupport` 提供的方法都是静态的，可以直接通过类名调用。主要可以分为 `park` 系列（用于阻塞）和 `unpark`（用于唤醒），以及一个辅助方法 `getBlocker`。
 
-#### 3.1 `park()`
+### 3.1 `park()`
 
 ```
 public static void park()
@@ -150,7 +150,7 @@ if (Thread.currentThread().isInterrupted()) {
 
 ```
 
-#### 3.2 `park(Object blocker)`
+### 3.2 `park(Object blocker)`
 
 ```
 public static void park(Object blocker)
@@ -198,7 +198,7 @@ public class MyLock {
 
 ```
 
-#### 3.3 `unpark(Thread thread)`
+### 3.3 `unpark(Thread thread)`
 
 ```
 public static void unpark(Thread thread)
@@ -221,7 +221,7 @@ public static void unpark(Thread thread)
   + **空指针安全**: 传入 `null` 不会抛异常。
 * **使用场景**: 当某个条件满足，需要唤醒一个或多个特定等待线程时使用。这是 `LockSupport` 实现精确控制的关键。
 
-#### 3.4 `parkNanos(long nanos)` 和 `parkNanos(Object blocker, long nanos)`
+### 3.4 `parkNanos(long nanos)` 和 `parkNanos(Object blocker, long nanos)`
 
 ```
 public static void parkNanos(long nanos)
@@ -244,7 +244,7 @@ public static void parkNanos(Object blocker, long nanos)
 * **精度**: 超时的精度受操作系统调度和计时器精度的影响，不能保证精确的纳秒级控制。
 * **使用场景**: 需要设置等待超时的场景，避免线程无限期阻塞。例如，尝试获取资源一段时间，超时则放弃。
 
-#### 3.5 `parkUntil(long deadline)` 和 `parkUntil(Object blocker, long deadline)`
+### 3.5 `parkUntil(long deadline)` 和 `parkUntil(Object blocker, long deadline)`
 
 ```
 public static void parkUntil(long deadline)
@@ -263,7 +263,7 @@ public static void parkUntil(Object blocker, long deadline)
   + 一个绝对时间戳，表示从**纪元（1970-01-01T00:00:00Z）** 开始计算的**毫秒**数。通常通过 `System.currentTimeMillis() + delayMillis` 计算得到。
 * **使用场景**: 需要在某个确定的未来时间点之前等待的场景。
 
-#### 3.6 `getBlocker(Thread t)`
+### 3.6 `getBlocker(Thread t)`
 
 ```
 public static Object getBlocker(Thread t)
@@ -277,7 +277,7 @@ public static Object getBlocker(Thread t)
   + 如果线程 `t` 当前正被 `park(blocker)` 阻塞，则返回那个 `blocker` 对象。
 * **使用场景**: 主要用于**监控和调试**。可以检查特定线程为何被阻塞，以及被哪个同步组件或逻辑所阻塞。
 
-#### 3.7 源码浅析（基于 HotSpot JVM 和 Unsafe）
+### 3.7 源码浅析（基于 HotSpot JVM 和 Unsafe）
 
 `LockSupport` 的核心方法在 Java 层面非常简单，它们都**委托**给了 `sun.misc.Unsafe` 类中的本地（native）方法。`Unsafe` 类提供了一些低级的、不安全的内存和线程操作能力。
 
@@ -401,7 +401,7 @@ public class LockSupport {
 
 这个源码分析揭示了 `LockSupport` 仅仅是 Java 层的一个轻量级封装，真正的魔法发生在 `Unsafe` 的本地方法调用中，接下来我们会探讨 JVM 和 OS 层面的实现原理。
 
-### 4. LockSupport 与 Object wait/notify 对比
+## 4. LockSupport 与 Object wait/notify 对比
 
 `LockSupport` 和 `Object` 的 `wait/notify` 机制都能实现线程间的等待和通知，但它们在设计理念、使用方式和特性上存在显著差异。理解这些差异有助于我们在合适的场景选择合适的工具。
 
@@ -452,11 +452,11 @@ public class LockSupport {
 
 **总结**: `LockSupport` 提供了一种更底层、更灵活、更精确的线程阻塞/唤醒机制，是 JUC 同步组件的基石。而 `wait/notify` 是与 `synchronized` 紧密集成的传统同步原语。对于应用层开发者，通常优先使用 JUC 提供的更高级同步器；但在需要深入理解 JUC 原理或构建自定义同步组件时，`LockSupport` 就显得尤为重要。
 
-### 5. 实现原理深入
+## 5. 实现原理深入
 
 `LockSupport` 的轻量级和高效性源于其巧妙的实现机制，它跨越了 Java API、JVM 和操作系统三个层面。
 
-#### 5.1 JVM 层面：Parker 类
+### 5.1 JVM 层面：Parker 类
 
 在 HotSpot JVM 内部，每个 Java `Thread` 对象都关联着一个名为 `Parker` 的 C++ 对象。这个 `Parker` 对象是实现 `LockSupport` 许可证机制的关键。
 
@@ -541,7 +541,7 @@ public:
    * 将目标线程的 `Parker` 对象的 `_counter` 设置为 1。这一步通常需要原子性保证。
    * 调用底层同步原语（如 `pthread_cond_signal`）来唤醒可能在该 `Parker` 对象上等待的线程。如果目标线程并未阻塞，`signal` 操作通常是无害的（或者根本不执行）。
 
-#### 5.2 操作系统层面：平台相关的实现
+### 5.2 操作系统层面：平台相关的实现
 
 `Parker` 对象内部使用的底层同步原语（如 `_mutex` 和 `_cond`）的具体实现是**依赖于操作系统**的。JVM 会根据不同的操作系统平台，调用相应的系统调用来实现线程的阻塞和唤醒：
 
@@ -557,7 +557,7 @@ public:
 2. **统一接口**: `LockSupport` 为 Java 开发者提供了统一、简单的 API，屏蔽了底层操作系统的复杂性和差异性。
 3. **灵活性**: 底层可以根据不同平台的特性进行优化。
 
-#### 5.3 与 `synchronized` 实现的区别
+### 5.3 与 `synchronized` 实现的区别
 
 理解了 `LockSupport` 的实现，再对比 `synchronized` 的实现，差异就更清晰了：
 
@@ -578,11 +578,11 @@ public:
 
 **总结**: `LockSupport` 是一个更底层的、专注于线程阻塞/唤醒的原语，其实现依赖于 JVM 内部的 `Parker` 和特定平台的 OS 同步机制。`synchronized` 则是一个更高级的、提供完整锁和监视器功能的语言级特性。
 
-### 6. 应用场景举例
+## 6. 应用场景举例
 
 `LockSupport` 作为 JUC 的基石，其身影隐藏在众多我们熟悉的并发工具背后。直接使用 `LockSupport` 的场景相对较少，但理解它如何在这些工具中发挥作用至关重要。
 
-#### 6.1 AbstractQueuedSynchronizer (AQS)
+### 6.1 AbstractQueuedSynchronizer (AQS)
 
 AQS 是 JUC 中大多数同步器（`ReentrantLock`, `Semaphore`, `CountDownLatch`, `ReentrantReadWriteLock`, `FutureTask` 等）的基础框架。AQS 内部维护了一个虚拟的 CLH (Craig, Landin, and Hagersten) 双向队列来管理等待获取同步状态（如锁）的线程。
 
@@ -669,7 +669,7 @@ abstract class AbstractQueuedSynchronizer {
 
 没有 `LockSupport`，AQS 就无法如此高效、灵活地管理线程的阻塞与唤醒。
 
-#### 6.2 Condition (条件变量)
+### 6.2 Condition (条件变量)
 
 `Condition` 接口提供了类似 `Object` 的 `wait/notify/notifyAll` 功能，但它与特定的 `Lock` 实现（通常是 `ReentrantLock`）绑定，提供了更精细的控制。`ReentrantLock.newCondition()` 返回的是 `AQS` 的内部类 `ConditionObject` 的实例。
 
@@ -687,14 +687,14 @@ abstract class AbstractQueuedSynchronizer {
 
 可以看到，`Condition` 的实现也严重依赖 `LockSupport` 来挂起和唤醒等待条件的线程。
 
-#### 6.3 并发集合类
+### 6.3 并发集合类
 
 一些高级并发集合类，在需要实现线程间的等待/通知时，也可能直接或间接（通过 AQS）使用 `LockSupport`。
 
 * **`LinkedTransferQueue`**: 这是一个高性能的无界队列，它支持 `transfer` 操作，即生产者可以直接将元素传递给正在等待的消费者，无需入队。当生产者调用 `transfer` 但没有消费者在等待时，或者消费者尝试获取元素但队列为空时，它们可能会使用 `LockSupport.parkNanos()` 或 `park()` 来阻塞自己，等待匹配的操作发生。匹配发生后，另一方会调用 `unpark` 唤醒等待者。
 * **`Phaser`**: 一个更灵活的同步屏障，其内部协调参与者线程的到达和等待也可能用到 `LockSupport`。
 
-#### 6.4 `ForkJoinPool`
+### 6.4 `ForkJoinPool`
 
 `ForkJoinPool` 是用于执行 `ForkJoinTask` 的线程池，它使用了**工作窃取（Work-Stealing）** 算法来提高效率。
 
@@ -702,7 +702,7 @@ abstract class AbstractQueuedSynchronizer {
 
 当 `ForkJoinPool` 中的工作线程（`Worker Thread`）发现自己的任务队列为空，并且尝试从其他线程的队列中窃取任务也失败时，这个工作线程可能会进入**休眠**状态，以避免空转消耗 CPU。这种休眠通常就是通过 `LockSupport.park()` 或其带超时的变体来实现的。当有新的任务提交到线程池，或者其他线程释放了可窃取的任务时，会调用 `LockSupport.unpark()` 来唤醒休眠的工作线程。
 
-#### 6.5 实现自定义同步器
+### 6.5 实现自定义同步器
 
 如果你需要实现 JUC 中没有提供的特定同步逻辑，`LockSupport` 就是你的有力武器。例如：
 
@@ -765,9 +765,9 @@ public class OneTimeLatch {
 
 总而言之，`LockSupport` 是 JUC 实现高效、灵活线程同步的幕后英雄。虽然我们不常直接调用它，但理解它的工作原理和应用场景，是深入掌握 Java 并发编程的关键一步。
 
-### 7. 高级问题探讨
+## 7. 高级问题探讨
 
-#### 7.1 `park` 方法如何响应中断？与 `wait`/`sleep` 的区别？
+### 7.1 `park` 方法如何响应中断？与 `wait`/`sleep` 的区别？
 
 这是 `LockSupport` 的一个重要特性，也是面试中常考的点。
 
@@ -832,7 +832,7 @@ if (Thread.interrupted()) { // interrupted() 会检查并清除中断状态
 
 关键在于，使用 `park` 时，中断处理的责任完全交给了开发者。
 
-#### 7.2 如何处理 `park` 方法导致的线程长时间阻塞问题？
+### 7.2 如何处理 `park` 方法导致的线程长时间阻塞问题？
 
 虽然 `LockSupport.park()` 本身是 JUC 正常工作的一部分，但在某些情况下，如果 `unpark` 操作因为逻辑错误、死锁或其他原因迟迟没有发生，调用 `park()` 的线程可能会无限期阻塞，导致程序无响应或资源无法释放。
 
@@ -902,7 +902,7 @@ if (Thread.interrupted()) { // interrupted() 会检查并清除中断状态
 
 **总结**: 处理长时间 `park` 的关键在于：**使用 `blocker` 便于诊断**，**优先使用超时避免无限等待**，**利用监控工具发现问题**，**通过代码审查和逻辑分析找到根本原因**。看门狗线程可以作为最后的保障措施。
 
-### 8. 总结
+## 8. 总结
 
 `LockSupport` 是 Java 并发包（JUC）提供的一个强大而灵活的底层线程阻塞与唤醒工具。虽然不会频繁直接使用它，但它是理解和掌握 JUC 核心同步器（如 `ReentrantLock`, `Semaphore`, `Condition` 等基于 AQS 的组件）工作原理的关键。
 

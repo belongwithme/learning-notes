@@ -22,13 +22,13 @@ sidebar:
 
 ## ArrayBlockingQueue 深度解析：从入门到原理
 
-### 1. 前言
+## 1. 前言
 
 `java.util.concurrent` (JUC) 包提供了多种阻塞队列的实现，其中 `ArrayBlockingQueue` 以其**有界**、**基于数组**和**线程安全**的特性，在需要精确控制资源和流量的场景中扮演着重要角色。
 
-### 2. 初识 ArrayBlockingQueue：是什么与为什么？
+## 2. 初识 ArrayBlockingQueue：是什么与为什么？
 
-#### 2.1 什么是 ArrayBlockingQueue？
+### 2.1 什么是 ArrayBlockingQueue？
 
 `ArrayBlockingQueue` 是 `java.util.concurrent` 包提供的一个**有界阻塞队列**。顾名思义，它的内部实现基于**数组**结构，并且在创建时必须指定一个**固定的容量**，这个容量在队列创建后**不可改变**。
 
@@ -41,7 +41,7 @@ sidebar:
   + 如果管道空了，想从里面取东西的消费者线程也会被自动“卡住”（阻塞），直到管道里有新的东西进来。
 * **多人协作安全 (线程安全):** 可以有很多生产者同时往管道里放东西，也可以有很多消费者同时取东西，`ArrayBlockingQueue` 内部有机制确保这个过程不会出错（比如两个人不会拿到同一个东西，或者放东西时不会把数据搞乱）。
 
-#### 2.2 为什么需要 ArrayBlockingQueue？它的核心价值
+### 2.2 为什么需要 ArrayBlockingQueue？它的核心价值
 
 `ArrayBlockingQueue` 的核心价值在于其**有界性**和**阻塞性**带来的天然**流控**和**背压 (Back Pressure)** 能力。
 
@@ -58,7 +58,7 @@ sidebar:
 
 **简单来说，当你需要一个容量固定、能自动调节生产者和消费者速度、确保线程安全的 FIFO 缓冲区时，`ArrayBlockingQueue` 是一个非常好的选择。**
 
-### 3. ArrayBlockingQueue 的核心特点详解
+## 3. ArrayBlockingQueue 的核心特点详解
 
 `ArrayBlockingQueue` 的行为和特性可以总结为以下几点：
 
@@ -101,7 +101,7 @@ sidebar:
   + 公平 (`fair=true`): 入口外等待的车严格按到达顺序排队进入车道。
   + 非公平 (`fair=false`): 后来的车如果运气好，可能比先来的车更早抢到空位进入车道。
 
-### 4. ArrayBlockingQueue vs. LinkedBlockingQueue：如何选择？
+## 4. ArrayBlockingQueue vs. LinkedBlockingQueue：如何选择？
 
 `LinkedBlockingQueue` 是 `BlockingQueue` 接口的另一个常用实现。了解它与 `ArrayBlockingQueue` 的区别，有助于我们在合适的场景做出正确的选择。
 
@@ -146,9 +146,9 @@ sidebar:
 内存 
 模型更简单。
 
-### 5. ArrayBlockingQueue 快速上手：构造与基本操作
+## 5. ArrayBlockingQueue 快速上手：构造与基本操作
 
-#### 5.1 构造 ArrayBlockingQueue
+### 5.1 构造 ArrayBlockingQueue
 
 `ArrayBlockingQueue` 提供了三个公共构造函数：
 
@@ -204,7 +204,7 @@ sidebar:
      + 5
      ```
 
-#### 5.2 核心操作方法
+### 5.2 核心操作方法
 
 `ArrayBlockingQueue` 实现了 `BlockingQueue` 接口，提供了多种添加和移除元素的方法，它们在队列满或空时的行为不同：
 
@@ -302,11 +302,11 @@ public class ArrayBlockingQueueExample {
 
 ```
 
-### 6. 深入内部：ArrayBlockingQueue 的实现原理
+## 6. 深入内部：ArrayBlockingQueue 的实现原理
 
 现在，让我们揭开 `ArrayBlockingQueue` 的神秘面纱，探究其内部是如何实现阻塞、线程安全以及处理队列满/空等情况的。
 
-#### 6.1 核心组件：锁与条件变量
+### 6.1 核心组件：锁与条件变量
 
 `ArrayBlockingQueue` 的并发控制核心依赖于 `java.util.concurrent.locks` 包下的两个关键组件：
 
@@ -343,7 +343,7 @@ public class ArrayBlockingQueueExample {
 
 被叫醒的人会再次尝试去拿门锁钥匙，拿到后才能继续操作。这种 `Lock + Condition` 的模式是 JUC 中实现精细化线程协作的经典方式，相比于 `synchronized + wait/notify/notifyAll`，它提供了更强的灵活性（可以有多个条件队列）和控制力。
 
-#### 6.2 如何实现阻塞功能？
+### 6.2 如何实现阻塞功能？
 
 正是基于上述的 `ReentrantLock` 和 `Condition` 机制，`ArrayBlockingQueue` 实现了其阻塞功能。
 
@@ -382,7 +382,7 @@ public class ArrayBlockingQueueExample {
 * **`await()` 原子地释放锁:** 这是 `Condition` 的关键。如果在检查条件后、进入等待前不释放锁，那么其他线程就无法进入临界区来改变队列状态（比如添加元素让队列不再为空），就会导致死锁。
 * **`signal()` 唤醒对方:** 生产者操作满足了消费者等待的条件（队列非空），消费者操作满足了生产者等待的条件（队列非满），通过 `signal()` 精确唤醒对方等待队列中的一个线程，避免了 `notifyAll()` 可能带来的“惊群效应”（唤醒所有线程，但只有一个能继续，其他白白唤醒）。
 
-#### 6.3 如何保证线程安全？
+### 6.3 如何保证线程安全？
 
 `ArrayBlockingQueue` 的线程安全主要通过以下几点保证：
 
@@ -415,7 +415,7 @@ public class ArrayBlockingQueueExample {
 
 这种方式简单直接，保证了强一致性，但在极高并发下，单锁可能成为瓶颈，这也是 `LinkedBlockingQueue` 采用双锁的原因。
 
-#### 6.4 如何处理队列满和队列空的情况？
+### 6.4 如何处理队列满和队列空的情况？
 
 处理队列满 (`count == items.length`) 和队列空 (`count == 0`) 的逻辑是阻塞机制的核心应用：
 
@@ -469,7 +469,7 @@ public class ArrayBlockingQueueExample {
 
 总结来说，对于满/空状态的处理，`ArrayBlockingQueue` 利用 `lock` 进行互斥检查，利用 `Condition` 实现线程的条件等待与唤醒，并根据方法的不同（阻塞、非阻塞、超时）采取不同的策略（无限等待、立即返回、限时等待）。
 
-#### 6.5 公平性是什么意思？如何实现的？
+### 6.5 公平性是什么意思？如何实现的？
 
 前面提到，`ArrayBlockingQueue` 的公平性指的是线程获取**锁 (`ReentrantLock`)** 的顺序。
 
@@ -507,7 +507,7 @@ public ArrayBlockingQueue(int capacity, boolean fair) {
 * 非公平模式性能通常更好，但可能导致饥饿。
 * **选择:** 大多数场景下，**默认的非公平模式**因其较高的吞吐量是首选。只有当你明确需要保证线程获取锁的顺序性，或者在测试中发现存在严重的线程饥饿问题时，才考虑使用公平模式。
 
-### 7. 源码剖析：`put()` 和 `take()` 的实现细节
+## 7. 源码剖析：`put()` 和 `take()` 的实现细节
 
 理解了核心原理后，让我们深入 `ArrayBlockingQueue` 的源码（基于 
 OpenJDK 
@@ -540,7 +540,7 @@ private final Condition notFull;
 
 ```
 
-#### 7.1 `put(E e)` 方法源码分析
+### 7.1 `put(E e)` 方法源码分析
 
 ```
 /**
@@ -637,7 +637,7 @@ private static void checkNotNull(Object v) {
 6. **唤醒消费者:** （实际在 `put` 方法的 `try` 块内，`enqueue` 调用之后）调用 `notEmpty.signal()` 唤醒一个可能在等待的消费者线程。
 7. **释放锁:** 在 `finally` 块中调用 `lock.unlock()` 确保锁总是被释放。
 
-#### 7.2 `take()` 方法源码分析
+### 7.2 `take()` 方法源码分析
 
 ```
 /**
@@ -726,7 +726,7 @@ private E dequeue() {
 
 通过对 `put()` 和 `take()` 源码的分析，我们可以清晰地看到 `ReentrantLock` 和 `Condition` 是如何协同工作，共同构成了 `ArrayBlockingQueue` 线程安全、阻塞的核心机制。
 
-### 8. 实战应用：构建生产者-消费者模型
+## 8. 实战应用：构建生产者-消费者模型
 
 `ArrayBlockingQueue` 最典型的应用场景就是作为生产者-消费者模型中的共享缓冲区。下面我们构建一个简单的示例来演示如何使用它。
 
@@ -892,7 +892,7 @@ public class ProducerConsumerDemo {
 当你运行这个示例时，你会看到生产者和消费者交替打印信息。如果生产者速度快，队列会很快填满到 5 个，然后生产者在 `put()` 处阻塞，等待消费者消费。如果消费者速度快，队列会变空，消费者会在 `take()` 处阻塞，等待生产者生产。  
  `ArrayBlockingQueue` 在它们之间起到了缓冲和协调作用。
 
-### 9. 总结与关键要点回顾
+## 9. 总结与关键要点回顾
 
 `ArrayBlockingQueue` 是 JUC 提供的一个实用的并发工具，尤其适用于需要固定容量缓冲区的生产者-消费者场景。
 

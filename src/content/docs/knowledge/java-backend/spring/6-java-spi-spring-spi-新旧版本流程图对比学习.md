@@ -21,7 +21,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153680172)（历史文章导入，当前状态为草稿）
 
-### 一、Java 标准 SPI 机制流程图
+## 一、Java 标准 SPI 机制流程图
 
 ```
   ┌─────────────────────────────────────────────────────────────────┐
@@ -105,7 +105,7 @@ sidebar:
 
 ---
 
-### 二、Spring Boot 2.7 之前 SPI 机制(SpringFactoriesLoader)
+## 二、Spring Boot 2.7 之前 SPI 机制(SpringFactoriesLoader)
 
 ```
   ┌─────────────────────────────────────────────────────────────────┐
@@ -228,7 +228,7 @@ sidebar:
 
 ---
 
-### 三、Spring Boot 2.7+ SPI 机制(ImportCandidates)
+## 三、Spring Boot 2.7+ SPI 机制(ImportCandidates)
 
 ```
   ┌─────────────────────────────────────────────────────────────────┐
@@ -376,7 +376,7 @@ sidebar:
 
 ---
 
-### 三种机制对比表
+## 三种机制对比表
 
 | 特性 | Java SPI | Spring Boot <2.7 | Spring Boot ≥2.7 |
 | --- | --- | --- | --- |
@@ -390,7 +390,7 @@ sidebar:
 | 加载方式 | ServiceLoader | SpringFactoriesLoader | ImportCandidates |
 | 维护性 | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ |
 
-### 迁移示例
+## 迁移示例
 
 ```
   旧方式 (Spring Boot 2.6):

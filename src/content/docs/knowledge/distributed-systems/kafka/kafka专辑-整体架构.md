@@ -25,15 +25,15 @@ Kafka 的架构设计核心目标只有两个：**极高的吞吐量**（High Th
 
 为了实现这两个目标，它引入了以下核心概念：
 
-### 1. 逻辑层：Topic 与 Partition (核心中的核心)
+## 1. 逻辑层：Topic 与 Partition (核心中的核心)
 
-#### 1.1 Topic (主题) —— 快递目的地
+### 1.1 Topic (主题) —— 快递目的地
 
 * **概念**：Topic 是一个逻辑概念，用于给消息分类。
 * **类比**：在分拣中心，Topic 就是\*\*“目的地标签”\*\*。比如，“北京”是一个 Topic，“上海”是另一个 Topic。商家发货时，必须指定这个包裹属于哪个 Topic。
 * **Java 视角**：这就好比数据库里的“表名”。
 
-#### 1.2 Partition (分区) —— 并行分拣车道
+### 1.2 Partition (分区) —— 并行分拣车道
 
 * **概念**：**Partition 是 Kafka 扩容和高吞吐的物理基础**。一个 Topic 可以被拆分成多个 Partition（分区 0, 分区 1, 分区 2…）。
 * **类比**：
@@ -86,9 +86,9 @@ Compaction\n(keep latest by key)
 
 ---
 
-### 2. 物理层：Broker 与 Replica
+## 2. 物理层：Broker 与 Replica
 
-#### 2.1 Broker (代理/节点) —— 仓库大楼
+### 2.1 Broker (代理/节点) —— 仓库大楼
 
 * **概念**：一台 Kafka 服务器就是一个 Broker。一个 Kafka 集群通常由多台 Broker 组成。
 * **类比**：这就好比分拣中心的**仓库大楼**。
@@ -96,7 +96,7 @@ Compaction\n(keep latest by key)
 * 为了不把鸡蛋放在同一个篮子里，属于同一个 Topic 的 3 条传送带，通常会被分散建设在 3 栋不同的楼里（不同的 Broker）。
 * **补充**：集群里会有一个 Broker 担任 Controller（控制器），负责分区/副本元数据和选举决策。
 
-#### 2.2 Replica (副本) —— 备用仓库
+### 2.2 Replica (副本) —— 备用仓库
 
 * **概念**：为了防止服务器挂了导致数据丢失，Kafka 引入了副本机制。每个 Partition 都有一个 **Leader** (主) 和多个 **Follower** (从)。
 * **类比**：
@@ -134,7 +134,7 @@ P0 Follower
 
 P1 Follower
 
-#### 2.3 ISR / HW / LEO —— 可靠性边界
+### 2.3 ISR / HW / LEO —— 可靠性边界
 
 * **ISR**：与 Leader 保持同步的一组副本，影响提交条件。
 * **LEO**：每个副本日志末端偏移（Log End Offset）。
@@ -191,11 +191,11 @@ Ack (acks=all)
 
 ---
 
-### 3. 消费层：Consumer Group (消费者组)
+## 3. 消费层：Consumer Group (消费者组)
 
 这是 Kafka 最具区分度的设计之一，也是它与 RabbitMQ 在消费模型与回放能力上的典型差异点。
 
-#### 3.1 Consumer Group (消费者组) —— 运输车队
+### 3.1 Consumer Group (消费者组) —— 运输车队
 
 * **概念**：多个消费者可以组成一个组，共同消费一个 Topic。
 * **规则**：**一个 Partition 只能被同一个消费者组里的一个消费者消费。**
@@ -279,7 +279,7 @@ Heartbeat
 
 Heartbeat
 
-#### 3.2 Offset (偏移量) —— 记账本
+### 3.2 Offset (偏移量) —— 记账本
 
 * **概念**：消费者读到哪里了，需要记下来，这个位置就是 Offset。
 * **存储**：offset 以 group + topic + partition 为维度提交，默认写入内置 topic `__consumer_offsets`。提交位置不等于业务处理完成的位置。
@@ -287,7 +287,7 @@ Heartbeat
 
 ---
 
-### 4. 全景架构总结 (Cheat Sheet)
+## 4. 全景架构总结 (Cheat Sheet)
 
 **示意图：全景架构（Mermaid）**
 

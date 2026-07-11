@@ -20,7 +20,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153630729)（历史文章导入，当前状态为草稿）
 
-### @Import注解简介
+## @Import注解简介
 
 `@Import`注解用于导入一个或多个组件类，通常是`@Configuration`配置类。它提供了类似于
 Spring
@@ -51,9 +51,9 @@ public @interface Import {
 
 ---
 
-### 核心接口详解
+## 核心接口详解
 
-#### 1. 普通配置类导入
+### 1. 普通配置类导入
 
 这是最简单直接的方式，直接导入配置类。
 
@@ -127,7 +127,7 @@ CacheManager: ConcurrentMapCacheManager (...)
 
 ---
 
-#### 2. ImportSelector接口
+### 2. ImportSelector接口
 
 **位置:** ImportSelector.java:61
 
@@ -310,7 +310,7 @@ public class AsyncConfigurationSelector extends AdviceModeImportSelector<EnableA
 
 ---
 
-#### 3. DeferredImportSelector接口（延迟导入）
+### 3. DeferredImportSelector接口（延迟导入）
 
 **位置:** DeferredImportSelector.java:38
 
@@ -443,7 +443,7 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector {
 
 ---
 
-#### 4. ImportBeanDefinitionRegistrar接口
+### 4. ImportBeanDefinitionRegistrar接口
 
 **位置:** ImportBeanDefinitionRegistrar.java:61
 
@@ -631,7 +631,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar {
 
 ---
 
-### @Import处理流程
+## @Import处理流程
 
 核心处理逻辑在 **ConfigurationClassParser.processImports()** 方法中  
  （ConfigurationClassParser.java:553-616）：
@@ -744,9 +744,9 @@ processImports() 方法
 
 ---
 
-### 处理时序
+## 处理时序
 
-#### 完整的配置类解析顺序
+### 完整的配置类解析顺序
 
 **位置:** `ConfigurationClassParser.parse() - ConfigurationClassParser.java:170`
 
@@ -844,7 +844,7 @@ public class AppConfig {
 
 ```
 
-#### 循环导入检测
+### 循环导入检测
 
 Spring 通过 **ImportStack** 跟踪导入链，防止循环依赖：
 
@@ -868,9 +868,9 @@ public class ConfigB {
 
 ---
 
-### 典型应用场景
+## 典型应用场景
 
-#### 1. 条件化配置
+### 1. 条件化配置
 
 根据不同环境或条件导入不同配置类。
 
@@ -895,7 +895,7 @@ public class EnvironmentImportSelector implements ImportSelector {
 
 ```
 
-#### 2. 模块化 集成 - 自定义 @EnableXxx 注解
+### 2. 模块化 集成 - 自定义 @EnableXxx 注解
 
 模仿 Spring 的 `@EnableAsync`、`@EnableCaching` 等注解。
 
@@ -927,7 +927,7 @@ public class Application {
 
 ```
 
-#### 3. Spring Boot 自动配置
+### 3. Spring Boot 自动配置
 
 Spring Boot 的核心机制。
 
@@ -953,7 +953,7 @@ public class RedisAutoConfiguration {
 
 ```
 
-#### 4. 动态 Bean 注册 - MyBatis Mapper 扫描
+### 4. 动态 Bean 注册 - MyBatis Mapper 扫描
 
 ```
 @Configuration
@@ -967,7 +967,7 @@ public class MyBatisConfig {
 
 ---
 
-### 三种方式的对比
+## 三种方式的对比
 
 | 特性 | 普通配置类 | ImportSelector | ImportBeanDefinitionRegistrar |
 | --- | --- | --- | --- |
@@ -987,7 +987,7 @@ public class MyBatisConfig {
 
 ---
 
-### 关键要点总结
+## 关键要点总结
 
 1. **@Import 是 Spring 模块化配置的核心机制**
 

@@ -19,7 +19,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153399744)（历史文章导入，当前状态为草稿）
 
-### 一、核心定义
+## 一、核心定义
 
 ```
 package java.util;
@@ -34,7 +34,7 @@ public interface Enumeration<E> {
 
 ---
 
-### 二、接口作用
+## 二、接口作用
 
 `Enumeration` 是 Java 中**最早的迭代器接口**（JDK 1.0 引入），用于**逐个遍历集合中的元素**。
 
@@ -46,9 +46,9 @@ public interface Enumeration<E> {
 
 ---
 
-### 三、核心方法详解
+## 三、核心方法详解
 
-#### 1. hasMoreElements()
+### 1. hasMoreElements()
 
 ```
 boolean hasMoreElements();
@@ -63,7 +63,7 @@ boolean hasMoreElements();
 * `true` - 至少还有一个元素可供访问
 * `false` - 没有更多元素了
 
-#### 2. nextElement()
+### 2. nextElement()
 
 ```
 E nextElement();
@@ -81,9 +81,9 @@ E nextElement();
 
 ---
 
-### 四、使用示例
+## 四、使用示例
 
-#### 基础使用
+### 基础使用
 
 ```
 // 创建一个 Vector (支持 Enumeration 的经典集合)
@@ -114,7 +114,7 @@ Cherry
 
 ```
 
-#### 与 ServiceLoader 的关联
+### 与 ServiceLoader 的关联
 
 在 `ServiceLoader` 中也用到了 `Enumeration`：
 
@@ -145,9 +145,9 @@ private class LazyIterator implements Iterator<S> {
 
 ---
 
-### 五、Enumeration vs Iterator
+## 五、Enumeration vs Iterator
 
-#### 对比表
+### 对比表
 
 | 特性 | Enumeration | Iterator |
 | --- | --- | --- |
@@ -158,7 +158,7 @@ private class LazyIterator implements Iterator<S> {
 | **使用场景** | 遗留代码、特定 API | 现代集合框架 |
 | **fail-fast** | ❌ 不支持 | ✅ 支持 |
 
-#### 代码对比
+### 代码对比
 
 ```
 // 使用 Enumeration (老式)
@@ -181,9 +181,9 @@ while (iterator.hasNext()) {
 
 ---
 
-### 六、哪些类使用 Enumeration？
+## 六、哪些类使用 Enumeration？
 
-#### 遗留集合类
+### 遗留集合类
 
 ```
 // 1. Vector
@@ -206,7 +206,7 @@ Enumeration<Object> propNames = props.propertyNames();
 
 ```
 
-#### ClassLoader 中的使用
+### ClassLoader 中的使用
 
 ```
 // 获取所有匹配的资源 URL
@@ -223,7 +223,7 @@ while (resources.hasMoreElements()) {
 
 ---
 
-### 七、实现自定义 Enumeration
+## 七、实现自定义 Enumeration
 
 ```
 public class CustomEnumeration<E> implements Enumeration<E> {
@@ -261,9 +261,9 @@ while (enumeration.hasMoreElements()) {
 
 ---
 
-### 八、Enumeration 转换为现代集合
+## 八、Enumeration 转换为现代集合
 
-#### 转换为 List
+### 转换为 List
 
 ```
 // 方法 1: 使用 Collections.list()
@@ -287,11 +287,11 @@ List<String> list3 = Collections.list(enum3).stream()
 
 ---
 
-### 九、为什么还在使用 Enumeration？
+## 九、为什么还在使用 Enumeration？
 
 虽然 `Iterator` 更现代化，但 `Enumeration` 仍在使用，原因包括：
 
-#### 1. 向后兼容性
+### 1. 向后兼容性
 
 ```
 // 许多遗留 API 仍返回 Enumeration
@@ -301,7 +301,7 @@ NetworkInterface.getNetworkInterfaces() // 返回 Enumeration<NetworkInterface>
 
 ```
 
-#### 2. 性能考虑
+### 2. 性能考虑
 
 ```
 // Enumeration 更轻量，只有两个方法
@@ -310,7 +310,7 @@ NetworkInterface.getNetworkInterfaces() // 返回 Enumeration<NetworkInterface>
 
 ```
 
-#### 3. 明确的只读语义
+### 3. 明确的只读语义
 
 ```
 // Enumeration 不支持删除，表明这是只读遍历
@@ -321,9 +321,9 @@ NetworkInterface.getNetworkInterfaces() // 返回 Enumeration<NetworkInterface>
 
 ---
 
-### 十、常见陷阱
+## 十、常见陷阱
 
-#### 陷阱 1: 重复调用 nextElement()
+### 陷阱 1: 重复调用 nextElement()
 
 ```
 // ❌ 错误：没有检查就调用
@@ -341,7 +341,7 @@ while (e.hasMoreElements()) {
 
 ```
 
-#### 陷阱 2: 并发修改
+### 陷阱 2: 并发修改
 
 ```
 // ❌ 错误：遍历时修改
@@ -362,7 +362,7 @@ while (it.hasNext()) {
 
 ```
 
-#### 陷阱 3: Enumeration 不能重置
+### 陷阱 3: Enumeration 不能重置
 
 ```
 // ❌ 错误：Enumeration 无法重置
@@ -383,9 +383,9 @@ while (e2.hasMoreElements()) {
 
 ---
 
-### 十一、实际应用场景
+## 十一、实际应用场景
 
-#### 场景 1: 读取资源文件
+### 场景 1: 读取资源文件
 
 ```
 // 在 ServiceLoader 中查找所有服务配置文件
@@ -402,7 +402,7 @@ while (configs.hasMoreElements()) {
 
 ```
 
-#### 场景 2: 遍历网络接口
+### 场景 2: 遍历网络接口
 
 ```
 import java.net.NetworkInterface;
@@ -422,7 +422,7 @@ while (interfaces.hasMoreElements()) {
 
 ```
 
-#### 场景 3: 读取系统属性
+### 场景 3: 读取系统属性
 
 ```
 Properties props = System.getProperties();
@@ -439,9 +439,9 @@ while (propNames.hasMoreElements()) {
 
 ---
 
-### 十二、在 ServiceLoader 中的作用
+## 十二、在 ServiceLoader 中的作用
 
-#### ClassLoader.getResources() 返回 Enumeration
+### ClassLoader.getResources() 返回 Enumeration
 
 ```
 // ClassLoader.java
@@ -452,7 +452,7 @@ public Enumeration<URL> getResources(String name) throws IOException {
 
 ```
 
-#### ServiceLoader 如何使用
+### ServiceLoader 如何使用
 
 ```
 // ServiceLoader.java 的 LazyIterator
@@ -487,9 +487,9 @@ private boolean hasNextService() {
 
 ---
 
-### 十三、Enumeration 的设计思想
+## 十三、Enumeration 的设计思想
 
-#### 迭代器模式
+### 迭代器模式
 
 ```
 public interface Enumeration<E> {
@@ -506,7 +506,7 @@ public interface Enumeration<E> {
 
 ```
 
-#### 与现代设计的对比
+### 与现代设计的对比
 
 ```
 // Enumeration (JDK 1.0)
@@ -532,9 +532,9 @@ public interface Iterable<E> {
 
 ---
 
-### 十四、总结
+## 十四、总结
 
-#### Enumeration 的特点
+### Enumeration 的特点
 
 ✅ **优点**：
 
@@ -549,21 +549,21 @@ public interface Iterable<E> {
 * 不是 fail-fast 的
 * 已被 `Iterator` 取代
 
-#### 使用建议
+### 使用建议
 
 1. **新代码** - 优先使用 `Iterator` 或增强 for 循环
 2. **遗留代码** - 理解 `Enumeration` 的使用
 3. **特定 API** - 某些 API 仍返回 `Enumeration`（如 `ClassLoader.getResources()`）
 4. **只读遍历** - 如果需要明确的只读语义，`Enumeration` 是合适的选择
 
-#### 关键点
+### 关键点
 
 * **Enumeration 是 Java 1.0 时代的迭代器**
 * **主要用于 Vector、Hashtable 等遗留集合**
 * **在 ClassLoader、NetworkInterface 等系统 API 中仍在使用**
 * **理解它有助于阅读 Java 核心源码（如 ServiceLoader）**
 
-#### 在 SPI 中的角色
+### 在 SPI 中的角色
 
 ```
 ServiceLoader.load()
@@ -581,9 +581,9 @@ ServiceLoader.load()
 
 ---
 
-### 附录：完整示例
+## 附录：完整示例
 
-#### 示例 1: 基础遍历
+### 示例 1: 基础遍历
 
 ```
 Vector<String> vector = new Vector<>();
@@ -599,7 +599,7 @@ while (e.hasMoreElements()) {
 
 ```
 
-#### 示例 2: 遍历 Hashtable
+### 示例 2: 遍历 Hashtable
 
 ```
 Hashtable<String, Integer> table = new Hashtable<>();
@@ -623,7 +623,7 @@ while (values.hasMoreElements()) {
 
 ```
 
-#### 示例 3: 在 ServiceLoader 场景中
+### 示例 3: 在 ServiceLoader 场景中
 
 ```
 ClassLoader loader = Thread.currentThread().getContextClassLoader();

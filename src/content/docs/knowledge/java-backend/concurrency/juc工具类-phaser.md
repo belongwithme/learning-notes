@@ -19,9 +19,9 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147240379)（历史文章导入，当前状态为草稿）
 
-### 一、 基础概念理解：Phaser是什么？
+## 一、 基础概念理解：Phaser是什么？
 
-#### 1.1 Phaser的定义与作用
+### 1.1 Phaser的定义与作用
 
 **官方定义：**  
  `Phaser`是`java.util.concurrent`包下的一个可重用的同步屏障（Synchronization Barrier）
@@ -49,7 +49,7 @@ sidebar:
 
 总之，`Phaser`提供了一种强大而灵活的机制，用于管理那些需要分阶段同步、且参与者数量可能变化的并发任务。
 
-#### 1.2 Phaser与CountDownLatch、CyclicBarrier的区别与联系
+### 1.2 Phaser与CountDownLatch、CyclicBarrier的区别与联系
 
 在`Phaser`出现之前，`CountDownLatch`和`CyclicBarrier`是处理线程同步的常用工具。理解它们与`Phaser`的关系，有助于我们更好地选择合适的工具。
 
@@ -95,7 +95,7 @@ sidebar:
 
 因此，当你需要比`CountDownLatch`或`CyclicBarrier`更灵活的同步控制时，`Phaser`通常是更好的选择。
 
-#### 1.3 Phaser的核心设计思想
+### 1.3 Phaser的核心设计思想
 
 `Phaser`的设计精妙，其核心思想可以概括为以下几点：
 
@@ -136,11 +136,11 @@ sidebar:
 
 总而言之，`Phaser`代表了Java并发工具在设计上向着更加**贴近实际业务需求、更加通用和强大**方向演进的成果。它虽然比`CountDownLatch`和`CyclicBarrier`更复杂，但其提供的灵活性和功能性使其能够胜任许多前两者难以处理或处理起来非常笨拙的并发协调任务。
 
-### 二、 API使用与场景实战
+## 二、 API使用与场景实战
 
-#### 2.1 关键API详解与示例
+### 2.1 关键API详解与示例
 
-##### 2.1.1 构造Phaser
+#### 2.1.1 构造Phaser
 
 创建`Phaser`实例有多种构造方法：
 
@@ -177,7 +177,7 @@ public class PhaserConstructionDemo {
 
 ```
 
-##### 2.1.2 注册参与者：`register()` 和 `bulkRegister()`
+#### 2.1.2 注册参与者：`register()` 和 `bulkRegister()`
 
 * `register(): int`: 动态增加一个参与者。此方法会原子性地增加`Phaser`内部的参与者计数。返回注册时的阶段号（如果`Phaser`已终止，返回负数）。新注册的参与者将参与**下一个**阶段的同步。
 * `bulkRegister(int parties): int`: 一次性注册指定数量（`parties`）的参与者。比多次调用`register()`更高效。返回注册时的阶段号。
@@ -222,7 +222,7 @@ public class PhaserRegistrationDemo {
 
 ```
 
-##### 2.1.3 到达与等待：`arrive()`, `arriveAndAwaitAdvance()`, `arriveAndDeregister()`
+#### 2.1.3 到达与等待：`arrive()`, `arriveAndAwaitAdvance()`, `arriveAndDeregister()`
 
 这是`Phaser`同步机制的核心方法。
 
@@ -347,7 +347,7 @@ public class PhaserArrivalDemo {
 * `Worker-Deregister`线程调用`arriveAndDeregister()`后，`Phaser`的注册参与者数量会减少。在第二阶段，主线程只需要等待`Worker-Await`和（理论上应该到达的）`Worker-Arrive`。
 * 阶段号（`getPhase()`）在所有参与者到达后原子性地增加。
 
-##### 2.1.4 等待特定阶段结束：`awaitAdvance(int phase)` 和 `awaitAdvanceInterruptibly(int phase)`
+#### 2.1.4 等待特定阶段结束：`awaitAdvance(int phase)` 和 `awaitAdvanceInterruptibly(int phase)`
 
 * `awaitAdvance(int phase): int`:
 
@@ -447,7 +447,7 @@ public class PhaserAwaitAdvanceDemo {
 
 ```
 
-##### 2.1.5 查询Phaser状态
+#### 2.1.5 查询Phaser状态
 
 `Phaser`提供了一些方法来查询其当前状态：
 
@@ -461,7 +461,7 @@ public class PhaserAwaitAdvanceDemo {
 
 这些方法对于调试、监控以及在`onAdvance`中做决策非常有用。
 
-#### 2.2 理解核心概念：Phase (阶段)
+### 2.2 理解核心概念：Phase (阶段)
 
 正如之前反复强调的，**阶段 (Phase)** 是`Phaser`运作的核心机制。
 
@@ -490,7 +490,7 @@ public class PhaserAwaitAdvanceDemo {
 
 与`CyclicBarrier`相比，`Phaser`的阶段概念更加明确和内置。你不需要手动创建多个`CyclicBarrier`实例来模拟多阶段，一个`Phaser`对象内部就维护了阶段状态的流转。
 
-#### 2.3 场景一：分阶段 数据处理 流水线
+### 2.3 场景一：分阶段 数据处理 流水线
 
 这是一个非常典型的`Phaser`应用场景。假设我们有一个任务，需要分三步处理一批数据：加载数据 -> 处理数据 -> 保存结果。每一步都可能由多个线程并行完成。
 
@@ -623,7 +623,7 @@ public class DataProcessingPipeline {
 
 这个例子清晰地展示了`Phaser`如何协调多个线程按阶段顺序执行任务。
 
-#### 2.4 场景二：动态参与者的加入与退出
+### 2.4 场景二：动态参与者的加入与退出
 
 假设一个场景，我们有一组初始的工作线程，但在任务执行过程中，可能会根据负载情况动态增加新的工作线程，或者有些线程完成了特定的子任务后就可以提前退出。
 
@@ -743,9 +743,9 @@ public class DynamicParticipantsDemo {
 
 ---
 
-### 三、 进阶实现细节
+## 三、 进阶实现细节
 
-#### 3.1 Phaser内部状态管理机制 (概念性理解)
+### 3.1 Phaser内部状态管理机制 (概念性理解)
 
 `Phaser`为了高效和线程安全地管理其复杂状态（参与者数量、到达数量、阶段号、终止状态），并没有使用传统的锁（如`ReentrantLock`），而是巧妙地利用了**原子变量**和**位运算**。
 
@@ -782,7 +782,7 @@ public class DynamicParticipantsDemo {
 * `getPhase()`, `getRegisteredParties()`, `getArrivedParties()` 等方法读取的就是这个`state`变量中不同部分解码后的值。
 * 理解这种机制有助于体会Java并发包中高级工具设计的精妙之处。
 
-#### 3.2 Phaser如何处理动态参与者 (更深入一点)
+### 3.2 Phaser如何处理动态参与者 (更深入一点)
 
 我们已经通过示例看到了动态参与者的效果，现在从机制层面再深入理解一下：
 
@@ -809,7 +809,7 @@ public class DynamicParticipantsDemo {
 * 我在一个自适应数据处理系统中用过这个特性：处理完一批高优先级数据的线程可以调用`arriveAndDeregister`退出，这样后续阶段`Phaser`就不会等待它们，系统资源可以更集中地用于处理剩余的数据，实现了某种程度的“自适应并行度”。
 * 这一切的顺畅运行都依赖于底层CAS操作提供的**原子性保证**，即使在高并发下，注册和注销操作也不会导致`Phaser`状态混乱。
 
-#### 3.3 `onAdvance(int phase, int registeredParties)` 方法的作用和重写场景
+### 3.3 `onAdvance(int phase, int registeredParties)` 方法的作用和重写场景
 
 `onAdvance`方法是`Phaser`提供的一个强大的**定制点**，它允许开发者介入阶段推进的过程，并根据自己的业务逻辑来控制`Phaser`的行为。
 
@@ -966,7 +966,7 @@ protected boolean onAdvance(int phase, int registeredParties) {
 
 通过重写`onAdvance`，`Phaser`从一个简单的同步屏障，变成了一个可编程的、高度可定制的并发流程控制器。
 
-#### 3.4 层级Phaser (Hierarchical Phasers) - 概念与优势
+### 3.4 层级Phaser (Hierarchical Phasers) - 概念与优势
 
 当需要协调的线程数量非常庞大时（比如成百上千甚至更多），让所有线程都注册到同一个`Phaser`实例上，可能会导致该`Phaser`内部状态更新的
 CAS 
@@ -1063,7 +1063,7 @@ class GroupWorker implements Runnable {
 
 **注意：** 层级`Phaser`增加了复杂性。只有在确实需要处理大量并发线程并遇到性能瓶颈时，才值得引入。对于中小型并发场景，单个`Phaser`通常足够且更简单。
 
-#### 3.5 中断与超时
+### 3.5 中断与超时
 
 * **中断:**
   + `arriveAndAwaitAdvance()` 和 `awaitAdvance()` 是**不可中断**的等待。如果线程在这些方法上阻塞时被中断 (`Thread.interrupt()`)，中断状态会被设置，但方法不会抛出`InterruptedException`，会继续等待。
@@ -1079,7 +1079,7 @@ class GroupWorker implements Runnable {
 * 如果需要防止无限期等待（比如担心某个线程永远不 `arrive` 导致死锁），应使用带超时的 `awaitAdvanceInterruptibly`。
 * 如果任务逻辑保证了所有参与者最终都会到达，且不需要响应中断，那么使用不可中断的 `arriveAndAwaitAdvance` 或 `awaitAdvance` 更简单。
 
-#### 3.6 潜在陷阱与最佳实践
+### 3.6 潜在陷阱与最佳实践
 
 使用`Phaser`时，需要注意一些常见的坑点和推荐的做法：
 
@@ -1143,7 +1143,7 @@ class GroupWorker implements Runnable {
 
 ---
 
-### 四、 总结
+## 四、 总结
 
 `Phaser` 是 Java 并发包中一个极其强大和灵活的同步工具。  
  它通过引入**阶段 (Phase)** 的概念，并支持**动态参与者管理**和**可定制的阶段推进逻辑 (`onAdvance`)**，极大地扩展了多线程协调的可能性。

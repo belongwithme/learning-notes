@@ -20,19 +20,19 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153400057)（历史文章导入，当前状态为草稿）
 
-#### Java SPI机制
-### 什么是SPI
+## Java SPI机制
+## 什么是SPI
 
 **SPI (Service Provider Interface)** 是Java提供的一种**服务发现机制**，允许第三方为接口提供实现。它是一种**基于接口的编程 + 策略模式 + 配置文件**的设计模式。
 
-#### 核心思想
+### 核心思想
 
 * **面向接口编程**: 定义标准接口
 * **实现与接口分离**: 多个实现可以独立存在
 * **运行时动态加载**: 通过配置文件在运行时发现和加载实现
 * **无需修改代码**: 添加新实现只需增加配置,无需修改现有代码
 
-#### 与普通接口的区别
+### 与普通接口的区别
 
 | 特性 | 普通接口 | SPI接口 |
 | --- | --- | --- |
@@ -43,13 +43,13 @@ sidebar:
 
 ---
 
-### SPI的核心概念
+## SPI的核心概念
 
-#### 1. 服务接口 (Service Interface)
+### 1. 服务接口 (Service Interface)
 
 定义服务的标准规范,如本例中的 `PaymentService`
 
-#### 2. 服务提供者 (Service Provider)
+### 2. 服务提供者 (Service Provider)
 
 服务接口的具体实现类,如:
 
@@ -57,7 +57,7 @@ sidebar:
 * `WeChatPayService`
 * `UnionPayService`
 
-#### 3. 服务加载器 (ServiceLoader)
+### 3. 服务加载器 (ServiceLoader)
 
 Java提供的工具类,用于加载服务提供者:
 
@@ -67,13 +67,13 @@ ServiceLoader<PaymentService> loader = ServiceLoader.load(PaymentService.class);
 
 ```
 
-#### 4. 配置文件
+### 4. 配置文件
 
 位于 `META-INF/services/` 目录下,文件名为**接口的全限定名**,内容为**实现类的全限定名**
 
 ---
 
-### 项目结构
+## 项目结构
 
 ```
 src/
@@ -97,9 +97,9 @@ src/
 
 ```
 
-#### 关键文件说明
+### 关键文件说明
 
-##### 1. SPI接口 (`PaymentService.java`)
+#### 1. SPI接口 (`PaymentService.java`)
 
 ```
 public interface PaymentService {
@@ -112,7 +112,7 @@ public interface PaymentService {
 
 ```
 
-##### 2. SPI配置文件
+#### 2. SPI配置文件
 
 **文件名**: `META-INF/services/com.example.spi.service.PaymentService`  
  **内容**:
@@ -135,9 +135,9 @@ com.example.spi.impl.UnionPayService
 
 ---
 
-### SPI工作原理
+## SPI工作原理
 
-#### 加载流程
+### 加载流程
 
 ```
 1. 应用调用 ServiceLoader.load(PaymentService.class)
@@ -155,7 +155,7 @@ com.example.spi.impl.UnionPayService
 
 ```
 
-#### ServiceLoader源码解析
+### ServiceLoader源码解析
 
 ```
 // ServiceLoader内部使用懒加载
@@ -181,7 +181,7 @@ public final class ServiceLoader<S> implements Iterable<S> {
 
 ```
 
-#### 为什么使用懒加载?
+### 为什么使用懒加载?
 
 * 节省内存: 只有在迭代时才加载实例
 * 提高性能: 避免一次性加载所有实现
@@ -189,9 +189,9 @@ public final class ServiceLoader<S> implements Iterable<S> {
 
 ---
 
-### 常见问题
+## 常见问题
 
-#### Q1: 配置文件位置错误
+### Q1: 配置文件位置错误
 
 **错误现象**: `ServiceLoader` 加载不到任何实现
 
@@ -201,7 +201,7 @@ public final class ServiceLoader<S> implements Iterable<S> {
 * ✅ 检查文件名是否为接口的**完全限定名**
 * ✅ 检查编译后的jar/classes目录中是否包含该文件
 
-#### Q2: 实现类加载失败
+### Q2: 实现类加载失败
 
 **错误现象**: 抛出 `ServiceConfigurationError`
 
@@ -225,7 +225,7 @@ public class AlipayService implements PaymentService {
 
 ```
 
-#### Q3: 多个jar包中有相同服务
+### Q3: 多个jar包中有相同服务
 
 **问题**: 如果多个jar都提供 `PaymentService` 的实现怎么办?
 
@@ -235,7 +235,7 @@ public class AlipayService implements PaymentService {
 * 通过名称选择特定实现
 * 加载所有实现并组合使用
 
-#### Q4: SPI的性能问题
+### Q4: SPI的性能问题
 
 **问题**: 每次调用 `ServiceLoader.load()` 都会重新加载吗?
 
@@ -259,9 +259,9 @@ public class PaymentServiceFactory {
 
 ---
 
-### SPI在实际项目中的应用
+## SPI在实际项目中的应用
 
-#### 1. JDBC驱动加载
+### 1. JDBC驱动加载
 
 ```
 // 不需要 Class.forName("com.mysql.cj.jdbc.Driver")
@@ -271,37 +271,37 @@ Connection conn = DriverManager.getConnection(url, user, password);
 
 ```
 
-#### 2. 日志框架
+### 2. 日志框架
 
 SLF4J通过SPI机制绑定实际的日志实现(Logback, Log4j等)
 
-#### 3. Spring Boot的自动配置
+### 3. Spring Boot的自动配置
 
 `spring.factories` 文件使用了类似SPI的机制
 
-#### 4. Dubbo的扩展机制
+### 4. Dubbo的扩展机制
 
 Dubbo改进了JDK的SPI,增加了依赖注入、AOP等特性
 
 ---
 
-### 总结
+## 总结
 
-#### SPI的优点
+### SPI的优点
 
 ✅ **高度解耦**: 接口定义与实现完全分离  
  ✅ **易于扩展**: 添加新实现无需修改代码  
  ✅ **插件化**: 支持第三方扩展  
  ✅ **标准化**: Java官方提供的机制
 
-#### SPI的缺点
+### SPI的缺点
 
 ❌ **性能开销**: 使用反射,性能略低于直接实例化  
  ❌ **不够灵活**: 只能通过迭代获取,不支持按需获取  
  ❌ **并发问题**: ServiceLoader不是线程安全的  
  ❌ **无法管理**: 缺少依赖注入、AOP等高级特性
 
-#### 何时使用SPI
+### 何时使用SPI
 
 * 开发框架或中间件
 * 需要支持插件扩展

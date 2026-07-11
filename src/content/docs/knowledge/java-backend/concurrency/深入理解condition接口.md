@@ -19,7 +19,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251627)（历史文章导入，当前状态为草稿）
 
-### 1. 前言：为什么需要Condition？
+## 1. 前言：为什么需要Condition？
 
 在多线程编程中，线程间的协作至关重要。我们经常遇到这样的场景：一个线程需要等待某个条件满足后才能继续执行，而这个条件的改变依赖于其他线程的操作。  
  例如，在经典的“生产者-消费者”模式中，当缓冲区为空时，消费者线程需要暂停等待，直到生产者线程放入数据；当缓冲区满时，生产者线程需要暂停等待，直到消费者线程取出数据。
@@ -34,7 +34,7 @@ Java 的 `Object` 类提供了 `wait()`, `notify()`, 和 `notifyAll()` 方法，
 
 **可以把 `Condition` 想象成一个更加智能和专门化的“等待室”**。`synchronized` 只有一个大的、通用的等待室，所有等待者都在里面。而 `Lock` 配合 `Condition`，则允许你根据不同的等待原因设立多个专门的等待室，你可以只通知某个特定等待室里的线程：“你们等待的条件满足了，可以出来了！”
 
-### 2. Condition 接口的核心概念
+## 2. Condition 接口的核心概念
 
 `java.util.concurrent.locks.Condition` 是一个接口，它定义了线程等待和通知的基本操作。它的核心思想是**将对象监视器方法（`wait`, `notify`, `notifyAll`）分解成不同的对象，与任意 `Lock` 实现组合使用**。
 
@@ -67,7 +67,7 @@ Condition condition = lock.newCondition(); // Condition 必须依附于 Lock 创
 
 我们将在后续章节详细探讨这些方法。
 
-### 3. Condition 与 Lock 的关系：钥匙与等待室
+## 3. Condition 与 Lock 的关系：钥匙与等待室
 
 前面提到，`Condition` 必须与 `Lock` 配合使用。我们可以用一个更形象的比喻来理解它们的关系：**`Lock` 就像是进入一个房间的钥匙，而 `Condition` 则是房间内设立的特定等待区域**。
 
@@ -89,7 +89,7 @@ Condition condition = lock.newCondition(); // Condition 必须依附于 Lock 创
 
 结果是，线程 A 错过了线程 B 的信号，可能会永远等待下去（Lost Wakeup 问题）。持有锁可以确保从检查条件到进入等待状态是一个原子操作，不会被其他线程的操作打断。同样，`signal()` 也需要在锁的保护下进行，以确保它能看到其他线程对共享状态的最新修改。
 
-### 4. Condition vs. Object.wait/notify：青出于蓝
+## 4. Condition vs. Object.wait/notify：青出于蓝
 
 `Condition` 和 `Object` 的 `wait/notify` 机制都是为了解决线程间的协作问题，但 `Condition` 提供了更强大和灵活的功能。它们的联系和区别如下：
 
@@ -116,13 +116,13 @@ Condition condition = lock.newCondition(); // Condition 必须依附于 Lock 创
 
 **总结来说，`Condition` 是对传统 `wait/notify` 机制的增强和优化，特别适用于需要管理多个等待条件或者需要更精细控制线程协作的复杂并发场景。**
 
-### 5. 核心方法详解与简化源码分析
+## 5. 核心方法详解与简化源码分析
 
 `Condition` 的实现通常依赖于 AQS (AbstractQueuedSynchronizer)。`ReentrantLock` 内部就有一个基于 AQS 的实现，并且 `ReentrantLock.newCondition()` 返回的是 AQS 的内部类 `ConditionObject` 的实例。我们将以 `ConditionObject` 为例，分析核心方法的原理。
 
 **请注意：** 下面的源码片段是**简化和概念化**的，旨在说明核心逻辑，省略了许多错误处理、边界情况和优化细节。真实的 AQS 源码相当复杂。
 
-#### 5.1 `await()` 方法
+### 5.1 `await()` 方法
 
 `await()` 的作用是让当前线程等待，并释放持有的锁。
 
@@ -202,7 +202,7 @@ public final void await() throws InterruptedException {
 * **锁的完全释放与恢复**：即使一个线程多次重入获取了锁（`getHoldCount() > 1`），调用 `await()` 也会将锁完全释放（`holdCount` 变为 0）。当线程被唤醒并重新获取锁后，它的 `holdCount` 会恢复到调用 `await()` 之前的状态。这是通过 `fullyRelease` 保存状态和 `acquireQueued` 恢复状态实现的。
 * **队列转移**：线程不是直接从 `await()` 中醒来就执行，而是先从条件队列转移到同步队列，然后像其他尝试获取锁的线程一样排队。
 
-#### 5.2 `signal()` 方法
+### 5.2 `signal()` 方法
 
 `signal()` 的作用是唤醒一个在条件队列中等待的线程。
 
@@ -264,7 +264,7 @@ private void doSignal(Node first) {
 * **为什么是转移而不是直接唤醒执行？** 这种设计确保了并发控制的正确性。被唤醒的线程必须重新获取锁，才能保证它在访问共享资源时状态的一致性。如果直接执行，可能会在没有锁保护的情况下访问共享数据。
 * **`signal()` 只保证发出信号**：`signal()` 方法执行完毕，仅仅是将一个等待线程从条件队列转移到了同步队列，并唤醒了它。它**不保证**这个被唤醒的线程能立即获得锁，也不保证它获得锁时，它等待的条件仍然是满足的（这就是为什么 `await` 需要在 `while` 循环中检查条件）。
 
-#### 5.3 `signalAll()` 方法
+### 5.3 `signalAll()` 方法
 
 `signalAll()` 与 `signal()` 非常相似，区别在于它会唤醒**所有**在条件队列中等待的线程。
 
@@ -315,7 +315,7 @@ private void doSignalAll(Node first) {
 * 如果多个线程都在等待同一个条件，并且当条件满足时，所有等待的线程都应该被唤醒去尝试执行（例如，多个消费者等待数据到达），那么应该使用 `signalAll()`。
 * **注意**：即使你认为只有一个线程在等待，如果无法严格保证这一点，或者条件满足后可能需要唤醒不同类型的等待者，使用 `signalAll()` 通常更安全，尽管可能效率稍低。错误地使用 `signal()` 可能导致某些线程永远无法被唤醒。
 
-### 6. AQS 在 Condition 实现中的角色
+## 6. AQS 在 Condition 实现中的角色
 
 AbstractQueuedSynchronizer (AQS) 是 JUC 中许多同步工具（如 `ReentrantLock`, `Semaphore`, `CountDownLatch`）的基础框架。`ConditionObject` 作为 AQS 的内部类，紧密依赖 AQS 提供的机制来实现 `Condition` 的功能。
 
@@ -345,7 +345,7 @@ AQS 在 `Condition` 实现中扮演了以下关键角色：
 
 尝试获取 Lock -> 失败 -> **进入同步队列** -> 成功获取 Lock -> 检查条件 -> 条件不满足 -> 调用 `await` -> **进入条件队列** (同时释放 Lock) -> 被 `signal` -> **从条件队列转移到同步队列** -> 重新竞争 Lock -> 成功获取 Lock -> 从 `await` 返回 -> 继续执行。
 
-### 7. 处理虚假唤醒 (Spurious Wakeup)
+## 7. 处理虚假唤醒 (Spurious Wakeup)
 
 一个需要特别注意的问题是**虚假唤醒 (Spurious Wakeup)**。它是指线程在没有被其他线程显式调用 `signal()` 或 `signalAll()`，也没有被中断的情况下，意外地从 `await()` 方法中唤醒。
 
@@ -390,11 +390,11 @@ try {
 
 **永远不要假设线程从 `await()` 返回时，它等待的条件一定是满足的。必须重新检查！** 这是使用 `Condition`（以及 `Object.wait`）时一条非常重要的原则。
 
-### 8. 高级 `await` 方法
+## 8. 高级 `await` 方法
 
 除了基本的 `await()`，`Condition` 还提供了几个变体，以应对不同的等待需求。
 
-#### 8.1 `awaitUninterruptibly()`
+### 8.1 `awaitUninterruptibly()`
 
 此方法使线程进入等待状态，但**不响应中断**。如果在等待过程中，其他线程调用了该等待线程的 `interrupt()` 方法，`awaitUninterruptibly()` **不会**抛出 `InterruptedException`，线程会继续等待，直到被 `signal` 或 `signalAll`。
 
@@ -421,7 +421,7 @@ try {
 
 当线程的等待操作必须完成，不能因为外部的中断请求而提前终止时使用。例如，在一些关键的资源清理或状态同步逻辑中，如果中断可能导致系统状态不一致，可以考虑使用不可中断等待。但请谨慎使用，因为它可能导致线程长时间无法响应中断，影响系统的响应性。
 
-#### 8.2 `await(long time, TimeUnit unit)` 和 `awaitNanos(long nanosTimeout)`
+### 8.2 `await(long time, TimeUnit unit)` 和 `awaitNanos(long nanosTimeout)`
 
 这两个方法提供了**带超时的等待**。线程会等待条件满足，但最多只等待指定的时间。
 
@@ -478,7 +478,7 @@ boolean ok = condition.await(timeout, unit);
 * 实现具有超时限制的操作，如尝试在一定时间内获取资源、等待任务完成等。
 * 作为实现定时检查或轮询的一种方式（虽然可能有更优的定时任务方案）。
 
-#### 8.3 `awaitUntil(Date deadline)`
+### 8.3 `awaitUntil(Date deadline)`
 
 此方法允许线程等待直到一个**绝对的时间点 (deadline)**。
 
@@ -526,7 +526,7 @@ try {
 
 **总结：** 这些 `await` 的变体提供了对等待过程更精细的控制，开发者应根据具体的业务需求（是否需要响应中断、是相对超时还是绝对时间点）来选择合适的方法。但无论使用哪个方法，**在 `while` 循环中检查条件**都是必须遵守的规则。
 
-### 9. 应用实例：生产者-消费者模式
+## 9. 应用实例：生产者-消费者模式
 
 生产者-消费者模式是并发编程中最经典的场景之一，也是 `Condition` 发挥优势的典型例子。我们来实现一个使用 `ReentrantLock` 和两个 `Condition` 的有界阻塞队列。
 
@@ -701,7 +701,7 @@ public class BoundedBuffer<T> {
 
 这个例子完美展示了 `Condition` 如何通过与 `Lock` 结合并提供多个条件队列，来实现比传统 `wait/notify` 更高效、更精确的线程间协作。
 
-### 10. 总结与最佳实践
+## 10. 总结与最佳实践
 
 `Condition` 接口是 Java 并发包提供的一个强大工具，用于实现复杂的线程间同步和协作。  
  它通过将条件等待队列与 `Lock` 分离，克服了传统 `Object.wait/notify` 机制的局限性，提供了更精细的控制能力。

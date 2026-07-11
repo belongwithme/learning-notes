@@ -19,14 +19,14 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125951275)（历史文章导入，当前状态为草稿）
 
-#### HashSet解读
-### 前言
+## HashSet解读
+## 前言
 
 我们之前已经学习了HashMap的核心思想和逻辑，现在再来看HashSet就已经很简单了，因为HashSet的底层就是HashMap= =。  
  简单看一眼：  
  ![在这里插入图片描述](./assets/125951275/a79b2fa515f1e8279b78d3c2.png)
 
-#### 一： 简单介绍
+## 一： 简单介绍
 
 1：Hashset实现了set接口，实际上是HashMap，  
  2：它可以存放null，但是只能存一个。  
@@ -34,7 +34,7 @@ sidebar:
  4：不保证元素是有序的，取决于hash后，再确定索引结果  
  5：线程不安全，因为HashMap线程不安全，它自然不安全。
 
-##### HashMap和HashSet的区别
+### HashMap和HashSet的区别
 
 HashSet 的底层实现确实是基于 HashMap 的，但这并不意味着 HashSet 必须提供键值对的存储功能。  
  HashSet 是 HashMap 的一个“视图”或“封装”，它只使用了 HashMap 的键（key）部分来存储元素，而忽略了值（value）部分。  
@@ -42,7 +42,7 @@ HashSet 的底层实现确实是基于 HashMap 的，但这并不意味着 HashS
  HashSet 提供了一个简洁的接口来存储不重复的元素集合，而隐藏了其底层实现的复杂性。我们不需要关心键值对的概念，只需要将元素添加到集合中，并确保它们的唯一性。  
  简言之,HashSet使用HashMap作为底层实现是一种设计上的选择,旨在重用代码,提高性能和简化实现,同时为用户提供了一个专注于元素唯一性的简洁接口.
 
-#### 二：继承图&结构
+## 二：继承图&结构
 
 ![在这里插入图片描述](./assets/125951275/1973d1e4ee523389ae37ab9e.png)  
  代码实现如下：
@@ -62,9 +62,9 @@ public class HashSet<E>
  3:Serializable: 提供可序列化功能。  
  在这里的描述都不细致，因为在ArrayList那节都已经解读过了，感兴趣可以去看看前面的ArrayList解读。
 
-#### 三：源码分析
+## 三：源码分析
 
-##### javaDoc分析
+### javaDoc分析
 
 ```
 /**
@@ -135,7 +135,7 @@ public class HashSet<E>
 
 ```
 
-##### 构造方法
+### 构造方法
 
 HashSet的构造方法有四种：  
  1：无参构造
@@ -152,7 +152,7 @@ HashSet的构造方法有四种：
 
 ```
 
-##### 成员变量&&静态变量
+### 成员变量&&静态变量
 
 成员变量：
 
@@ -173,7 +173,7 @@ static final long serialVersionUID = -5024744406713321676L;//序列号
 
 ```
 
-##### 有参构造（参数是集合）
+### 有参构造（参数是集合）
 
 ```
   /**

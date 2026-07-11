@@ -19,7 +19,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156465708)（历史文章导入，当前状态为草稿）
 
-#### Jackson核心内容-入门到实战
+## Jackson核心内容-入门到实战
 ## 简介
 
 一句话形容: Jackson是用来序列化和反序列化 json 的 Java 的开源框架.  

@@ -25,14 +25,14 @@ sidebar:
 
 ---
 
-#### 
-### 一、前置知识
 
-#### 1.1 核心概念
+## 一、前置知识
+
+### 1.1 核心概念
 
 在深入Bean创建流程之前,需要理解以下核心概念:
 
-##### 1.1.1 BeanFactory vs ApplicationContext
+#### 1.1.1 BeanFactory vs ApplicationContext
 
 ```
 ApplicationContext (应用上下文)
@@ -67,7 +67,7 @@ DefaultListableBeanFactory (默认实现,最常用)
 
 ```
 
-##### 1.1.2 BeanDefinition
+#### 1.1.2 BeanDefinition
 
 **BeanDefinition** 是Spring对Bean的描述信息,类似于"菜谱"或"设计图":
 
@@ -108,7 +108,7 @@ public interface BeanDefinition {
 * Java配置: `@Configuration` + `@Bean`
 * 编程式注册: `BeanDefinitionRegistry.registerBeanDefinition()`
 
-##### 1.1.3 Bean的作用域(Scope)
+#### 1.1.3 Bean的作用域(Scope)
 
 | 作用域 | 说明 | 生命周期 |
 | --- | --- | --- |
@@ -119,7 +119,7 @@ public interface BeanDefinition {
 | **application** | ServletContext范围 | 整个Web应用一个实例 |
 | **自定义** | 实现Scope接口 | 由自定义逻辑控制 |
 
-##### 1.1.4 FactoryBean
+#### 1.1.4 FactoryBean
 
 `FactoryBean` 是一个特殊的Bean,它不是普通的Bean实例,而是**生产Bean的工厂**:
 
@@ -169,7 +169,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory> {
 * `getBean("sqlSessionFactoryBean")` → 返回 `SqlSessionFactory` 实例(工厂生产的对象)
 * `getBean("&sqlSessionFactoryBean")` → 返回 `SqlSessionFactoryBean` 实例(工厂本身)
 
-#### 1.2 BeanPostProcessor机制
+### 1.2 BeanPostProcessor机制
 
 **BeanPostProcessor** 是Spring的扩展点,可以在Bean初始化前后进行自定义处理:
 
@@ -194,7 +194,7 @@ public interface BeanPostProcessor {
 | `AnnotationAwareAspectJAutoProxyCreator` | 处理AOP代理 |
 | `ApplicationContextAwareProcessor` | 处理Aware接口回调 |
 
-#### 1.3 Bean的生命周期概览
+### 1.3 Bean的生命周期概览
 
 ```
 1. 实例化 (Instantiation)
@@ -231,9 +231,9 @@ public interface BeanPostProcessor {
 
 ---
 
-### 二、Spring容器架构概览
+## 二、Spring容器架构概览
 
-#### 2.1 类层次结构
+### 2.1 类层次结构
 
 ```
                     ┌──────────────┐
@@ -293,7 +293,7 @@ public interface BeanPostProcessor {
 
 ```
 
-#### 2.2 三大核心组件
+### 2.2 三大核心组件
 
 | 组件 | 职责 | 核心方法 |
 | --- | --- | --- |
@@ -303,9 +303,9 @@ public interface BeanPostProcessor {
 
 ---
 
-### 三、doGetBean核心流程详解
+## 三、doGetBean核心流程详解
 
-#### 3.1 方法签名与参数
+### 3.1 方法签名与参数
 
 **位置:** `AbstractBeanFactory.java:242-448`
 
@@ -320,7 +320,7 @@ protected <T> T doGetBean(
 
 ```
 
-#### 3.2 上游调用关系
+### 3.2 上游调用关系
 
 ```
 用户代码
@@ -340,7 +340,7 @@ doGetBean() ← 核心方法
 
 ```
 
-#### 3.3 完整流程图
+### 3.3 完整流程图
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -453,9 +453,9 @@ doGetBean() ← 核心方法
 
 ```
 
-#### 3.4 关键步骤源码解析
+### 3.4 关键步骤源码解析
 
-##### 步骤1: BeanName转换
+#### 步骤1: BeanName转换
 
 **源码位置:** `AbstractBeanFactory.java:247`
 
@@ -486,7 +486,7 @@ protected String transformedBeanName(String name) {
 * `"&myFactory"` → `"myFactory"`
 * `"userServiceAlias"` → `"userService"` (假设userServiceAlias是别名)
 
-##### 步骤2: 单例缓存查询
+#### 步骤2: 单例缓存查询
 
 **源码位置:** `AbstractBeanFactory.java:252`
 
@@ -545,7 +545,7 @@ protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 | 二级 | earlySingletonObjects | 早期暴露的Bean(已实例化,未填充属性) | 解决循环依赖 |
 | 三级 | singletonFactories | ObjectFactory(Bean工厂) | 延迟创建,支持AOP代理 |
 
-##### 步骤3: Prototype循环依赖检查
+#### 步骤3: Prototype循环依赖检查
 
 **源码位置:** `AbstractBeanFactory.java:282-284`
 
@@ -579,7 +579,7 @@ class B {
 
 ```
 
-##### 步骤4: 父容器委托
+#### 步骤4: 父容器委托
 
 **源码位置:** `AbstractBeanFactory.java:290-315`
 
@@ -611,7 +611,7 @@ if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 
 **查找顺序:** 子容器 → 父容器 → 父父容器 → …
 
-##### 步骤5: depends-on依赖处理
+#### 步骤5: depends-on依赖处理
 
 **源码位置:** `AbstractBeanFactory.java:325-352`
 
@@ -652,9 +652,9 @@ if (dependsOn != null) {
 
 ```
 
-##### 步骤6: 根据Scope创建Bean
+#### 步骤6: 根据Scope创建Bean
 
-###### 6.1 Singleton创建
+##### 6.1 Singleton创建
 
 **源码位置:** `AbstractBeanFactory.java:356-374`
 
@@ -705,7 +705,7 @@ public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 
 ```
 
-###### 6.2 Prototype创建
+##### 6.2 Prototype创建
 
 **源码位置:** `AbstractBeanFactory.java:375-390`
 
@@ -730,7 +730,7 @@ else if (mbd.isPrototype()) {
 
 **特点:** 每次getBean()都创建新实例,不缓存。
 
-###### 6.3 自定义Scope创建
+##### 6.3 自定义Scope创建
 
 **源码位置:** `AbstractBeanFactory.java:393-421`
 
@@ -770,7 +770,7 @@ else {
 * `SessionScope` (Web会话范围)
 * `ApplicationScope` (ServletContext范围)
 
-#### 3.5 下游调用关系
+### 3.5 下游调用关系
 
 ```
 doGetBean()
@@ -796,9 +796,9 @@ doGetBean()
 
 ---
 
-### 四、createBean创建细节
+## 四、createBean创建细节
 
-#### 4.1 createBean方法概览
+### 4.1 createBean方法概览
 
 **位置:** `AbstractAutowireCapableBeanFactory.java:485-565`
 
@@ -849,7 +849,7 @@ protected Object createBean(String beanName, RootBeanDefinition mbd,
 
 ```
 
-#### 4.2 doCreateBean核心流程
+### 4.2 doCreateBean核心流程
 
 **位置:** `AbstractAutowireCapableBeanFactory.java:566-750`
 
@@ -965,9 +965,9 @@ protected Object doCreateBean(String beanName, RootBeanDefinition mbd,
 
 ```
 
-#### 4.3 关键子方法详解
+### 4.3 关键子方法详解
 
-##### 4.3.1 createBeanInstance - 实例化
+#### 4.3.1 createBeanInstance - 实例化
 
 ```
 protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd,
@@ -1013,7 +1013,7 @@ protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd
 
 ```
 
-##### 4.3.2 populateBean - 属性填充
+#### 4.3.2 populateBean - 属性填充
 
 ```
 protected void populateBean(String beanName, RootBeanDefinition mbd,
@@ -1085,7 +1085,7 @@ protected void populateBean(String beanName, RootBeanDefinition mbd,
 
 ```
 
-##### 4.3.3 initializeBean - 初始化
+#### 4.3.3 initializeBean - 初始化
 
 ```
 protected Object initializeBean(String beanName, Object bean,
@@ -1154,7 +1154,7 @@ protected void invokeInitMethods(String beanName, Object bean,
 
 ```
 
-#### 4.4 Bean创建完整时序图
+### 4.4 Bean创建完整时序图
 
 ```
 客户端                AbstractBeanFactory    AbstractAutowireCapableBeanFactory    DefaultSingletonBeanRegistry
@@ -1215,9 +1215,9 @@ protected void invokeInitMethods(String beanName, Object bean,
 
 ---
 
-### 五、三级缓存与循环依赖
+## 五、三级缓存与循环依赖
 
-#### 5.1 三级缓存的定义
+### 5.1 三级缓存的定义
 
 **位置:** `DefaultSingletonBeanRegistry.java:77-84`
 
@@ -1244,7 +1244,7 @@ public class DefaultSingletonBeanRegistry {
 
 ```
 
-#### 5.2 三级缓存的作用
+### 5.2 三级缓存的作用
 
 | 缓存级别 | 变量名 | 数据类型 | 存储内容 | 何时放入 | 何时移除 |
 | --- | --- | --- | --- | --- | --- |
@@ -1252,9 +1252,9 @@ public class DefaultSingletonBeanRegistry {
 | **二级** | earlySingletonObjects | Map<String, Object> | 早期Bean(半成品) | 从三级缓存获取后 | 放入一级缓存时 |
 | **三级** | singletonFactories | Map<String, ObjectFactory> | Bean工厂(Lambda) | 实例化后,属性填充前 | 从三级缓存获取后 |
 
-#### 5.3 循环依赖的类型
+### 5.3 循环依赖的类型
 
-##### 5.3.1 构造方法循环依赖 (❌ 无法解决)
+#### 5.3.1 构造方法循环依赖 (❌ 无法解决)
 
 ```
 @Component
@@ -1292,7 +1292,7 @@ Is there an unresolvable circular reference?
 
 ```
 
-##### 5.3.2 Setter方法循环依赖 (✅ 可以解决)
+#### 5.3.2 Setter方法循环依赖 (✅ 可以解决)
 
 ```
 @Component
@@ -1344,7 +1344,7 @@ public class B {
 
 ```
 
-##### 5.3.3 Prototype循环依赖 (❌ 无法解决)
+#### 5.3.3 Prototype循环依赖 (❌ 无法解决)
 
 ```
 @Component
@@ -1366,13 +1366,13 @@ public class B {
 
 **原因:** Prototype Bean每次都创建新实例,不使用缓存,无法解决循环依赖。
 
-#### 5.4 为什么需要三级缓存?
+### 5.4 为什么需要三级缓存?
 
 **核心问题:** 为什么不能只用两级缓存?
 
 **答案:** 为了支持AOP代理!
 
-##### 场景分析:
+#### 场景分析:
 
 假设A和B循环依赖,且A需要被AOP代理:
 
@@ -1455,7 +1455,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 ```
 
-#### 5.5 循环依赖解决流程图
+### 5.5 循环依赖解决流程图
 
 ```
                        开始创建Bean A
@@ -1567,9 +1567,9 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 ---
 
-### 六、父子容器机制
+## 六、父子容器机制
 
-#### 6.1 父子容器概念
+### 6.1 父子容器概念
 
 在Spring中,容器可以有层级关系,一个容器可以设置另一个容器作为父容器:
 
@@ -1589,7 +1589,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 * 父容器**不能**访问子容器的Bean
 * 子容器的Bean可以覆盖父容器的同名Bean(就近原则)
 
-#### 6.2 经典应用场景: Spring MVC
+### 6.2 经典应用场景: Spring MVC
 
 ```
 ┌─────────────────────────────────────┐
@@ -1627,9 +1627,9 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 ```
 
-#### 6.3 配置示例
+### 6.3 配置示例
 
-##### web.xml
+#### web.xml
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1674,7 +1674,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 ```
 
-##### applicationContext.xml (父容器配置)
+#### applicationContext.xml (父容器配置)
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1712,7 +1712,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 ```
 
-##### spring-mvc.xml (子容器配置)
+#### spring-mvc.xml (子容器配置)
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1744,7 +1744,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 ```
 
-#### 6.4 Bean查找流程
+### 6.4 Bean查找流程
 
 假设有如下Bean定义:
 
@@ -1832,9 +1832,9 @@ if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 
 ```
 
-#### 6.5 父子容器的设计优势
+### 6.5 父子容器的设计优势
 
-##### 1. 职责分离
+#### 1. 职责分离
 
 ```
 Web层 (Controller)  →  Spring MVC容器管理
@@ -1844,7 +1844,7 @@ Web层 (Controller)  →  Spring MVC容器管理
 
 ```
 
-##### 2. Bean隔离
+#### 2. Bean隔离
 
 ```
 父容器的Bean ❌ 无法访问子容器的Bean
@@ -1855,7 +1855,7 @@ Web层 (Controller)  →  Spring MVC容器管理
 
 **好处:** 防止Service层依赖Controller层,保证分层架构的合理性。
 
-##### 3. 多模块共享
+#### 3. 多模块共享
 
 ```
          Root容器 (公共Service、DAO)
@@ -1868,7 +1868,7 @@ Web层 (Controller)  →  Spring MVC容器管理
 
 ```
 
-#### 6.6 编程式创建父子容器
+### 6.6 编程式创建父子容器
 
 ```
 public class ParentChildContainerDemo {
@@ -2001,9 +2001,9 @@ Controller中注入的UserService: com.example.UserService@12345678
 
 ---
 
-### 七、实战示例
+## 七、实战示例
 
-#### 7.1 完整的循环依赖示例
+### 7.1 完整的循环依赖示例
 
 ```
 // ========== 1. Bean定义 ==========
@@ -2069,7 +2069,7 @@ class AppConfig {
 
 ```
 
-#### 7.2 FactoryBean示例
+### 7.2 FactoryBean示例
 
 ```
 // ========== 1. 自定义FactoryBean ==========
@@ -2146,7 +2146,7 @@ public class FactoryBeanTest {
 
 ```
 
-#### 7.3 自定义Scope示例
+### 7.3 自定义Scope示例
 
 ```
 // ========== 1. 自定义Scope实现 ==========
@@ -2270,7 +2270,7 @@ public class CustomScopeTest {
 
 ---
 
-### 参考资料
+## 参考资料
 
 * Spring官方文档: https://docs.spring.io/spring-framework/docs/current/reference/html/
 * Spring源码: https://github.com/spring-projects/spring-framework

@@ -20,7 +20,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153633467)（历史文章导入，当前状态为草稿）
 
-#### Launcher 类解读
+## Launcher 类解读
 ## sun.misc.Launcher 类解读
 
 ### 前置知识铺垫
@@ -1465,11 +1465,11 @@ WebApp ClassLoader1 (应用1) | WebApp ClassLoader2 (应用2)
 
 ---
 
-### 总结
+## 总结
 
 `sun.misc.Launcher` 是 Java 类加载体系的**核心**，它的主要价值在于：
 
-#### 核心价值
+### 核心价值
 
 1. **建立类加载器层次结构**
 

@@ -18,16 +18,16 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131230561)（历史文章导入，当前状态为草稿）
 
-### 自定义资源权限规则
+## 自定义资源权限规则
 
-#### 资源分 类
+### 资源分 类
 
 对于资源来说，并不是所有的资源都需要认证和授权，有些公共的资源是可以直接访问的，所以我们要对资源有一个分类。  
  ![请添加图片描述](./assets/131230561/b5f42643069c3e24197feecb.png)
 
-#### 自定义资源权限规则
+### 自定义资源权限规则
 
-##### 为什么我们要自定义呢？
+#### 为什么我们要自定义呢？
 
 我们举个例子来说：
 
@@ -57,7 +57,7 @@ sidebar:
 上面表示了对所有的http请求都开启了权限认证，并且任何请求都需要认证后才可以访问。  
  所以如果我们要根据不同的资源去划分不同的认证方式， 我们就要覆盖上面这个方法。
 
-##### 如何去覆盖呢？
+#### 如何去覆盖呢？
 
 看上面的注解：`@ConditionalOnDefaultWebSecurity`，找到里面的源码：
 
@@ -96,9 +96,9 @@ class DefaultWebSecurityCondition extends AllNestedConditions {
 
 所以就很明显了，我们有两种方式就是去写`WebSecurityConfigurerAdapter`或`SecurityFilterChain`，这里先去写WebSecurityConfigurerAdapter，后面再说另一种。
 
-##### WebSecurityConfigurerAdapter
+#### WebSecurityConfigurerAdapter
 
-###### 它是干什么用的
+##### 它是干什么用的
 
 WebSecurityConfigurerAdapter是Spring Security提供的一个**方便的基类**，用于配置和自定义Web应用程序的
 安全性 
@@ -136,7 +136,7 @@ Basic
 认证。  
  所以，我们只需要写这个类的实现，并且覆盖这个方法就可以了。
 
-###### 实例
+##### 实例
 
 新构建一个module模块，项目结构如下：  
  ![请添加图片描述](./assets/131230561/395929582670ecaded7b3d3f.png)  
@@ -171,9 +171,9 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 **注意：放⾏资源必须放在所有认证请求之前!**
 
-### 自定义登录界面
+## 自定义登录界面
 
-#### 步骤
+### 步骤
 
 * 引入模版依赖
 
@@ -226,7 +226,7 @@ public class LoginController {
 
 ```
 
-##### 源码解析
+#### 源码解析
 
 如果按上面这么写的话，就会出问题，为什么呢？我们来看看formLogin里面的源码。
 
@@ -408,13 +408,13 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 ```
 
-#### 自定义登录成功处理（ 前后端分离 的情况）
+### 自定义登录成功处理（ 前后端分离 的情况）
 
-##### 项目环境
+#### 项目环境
 
 当我们项目是前后端分离开发时，上面`WebSecurityConfigurer`配置的 `successForwardUrl`和`defaultSuccessUrl`就失去了作用，因为后端项目没有网页去进行跳转，我们是通过ajax给前端传递信息，SpringSecurity设计了`successHandler`来解决这个问题。
 
-##### successHandler
+#### successHandler
 
 我们来看看这个它的代码：
 
@@ -451,7 +451,7 @@ public interface AuthenticationSuccessHandler {
  第一个默认方法是处理一些特殊情况，这里我们先忽略就行。  
  第二个方法是提供了让我们实现类去实现的方法。
 
-##### 自定义AuthenticationSucccessHandler实现
+#### 自定义AuthenticationSucccessHandler实现
 
 在前后端分离开发中不需要成功之后跳转⻚⾯。  
  只需要给前端返回⼀个 JSON 通知登录成功还是失败与否。这个时候可以通过⾃定义  
@@ -477,7 +477,7 @@ public class MyAuthenticatioinSuccessHandler implements AuthenticationSuccessHan
 
 ```
 
-##### 配置AuthenticationSuccessHandler
+#### 配置AuthenticationSuccessHandler
 
 ```
      protected void configure(HttpSecurity http) throws Exception {
@@ -499,7 +499,7 @@ public class MyAuthenticatioinSuccessHandler implements AuthenticationSuccessHan
 
 ```
 
-#### 显示登录失败处理
+### 显示登录失败处理
 
 首先我们在登陆页面输入错误的信息，然后再进入到`attemptAuthentication`中，如下图：  
  ![请添加图片描述](./assets/131230561/7a20fbfbbcbe7d64bfa0f6f1.png)  
@@ -689,7 +689,7 @@ public Authentication authenticate(Authentication authentication) throws Authent
  ![请添加图片描述](./assets/131230561/5944f1362f2fcddacdb495f0.png)  
  发现最后没有抛出ex，而是抛出`BadCredentialsException`错误类型，那么你是否会好奇，这个`hideUserNotFoundExceptions`是干什么的呢？
 
-##### 扩展：hideUserNotFoundExceptions
+#### 扩展：hideUserNotFoundExceptions
 
 当进行身份验证时，如果传入的用户名在数据源中不存在，通常会抛出`UsernameNotFoundException`异常。这个异常可以向调用方提供有关身份验证失败的详细信息。
 
@@ -814,7 +814,7 @@ protected final void saveException(HttpServletRequest request, AuthenticationExc
 最后实现效果：  
  ![在这里插入图片描述](./assets/131230561/9476159d07a5bee2ed5af6ef.png)
 
-#### 自定义登录失败处理
+### 自定义登录失败处理
 
 和自定义登陆成功的使用场景一样，在面对前后端分离时，上面`failureForwardUrl`和`failureUrl`两个方法就力不从心了，所以security提供了`failureHandler`方法用来自定义认证失败之后处理。  
  我们来看一看里面的内容：
@@ -829,7 +829,7 @@ protected final void saveException(HttpServletRequest request, AuthenticationExc
 
 ```
 
-##### AuthenticationFailureHandler
+#### AuthenticationFailureHandler
 
 它的结构如下图：  
  ![请添加图片描述](./assets/131230561/4bfaee34998f5bae8499eada.png)
@@ -849,7 +849,7 @@ public interface AuthenticationFailureHandler {
 
 这是一个接口方法，它会在验证失败之后回调，所以我们只需要自定义实现就可以。
 
-##### AuthenticationFailureHandler自定义实现
+#### AuthenticationFailureHandler自定义实现
 
 代码如下：
 
@@ -881,7 +881,7 @@ public class MyAuthenticationFailureHandler  implements AuthenticationFailureHan
 
 ```
 
-##### 配置自定类
+#### 配置自定类
 
 代码如下：
 
@@ -917,7 +917,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 ```
 
-#### 注销登录配置
+### 注销登录配置
 
 Security提供默认的注销登录配置，开发时也可以按照自己的需求对注销进行个性化定制。  
  过滤器`LogoutFilter`专门处理注销登陆，默认是加载的。
@@ -994,7 +994,7 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
 
 ```
 
-##### LogoutSuccessHandler
+#### LogoutSuccessHandler
 
 这个方法如下
 
@@ -1022,9 +1022,9 @@ public interface LogoutSuccessHandler {
 
 ```
 
-#### 获取用户认证信息
+### 获取用户认证信息
 
-##### SecurityContextHolder解析
+#### SecurityContextHolder解析
 
 Spring Security 会将登录⽤户数据保存在 Session 中。但是，为了使⽤⽅  
  便,Spring Security在此基础上还做了⼀些改进，其中最主要的⼀个变化就是线程绑定。  
@@ -1174,7 +1174,7 @@ public class SecurityContextHolder {
 
 ```
 
-##### SecurityContextHolderStrategy解析
+#### SecurityContextHolderStrategy解析
 
 上下文在获取时，并不是直接可以获取的，而是通过策略（strategy）来获取，我们来看一看这个strategy里面是什么内容，通过 SecurityContextHolder 可以得知，SecurityContextHolderStrategy 接⼝  
  ⽤来定义存储策略⽅法：
@@ -1203,7 +1203,7 @@ public interface SecurityContextHolderStrategy {
 
 ![在这里插入图片描述](./assets/131230561/af0cd1ea72b37524331cac65.png)
 
-##### 例子
+#### 例子
 
 * 代码中获取认证之后⽤户数据
 
@@ -1253,7 +1253,7 @@ return "hello security";
 
 ```
 
-##### 总结一下
+#### 总结一下
 
 通过上面的代码可以看到，`SecurityContextHolder`提供了一系列方法，用于获取（`getContext`）设置（`setContext`）和清除（`clearContext`）`SecurityContext`。  
  另外，`SecurityContextHolder`还提供了一些辅助方法：
@@ -1264,7 +1264,7 @@ return "hello security";
 
 使用`SecurityContextHolder`，可以方便地管理和访`SecurityContext`，以支持应用程序的身份验证和授权功能。
 
-##### 页面中获取用户认证信息
+#### 页面中获取用户认证信息
 
 * 引入依赖
 
@@ -1305,6 +1305,6 @@ xmlns:sec="http:!"www.thymeleaf.org/extras/spring-security">
 结果如下：  
  ![请添加图片描述](./assets/131230561/c4411f3a9d1c3aaecc47c40f.png)
 
-### 结尾
+## 结尾
 
 文章总体有点长，难免会有疏漏，如果感觉哪个地方看的不是很明白，欢迎留言，代码和源码过程都是一步步调的，确保按这个来是正确的，加油⛽️。

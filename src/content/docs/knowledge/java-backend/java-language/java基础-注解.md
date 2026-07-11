@@ -20,13 +20,13 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136016127)（历史文章导入，当前状态为草稿）
 
-### 注解是用来干什么的
+## 注解是用来干什么的
 
 注解的汉语意思: 用浅近的文字解释艰深的词句
 
 注解是JDK1.5版本开始引入的一个特性,**用于对代码进行说明**,可以对包,类,接口,字段,方法参数,局部变量进行注解.
 
-### 它有什么作用
+## 它有什么作用
 
 主要作用是下面四个方面
 
@@ -39,7 +39,7 @@ sidebar:
 * 运行时动态处理  
    运行时通过底阿妈里标识的元数据动态处理,例如使用反射注入实例
 
-### 注解的常见分类
+## 注解的常见分类
 
 * Java自带的标准注解  
    用于标明重写某个方法,某个类或方法过时,表明要忽略的警告,用这些注解表明后编译器就会 进行检查
@@ -48,16 +48,16 @@ sidebar:
 * 自定义注解  
    根据自己的需求定义注解,并可用元注解对自定义注解进行注解
 
-### 内置注解
+## 内置注解
 
 ```
 ```
 
-#### @Override
+### @Override
 
 表示当前的方法定义将覆盖父类中的方法
 
-##### 注解定义
+#### 注解定义
 
 ```
 @Target(ElementType.METHOD)
@@ -70,11 +70,11 @@ public @interface Override {
 
 这个注解可以用来修饰方法,并只在编译期有效,编译期后class文件就不存在了
 
-#### @Deprecated
+### @Deprecated
 
 表示代码被弃用,如果使用了被@Deprecated注解的代码编译器会发出警告
 
-##### 注解定义
+#### 注解定义
 
 ```
 @Documented
@@ -90,11 +90,11 @@ public @interface Deprecated {
 2. 可以保留到运行时
 3. 可以修饰构造方法,属性,局部变量,方法,包,参数,类型
 
-#### @SuppressWarnings
+### @SuppressWarnings
 
 关闭编译器警告信息
 
-##### 注解定义
+#### 注解定义
 
 ```
 @Target({TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE})
@@ -120,13 +120,13 @@ public @interface SuppressWarnings {
 | unused | 抑制没被使用过的代码的警告 |
 | 等等 |  |
 
-### 元注解
+## 元注解
 
-#### @Target
+### @Target
 
 描述注解的使用范围(即被修饰的注解可以在什么地方使用)
 
-##### 注解定义
+#### 注解定义
 
 ```
 @Documented
@@ -150,7 +150,7 @@ public @interface Target {
 3. 只能在注解类上使用
 4. value值在ElementType中
 
-##### ElementType
+#### ElementType
 
 ```
 public enum ElementType {
@@ -180,11 +180,11 @@ public enum ElementType {
 
 ```
 
-#### @Retention&&@RetentionTarget
+### @Retention&&@RetentionTarget
 
 描述注解保留的时间范围(即被描述的注解在它所修饰的类中可以被保留到何时)
 
-##### 注解定义
+#### 注解定义
 
 ```
 @Documented
@@ -202,7 +202,7 @@ public @interface Retention {
 3. 只能在注解类上使用
 4. value值在RetentionPolicy 中
 
-##### RetentionPolicy
+#### RetentionPolicy
 
 ```
 public enum RetentionPolicy {
@@ -265,11 +265,11 @@ public enum RetentionPolicy {
 1. 编译期没有记录下sourcePolicy()方法的注解信息
 2. 编译期分别使用了`RuntimeInvisibleAnnotations`, `RuntimeVisibleAnnotations` 属性去记录了`classPolicy()`方法和`runtimePolicy()`方法的注解信息
 
-#### @Documented
+### @Documented
 
 描述使用javaDoc工具为类生成帮助文档时是否要保留其注解信息
 
-##### 注解定义
+#### 注解定义
 
 ```
 @Documented
@@ -285,12 +285,12 @@ public @interface TestDocAnnotation {
 1. 可被生成文档
 2. 使用范围是类,接口,枚举类,成员方法
 
-#### @Inherited
+### @Inherited
 
 被他修饰的注解具有继承性.  
  如果某个类使用了被@Inherited修饰的注解,则其子类将自动具有该注释
 
-##### 注解定义
+#### 注解定义
 
 ```
 @Documented
@@ -306,7 +306,7 @@ public @interface Inherited {
 2. 可被保留到运行时
 3. 只能用于注解类
 
-##### 用法
+#### 用法
 
 定义`@Inherited`注解
 
@@ -353,11 +353,11 @@ xxxxxxx.TestInheritedAnnotation(values=[value], number=10)
 
 即使Student类没有显示地被注解`@TestInheritedAnnotation`，但是它的父类Person被注解，而且`@TestInheritedAnnotation`被`@Inherited`注解，因此Student类自动有了该注解.
 
-#### Repeatable(重复注解)
+### Repeatable(重复注解)
 
 允许在同一申明类型(类,属性,方法)多次使用同一注解
 
-##### 注解定义
+#### 注解定义
 
 ```
 @Documented
@@ -374,7 +374,7 @@ public @interface Repeatable {
 2. 可以保留至运行时
 3. 只能作用域注解类
 
-##### JDK8之前
+#### JDK8之前
 
 JDK8之前有重复使用注解的解决方案,但是可读性不好  
  方案: 由另一个注解来存储重复注解,在使用的时候,用存储注解`Authorities`来扩展重复注解
@@ -398,7 +398,7 @@ public class RepeatAnnotationUseOldVersion {
 
 ```
 
-##### JDK8之后
+#### JDK8之后
 
 方案: 创建重复注解时,加上`@Repeatable`,指向存储注解`Authorities`,在使用的时候,可以直接重复使用Authority注解.
 
@@ -421,11 +421,11 @@ public class RepeatAnnotationUseNewVersion {
 
 ```
 
-#### Native
+### Native
 
 使用@Native注解修饰成员变量,表示这个变量可以被本地代码引用,常常被代码生成工具使用,了解即可.
 
-### 注解与反射接口
+## 注解与反射接口
 
 我们如果想自定义注解,那么就必须先了解注解与反射接口的这部分内容.  
  反射包`java.lang.reflect`下的`AnnotatedElement`接口提供这些方法.  
@@ -458,7 +458,7 @@ xxx
 
 ```
 
-##### 相关接口
+### 相关接口
 
 * `boolean isAnnotationPresent(Class<?extends Annotation> annotationClass)`  
    判断该元素上是否包含指定类型的注解,存在则返回true,否则返回false.  
@@ -481,7 +481,7 @@ xxx
    返回直接存在于此元素上的所有注解机器注解对应的重复注解容器.  
    该方法忽略继承注解,如果没有注释直接存在于此元素上，则返回长度为零的一个数组。该方法的调用者可以随意修改返回的数组，而不会对其他调用者返回的数组产生任何影响。
 
-### 自定义注解
+## 自定义注解
 
 理解注解与反射接口后,我们通过自定义注解来把知识点融合应用一下
 
@@ -584,7 +584,7 @@ toStringMethod
 
 ```
 
-### 注解的本质(未完结)
+## 注解的本质(未完结)
 
 这部分要扯到动态代理和注解的处理器,emmm比较麻烦.  
  后面发完动态处理后返回来填坑

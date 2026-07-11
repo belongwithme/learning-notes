@@ -19,18 +19,18 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126131210)（历史文章导入，当前状态为草稿）
 
-##### 前言
+## 前言
 
 上一篇文章我们细说了AQS，如果我们搞明白了一些AQS，再来学习ReentrantLock就很容易了，相对来说简单了许多，核心还是AQS的那些东西，本篇我们敞开了聊聊ReentrantLock细节内容。
 
-##### ReentrantLock出现的原因
+## ReentrantLock出现的原因
 
 ReentrantLock是java并发包下重要的同步工具，实现了可重入互斥锁，它的设计和synchronized作用相同。  
 早期因为synchronized效率较低，大量使用了 系统调用的重量级锁，导致用户态与内核态来回不断的
 切换 
 ，影响系统效率，所以产生了基于Unsafe并发同步框架AQS设计出了ReentranLock。
 
-##### 继承结构
+## 继承结构
 
 ![在这里插入图片描述](./assets/126131210/a740be03238a45fa4cf8028e.png)  
 代码实现：
@@ -61,7 +61,7 @@ public interface Lock {
 
 ```
 
-##### Doc注释解析
+## Doc注释解析
 
 ```
 /**
@@ -138,7 +138,7 @@ public interface Lock {
 
 ```
 
-##### 成员变量&&构造函数
+## 成员变量&&构造函数
 
 成员变量：  
 Only one  
@@ -173,7 +173,7 @@ Only one
 true----公平锁 FairSync()  
 false—非公平锁NonfairSync()
 
-##### 重要的内部类
+## 重要的内部类
 
 ReentranLock的内部类有三种，抽象类Sync，公平锁与非公平锁。  
 一：抽象类Sync
@@ -310,13 +310,13 @@ ReentranLock的内部类有三种，抽象类Sync，公平锁与非公平锁。
 
 公平锁需要根据队列情况来抢锁，每次都需要判断是否为队列唤醒的节点
 
-##### 形象总结一下ReentrantLock
+## 形象总结一下ReentrantLock
 
 这里引用阿星大佬的一个图  
 ![在这里插入图片描述](./assets/126131210/77a4248fd0e34f7ebf292b0c.png)  
 可以对着这个图看一看源码，很清晰
 
-##### 总结
+## 总结
 
 学好AQS再来学ReentrantLock是很重要的，只看博客不去自己调也不行，加油。
 

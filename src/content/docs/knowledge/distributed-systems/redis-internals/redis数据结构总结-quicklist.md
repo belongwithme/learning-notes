@@ -19,7 +19,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145745965)（历史文章导入，当前状态为草稿）
 
-### 前言
+## 前言
 
 为什么会出现ziplist？有两个原因促进它的出现：  
  对于普通的双端列表(linked list)，它有指向前后的两个指针，对于存储数据小的情况下，通常指针占用的空间将超过数据占用空间；对于redis这种内存型结构，对于这种情况不能容忍  
@@ -42,14 +42,14 @@ sidebar:
  ![在这里插入图片描述](./assets/145745965/4d652f5f8a8ed9e321757e51.png)  
  连锁更新一旦发生，就会导致 ziplist 占用的内存空间要多次重新分配，这就会直接影响到 ziplist 的访问性能。
 
-### 什么是quickList
+## 什么是quickList
 
 Redis源码中对quicklist的注释为 A doubly linked list of ziplists；也就是说quicklist是由ziplist组成的双向链表，其中每一个链表节点都是一个独立的ziplist结构，因此，从结构上看，quicklist就是ziplist的升级版,是综合考虑了时间效率与空间效率引入的新型数据结构。  
  它通过结合压缩列表和双端链表的特性来平衡内存效率和操作性能。它通过自动调整列表的结构来优化内存使用和提高访问效率，是 Redis 3.2 版本引入的重要改进之一。
 
-### quickList结构
+## quickList结构
 
-#### quickList
+### quickList
 
 quicklist 作为一个链表结构，在它的数据结构中，是定义了整个 quicklist 的头、尾指针，这样一来，可以通过 quicklist 的数据结构，来快速定位到 quicklist 的链表头和链表尾。
 
@@ -67,7 +67,7 @@ typedef struct quicklist {
 
 ```
 
-##### fill参数
+#### fill参数
 
 fill用来指明每个quicklistNode中ziplist长度，当fill为正数时，表明每个ziplist最多含有的数据项数，当fill为负数时，如下：
 
@@ -79,7 +79,7 @@ Length -1: 4k，即ziplist节点最大为4KB
 
 fill取负数时，必须大于等于-5。可以通过Redis修改参数list-max-ziplist-size配置节点所占内存大小。实际上每个ziplist节点所占的内存会在该值上下浮动。
 
-#### quickListNode
+### quickListNode
 
 ```
 typedef struct quicklistNode {
@@ -103,7 +103,7 @@ quicklistNode 结构体里包含了前一个节点和下一个节点指针，这
  下图可以帮你更好理解quickList数据结构:  
  ![在这里插入图片描述](./assets/145745965/9579bdccee2dcd0dcf2dae51.png)
 
-#### 数据压缩
+### 数据压缩
 
 **考虑quicklistNode节点个数较多时，我们经常访问的是两端的数据，为了进一步节省空间，Redis允许对中间的quicklistNode节点进行压缩，通过修改参数list-compress-depth进行配置，即设置compress参数，该项的具体含义是两端各有compress个节点不压缩。**
 
@@ -113,16 +113,16 @@ quicklistNode 结构体里包含了前一个节点和下一个节点指针，这
 * 解释字段可以占用1～3个字节，数据字段可能不存在。  
    举例:解释字段|数据|…|解释字段|数据
 
-##### 压缩
+#### 压缩
 
 LZF数据压缩的基本思想是：数据与前面重复的，记录重复位置以及重复长度，否则直接记录原始数据内容。  
  压缩算法的流程如下：遍历输入字符串，对当前字符及其后面2个字符进行散列运算，如果在Hash表中找到曾经出现的记录，则计算重复字节的长度以及位置，反之直接输出数据。
 
-##### 解压缩
+#### 解压缩
 
 根据LZF压缩后的数据格式，可以较为容易地实现LZF的解压缩。需要注意的是，可能存在重复数据与当前位置重叠的情况，例如在当前位置前的15个字节处，重复了20个字节，此时需要按位逐个复制。
 
-#### 如何控制每个zipList的大小
+### 如何控制每个zipList的大小
 
 * quicklist的节点ziplist越小，越有可能造成更多的内存碎片。极端情况下，一个ziplist只有一个数据entry，也就退化成了linked list.
 * quicklist的节点ziplist越大，分配给ziplist的连续内存空间越困难。极端情况下，一个quicklist只有一个ziplist，也就退化成了ziplist.  

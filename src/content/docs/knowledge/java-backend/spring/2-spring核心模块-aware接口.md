@@ -20,7 +20,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129347485)（历史文章导入，当前状态为草稿）
 
-### 前言
+## 前言
 
 普通的Bean 不需要主动获取 Spring 容器的引用，也不需要调用容器的 API.
 
@@ -29,9 +29,9 @@ sidebar:
 
 Aware翻译过来：“感知”，如果是XxxAware也就是对…感知的。
 
-### 举例说明
+## 举例说明
 
-#### 普通Bean(无感知,低耦合)
+### 普通Bean(无感知,低耦合)
 
 ```
 // 这是 Spring Boot 源码中的典型例子
@@ -64,7 +64,7 @@ Aware翻译过来：“感知”，如果是XxxAware也就是对…感知的。
 * Spring 会注入依赖
 * 但 Bean 的代码里没有容器的 API 调用（这才是"无感知"的真正含义）
 
-#### 需要主动访问容器的 Bean（有感知）
+### 需要主动访问容器的 Bean（有感知）
 
 ```
 // 如果你需要"主动获取容器中的信息"
@@ -90,7 +90,7 @@ Aware翻译过来：“感知”，如果是XxxAware也就是对…感知的。
 
 ```
 
-#### 对比表格
+### 对比表格
 
 | 维度 | 普通 Bean（无感知） | Aware Bean（有感知） |
 | --- | --- | --- |
@@ -103,7 +103,7 @@ Aware翻译过来：“感知”，如果是XxxAware也就是对…感知的。
 
 ---
 
-#### 基本内容
+### 基本内容
 
 Aware接口是一种框架辅助属性注入的一种思想，其他框架中  
  瞧一眼源码：
@@ -150,7 +150,7 @@ Aware接口是回调，监听器和观察者设计模式的混合，它表示bea
  常见的Aware接口：  
  ![请添加图片描述](./assets/129347485/6f2ca79b50903e9a850b5686.png)
 
-#### 例子
+### 例子
 
 以BeanNameAware为例：  
  BeanNameAware：使对象能够知道容器中定义的bean名称。
@@ -195,6 +195,6 @@ MyBeanName myBeanName = context.getBean(MyBeanName.class);
 从控制台可以看到，setBeanName方法打印出来了"WangBeanName"。  
  若从@Bean注解中删除name =“…”代码，则在这种情况下，将getMyBeanName()方法名称分配给bean，所以输出将是“getMyBeanName”。
 
-#### 结尾
+### 结尾
 
 对于这个接口我觉得说这么多就好，其实重点在于它的设计模式，后面写到设计模式的时候我再把它拿回来说。

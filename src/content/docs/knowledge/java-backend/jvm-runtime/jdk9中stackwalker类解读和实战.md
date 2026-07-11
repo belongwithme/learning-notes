@@ -19,7 +19,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153469705)（历史文章导入，当前状态为草稿）
 
-### 初始在SpringApplication的初始化方法里面
+## 初始在SpringApplication的初始化方法里面
 
 启动流程中最初会执行SpringApplication的初始化方法,如下:
 
@@ -68,7 +68,7 @@ public SpringApplication(@Nullable ResourceLoader resourceLoader, Class<?>... pr
 
 最后一个deduceMainApplicationClass方法进去后就能碰到今天的主角.
 
-### deduceMainApplicationClass源码
+## deduceMainApplicationClass源码
 
 ```
 	private @Nullable Class<?> deduceMainApplicationClass() {
@@ -81,17 +81,17 @@ public SpringApplication(@Nullable ResourceLoader resourceLoader, Class<?>... pr
 
 ```
 
-### 为什么要分析这段代码
+## 为什么要分析这段代码
 
 刚接触的时候有点蒙,因为不认识这个StackWalker,后面探究下来感觉还挺有意思的,然后分析堆栈这块我感觉对JVM更了解了一点.
 
-### StackWalker
+## StackWalker
 
-#### 概述
+### 概述
 
 `StackWalker` 是 Java 9 引入的用于遍历线程调用栈的现代化 API,用于替代传统的 `Thread.getStackTrace()` 和 `Throwable.getStackTrace()` 方法。
 
-#### 为什么需要 StackWalker?
+### 为什么需要 StackWalker?
 
 **传统方法的问题:**
 
@@ -106,9 +106,9 @@ public SpringApplication(@Nullable ResourceLoader resourceLoader, Class<?>... pr
 * **高性能**: 只处理需要的栈帧,减少内存和 CPU 开销
 * **Stream API**: 支持函数式编程,可以使用 filter、map、limit 等操作
 
-#### 核心概念
+### 核心概念
 
-##### StackFrame 接口
+#### StackFrame 接口
 
 `StackFrame` 代表调用栈中的一个栈帧,提供以下信息:
 
@@ -129,7 +129,7 @@ public interface StackFrame {
 
 ```
 
-##### Option 枚举
+#### Option 枚举
 
 配置 `StackWalker` 的行为选项:
 
@@ -141,9 +141,9 @@ public interface StackFrame {
 
 **注意**: 使用 `RETAIN_CLASS_REFERENCE` 需要 `RuntimePermission("getStackWalkerWithClassReference")` 权限。
 
-#### 核心API
+### 核心API
 
-##### 创建 StackWalker 实例
+#### 创建 StackWalker 实例
 
 ```
 // 1. 默认实例(无特殊选项)
@@ -167,9 +167,9 @@ StackWalker walker = StackWalker.getInstance(
 
 ```
 
-##### 遍历栈帧
+#### 遍历栈帧
 
-###### walk() 方法
+##### walk() 方法
 
 核心方法,接受一个 `Function<Stream<StackFrame>, T>`,返回处理结果:
 
@@ -185,7 +185,7 @@ public <T> T walk(Function<? super Stream<StackFrame>, ? extends T> function)
 * 必须在 function 内部完成所有 Stream 操作
 * 不能返回 Stream 对象(会抛出异常)
 
-###### forEach() 方法
+##### forEach() 方法
 
 简化的遍历方法:
 
@@ -195,7 +195,7 @@ public void forEach(Consumer<? super StackFrame> action)
 
 ```
 
-###### getCallerClass() 方法
+##### getCallerClass() 方法
 
 获取调用者的调用者的 Class 对象:
 
@@ -211,9 +211,9 @@ public Class<?> getCallerClass()
 * 自动过滤反射帧、MethodHandle 和隐藏帧
 * 如果是栈底调用会抛出 `IllegalCallerException`
 
-#### 使用示例
+### 使用示例
 
-##### 一. 获取当前调用栈信息
+#### 一. 获取当前调用栈信息
 
 ```
 public class Example01_BasicUsage {
@@ -250,7 +250,7 @@ Example01_BasicUsage.main(Example01_BasicUsage.java:3)
 
 ```
 
-##### 二. 获取调用者类名(常见于框架中)
+#### 二. 获取调用者类名(常见于框架中)
 
 ```
 public class Example02_GetCallerClass {
@@ -295,7 +295,7 @@ public class Example02_GetCallerClass {
 
 ```
 
-##### 三: 使用 Stream API 过滤和限制栈帧
+#### 三: 使用 Stream API 过滤和限制栈帧
 
 ```
 import java.util.List;
@@ -346,7 +346,7 @@ Example03_StreamAPI$MyApplication.start
 
 ```
 
-#### 与传统 API 的对比
+### 与传统 API 的对比
 
 | 特性 | Thread.getStackTrace() | StackWalker |
 | --- | --- | --- |
@@ -377,7 +377,7 @@ StackWalker.getInstance().walk(stream ->
 
 ```
 
-#### 在SpringBoot中有很多实际应用
+### 在SpringBoot中有很多实际应用
 
 受限篇幅问题,不一一举例了,如果你去看SpringBoot的启动流程,肯定会遇到它的,到时候能认出来就不会蒙了.  
  我后面就拿在启动流程中SpringApplication构造方法中的一个方法deduceMainApplicationClass()去举例详细说明
@@ -399,9 +399,9 @@ StackWalker.getInstance().walk(stream ->
    * 根据调用栈确定配置优先级
    * 解决配置冲突
 
-#### 实战-deduceMainApplicationClass中StackWalker分析解读
+### 实战-deduceMainApplicationClass中StackWalker分析解读
 
-##### deduceMainApplicationClass源码
+#### deduceMainApplicationClass源码
 
 ```
 private @Nullable Class<?> deduceMainApplicationClass() {
@@ -426,9 +426,9 @@ private Optional<Class<?>> findMainClass(Stream<StackFrame> stack) {
 
 ```
 
-##### findMainClass执行流程
+#### findMainClass执行流程
 
-###### 过滤 main 方法
+##### 过滤 main 方法
 
 ```
 .filter((frame) -> Objects.equals(frame.getMethodName(), "main"))
@@ -440,7 +440,7 @@ private Optional<Class<?>> findMainClass(Stream<StackFrame> stack) {
 * 使用 `Objects.equals()` 而非 `==` 避免空指针异常
 * 返回 `Stream<StackFrame>`，包含所有 main 方法的栈帧
 
-###### 获取第一个匹配项
+##### 获取第一个匹配项
 
 ```
 .findFirst()
@@ -454,7 +454,7 @@ private Optional<Class<?>> findMainClass(Stream<StackFrame> stack) {
   + 最先遇到的 main 方法就是**最近的调用者**
   + 这通常就是应用的入口类
 
-###### 提取类信息
+##### 提取类信息
 
 ```
 .map(StackWalker.StackFrame::getDeclaringClass)
@@ -466,7 +466,7 @@ private Optional<Class<?>> findMainClass(Stream<StackFrame> stack) {
 * `getDeclaringClass()` 返回声明该方法的类
 * 最终返回 `Optional<Class<?>>`
 
-##### getInstance处理结果
+#### getInstance处理结果
 
 ```
 .orElse(null)
@@ -485,9 +485,9 @@ private Optional<Class<?>> findMainClass(Stream<StackFrame> stack) {
 * 主要用于日志输出、Banner 打印等辅助功能
 * 在测试环境中通常没有 main 方法，返回 null 是预期行为
 
-##### 调用栈示例
+#### 调用栈示例
 
-###### 示例代码
+##### 示例代码
 
 ```
 package com.example.demo;
@@ -506,7 +506,7 @@ public class DemoApplication {
 
 ```
 
-###### 调用栈结构
+##### 调用栈结构
 
 当执行到 `deduceMainApplicationClass()` 时，调用栈可能是这样的：
 
@@ -539,9 +539,9 @@ public class DemoApplication {
 
 ```
 
-##### 执行过程详解
+#### 执行过程详解
 
-###### 步骤 1：过滤 main 方法
+##### 步骤 1：过滤 main 方法
 
 ```
 stack.filter((frame) -> Objects.equals(frame.getMethodName(), "main"))
@@ -558,7 +558,7 @@ stack.filter((frame) -> Objects.equals(frame.getMethodName(), "main"))
 
 ```
 
-###### 步骤 2：获取第一个
+##### 步骤 2：获取第一个
 
 ```
 .findFirst()
@@ -574,7 +574,7 @@ Optional<StackFrame> = Optional[DemoApplication.main(String[])]
 
 ```
 
-###### 步骤 3：提取类
+##### 步骤 3：提取类
 
 ```
 .map(StackWalker.StackFrame::getDeclaringClass)
@@ -590,7 +590,7 @@ Optional<Class<?>> = Optional[class com.example.demo.DemoApplication]
 
 ```
 
-###### 步骤 4：获取值或默认值
+##### 步骤 4：获取值或默认值
 
 ```
 .orElse(null)
@@ -606,7 +606,7 @@ Class<?> = com.example.demo.DemoApplication
 
 ```
 
-##### 完整流程图
+#### 完整流程图
 
 ```
 deduceMainApplicationClass() 被调用
@@ -647,6 +647,6 @@ orElse(null) - 如果存在则返回，否则返回 null
 
 ```
 
-### 结尾
+## 结尾
 
 后面没看明白可以多看看JVM的内存模型,尤其是栈帧结构,有帮助的.

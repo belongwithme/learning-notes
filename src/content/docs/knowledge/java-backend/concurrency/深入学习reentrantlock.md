@@ -19,7 +19,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147250524)（历史文章导入，当前状态为草稿）
 
-### 0. 前言：为什么需要 ReentrantLock？
+## 0. 前言：为什么需要 ReentrantLock？
 
 在并发编程的世界里，"锁"是一个无法回避的核心概念。当多个线程需要访问共享资源时，如果没有适当的同步机制，就可能导致数据竞争、状态不一致等严重问题。  
  Java 提供了多种同步机制，其中最基础、最常用的就是 `synchronized` 关键字。
@@ -35,11 +35,11 @@ sidebar:
 `ReentrantLock`，顾名思义，是一个**可重入的互斥锁**。  
  它提供了与 `synchronized` 类似的独占访问控制，但赋予了我们更强大的能力和更灵活的控制权。
 
-### 1. 基础概念与核心特性
+## 1. 基础概念与核心特性
 
 我们首先需要理解 `ReentrantLock` 的基本概念和它所提供的核心能力。
 
-#### 1.1 什么是 ReentrantLock？
+### 1.1 什么是 ReentrantLock？
 
 `ReentrantLock` 是 `java.util.concurrent.locks.Lock` 接口的一个具体实现。它实现了**独占**（同一时间只有一个线程能持有锁）和**可重入**（持有锁的线程可以再次获取该锁而不会死锁）的特性。
 
@@ -94,7 +94,7 @@ public class ReentrantLockDemo {
 2. **获取锁：** 调用 `lock()` 方法。如果锁已被其他线程持有，当前线程会被阻塞，直到获取到锁。
 3. **释放锁：** 调用 `unlock()` 方法。**极其重要**的是，`unlock()` 操作必须放在 `finally` 块中。这是为了确保即使在临界区代码发生异常时，锁也能被正确释放，防止其他线程永远无法获取锁（即“锁泄露”）。
 
-#### 1.2 ReentrantLock vs. synchronized
+### 1.2 ReentrantLock vs. synchronized
 
 `ReentrantLock` 常被拿来与 `synchronized` 比较。下表总结了它们的主要区别：
 
@@ -127,11 +127,11 @@ public class ReentrantLockDemo {
 
 如果你的同步需求很简单，`synchronized` 往往是更便捷的选择。
 
-#### 1.3 核心特性详解
+### 1.3 核心特性详解
 
 现在，我们来详细探讨 `ReentrantLock` 的几个核心特性。
 
-##### 1.3.1 可重入性 (Reentrancy)
+#### 1.3.1 可重入性 (Reentrancy)
 
 **什么是可重入性？**
 
@@ -207,7 +207,7 @@ public void recursiveCall(int depth) {
 
 ```
 
-##### 1.3.2 公平性选择 (Fairness Choice)
+#### 1.3.2 公平性选择 (Fairness Choice)
 
 `ReentrantLock` 允许开发者在创建锁时选择**公平**模式或**非公平**模式。
 
@@ -250,7 +250,7 @@ Lock nonfairLock = new ReentrantLock(); // 创建一个非公平锁 (默认)
 
 我们将在后续的源码分析章节更深入地探讨公平与非公平的实现差异。
 
-##### 1.3.3 可中断获取锁 (Interruptible Lock Acquisition)
+#### 1.3.3 可中断获取锁 (Interruptible Lock Acquisition)
 
 `synchronized` 在等待锁时是**不可中断**的。如果一个线程因为等待 `synchronized` 锁而被阻塞，那么除非它获得锁，否则无法响应中断请求 (`Thread.interrupt()`)。这在某些场景下可能导致问题，例如一个长时间等待锁的操作无法被外部取消。
 
@@ -319,7 +319,7 @@ Main thread released lock.
 * 构建更**健壮**的并发系统，能够响应外部中断信号。
 * 实现**优雅停机**逻辑，允许等待资源的线程被中断并退出。
 
-##### 1.3.4 超时获取锁 (Timed Lock Acquisition)
+#### 1.3.4 超时获取锁 (Timed Lock Acquisition)
 
 有时候，我们不希望线程无限期地等待锁，而是希望在**指定的时间内**尝试获取。如果超时仍未获取到锁，就放弃等待，执行其他逻辑（例如，返回错误、重试、记录日志等）。`synchronized` 无法做到这一点。
 
@@ -402,7 +402,7 @@ pool-1-thread-1 released lock initially.
 * 在获取锁失败时，能够执行**备选方案**或进行**重试**。
 * 与 `tryLock()` 结合，实现**轮询**或**探测**锁状态的逻辑。
 
-##### 1.3.5 条件变量 (Condition)
+#### 1.3.5 条件变量 (Condition)
 
 `synchronized` 块与 `Object` 类中的 `wait()`, `notify()`, `notifyAll()` 方法配合，可以实现线程间的等待/通知机制。一个 `synchronized` 块只能与**一个**隐式的条件队列关联。
 
@@ -543,7 +543,7 @@ public class ProducerConsumerDemo {
 
 `Condition` 机制是 `ReentrantLock` 相对于 `synchronized` 的一大优势，使得实现复杂的线程同步和协作逻辑成为可能。
 
-##### 1.3.6 锁状态查询
+#### 1.3.6 锁状态查询
 
 `ReentrantLock` 提供了一些方法来查询锁的当前状态，这对于调试、监控和构建更复杂的同步工具很有用。`synchronized` 则完全无法获取这些信息。
 
@@ -603,13 +603,13 @@ System.out.println("Hold Count by current thread: " + lock.getHoldCount()); // 0
 
 但要注意，这些查询方法获取的是**瞬时状态**，在高并发环境下，获取到的状态可能在你使用它之前就已经改变了。因此，不应过度依赖这些状态查询来进行核心的同步控制逻辑，它们更多用于辅助目的。
 
-### 2. 深入理解实现原理：AQS 的基石
+## 2. 深入理解实现原理：AQS 的基石
 
 要真正理解 `ReentrantLock` 的工作方式，尤其是公平锁/非公平锁、可中断/超时获取、条件变量等特性的实现，就必须深入了解其背后的核心框架——**AbstractQueuedSynchronizer (AQS)**。
 
 `ReentrantLock` 本身的代码相对简洁，它的大部分核心同步逻辑都委托给了其内部类 `Sync`，而 `Sync` 类继承自 AQS。可以说，AQS 是 JUC 中众多同步器（如 `ReentrantLock`, `Semaphore`, `CountDownLatch`, `ReentrantReadWriteLock`, `FutureTask` 等）的**基础骨架**。
 
-#### 2.1 AQS 概述
+### 2.1 AQS 概述
 
 AQS (AbstractQueuedSynchronizer) 是一个用于构建锁和相关同步器的**抽象框架**。它本身不是一个具体的同步器，而是提供了一套通用的机制来管理：
 
@@ -651,9 +651,9 @@ AQS 巧妙地运用了**模板方法模式**。它定义了同步器实现的核
 * `NonfairSync` 和 `FairSync` 实现了 AQS 的 `tryAcquire()` 方法，定义了各自的公平/非公平获取逻辑。它们都使用 AQS 的 `state` 来表示锁的重入次数，使用 `setExclusiveOwnerThread()` 记录持有锁的线程。
 * `ReentrantLock` 的 `newCondition()` 方法返回的是 `AQS` 的内部类 `ConditionObject` 的实例，`Condition` 的实现也完全依赖于 AQS 提供的机制。
 
-#### 2.2 AQS 的核心组件：State 和 CLH 队列
+### 2.2 AQS 的核心组件：State 和 CLH 队列
 
-##### 2.2.1 同步状态 (State)
+#### 2.2.1 同步状态 (State)
 
 ```
 // AbstractQueuedSynchronizer.java
@@ -680,7 +680,7 @@ protected final boolean compareAndSetState(int expect, int update) {
 * AQS 提供了 `getState()`, `setState()` 和 `compareAndSetState()` (CAS) 方法来安全地读取和修改 `state`。
 * **CAS (Compare-and-Swap):** 是一种**乐观锁**机制，它尝试原子地更新一个值：比较内存中的值 (`stateOffset` 对应的内存地址的值) 是否等于预期值 (`expect`)，如果等于，则将其更新为新值 (`update`)，并返回 `true`；否则不更新，返回 `false`。这是实现无锁或低锁竞争下高效原子操作的基础。几乎所有的 AQS 状态修改都依赖 CAS。
 
-##### 2.2.2 等待队列 (CLH Queue Variant)
+#### 2.2.2 等待队列 (CLH Queue Variant)
 
 当线程尝试获取锁（例如调用 `acquire(1)`）但失败时（例如 `tryAcquire(1)` 返回 `false`），AQS 会将该线程包装成一个 `Node` 对象，并将其加入到一个**FIFO 双向链表**结构的等待队列中。
 
@@ -766,11 +766,11 @@ private transient volatile Node tail; // 队列尾节点
 
 这个比喻虽然不完全精确，但有助于理解 AQS 队列的基本工作流程。
 
-#### 2.3 `ReentrantLock` 如何使用 AQS？
+### 2.3 `ReentrantLock` 如何使用 AQS？
 
 现在我们来看看 `ReentrantLock` 是如何利用 AQS 实现其核心功能的。
 
-##### 2.3.1 `Sync`, `NonfairSync`, `FairSync`
+#### 2.3.1 `Sync`, `NonfairSync`, `FairSync`
 
 ```
 // ReentrantLock.java
@@ -942,7 +942,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
 7. **`tryLock()` 的非公平性：** 值得注意的是，即使你创建的是**公平锁** (`new ReentrantLock(true)`), 调用 `tryLock()` 方法（无参数版本）仍然是**非公平**的 (`sync.nonfairTryAcquire(1)`)。这是因为 `tryLock` 的语义是“尝试一次，不行就拉倒”，如果它还需要检查队列，就违背了这种“快速尝试”的意图。而带超时的 `tryLock(timeout, unit)` (`sync.tryAcquireNanos`) 内部会考虑公平性设置。
 8. **其他方法：** `lockInterruptibly()`, `tryLock(timeout, unit)`, `unlock()`, `newCondition()` 等都直接调用了 AQS 提供的对应模板方法或功能。
 
-##### 2.3.2 `acquire(1)` 源码分析 (独占模式获取流程)
+#### 2.3.2 `acquire(1)` 源码分析 (独占模式获取流程)
 
 `acquire(int arg)` 是 AQS 中独占模式获取同步状态的核心方法。`ReentrantLock` 的 `lock()` (公平锁) 和 `lock()` (非公平锁 CAS 失败后) 都会调用它。
 
@@ -1112,7 +1112,7 @@ private static void selfInterrupt() {
 
 这个流程结合了**自旋**（减少初始等待的上下文切换）、**CAS**（无锁更新状态和队列）、**队列管理**（FIFO 保证顺序）和**线程阻塞/唤醒**（`park`/`unpark`），是 AQS 实现高效同步的核心。
 
-##### 2.3.3 `release(1)` 源码分析 (独占模式释放流程)
+#### 2.3.3 `release(1)` 源码分析 (独占模式释放流程)
 
 `release(int arg)` 是 AQS 中独占模式释放同步状态的核心方法。`ReentrantLock` 的 `unlock()` 会调用它。
 
@@ -1185,7 +1185,7 @@ private void unparkSuccessor(Node node) { // node 一般是头节点 head
 * 唤醒操作 (`unparkSuccessor`) 具有**鲁棒性**，即使 `next` 指针暂时有问题，也能通过从 `tail` 反向查找来找到需要唤醒的线程。
 * 被 `unpark` 唤醒的线程，会在其 `acquireQueued` 的 `parkAndCheckInterrupt` 方法处返回，然后继续 `acquireQueued` 的自旋，再次检查自己是否是 `head` 的后继并且能 `tryAcquire` 成功。
 
-#### 2.4 Condition 实现原理 (`ConditionObject`)
+### 2.4 Condition 实现原理 (`ConditionObject`)
 
 `ReentrantLock` 的 `newCondition()` 方法返回的是 `AQS` 的一个内部类 `ConditionObject` 的实例。`ConditionObject` 巧妙地利用了 AQS 的机制来实现 `await` 和 `signal`。
 
@@ -1418,11 +1418,11 @@ private void doSignalAll(Node first) {
 
 这种设计将**等待特定条件**的线程（在条件队列）和**等待锁本身**的线程（在同步队列）分离开来，并通过节点在两个队列之间的转移来协调它们的行为，实现了比 `Object.wait/notify` 更灵活、更强大的线程协作能力。
 
-### 3. 使用场景与最佳实践
+## 3. 使用场景与最佳实践
 
 理解了 `ReentrantLock` 的核心特性和实现原理后，我们来看看在哪些场景下应该优先考虑使用它，以及如何正确、高效地使用它。
 
-#### 3.1 何时选择 ReentrantLock 而不是 synchronized？
+### 3.1 何时选择 ReentrantLock 而不是 synchronized？
 
 正如前面多次提到的，选择 `ReentrantLock` 还是 `synchronized` 主要取决于你是否需要 `synchronized` 无法提供的**高级特性**。以下是一些典型的场景：
 
@@ -1453,11 +1453,11 @@ private void doSignalAll(Node first) {
 
 **总结：** 如果你的同步需求很简单，只需要基本的互斥和可重入性，`synchronized` 通常更简洁、不易出错。但凡你需要上述任何一项高级功能，`ReentrantLock` 就是更好的选择。不要仅仅因为觉得 `ReentrantLock` “更高级”或“性能可能更好”而去使用它，功能的匹配度才是首要考虑因素。
 
-#### 3.2 正确使用 ReentrantLock 的关键实践
+### 3.2 正确使用 ReentrantLock 的关键实践
 
 使用 `ReentrantLock` 相比 `synchronized` 需要开发者承担更多的责任，尤其是锁的释放。以下是一些关键的最佳实践，可以帮助你避免常见陷阱：
 
-##### 3.2.1 永远在 `finally` 块中释放锁
+#### 3.2.1 永远在 `finally` 块中释放锁
 
 这是使用 `ReentrantLock` **最最最重要**的一条规则！由于 `unlock()` 需要手动调用，必须确保无论临界区代码是正常执行完毕还是中途抛出异常，`unlock()` 都**一定**会被执行。否则，锁将永远不会被释放，导致其他线程无限期等待，形成事实上的“死锁”（更准确地说是“锁泄露”）。
 
@@ -1497,7 +1497,7 @@ public void unsafeMethod() {
 
 ```
 
-##### 3.2.2 避免锁的嵌套和顺序问题（防止死锁）
+#### 3.2.2 避免锁的嵌套和顺序问题（防止死锁）
 
 当一个线程需要获取**多个** `ReentrantLock` 时，死锁的风险就会增加。死锁通常发生在两个或多个线程互相持有对方需要的锁，并等待对方释放锁的情况下。
 
@@ -1568,7 +1568,7 @@ public void unsafeMethod() {
    这种方式比固定顺序更复杂，但能更好地处理动态的锁竞争。
 3. **减少锁的持有时间，避免锁嵌套：** 尽量只在**绝对必要**的代码段持有锁，缩短锁的持有时间。审视你的代码，是否真的需要在持有 `lock1` 的同时去获取 `lock2`？能否将操作分解，或者先释放 `lock1` 再去获取 `lock2`（如果业务逻辑允许）？
 
-##### 3.2.3 锁的粒度要适当
+#### 3.2.3 锁的粒度要适当
 
 * **不要锁过多代码：** 只锁定**真正需要保护的共享资源**的访问代码。如果在锁内部执行了不必要的、耗时的操作（如 I/O、网络请求、复杂的计算），会**严重降低并发性能**，因为其他线程必须等待这些耗时操作完成才能获取锁。
 * **不要锁过少代码：** 确保所有对共享状态的读写操作都在同一个锁的保护下，以维持数据的一致性。
@@ -1627,7 +1627,7 @@ try {
 
 通过减小锁的粒度，显著提高了并发性。
 
-##### 3.2.4 小心使用 `Condition`
+#### 3.2.4 小心使用 `Condition`
 
 * **`await()` 必须在 `while` 循环中：** 再次强调，这是为了防止虚假唤醒。
 * **`await()` / `signal()` / `signalAll()` 必须在持有锁时调用：** 否则会抛出 `IllegalMonitorStateException`。
@@ -1636,7 +1636,7 @@ try {
   + `signalAll()`: 唤醒**所有**等待线程。适用于等待条件可能对多个线程都有意义，或者不同线程可能在等待稍微不同的子条件的情况。开销更大，因为所有被唤醒的线程都需要再次竞争锁（可能导致“惊群效应” Thundering Herd）。
   + **经验法则：** 如果不确定，使用 `signalAll()` 更安全（虽然可能效率稍低）。只有当你非常确定唤醒一个线程就足够时，才使用 `signal()`。在生产者-消费者模式中，如果只有一个生产者和一个消费者，`signal` 通常足够；但如果有多个生产者和多个消费者，`signalAll` 通常更合适，以确保所有等待的同类线程都有机会被唤醒并检查条件。
 
-##### 3.2.5 考虑使用 `ReadWriteLock`
+#### 3.2.5 考虑使用 `ReadWriteLock`
 
 如果你的场景是**读多写少**，即对共享资源的读取操作远远多于修改操作，那么使用 `ReentrantLock`（这是一个**独占锁**，读和写都会互斥）可能会成为性能瓶颈。
 
@@ -1680,7 +1680,7 @@ public void put(String key, String value) {
 
 `ReentrantReadWriteLock` 也支持公平/非公平策略，并且其读锁和写锁也都是可重入的。它是优化读密集型并发场景的利器。
 
-#### 3.3 性能考量
+### 3.3 性能考量
 
 虽然现代 JVM 对 `synchronized` 做了大量优化（如锁消除、锁粗化、偏向锁、轻量级锁、自适应自旋等），使得其在很多场景下的性能与 `ReentrantLock` 不相上下，但在某些特定情况下，`ReentrantLock` 可能表现更好：
 
@@ -1697,7 +1697,7 @@ public void put(String key, String value) {
 
 进行性能调优时，应该基于**实际测量数据**，而不是凭感觉猜测。
 
-### 4. 总结
+## 4. 总结
 
 `ReentrantLock` 作为 Java 并发包 (JUC) 中的核心同步组件，为开发者提供了比内置 `synchronized` 关键字更强大、更灵活的锁机制。  
  通过深入理解其核心特性——可重入性、公平性选择、可中断获取、超时获取、条件变量以及锁状态查询——我们可以在复杂的并发场景中实现更精细、更高效的线程同步和协作。

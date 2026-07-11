@@ -19,32 +19,32 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125743610)（历史文章导入，当前状态为草稿）
 
-### 前言
+## 前言
 
 我们之前了解过了ArrayList,现在再来看LinkedList就已经很简单了，但值得一提的是，两者的数据结构不同导致了他们在使用场景注定是有区别的。
 
-#### 简介
+## 简介
 
-##### 简单说明
+### 简单说明
 
 1. 底层实现了双向链表和双端队列特点（如果你还不了解链表，建议先去学习一下，或者参考我之前写的文章https://blog.csdn.net/qq\_45852626/article/details/122464194?spm=1001.2014.3001.5501），实现了栈和队列的操作方法，可以作为栈、队列使用
 2. 它可以添加任意元素（元素可以重复），包括null
 3. 它是线程不安全，没有实现同步（没有锁维护）
 
-##### 底层结构
+### 底层结构
 
 1. 维护了一个双向链表，所以不存在容量不足的问题，因此没有扩容的方法
 2. 维护了两个属性first和last分别指向首节点和尾结点
 3. 每个节点里面维护了prev，next，item三个属性  
     prev指向前一个，next指向后一个，item是元素。
 
-### LinkedList结构
+## LinkedList结构
 
-#### 结构图
+### 结构图
 
 ![在这里插入图片描述](./assets/125743610/94ad3efe416ef54c0a0df7a6.png)
 
-#### 继承和实现的方法和接口
+### 继承和实现的方法和接口
 
 代码：  
  ![在这里插入图片描述](./assets/125743610/bb6a3303375363a2eb8d73c1.png)
@@ -58,9 +58,9 @@ sidebar:
     定义线性Collection，它实际是双端队列的简称(double ended queue)，大多数Deque接口的实现不会限制元素数量，但是这里有限制，最大容量为Integer.MAX\_VALUE
 5. Serializable 接口： 实现了该接口标示了类可以被序列化和反序列化。
 
-### 源码分析
+## 源码分析
 
-#### DOC解读
+### DOC解读
 
 ```
 /**
@@ -141,7 +141,7 @@ sidebar:
  如果这样的对象不存在，list应该使用Collections.synchronizedList方法，最好是用在创建时，防止意外无锁进入到list中，例子： `List list = Collections.synchronizedList(new LinkedList(...))`  
  当一个线程进行iterators操作时，如果有其他线程对ArrayList进行修改，会触发fail-fast机制，抛出ConcurrentModificationException异常，通常是ListIterator#remove() remove或ListIterator#add(Object) add这两种情况，因此。在这种并行修改情况下，线程会明确快速的触发失败fail-fast，而不是在未来不确定的时间里冒着武断、不确定性行为的风险。但是在非同步的情况下，fail-fast并不确保每次都会触发，因此依赖此异常的代码都是错误的，这个异常仅仅只是为了发现代码bug而已。
 
-#### 成员变量
+### 成员变量
 
 ```
   transient int size = 0;    //表示链表长度
@@ -184,7 +184,7 @@ sidebar:
 
 ```
 
-#### 构造方法
+### 构造方法
 
 它的构造方法有两种，第一种是无参构造，第二种有参并且参数是集合。  
  第一种无参构造，代码如下：
@@ -219,9 +219,9 @@ sidebar:
 
 ```
 
-#### 常用方法分析
+### 常用方法分析
 
-##### boolean add(E e)方法：
+#### boolean add(E e)方法：
 
 ```
   /**
@@ -256,7 +256,7 @@ sidebar:
 
 ```
 
-##### void add(int index, E element)方法：
+#### void add(int index, E element)方法：
 
 ```
   /**
@@ -333,7 +333,7 @@ sidebar:
 
 ```
 
-##### E get(int index)方法：
+#### E get(int index)方法：
 
 ```
    /**
@@ -385,7 +385,7 @@ return 方法里的node：
 
 ```
 
-##### remove(int index)方法：
+#### remove(int index)方法：
 
 ```
   /**
@@ -438,6 +438,6 @@ return 方法里的node：
 
 ```
 
-### 结尾
+## 结尾
 
 其他方法不作为核心去了解了，有兴趣了或需要了多学学链表，这些方法一看就明白了，LinkedList基本上不怎么用。。。性能比较低。

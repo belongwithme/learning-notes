@@ -19,15 +19,15 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125968262)（历史文章导入，当前状态为草稿）
 
-#### 简单介绍
+## 简单介绍
 
-##### HashTable特点
+### HashTable特点
 
 1：键和值都不允许为null  
 2：使用方法和HashMap基本一样  
 3：hashTable是线程安全的，hashMap是线程不安全的
 
-##### 继承结构关系
+### 继承结构关系
 
 ![在这里插入图片描述](./assets/125968262/85c94cfe8b035b5674d06b58.png)  
 代码实现如下：
@@ -44,7 +44,7 @@ DIctionary： 表示键值存储库，操作与Map相似，但是已经过时了
 java 
 的后续发展中，逐渐被Map取代了。
 
-##### Doc解读
+### Doc解读
 
 ```
 /**
@@ -148,7 +148,7 @@ java
 
 ```
 
-##### 核心内部 类 Entry
+### 核心内部 类 Entry
 
 Hashtable与Hashmap相似，Hashtable内部也是采用内部类来实现这些复杂的结构，主要是对键值对的封装  
 先看这个类的成员变量：
@@ -258,7 +258,7 @@ private static class Entry<K,V> implements Map.Entry<K,V> {
 
 ```
 
-##### 成员变量
+### 成员变量
 
 ```
   /**
@@ -292,7 +292,7 @@ private static class Entry<K,V> implements Map.Entry<K,V> {
 HashMap以及HashTable相关存储元素的数组等属性都是transient修饰，在序列化的时候不会被序列化，而是类自己实现了序列化和反序列化的方法。  
 不同的虚拟机或者不同操作系统上，hashcode的算法可能会造成相同的值经过hash之后其hashcode不一致。这样就容易造成实际上反序列化之后的HashTable与之前的HashTable不同。
 
-##### 静态变量
+### 静态变量
 
 ```
 /**
@@ -316,12 +316,12 @@ private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 jvm 
 中，数组是需要一些头信息的，因此如果直接将int数组分配为Integer.MAX\_VALUE，则会造成OOM。所以这里的长度是Integer.MAX\_VALUE - 8;
 
-##### HashTable的 数据结构
+### HashTable的 数据结构
 
 ![在这里插入图片描述](./assets/125968262/16e2071f791fa503d360f68b.png)  
 我们学过了HashMap，现在来看HashTable就很简单了，内部构成是通过拉链法实现单向链表。
 
-##### HashTable的构造函数
+### HashTable的构造函数
 
 构造函数有四种：  
 1：无参构造
@@ -379,7 +379,7 @@ jvm
 
 ```
 
-##### 扩容原理
+### 扩容原理
 
 我们以put方法为引子，注意hashtable支持同步：
 
@@ -484,7 +484,7 @@ public synchronized V put(K key, V value) {
 4:由于在Hashtable中，rehash并没提供给外部访问，而调用rehash的位置只有addEntry方法。因此这个方法没有加同步关键字。  
 5:另外HashTable并没提供缩容机制，也不存在HashMap中红黑树和链表互相转换的问题。因此其逻辑要简单得多。
 
-##### 结束语
+### 结束语
 
 1：HashMap是不支持同步的，不能用于并发场景。而Hashtable的对外的方法都是synchronized的，这样HashTable就能在同步的情况下使用。  
 2：如果不需要考虑线程安全问题可以使用 HashMap 作为替代，如果需要线程安全的高并发可以使用 ConcurrentHashMap，一般不需要使用 HashTable，所以这个类了解就好= = 。

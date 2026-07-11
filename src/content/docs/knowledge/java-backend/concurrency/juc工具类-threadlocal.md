@@ -19,7 +19,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147243211)（历史文章导入，当前状态为草稿）
 
-### 引言：为何需要 ThreadLocal？
+## 引言：为何需要 ThreadLocal？
 
 多线程的世界里，线程安全是一个永恒的主题。  
  当多个线程需要访问共享的可变数据时，为了保证数据的一致性和正确性，我们通常需要引入同步机制:例如 `synchronized` 关键字或 `Lock` 接口。  
@@ -29,9 +29,9 @@ sidebar:
 
 `ThreadLocal` 提供了一种**线程隔离**的思路，它并非用来解决多个线程共享变量的问题，而是另辟蹊径：**为每个使用该变量的线程提供一个独立的变量副本**。每个线程都操作自己的副本，互不干扰，从而天然地避免了并发冲突。你可以将其想象成每个线程都有一个属于自己的“小仓库”，用来存放自己的私有物品，其他线程无法访问。
 
-### 一、基础内容
+## 一、基础内容
 
-#### 1.1 核心概念：线程的“私有领地”
+### 1.1 核心概念：线程的“私有领地”
 
 `ThreadLocal`，顾名思义，即“线程本地变量”。它提供了一种机制，使得变量的值在每个线程中都是独立的。当你创建一个 `ThreadLocal` 变量后，每个线程都可以通过 `set()` 方法设置该变量的值，通过 `get()` 方法获取该变量的值。关键在于，一个线程 `set()` 的值，对其他线程是不可见的，其他线程 `get()` 到的是它们自己 `set()` 的值（或者初始值）。
 
@@ -46,7 +46,7 @@ sidebar:
 
 `ThreadLocal` 的实现策略可以概括为“**以空间换时间**”。它通过为每个线程分配独立的存储空间（变量副本）来避免线程同步所需的时间开销（如锁等待、上下文切换）。虽然会增加一定的内存消耗，但在高并发场景下，避免同步开销带来的性能提升往往更加显著。
 
-#### 1.2 ThreadLocal vs Synchronized：隔离与同步
+### 1.2 ThreadLocal vs Synchronized：隔离与同步
 
 可能有人会将 `ThreadLocal` 和 `synchronized` 混淆，认为它们都是解决并发问题的手段。确实如此，但它们的解决思路和适用场景截然不同。
 
@@ -71,7 +71,7 @@ sidebar:
 
 它们解决的是不同维度的问题，并不互相替代，有时甚至可以结合使用。
 
-#### 1.3 基本使用
+### 1.3 基本使用
 
 `ThreadLocal` 的使用非常直观，主要涉及以下几个核心方法：
 
@@ -226,11 +226,11 @@ Main thread finished.
 
 ---
 
-### 二、原理内容
+## 二、原理内容
 
 了解了 `ThreadLocal` 的基本使用后，我们来探究一下它的内部实现原理。为什么它能做到线程隔离？数据到底存在哪里？
 
-#### 2.1 整体架构：Thread、ThreadLocal 与 ThreadLocalMap
+### 2.1 整体架构：Thread、ThreadLocal 与 ThreadLocalMap
 
 `ThreadLocal` 的实现巧妙地利用了 `Thread` 类自身。每个 `Thread` 对象内部都有一个成员变量 `threadLocals`，它的类型是 `ThreadLocal.ThreadLocalMap`。
 
@@ -301,11 +301,11 @@ public class Thread implements Runnable {
 
 这个架构清晰地展示了为什么 `ThreadLocal` 能够实现线程隔离：**每个线程都持有自己独立的 `ThreadLocalMap` 实例**。当你在一个 `ThreadLocal` 变量上调用 `set` 或 `get` 时，你操作的总是**当前线程**的那个 `ThreadLocalMap`，自然不会影响到其他线程。
 
-#### 2.2 关键类：ThreadLocalMap 详解
+### 2.2 关键类：ThreadLocalMap 详解
 
 `ThreadLocalMap` 是 `ThreadLocal` 实现的核心，它是一个定制化的哈希表，专门用于存储线程本地变量。与我们常用的 `HashMap` 不同，`ThreadLocalMap` 的设计有其独到之处。
 
-##### 2.2.1 内部结构：Entry 与 WeakReference
+#### 2.2.1 内部结构：Entry 与 WeakReference
 
 `ThreadLocalMap` 内部维护一个 `Entry` 数组 `table` 来存储数据。这个 `Entry` 类是 `ThreadLocalMap` 的静态内部类，值得特别关注的是，它继承了 `WeakReference<ThreadLocal<?>>`。
 
@@ -355,7 +355,7 @@ static class Entry extends WeakReference<ThreadLocal<?>> {
 
 注意到 `Entry` 对 `value` 仍然是**强引用**。即使 `key` 变成了 `null`，只要线程不结束，`ThreadLocalMap` 还存在，那么这个 `key` 为 `null` 的 `Entry` 及其强引用的 `value` 就**不会被自动回收**。这就是 `ThreadLocal` 潜在内存泄漏的主要来源，我们将在后面的“风险”详细讨论。
 
-##### 2.2.2 哈希算法与冲突解决
+#### 2.2.2 哈希算法与冲突解决
 
 `ThreadLocalMap` 使用 `ThreadLocal` 实例的 `threadLocalHashCode` 作为哈希码来计算其在 `table` 数组中的索引位置。
 
@@ -446,7 +446,7 @@ private static int nextIndex(int i, int len) {
 
 线性探测法的优点是实现简单，数据存储更紧凑（没有额外指针开销）。但缺点是容易产生**聚集 (Clustering)** 现象，即冲突的元素会聚集在一起，可能导致连续探测的长度增加，影响性能。`ThreadLocalMap` 通过 `HASH_INCREMENT` 良好的散列性以及后续的清理机制 (`expungeStaleEntry`) 来缓解这个问题。
 
-#### 2.3 清理机制：`expungeStaleEntry`
+### 2.3 清理机制：`expungeStaleEntry`
 
 前面提到，当 `ThreadLocal` 实例被 GC 回收后，`ThreadLocalMap` 中对应的 `Entry` 的 `key` 会变成 `null`。这些 `key` 为 `null` 的 `Entry` 被称为“**陈旧条目 (Stale Entry)**”。虽然 `value` 仍然被强引用着，但这些条目已经无法通过正常的 `get()` 方法访问了（因为 `key` 没了）。
 
@@ -463,11 +463,11 @@ private static int nextIndex(int i, int len) {
 
 ---
 
-### 三、源码不分
+## 三、源码不分
 
 为了更透彻地理解 `ThreadLocal` 的工作原理，我们来深入解读一下其核心方法的 JDK 源码（以 JDK 8 为例，但核心逻辑在后续版本中类似）。
 
-#### 3.1 `set(T value)` 方法
+### 3.1 `set(T value)` 方法
 
 ```
 // java.lang.ThreadLocal
@@ -565,7 +565,7 @@ private void set(ThreadLocal<?> key, Object value) {
 3. **插入新条目**：如果线性探测找到一个 `null` 的槽位 `tab[i]`（表示这个位置是空的），就在这里创建一个新的 `Entry` 并插入。同时增加 `size` 计数。
 4. **清理与扩容检查**：插入新条目后，会调用 `cleanSomeSlots` 尝试清理一些陈旧条目。如果清理后仍然发现 `size` 达到了扩容阈值 `threshold`（通常是容量的 2/3），则调用 `rehash()` 方法进行扩容（通常是容量翻倍）并重新排列所有 `Entry`。
 
-#### 3.2 `get()` 方法
+### 3.2 `get()` 方法
 
 ```
 // java.lang.ThreadLocal
@@ -628,7 +628,7 @@ protected T initialValue() {
 
 **关键点：** `get()` 方法不仅是获取值，当值不存在时，它还会负责**初始化**该值（如果提供了 `initialValue` 或 `withInitial`），并将其存储起来，以便后续的 `get()` 可以直接获取。同时，`getEntry` 在查找过程中如果遇到陈旧条目，也会触发清理 (`expungeStaleEntry`)。
 
-#### 3.3 `remove()` 方法
+### 3.3 `remove()` 方法
 
 ```
 // java.lang.ThreadLocal
@@ -680,11 +680,11 @@ private void remove(ThreadLocal<?> key) {
 
 ---
 
-### 四、风险部分：警惕内存泄漏
+## 四、风险部分：警惕内存泄漏
 
 `ThreadLocal` 虽然好用，但如果使用不当，可能会引发内存泄漏 (Memory Leak)。理解其泄漏原理和避免方法至关重要。
 
-#### 4.1 泄漏原理详解：被遗忘的 Value
+### 4.1 泄漏原理详解：被遗忘的 Value
 
 我们在原理篇讲到，`ThreadLocalMap` 的 `Entry` 对 `key` ( `ThreadLocal` 实例) 是**弱引用**，而对 `value` (实际存储的数据) 是**强引用**。
 
@@ -718,7 +718,7 @@ private void remove(ThreadLocal<?> key) {
 
 当 `ThreadLocal` 对象被回收后，`key` 变为 `null`，但 `Thread` -> `ThreadLocalMap` -> `Entry[]` -> `Entry` -> `value` 这条强引用链依然存在，导致 `value` 无法被回收。
 
-#### 4.2 如何“优雅地”避免泄漏？
+### 4.2 如何“优雅地”避免泄漏？
 
 避免 `ThreadLocal` 内存泄漏的核心思想是：**确保在不再需要 `ThreadLocal` 变量时，及时清理掉它在当前线程 `ThreadLocalMap` 中对应的 `Entry`**。
 
@@ -808,11 +808,11 @@ public class GoodThreadLocalUsage {
 
 ---
 
-### 五、实践篇：ThreadLocal 与线程池
+## 五、实践篇：ThreadLocal 与线程池
 
 线程池是 Java 并发编程中常用的组件，它可以有效地管理和复用线程，提高系统性能。然而，在线程池环境中使用 `ThreadLocal` 需要特别注意，否则很容易遇到问题。
 
-#### 5.1 线程复用带来的“数据污染”
+### 5.1 线程复用带来的“数据污染”
 
 **问题描述：**
 
@@ -868,17 +868,17 @@ public class ThreadPoolPollution {
 
 这在实际应用中可能导致严重的业务逻辑错误或安全漏洞（例如，用户 B 的请求处理线程读到了用户 A 的会话信息）。
 
-#### 5.2 内存泄漏风险加剧
+### 5.2 内存泄漏风险加剧
 
 前面讨论的内存泄漏问题在线程池环境中会更加严重。因为线程池中的线程通常会存活很长时间，如果 `ThreadLocal` 的值没有被及时 `remove()`，这些 `value` 对象会一直占用内存，并且由于线程的复用，泄漏会不断累积。
 
-#### 5.3 解决方案
+### 5.3 解决方案
 
 解决线程池中使用 `ThreadLocal` 问题的核心思路仍然是：**确保每个任务在执行完毕后，清理掉它所设置的所有 `ThreadLocal` 变量。**
 
 以下是几种常见的解决方案：
 
-##### 5.3.1 手动在任务代码中清理 (推荐)
+#### 5.3.1 手动在任务代码中清理 (推荐)
 
 这是最直接、最可控的方式，也是我们在“风险篇”推荐的最佳实践：在任务代码的 `finally` 块中调用 `remove()`。
 
@@ -903,7 +903,7 @@ executor.submit(() -> {
 **优点**：逻辑清晰，责任明确，开发者知道自己使用了哪些 `ThreadLocal`，并在任务结束时负责清理。  
  **缺点**：需要开发者自觉遵守规范，如果忘记清理某个 `ThreadLocal`，问题依然存在。对于使用的框架或库中隐式设置的 `ThreadLocal` 可能难以察觉和清理。
 
-##### 5.3.2 使用装饰器模式包装任务
+#### 5.3.2 使用装饰器模式包装任务
 
 可以创建一个 `Runnable` 或 `Callable` 的装饰器 (Wrapper)，在任务执行前后进行统一的清理操作。
 
@@ -971,7 +971,7 @@ public class ThreadLocalCleaner implements Runnable {
 **优点**：将清理逻辑集中管理，减少了业务代码的重复。  
  **缺点**：需要在提交任务时手动包装，并且需要知道所有可能需要清理的 `ThreadLocal` 实例并传递给装饰器。
 
-##### 5.3.3 自定义线程池 `ThreadPoolExecutor`
+#### 5.3.3 自定义线程池 `ThreadPoolExecutor`
 
 可以通过继承 `ThreadPoolExecutor` 并重写其 `beforeExecute()` 和 `afterExecute()` 方法，在任务执行前后进行全局的清理。
 
@@ -1050,9 +1050,9 @@ public class CleaningThreadPoolExecutor extends ThreadPoolExecutor {
 
 ---
 
-### 六、进阶篇：InheritableThreadLocal 与 JDK 8+ 改进
+## 六、进阶篇：InheritableThreadLocal 与 JDK 8+ 改进
 
-#### 6.1 让父子线程共享：InheritableThreadLocal
+### 6.1 让父子线程共享：InheritableThreadLocal
 
 `ThreadLocal` 的值是线程隔离的，一个线程无法访问另一个线程设置的值。但在某些场景下，我们希望子线程能够继承父线程设置的 `ThreadLocal` 值。例如，在父线程中设置了用户身份信息，希望在父线程创建的子线程中也能自动获取到这个信息。
 
@@ -1184,11 +1184,11 @@ public static void main(String[] args) {
 * **MDC (Mapped Diagnostic Context)**：常用于日志框架（如 Logback, Log4j2），它内部通常使用 `InheritableThreadLocal` 或类似机制，并结合线程池的装饰器来确保在异步任务中也能正确传递日志上下文（如 `traceId`）。
 * **Reactor Context / Project Loom ScopedValue (预览中)**：一些现代响应式框架或未来的 Java 版本提供了更高级的上下文传递机制。
 
-#### 6.2 JDK 8 及后续版本的改进
+### 6.2 JDK 8 及后续版本的改进
 
 Java 8 及之后的版本对 `ThreadLocal` 做了一些改进，主要体现在易用性和内部优化上。
 
-##### 6.2.1 便捷的初始化：`withInitial()`
+#### 6.2.1 便捷的初始化：`withInitial()`
 
 JDK 8 引入了一个静态工厂方法 `ThreadLocal.withInitial(Supplier<? extends S> supplier)`，使得创建带有初始值的 `ThreadLocal` 更加简洁和函数化。
 
@@ -1230,7 +1230,7 @@ ThreadLocal<SimpleDateFormat> dateFormatThreadLocal = ThreadLocal.withInitial(()
 * **函数式风格**：更符合 Java 8 的函数式编程范式。
 * **延迟初始化**：`Supplier` 中的代码只会在某个线程第一次调用 `get()` 且需要初始值时才执行，实现了懒加载。
 
-##### 6.2.2 性能优化与内存泄漏防护增强
+#### 6.2.2 性能优化与内存泄漏防护增强
 
 虽然 `ThreadLocalMap` 的核心设计（基于 `Entry` 和线性探测）没有根本改变，但 JDK 8 及后续版本对其内部实现进行了一些性能优化和清理机制的增强。
 
@@ -1247,7 +1247,7 @@ ThreadLocal<SimpleDateFormat> dateFormatThreadLocal = ThreadLocal.withInitial(()
 
 ---
 
-### 七、总结与展望
+## 七、总结与展望
 
 `ThreadLocal` 作为 Java 并发包中一个独特且重要的工具，为解决线程隔离和上下文传递问题提供了优雅的方案。本教程我们深入探讨了：
 

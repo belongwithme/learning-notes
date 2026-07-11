@@ -18,7 +18,7 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129154666)（历史文章导入，当前状态为草稿）
 
-#### 后置处理器
+## 后置处理器
 ## 前言
 
 Spring的后处理器是Spring对外开发的重要扩展点，允许我们介入到Bean的整个实例化流程中来，以达到动态注册BeanDefinition，动态修改BeanDefinition，以及动态修改Bean的作用。  
@@ -238,7 +238,7 @@ public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegi
 
 Bean实例化之后，到最终缓存到名为singletonObjects的单例池之前，中间会经过Bean的初始化过程。例如：属性的填充，初始化init的执行等，其中有一个对外进行扩展的点BeanPostProcessor，它允许在Bean的初始化流程中插入自定义的逻辑。我们称之为BeanPostProcessor，会在流程节点上被Spring自动调用。
 
-##### 基本原理
+#### 基本原理
 
 它定义了两个方法：  
  `postProcessBeforeInitialization(Object bean, String beanName)`：在 Bean 初始化之前调用。  
@@ -252,7 +252,7 @@ Bean实例化之后，到最终缓存到名为singletonObjects的单例池之前
  2.然后调用 Bean 的 init 方法，最后再按照相反的顺序调用所有 `BeanPostProcessor` 实现的 `postProcessAfterInitialization` 方法。  
  这个过程中，`BeanPostProcessor` 扮演着一个监听器的角色，允许开发人员在 Bean 初始化的过程中干预和修改 Bean 的行为，从而实现对 Spring 容器的定制和扩展。
 
-##### 运用的场景
+#### 运用的场景
 
 * 日志记录：  
    可以使用BeanPostProcessor来实现在Bean实例化后、初始化前后打印日志，从而实现记录Bean生命周期的目的。
@@ -265,7 +265,7 @@ Bean实例化之后，到最终缓存到名为singletonObjects的单例池之前
 * 自定义注解：  
    可以使用BeanPostProcessor来实现在Bean实例化后、初始化前后扫描并解析自定义注解，从而实现自定义注解的功能。例如，可以在Bean实例化后、初始化前后，扫描并解析所有的@MyAnnotation注解，并根据注解的内容进行相应的操作。
 
-##### 经典例子——时间日志增强
+#### 经典例子——时间日志增强
 
 要求：
 

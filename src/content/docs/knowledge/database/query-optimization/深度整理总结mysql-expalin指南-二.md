@@ -20,51 +20,51 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145594095)（历史文章导入，当前状态为草稿）
 
-### 前言
+## 前言
 
 本章接着上一章Expalin指南(一)续写.
 
-### Extra
+## Extra
 
 extra列是用来说明一些额外信息的，我们可以通过这些额外信息来更准确的理解MySQL到底将如何执行给定的查询语句。
 
-#### no tables used
+### no tables used
 
 当查询语句的没有FROM子句时将会提示该额外信息.
 
-#### Impossible where
+### Impossible where
 
 查询语句的WHERE子句永远为FALSE时将会提示该额外信息.
 
-#### No matching min/max row
+### No matching min/max row
 
 当查询列表处有MIN或者MAX聚集函数，但是并没有符合WHERE子句中的搜索条件的记录时，将会提示该额外信息
 
-#### Using index
+### Using index
 
 当我们的查询列表以及搜索条件中只包含属于某个索引的列，也就是在可以使用索引覆盖的情况下，在Extra列将会提示该额外信息
 
-#### Using index condition
+### Using index condition
 
 有些搜索条件中虽然出现了索引列，但却不能使用到索引
 
-#### Using where
+### Using where
 
 当我们使用全表扫描来执行对某个表的查询，并且该语句的WHERE子句中有针对该表的搜索条件时，在Extra列中会提示上述额外信.
 
 当使用索引访问来执行对某个表的查询，并且该语句的WHERE子句中有除了该索引包含的列之外的其他搜索条件时，在Extra列中也会提示上述额外信息。
 
-#### Using join buffer (Block Nested Loop)
+### Using join buffer (Block Nested Loop)
 
 在连接查询执行过程中，当被驱动表不能有效的利用索引加快访问速度，MySQL一般会为其分配一块名叫join buffer的内存块来加快查询速度，也就是我们所讲的基于块的嵌套循环算法.
 
-#### Not exists
+### Not exists
 
 当我们使用左（外）连接时，如果WHERE子句中包含要求被驱动表的某个列等于NULL值的搜索条件，而且那个列又是不允许存储NULL值的，那么在该表的执行计划的Extra列就会提示Not exists额外信息  
  注意:  
  右（外）连接可以被转换为左（外）连接，所以就不提右（外）连接的情况了
 
-#### Using intersect(…)、Using union(…)和Using sort\_union(…)
+### Using intersect(…)、Using union(…)和Using sort\_union(…)
 
 * Using intersect(…)  
    使用Intersect索引合并的方式执行查询，括号中的…表示需要进行索引合并的索引名称.
@@ -73,21 +73,21 @@ extra列是用来说明一些额外信息的，我们可以通过这些额外信
 * Using sort\_union(…)  
    准备使用Sort-Union索引合并的方式执行查询.
 
-#### Zero limit
+### Zero limit
 
 LIMIT子句的参数为0时，表示压根儿不打算从表中读出任何记录，将会提示该额外信息
 
-#### Using filesort
+### Using filesort
 
 排序操作无法使用到索引，只能在内存中（记录较少的时候）或者磁盘中（记录较多的时候）进行排序.  
  这种在内存中或者磁盘上进行排序的方式统称为文件排序（英文名：filesort）.  
  如果某个查询需要使用文件排序的方式执行查询，就会在执行计划的Extra列中显示Using filesort提示.
 
-#### Using temporary
+### Using temporary
 
 在许多查询的执行过程中，MySQL可能会借助临时表来完成一些功能，比如去重、排序之类的，比如我们在执行许多包含DISTINCT、GROUP BY、UNION等子句的查询过程中，如果不能有效利用索引来完成查询，MySQL很有可能寻求通过建立内部的临时表来执行查询。
 
-### Json格式执行计划
+## Json格式执行计划
 
 我们上面介绍的EXPLAIN语句输出中缺少了一个衡量执行计划好坏的重要属性 —— **成本**。  
  不过我们有一种方式查询某个执行计划花费的成本的方式——在EXPLAIN单词和真正的查询语句中间加上FORMAT=JSON。  
@@ -184,7 +184,7 @@ EXPLAIN: {
 
 ```
 
-#### cost\_info
+### cost\_info
 
 拿上面例子来说明:
 
@@ -199,22 +199,22 @@ EXPLAIN: {
 
 ```
 
-##### read\_cost
+#### read\_cost
 
 两部分组成:
 
 * IO成本
 * 检测rows × (1 - filter)条记录的CPU成本
 
-##### eval\_cost
+#### eval\_cost
 
 检测 rows × filter条记录的成本。
 
-##### prefix\_cost
+#### prefix\_cost
 
 read\_cost + eval\_cost
 
-##### data\_read\_per\_join
+#### data\_read\_per\_join
 
 此次查询中需要读取的数据量
 

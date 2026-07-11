@@ -18,11 +18,11 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131399623)（历史文章导入，当前状态为草稿）
 
-### 前言
+## 前言
 
 看这篇文章前，请确保有一定security基础或者看过上篇文章，没基础看不太好理解。
 
-### 认证流程分析
+## 认证流程分析
 
 流程分析我们在上一篇每一步都debug看一了下，这里我们进行一个梳理。  
  我们先看一下这张图：  
@@ -36,7 +36,7 @@ sidebar:
 3. 认证成功，将认证信息存储到`SecurityContextHodler`以及调⽤记住我等，并回调`AuthenticationSuccessHandler`处理
 4. 认证失败，清除`SecurityContextHodler`以及 记住我中信息，回调`AuthenticationFailureHandler` 处理
 
-#### 易混梳理
+### 易混梳理
 
 不知道在上一篇我们debug时，你是不是有点迷，搞不清`AuthenticationManager`，`ProviderManager`，`AuthenticationProvider` 的关系，  
  `AuthenticationManager` 是认证的核⼼类，但实际上在底层真正认  
@@ -145,14 +145,14 @@ public interface AuthenticationProvider {
 
 ```
 
-##### AuthenticationManager 与 ProviderManager
+#### AuthenticationManager 与 ProviderManager
 
 先看一下结构图：  
  ![请添加图片描述](./assets/131399623/552d704d6cd0b3a3b4d950e5.png)  
  为什么列表有五个，但是我只显示了`ProviderManager`，因为其他四个都是内部类（感兴趣可以去看看）。  
  所以我们可以看出来：`ProviderManager` 是`AuthenticationManager`的唯⼀实现，也是 `Spring Security`默认使⽤实现。从这⾥不难看出默认情况下`AuthenticationManager` 就是⼀个ProviderManager。
 
-##### ProviderManager 与 AuthenticationProvider
+#### ProviderManager 与 AuthenticationProvider
 
 看一下官网的介绍图：  
  ![在这里插入图片描述](./assets/131399623/ffe08f70bd65c823a15f75b4.png)  
@@ -174,7 +174,7 @@ public interface AuthenticationProvider {
  `ProviderManager` 来扮演 parent 的⻆⾊，也就是 `ProviderManager` 是  
  `ProviderManager` 的 parent。
 
-###### 难点：为什么ProviderManager会有一个parent？
+##### 难点：为什么ProviderManager会有一个parent？
 
 ProviderManager 本身也可以有多个，多个ProviderManager 共⽤同⼀个  
  parent。
@@ -188,7 +188,7 @@ ProviderManager 本身也可以有多个，多个ProviderManager 共⽤同⼀个
  `AuthentictionProvider`关系：  
  ![在这里插入图片描述](./assets/131399623/299732dcde2de4ca6275a8ad.png)
 
-### 数据源的获取
+## 数据源的获取
 
 默认情况下`AuthenticationProvider` 是由 `DaoAuthenticationProvider` 类来实现认证的(上篇文章有提到过，不清楚的可以去看一下debug的过程，这个是parent的默认provider），在`DaoAuthenticationProvider` 认证时⼜通过 `UserDetailsService` 完成数据源的  
  校验。  
@@ -214,14 +214,14 @@ ProviderManager 本身也可以有多个，多个ProviderManager 共⽤同⼀个
     当然⽆论是全局认证管理器还是局部认证管理器都是由`ProviderManger` 进⾏实现。  
     每⼀个`ProviderManger`中都代理⼀个`AuthenticationProvider`的列表，列表中每⼀个实现代表⼀种身份认证⽅式。认证时底层数据源需要调⽤ `UserDetailService`来实现。
 
-### 配置AuthenticationManager
+## 配置AuthenticationManager
 
 上面我们了解到`AuthenticationManager`的作用是什么，接下来我们去写一下这个，如果业务工作有需求，可以自定义配置。
 
 首先，我们之前在`application.properties`里面配置的账号信息（名称，密码，权限）注释一下。  
  ![请添加图片描述](./assets/131399623/30a4247e03bbc3f431d43a62.png)
 
-#### 默认的全局 AuthenticationManager
+### 默认的全局 AuthenticationManager
 
 springboot 对 security 进⾏⾃动配置时⾃动在⼯⼚中创建⼀个全局`AuthenticationManager`。  
  代码例子如下(不优化版本)：
@@ -307,7 +307,7 @@ public class UserDetailsServiceAutoConfiguration {
 
 只要我们有自定义的`UserDetailService`，工厂默认的就不生效了。而且SpringBoot会自动将我们创建的Bean—`userDetailsService`赋值给默认创建出来的`AuthenticationManager`（`AuthenticationManager`会自动检测）。
 
-#### 自定义AuthenticationManager
+### 自定义AuthenticationManager
 
 自定义代码(错误版本)如下：
 
@@ -397,7 +397,7 @@ protected AuthenticationManager authenticationManager() throws Exception {
 
 ```
 
-### 库表设计
+## 库表设计
 
 从上面的内容我们可以看出，真正帮我们做底层用户认证的是`UserDetailsService`，它有一个`loadUserByUsername`方法，传入一个用户名，默认是在内存中。  
  所以我们自己写实现这个方法，并设置给`AuthenticationManager`，实现更换数据源。
@@ -529,14 +529,14 @@ COMMIT;
 
 ```
 
-### 代码实现
+## 代码实现
 
-#### 踩坑点
+### 踩坑点
 
 1. 请确认你的MySQL版本是否为8.0以上，如果为8.0以上，那么mysql引入的依赖注意版本参数，配置 springboot 配置⽂件时，`spring.datasource.driver-class-name`参数为：`com.mysql.cj.jdbc.Driver`。
 2. mapper的xml文件中，如果resultTppe爆红，使用全路径即可。
 
-#### 引入依赖
+### 引入依赖
 
 ```
   <dependency>
@@ -559,7 +559,7 @@ COMMIT;
 
 ```
 
-#### 配置 springboot 配置⽂件
+### 配置 springboot 配置⽂件
 
 ```
 server.port= 9090
@@ -585,9 +585,9 @@ logging.level.com.example = debug
 
 ```
 
-#### 创建entity
+### 创建entity
 
-##### 创建User对象
+#### 创建User对象
 
 ```
 import org.springframework.security.core.GrantedAuthority;
@@ -697,7 +697,7 @@ public class User implements UserDetails {
 
 ```
 
-##### 创建Role对象
+#### 创建Role对象
 
 ```
 public class Role {
@@ -734,7 +734,7 @@ public class Role {
 
 ```
 
-##### 创建UserDao接口
+#### 创建UserDao接口
 
 ```
 //注意这里引用的是我们自定义的类型
@@ -755,7 +755,7 @@ public interface UserDao {
 
 ```
 
-##### 创建UserMapper实现
+#### 创建UserMapper实现
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -791,7 +791,7 @@ public interface UserDao {
 
 ```
 
-##### 创建 UserDetailService 实例
+#### 创建 UserDetailService 实例
 
 ```
 import com.example.dao.UserDao;
@@ -833,7 +833,7 @@ public class MyUserDetailService implements UserDetailsService {
 
 ```
 
-##### 配置 authenticationManager 使⽤⾃定义UserDetailService
+#### 配置 authenticationManager 使⽤⾃定义UserDetailService
 
 ```
    private final MyUserDetailService myUserDetailService;
@@ -865,7 +865,7 @@ public class MyUserDetailService implements UserDetailsService {
 
 ```
 
-##### 最后启动测试
+#### 最后启动测试
 
 1. 请确保你的数据库版本
 2. 确保你的数据在数据库里面  

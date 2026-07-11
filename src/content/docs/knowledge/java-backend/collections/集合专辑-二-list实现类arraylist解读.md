@@ -19,13 +19,13 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125694580)（历史文章导入，当前状态为草稿）
 
-### 简介
+## 简介
 
-#### ArrayList是 Java 集合中出场率最多的一个类。
+### ArrayList是 Java 集合中出场率最多的一个类。
 
 底层是基于数组实现，根据元素的增加而动态扩容，可以理解为它是加强版的数组。**ArrayList允许元素为null**。它是线程不安全的，**在多线程下**，不建议使用ArrayList。
 
-#### 结构图
+### 结构图
 
 ![在这里插入图片描述](./assets/125694580/5ee3917de485e523e8d1ecb8.png)  
  代码实现（实现继承关系)：  
@@ -52,7 +52,7 @@ this
  to be worth backing out later.  
  翻译过来大概就是：我问过 Josh Bloch，他告诉我这是一个错误。很久以前，他曾经认为它有一些价值，但他后来“看到了光明”。很明显，JDK 维护者认为这不值得以后撤销。
 
-#### 如何实现AbstractList
+### 如何实现AbstractList
 
 * 要实现不可修改的AbstractList。  
    只需要扩展此类并为get(int)和size()方法提供实现即可。  
@@ -98,9 +98,9 @@ Marker interface used by <tt>List</tt> implementations to indicate that
     ![在这里插入图片描述](./assets/125694580/3b6502fc1f1709d95e1d93c2.png)  
     目前我们先简单认定实现这个接口会提供可序列化功能。
 
-### 源码分析
+## 源码分析
 
-#### javaDoc分析
+### javaDoc分析
 
 ```
 /**
@@ -229,7 +229,7 @@ ArrayList线程是不安全的。如果多个线程同时进入了同一个Array
 当一个线程进行iterators操作时，如果有其他线程对ArrayList进行修改，会触发fail-fast机制，抛出ConcurrentModificationException异常，通常是ListIterator#remove() remove或ListIterator#add(Object) add这两种情况。因此。在这种并行修改情况下，线程会明确快速的触发失败fail-fast，而不是在未来不确定的时间里冒着武断、不确定性行为的风险。  
  但是在非同步的情况下，fail-fast并不确保每次都会触发，因此依赖此异常的代码都是错误的，这个异常仅仅只是为了发现代码bug而已。
 
-#### 静态变量
+### 静态变量
 
 ```
  private static final long serialVersionUID = 8683452581122892189L;
@@ -269,7 +269,7 @@ ArrayList线程是不安全的。如果多个线程同时进入了同一个Array
    主要目的是为了延迟容量分配,当我们首次向这个`ArrayList`添加元素时,它就知道目前是一个默认大小的空列表,并且需要扩容到默认的初始容量(`ArrayList中通常是10`).  
    这样可以避免在列表创建时就立即分配更多的内存,而是等到真正需要时才进行扩容
 
-#### 成员变量
+### 成员变量
 
 ```
  /**
@@ -429,7 +429,7 @@ static int access$000(OuterClass outerClassInstance) {
 
 这个合成方法允许`InnerClass`在其内部实现中通过调用`OuterClass.access$000(this$0)`来间接访问`privateVar`,其中`this$0`是编译器自动生成的另一个引用,它指向包含当前内部类实例的外部类实例.
 
-#### 构造方法
+### 构造方法
 
 构造方法有三种，无参，有参（指定初始化容量大小），有参（传入一个集合）  
  第一种无参，源码如下：
@@ -502,7 +502,7 @@ public ArrayList(int initialCapacity) {
 
 ```
 
-#### 扩容机制
+### 扩容机制
 
 当`ArrayList`的元素数量超过其当前容量时,就会触发扩容操作.  
  **关键参数**
@@ -531,9 +531,9 @@ public ArrayList(int initialCapacity) {
 * 手动扩容机制  
    `ensureCapacity`方法提供了一个公开的接口,允许用户根据需求手动触发扩容操作,以优化性能.
 
-##### 手动扩容
+#### 手动扩容
 
-###### ensureCapacity(int minCapacity)方法
+##### ensureCapacity(int minCapacity)方法
 
 ```
  /**
@@ -576,7 +576,7 @@ int minExpand = (elementData != DEFAULTCAPACITY_EMPTY_ELEMENTDATA)
 
 ```
 
-###### ensureExplicitCapacity(int minCapacity)方法
+##### ensureExplicitCapacity(int minCapacity)方法
 
 `ensureExplicitCapacity`方法确保`ArrayList`有足够的容量来存储至少`minCapacity`个元素，如果当前容量不足，则通过调用`grow`方法来扩容数组。这是`ArrayList`动态调整其容量以满足存储需求的重要机制之一。
 
@@ -597,9 +597,9 @@ private void ensureExplicitCapacity(int minCapacity) {
 
 ```
 
-##### 自动扩容
+#### 自动扩容
 
-###### grow(int minCapacity)方法 扩容逻辑在这里
+##### grow(int minCapacity)方法 扩容逻辑在这里
 
 ```
      * Increases the capacity to ensure that it can hold at least the
@@ -627,7 +627,7 @@ private void ensureExplicitCapacity(int minCapacity) {
 
 扩容规则：**新数组容量大小=旧数组+旧数组/2(上面的>>1是位运算，代表二进制向右移动一位，10进制为/2）**
 
-###### hugeCapacity(int minCapacity)方法
+##### hugeCapacity(int minCapacity)方法
 
 ```
    private static int hugeCapacity(int minCapacity) {
@@ -648,7 +648,7 @@ private void ensureExplicitCapacity(int minCapacity) {
 
 ```
 
-###### 扩展一下Arrays.copyOf(elementData, newCapacity)：
+##### 扩展一下Arrays.copyOf(elementData, newCapacity)：
 
 ```
  /**
@@ -690,7 +690,7 @@ private void ensureExplicitCapacity(int minCapacity) {
 
 ```
 
-###### calculateCapacity(Object[] elementData, int minCapacity) 方法
+##### calculateCapacity(Object[] elementData, int minCapacity) 方法
 
 该方法目的计算`ArrayList`所需容量
 
@@ -706,7 +706,7 @@ private void ensureExplicitCapacity(int minCapacity) {
 
 ```
 
-###### ensureCapacityInternal(int minCapacity)方法
+##### ensureCapacityInternal(int minCapacity)方法
 
 辅助方法,用于确保列表的内部数组elementData具有足够的容量来存储至少DEFAULT\_CAPACITY个元素
 
@@ -718,7 +718,7 @@ private void ensureExplicitCapacity(int minCapacity) {
 
 ```
 
-###### 静态变量`private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;`
+##### 静态变量`private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;`
 
 解读一下doc的描述：  
  /\*\*  
@@ -732,9 +732,9 @@ header
 
 上面的源码都是分开解读的，下面会用add方法尝试去串起来。
 
-#### 介绍一下add方法：
+### 介绍一下add方法：
 
-##### 源码
+#### 源码
 
 ```
  /**
@@ -822,6 +822,6 @@ private void ensureCapacityInternal(int minCapacity) {
  ![在这里插入图片描述](./assets/125694580/4b95c1a7e28f829aae93d2e0.png)  
  至此，我们add的过程和ArrayList的扩容机制已经相当熟悉啦= =。
 
-### 结尾
+## 结尾
 
 文章写到这就不继续了，这些属于ArrayList的精华部分，下面再去写一些方法是怎么回事意义不大，希望刚学习的你可以比葫芦画瓢，自己动手，丰衣足食，对这个系列感兴趣点个关注收藏，后面继续= =。2万字码的手都掉了，不知道有谁看hhh。
