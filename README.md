@@ -84,14 +84,14 @@ CSDN 导出文件位于 `/Users/wangyi/csdn-article-export/exports` 时，可使
 node scripts/import-csdn.mjs
 ```
 
-脚本会根据专栏和文章标题归类，生成“专题 / 二级知识域 / 文章”的三级结构，补充统一元数据，清理 CSDN 代码行号和页面残留，并把正文引用的图片复制到二级知识域下的 `assets/<文章ID>/` 目录。首次导入的文章统一为 `status: draft`，导入报告写入 `scripts/csdn-import-report.json`。
+脚本会根据专栏和文章标题归类，生成“专题 / 二级知识域 / 文章标题”的三级结构。文章使用清理后的标题作为语义化文件名和访问路径，CSDN 文章 ID 只保留在 `sourceId` 元数据和内部图片目录中，不会再作为侧栏节点或正式文章地址。脚本还会补充统一元数据，清理 CSDN 代码行号和页面残留，并把正文引用的图片复制到二级知识域下的 `assets/<文章ID>/` 目录。首次导入的文章统一为 `status: draft`，导入报告写入 `scripts/csdn-import-report.json`。
 
 ```text
 src/content/docs/knowledge/java-backend/
 ├── index.mdx
-├── java-language/
-│   ├── java-backend-135635990.md
-│   └── assets/135635990/
+├── collections/
+│   ├── 集合专辑-二-list实现类arraylist解读.md
+│   └── assets/125694580/
 ├── concurrency/
 ├── jvm-runtime/
 └── spring/

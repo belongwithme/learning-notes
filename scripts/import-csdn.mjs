@@ -86,10 +86,45 @@ const subcategoryFor = (metadata, category) => {
 
 const baseDirFor = category => config.categories[category]?.base || 'knowledge';
 
-const slugFor = (category, articleId) =>
-	category === 'retrospectives' ? `csdn-${articleId}` : `${category}-${articleId}`;
+const truncateUtf8 = (value, maxBytes = 180) => {
+	let result = '';
+	for (const character of value) {
+		if (Buffer.byteLength(result + character, 'utf8') > maxBytes) break;
+		result += character;
+	}
+	return result.replace(/-+$/g, '');
+};
 
-const routeFor = (category, subcategory, articleId) =>
+const semanticSlugFor = title => {
+	const slug = normalizeTitle(title)
+		.normalize('NFKC')
+		.toLowerCase()
+		.replace(/&+/g, ' and ')
+		.replace(/[’']/g, '')
+		.replace(/[^\p{Letter}\p{Number}]+/gu, '-')
+		.replace(/^-+|-+$/g, '')
+		.replace(/-{2,}/g, '-');
+	return truncateUtf8(slug) || '未命名文章';
+};
+
+const uniqueSlugFor = (title, category, subcategory, usedSlugs) => {
+	const key = `${category}/${subcategory}`;
+	const baseSlug = semanticSlugFor(title);
+	const slugs = usedSlugs.get(key) || new Set();
+	let slug = baseSlug;
+	let suffix = 2;
+	while (slugs.has(slug)) slug = `${baseSlug}-${suffix++}`;
+	slugs.add(slug);
+	usedSlugs.set(key, slugs);
+	return slug;
+};
+
+const routeFor = (category, subcategory, slug) =>
+	category === 'retrospectives'
+		? `/retrospectives/${subcategory}/${slug}/`
+		: `/knowledge/${category}/${subcategory}/${slug}/`;
+
+const technicalRouteFor = (category, subcategory, articleId) =>
 	category === 'retrospectives'
 		? `/retrospectives/${subcategory}/csdn-${articleId}/`
 		: `/knowledge/${category}/${subcategory}/${category}-${articleId}/`;
@@ -384,6 +419,8 @@ const exportDirs = fs.readdirSync(sourceRoot)
 	.filter(directory => fs.existsSync(path.join(directory, 'article.md')))
 	.sort((a, b) => a.localeCompare(b, 'zh-CN'));
 
+const usedSlugs = new Map();
+
 for (const sourceDir of exportDirs) {
 	const metadataPath = path.join(sourceDir, 'metadata.json');
 	if (!fs.existsSync(metadataPath)) {
@@ -404,12 +441,15 @@ for (const sourceDir of exportDirs) {
 		? path.join(outputRoot, 'retrospectives')
 		: path.join(outputRoot, baseDirFor(category), category);
 	const outputDir = path.join(outputCategoryDir, subcategory);
-	const outputFile = path.join(outputDir, `${slugFor(category, articleId)}.md`);
+	const title = normalizeTitle(metadata.title);
+	const slug = uniqueSlugFor(title, category, subcategory, usedSlugs);
+	const outputFile = path.join(outputDir, `${slug}.md`);
 	const assetDirectory = path.join(outputDir, 'assets', articleId);
 	const assetPrefix = `./assets/${articleId}/`;
 	const legacyCategory = config.legacyCategoryOverrides?.[articleId] || category;
 	const legacyUrl = legacyRouteFor(legacyCategory, articleId);
-	const url = routeFor(category, subcategory, articleId);
+	const technicalUrl = technicalRouteFor(category, subcategory, articleId);
+	const url = routeFor(category, subcategory, slug);
 	const exists = fs.existsSync(outputFile);
 	if (exists && !force) {
 		report.skipped++;
@@ -417,9 +457,12 @@ for (const sourceDir of exportDirs) {
 			articleId,
 			category,
 			subcategory,
+			title,
+			slug,
 			output: path.relative(projectRoot, outputFile),
 			assetDirectory: path.relative(projectRoot, assetDirectory),
 			legacyUrl,
+			technicalUrl,
 			url,
 			status: 'skipped',
 		});
@@ -459,10 +502,12 @@ for (const sourceDir of exportDirs) {
 		articleId,
 		category,
 		subcategory,
-		title: metadata.title,
+		title,
+		slug,
 		output: path.relative(projectRoot, outputFile),
 		assetDirectory: path.relative(projectRoot, assetDirectory),
 		legacyUrl,
+		technicalUrl,
 		url,
 		assets: assets.size,
 		missingAssets,
@@ -475,8 +520,9 @@ if (!dryRun) {
 	fs.writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
 	const redirects = Object.fromEntries(
 		report.articles
-			.filter(article => article.legacyUrl && article.url && article.legacyUrl !== article.url)
-			.map(article => [article.legacyUrl, article.url])
+			.flatMap(article => [article.legacyUrl, article.technicalUrl]
+				.filter(sourceUrl => sourceUrl && article.url && sourceUrl !== article.url)
+				.map(sourceUrl => [sourceUrl, article.url]))
 			.sort(([left], [right]) => left.localeCompare(right)),
 	);
 	const redirectsModule = [
