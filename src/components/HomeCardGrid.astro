@@ -100,11 +100,11 @@ import { Routes } from '../config/site-routing';
 }
 
 .home-card h3 {
-	max-width: 10ch;
+	max-width: 6em;
 	font-size: clamp(2.5rem, 4.8vw, 4.7rem);
 	font-weight: 620;
-	line-height: 0.98;
-	letter-spacing: -0.06em;
+	line-height: 1.06;
+	letter-spacing: -0.035em;
 }
 
 .home-card > div:last-child > p:last-child {
@@ -133,7 +133,8 @@ import { Routes } from '../config/site-routing';
 }
 
 .home-card--soft h3 {
-	font-size: clamp(2.3rem, 4vw, 3.9rem);
+	max-width: 7em;
+	font-size: clamp(2.3rem, 3.2vw, 3rem);
 }
 
 .home-card--blue {
@@ -146,7 +147,7 @@ import { Routes } from '../config/site-routing';
 }
 
 .home-card--blue h3 {
-	max-width: 13ch;
+	max-width: 12em;
 }
 
 :global(:root[data-theme='dark']) .home-card--soft {
@@ -168,7 +169,7 @@ import { Routes } from '../config/site-routing';
 
 	.home-card h3,
 	.home-card--soft h3 {
-		font-size: clamp(2.4rem, 11vw, 3.7rem);
+		font-size: clamp(2rem, 10vw, 3.7rem);
 	}
 }
 

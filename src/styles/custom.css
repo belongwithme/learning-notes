@@ -1,6 +1,12 @@
+@import '@fontsource-variable/noto-sans-sc/wght.css';
+@import '@fontsource-variable/noto-serif-sc/wght.css';
+
 :root {
-	--sl-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue',
-		Arial, sans-serif;
+	--site-sans: 'Noto Sans SC Variable', 'Noto Sans SC', system-ui, sans-serif;
+	--site-serif: 'Noto Serif SC Variable', 'Noto Serif SC', serif;
+	--archive-sans: var(--site-sans);
+	--archive-serif: var(--site-serif);
+	--sl-font: var(--site-sans);
 	--sl-color-accent-low: #e8f2ff;
 	--sl-color-accent: #0071e3;
 	--sl-color-accent-high: #004f9f;
@@ -51,8 +57,7 @@ html {
 }
 
 body {
-	letter-spacing: -0.012em;
-	-webkit-font-smoothing: antialiased;
+	letter-spacing: normal;
 }
 
 header.header {
@@ -171,12 +176,12 @@ html:not([data-has-sidebar]) .hero .copy {
 }
 
 html:not([data-has-sidebar]) .hero h1 {
-	max-width: 14ch;
+	max-width: 7em;
 	margin: 0;
 	font-size: clamp(3.7rem, 8.8vw, 7.8rem);
 	font-weight: 650;
 	line-height: 0.93;
-	letter-spacing: -0.072em;
+	letter-spacing: -0.04em;
 	color: #1d1d1f;
 }
 
@@ -209,7 +214,7 @@ html:not([data-has-sidebar]) .hero .tagline {
 	font-size: clamp(1.18rem, 2vw, 1.5rem);
 	font-weight: 400;
 	line-height: 1.45;
-	letter-spacing: -0.025em;
+	letter-spacing: -0.01em;
 	color: #6e6e73;
 }
 
@@ -253,12 +258,28 @@ html:not([data-has-sidebar]) .hero .sl-link-button.minimal {
 		padding-bottom: 6rem;
 	}
 
+	html:not([data-has-sidebar]) .hero .stack,
+	html:not([data-has-sidebar]) .hero .copy {
+		width: 100%;
+		min-width: 0;
+	}
+
 	html:not([data-has-sidebar]) .hero h1 {
-		font-size: clamp(3rem, 13vw, 4.6rem);
+		max-width: 100%;
+		font-size: clamp(2.25rem, 11.5vw, 4.6rem);
+		line-height: 1;
+		letter-spacing: -0.035em;
 	}
 
 	html:not([data-has-sidebar]) .hero h1 span {
 		white-space: nowrap;
+	}
+
+	html:not([data-has-sidebar]) .hero .tagline {
+		max-width: min(100%, 32rem);
+		font-size: clamp(1rem, 4.7vw, 1.2rem);
+		line-height: 1.6;
+		letter-spacing: 0;
 	}
 
 }
@@ -282,10 +303,7 @@ html[data-has-sidebar] {
 	--archive-line: #d8d4c5;
 	--archive-accent: #244a37;
 	--archive-accent-soft: #e6ece3;
-	--archive-serif: 'Songti SC', 'STSong', 'Noto Serif CJK SC', 'Source Han Serif SC',
-		Georgia, serif;
-	--archive-sans: 'SF Pro Text', 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
-	--sl-font: var(--archive-sans);
+	--sl-font: var(--site-sans);
 	--sl-color-white: var(--archive-ink);
 	--sl-color-gray-1: var(--archive-ink);
 	--sl-color-gray-2: #45443e;
@@ -1101,6 +1119,7 @@ html:not([data-has-sidebar]) {
 
 html:not([data-has-sidebar]) body {
 	background: var(--home-paper);
+	font-family: var(--site-sans);
 }
 
 html:not([data-has-sidebar]) header.header {
@@ -1109,7 +1128,7 @@ html:not([data-has-sidebar]) header.header {
 }
 
 html:not([data-has-sidebar]) header.header .site-title {
-	font-family: var(--archive-sans);
+	font-family: var(--site-sans);
 	font-size: 1.25rem;
 	font-weight: 700;
 	letter-spacing: -0.02em;
