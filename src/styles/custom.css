@@ -295,7 +295,7 @@ html:not([data-has-sidebar]) .hero .sl-link-button.minimal {
 }
 
 /* Editorial archive — selected knowledge-base direction */
-html[data-has-sidebar] {
+:root[data-has-sidebar] {
 	--archive-paper: #fffef2;
 	--archive-paper-deep: #f4f1e4;
 	--archive-ink: #1b1b18;
@@ -396,7 +396,17 @@ html site-search dialog {
 	border-radius: 0.25rem;
 	background: var(--archive-paper, var(--home-paper));
 	box-shadow: 0 1.5rem 4rem rgba(27, 27, 24, 0.18);
+	/* The site always renders a light paper theme, even when Starlight has a
+	   persisted `data-theme="dark"`. Keep its search-only semantic tokens in
+	   sync so result links do not inherit the dark theme's near-white text. */
+	--sl-color-white: var(--archive-ink, var(--home-ink));
+	--sl-color-gray-1: var(--archive-ink, var(--home-ink));
+	--sl-color-gray-2: #45443e;
+	--sl-color-gray-3: var(--archive-muted, var(--home-muted));
+	--sl-color-gray-4: #8a887e;
 	--sl-color-black: var(--archive-paper-deep, var(--home-paper-deep));
+	--sl-color-text: #45443e;
+	--sl-color-text-invert: var(--archive-paper, var(--home-paper));
 	--sl-color-accent-low: var(--archive-accent-soft, var(--home-green-light));
 	--sl-color-accent-high: var(--archive-accent, var(--home-green));
 }
@@ -1094,7 +1104,7 @@ html[data-has-sidebar] footer .meta {
 }
 
 /* Home palette aligned with the Editorial Archive direction */
-html:not([data-has-sidebar]) {
+:root:not([data-has-sidebar]) {
 	--home-paper: #fffef2;
 	--home-paper-deep: #f4f1e4;
 	--home-ink: #1b1b18;
