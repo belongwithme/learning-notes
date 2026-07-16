@@ -4,9 +4,13 @@
 :root {
 	--site-sans: 'Noto Sans SC Variable', 'Noto Sans SC', system-ui, sans-serif;
 	--site-serif: 'Noto Serif SC Variable', 'Noto Serif SC', serif;
+	--site-mono: ui-monospace, 'SFMono-Regular', Menlo, Monaco, 'Cascadia Code',
+		'Cascadia Mono', Consolas, 'Liberation Mono', 'Noto Sans SC Variable', 'Noto Sans SC',
+		monospace;
 	--archive-sans: var(--site-sans);
 	--archive-serif: var(--site-serif);
 	--sl-font: var(--site-sans);
+	--sl-font-mono: var(--site-mono);
 	--sl-color-accent-low: #e8f2ff;
 	--sl-color-accent: #0071e3;
 	--sl-color-accent-high: #004f9f;
@@ -384,6 +388,10 @@ html[data-has-sidebar] header.header site-search button {
 html[data-has-sidebar] header.header site-search button:hover {
 	color: var(--archive-ink);
 	background: transparent;
+}
+
+html header.header site-search button kbd {
+	color: var(--archive-ink, var(--home-ink));
 }
 
 /* Keep Pagefind's search panel in the same quiet editorial language as the docs. */

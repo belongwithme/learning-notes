@@ -1,0 +1,18 @@
+{/*
+	The site intentionally uses one light, paper-like palette. Keeping Starlight's
+	theme state light also makes syntax highlighting and all semantic color tokens
+	match the visible UI, regardless of OS preference or a stored dark preference.
+*/}
+<script is:inline>
+	window.StarlightThemeProvider = (() => {
+		const applyLightTheme = () => {
+			document.documentElement.dataset.theme = 'light';
+		};
+
+		applyLightTheme();
+
+		return {
+			updatePickers: applyLightTheme,
+		};
+	})();
+</script>

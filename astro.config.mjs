@@ -14,6 +14,8 @@ export default defineConfig({
 			components: {
 				Head: './src/components/SpeedInsights.astro',
 				PageTitle: './src/components/CustomPageTitle.astro',
+				ThemeProvider: './src/components/LightThemeProvider.astro',
+				ThemeSelect: './src/components/LightThemeSelect.astro',
 			},
 			locales: {
 				root: { label: '简体中文', lang: 'zh-CN' },
