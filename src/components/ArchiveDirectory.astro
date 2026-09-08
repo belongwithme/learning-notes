@@ -22,9 +22,9 @@ function getCategoryStats(urlPrefix: string) {
   // 例如 urlPrefix 是 '/knowledge/java-backend/'，则对应的目录结构前缀是 'knowledge/java-backend'
   const prefix = urlPrefix.replace(/^\//, '').replace(/\/$/, '');
   
-  // 过滤出该分类下的文档，通常还要剔除该分类的首页自身（如 knowledge/java-backend/index.mdx）
+  // Starlight 的文档 ID 不含扩展名，分类概览本身不计入文章数量。
   const categoryDocs = allDocs.filter(doc => {
-    return doc.id.startsWith(prefix) && doc.id !== `${prefix}/index.mdx` && doc.id !== `${prefix}.mdx` && doc.id !== `${prefix}.md`;
+    return doc.id.startsWith(`${prefix}/`) && !/\/index(?:\.mdx?)?$/.test(doc.id);
   });
   
   const count = categoryDocs.length;

@@ -1,0 +1,43 @@
+---
+title: 业务逻辑专辑
+description: 沿真实业务流程，整理任务目标、调用链、数据规则、状态流转与故障恢复。
+hero:
+  title: 业务逻辑
+  tagline: 从业务场景出发，把一次操作如何受理、执行、落库和恢复讲清楚。先连起主线，再对照代码与证据。
+tableOfContents:
+  minHeadingLevel: 2
+  maxHeadingLevel: 2
+---
+
+import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
+
+<ArchiveKicker title="BUSINESS LOGIC · 业务逻辑专辑" />
+
+## 居民收益付款
+
+围绕居民收益付款流程，梳理选单工作台、候选规则和异步任务之间的关系。目前收录 **1 篇**，从 S01 的工作集构建开始。
+
+<div className="business-logic-catalog">
+
+| 顺序 | 文章 | 主要内容 |
+| --- | --- | --- |
+| S01 | [选单工作集构建，通俗完整版](/knowledge/business-logic/resident-income/s01-选单工作集构建/) | 24 节完整内容：创建与受理、NEW 候选构建、REVISE 重提、两层所有权、断点恢复、排查 SQL 与源码证据。 |
+
+</div>
+
+## 阅读路线
+
+第一次阅读，先沿着业务操作理解工作集的来龙去脉；需要排障时，再进入并发控制和恢复章节。
+
+| 阅读目的 | 从这里开始 |
+| --- | --- |
+| 建立业务概念 | [阅读起点：先分清四个东西](/knowledge/business-logic/resident-income/s01-选单工作集构建/#guide-0) → [任务目标](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s1) → [完整调用链](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s3) |
+| 理解新建与重提 | [NEW 模式](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s9) → [REVISE 模式](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s12) |
+| 理解并发与恢复 | [两层所有权](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s7) → [重试与补偿](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s16) → [故障判断顺序](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s17) |
+| 对照排查依据 | [只读 SQL](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s21) → [源码证据索引](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s23) → [证据等级](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s24) |
+
+## 来源与内容状态
+
+S01 来自提供的《S01_选单工作集构建_通俗阅读版.html》，保留原有章节、业务说明、示例、表格、代码与证据边界，并适配平台的目录、搜索和代码复制功能。
+
+文章目前标记为 **草稿**：本次完成内容导入与格式校验，业务结论仍对应原文记录的源码基线及 2026-09-04 数据库核验，不代表重新验证了当前运行环境。

@@ -72,6 +72,13 @@ export const KnowledgeCategories: CategoryItem[] = [
     desc: '数据结构、图论、排序与常用算法思想。'
   },
   {
+    id: 'business-logic',
+    label: '业务逻辑',
+    slug: 'knowledge/business-logic',
+    url: '/knowledge/business-logic/',
+    desc: '按业务流程整理入口、规则、数据流、状态变化与故障恢复。'
+  },
+  {
     id: 'miscellaneous',
     label: '其他',
     slug: 'knowledge/miscellaneous',
@@ -120,6 +127,9 @@ export const KnowledgeSubcategories: Record<string, SubcategoryItem[]> = {
   ],
   'system-design': [
     { id: 'business-design', label: '业务系统设计' },
+  ],
+  'business-logic': [
+    { id: 'resident-income', label: '居民收益付款' },
   ],
   miscellaneous: [
     { id: 'personal-growth', label: '个人成长' },

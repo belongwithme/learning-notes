@@ -115,6 +115,60 @@ starlight-theme-select {
 	border-radius: 0.4rem;
 }
 
+/* Imported business articles use the site typography and keep wide facts readable. */
+.business-logic-catalog :is(th, td):first-child {
+	white-space: nowrap;
+}
+
+.business-logic-catalog :is(th, td):nth-child(2) {
+	min-width: 13rem;
+}
+
+html[data-has-sidebar] .main-pane:has(.business-logic-article) h1:not(.hero h1) {
+	font-size: clamp(2rem, 3.5vw, 3rem);
+	line-height: 1.35;
+}
+
+.business-logic-article {
+	min-width: 0;
+	line-height: 1.85;
+	overflow-wrap: anywhere;
+}
+
+.business-logic-article > .sl-heading-wrapper.level-h2 {
+	margin-top: 3rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--archive-line, var(--sl-color-hairline));
+}
+
+.business-logic-article > div[id] {
+	display: block;
+	scroll-margin-top: calc(var(--sl-nav-height) + 1rem);
+}
+
+.business-logic-article :not(pre) > code {
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
+
+.business-logic-article table {
+	display: block;
+	max-width: 100%;
+	overflow-x: auto;
+	font-size: 0.9rem;
+	line-height: 1.75;
+}
+
+.business-logic-article :is(th, td) {
+	min-width: 9rem;
+	padding: 0.8rem 1rem;
+	vertical-align: top;
+}
+
+.business-logic-article pre {
+	overflow-wrap: normal;
+}
+
 html:not([data-has-sidebar]) {
 	--sl-content-width: 100%;
 }
