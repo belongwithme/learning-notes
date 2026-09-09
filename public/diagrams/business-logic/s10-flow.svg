@@ -1,0 +1,830 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1490.2 2452.2" width="1490.2" height="2452.2" role="img" aria-label="S10 审核回调副作用补建完整流程图" style="background:#fff">
+<g class="graph" id="graph0" transform="scale(1 1) rotate(0) translate(21.6 2430.6)">
+<title>Flow</title>
+<!-- A -->
+<g class="node" id="node1">
+<title>A</title>
+<path d="M632.5,-2409C632.5,-2409 457.5,-2409 457.5,-2409 451.5,-2409 445.5,-2403 445.5,-2397 445.5,-2397 445.5,-2385 445.5,-2385 445.5,-2379 451.5,-2373 457.5,-2373 457.5,-2373 632.5,-2373 632.5,-2373 638.5,-2373 644.5,-2379 644.5,-2385 644.5,-2385 644.5,-2397 644.5,-2397 644.5,-2403 638.5,-2409 632.5,-2409" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="545" y="-2387.9">上游审核通过：正式明细更新完成</text>
+</g>
+<!-- B -->
+<g class="node" id="node2">
+<title>B</title>
+<path d="M629.5,-2344C629.5,-2344 460.5,-2344 460.5,-2344 454.5,-2344 448.5,-2338 448.5,-2332 448.5,-2332 448.5,-2318 448.5,-2318 448.5,-2312 454.5,-2306 460.5,-2306 460.5,-2306 629.5,-2306 629.5,-2306 635.5,-2306 641.5,-2312 641.5,-2318 641.5,-2318 641.5,-2332 641.5,-2332 641.5,-2338 635.5,-2344 629.5,-2344" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="545" y="-2328.4">FINALIZE 本地事务提交审核结果</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="545" y="-2315.4">写刷新分片和副作用 seed</text>
+</g>
+<!-- A&#45;&gt;B -->
+<g class="edge" id="edge1">
+<title>A-&gt;B</title>
+<path d="M545,-2372.85C545,-2366.05 545,-2358.09 545,-2350.69" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="547.28,-2350.59 545,-2344.09 542.73,-2350.59 547.28,-2350.59" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- P -->
+<g class="node" id="node3">
+<title>P</title>
+<path d="M613.5,-2277C613.5,-2277 476.5,-2277 476.5,-2277 470.5,-2277 464.5,-2271 464.5,-2265 464.5,-2265 464.5,-2251 464.5,-2251 464.5,-2245 470.5,-2239 476.5,-2239 476.5,-2239 613.5,-2239 613.5,-2239 619.5,-2239 625.5,-2245 625.5,-2251 625.5,-2251 625.5,-2265 625.5,-2265 625.5,-2271 619.5,-2277 613.5,-2277" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="545" y="-2261.4">progress 主任务 SUCCESS</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="545" y="-2248.4">finalize_time 有值</text>
+</g>
+<!-- B&#45;&gt;P -->
+<g class="edge" id="edge2">
+<title>B-&gt;P</title>
+<path d="M545,-2305.89C545,-2298.99 545,-2291 545,-2283.6" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="547.28,-2283.51 545,-2277.01 542.73,-2283.51 547.28,-2283.51" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- U -->
+<g class="node" id="node4">
+<title>U</title>
+<path d="M622.5,-2200C622.5,-2200 435.5,-2200 435.5,-2200 429.5,-2200 423.5,-2194 423.5,-2188 423.5,-2188 423.5,-2176 423.5,-2176 423.5,-2170 429.5,-2164 435.5,-2164 435.5,-2164 622.5,-2164 622.5,-2164 628.5,-2164 634.5,-2170 634.5,-2176 634.5,-2176 634.5,-2188 634.5,-2188 634.5,-2194 628.5,-2200 622.5,-2200" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="529" y="-2178.9">独立进度链路继续锁释放与状态刷新</text>
+</g>
+<!-- P&#45;&gt;U -->
+<g class="edge" id="edge3">
+<title>P-&gt;U</title>
+<path d="M541.04,-2238.71C538.95,-2229.02 536.35,-2217 534.11,-2206.62" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="536.29,-2205.94 532.69,-2200.07 531.84,-2206.9 536.29,-2205.94" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- C -->
+<g class="node" id="node5">
+<title>C</title>
+<path d="M777.5,-2200C777.5,-2200 664.5,-2200 664.5,-2200 658.5,-2200 652.5,-2194 652.5,-2188 652.5,-2188 652.5,-2176 652.5,-2176 652.5,-2170 658.5,-2164 664.5,-2164 664.5,-2164 777.5,-2164 777.5,-2164 783.5,-2164 789.5,-2170 789.5,-2176 789.5,-2176 789.5,-2188 789.5,-2188 789.5,-2194 783.5,-2200 777.5,-2200" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="721" y="-2178.9">XXL RebuildTask 触发</text>
+</g>
+<!-- P&#45;&gt;C -->
+<g class="edge" id="edge4">
+<title>P-&gt;C</title>
+<path d="M588.05,-2238.9C614.15,-2227.92 647.46,-2213.92 674.2,-2202.68" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="675.39,-2204.64 680.5,-2200.03 673.63,-2200.45 675.39,-2204.64" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="672.5" y="-2217">作为扫描依据</text>
+</g>
+<!-- D -->
+<g class="node" id="node6">
+<title>D</title>
+<path d="M773,-2135C773,-2135 669,-2135 669,-2135 663,-2135 657,-2129 657,-2123 657,-2123 657,-2109 657,-2109 657,-2103 663,-2097 669,-2097 669,-2097 773,-2097 773,-2097 779,-2097 785,-2103 785,-2109 785,-2109 785,-2123 785,-2123 785,-2129 779,-2135 773,-2135" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="721" y="-2119.4">解析 maxTaskCount</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="721" y="-2106.4">默认 100 上限 500</text>
+</g>
+<!-- C&#45;&gt;D -->
+<g class="edge" id="edge5">
+<title>C-&gt;D</title>
+<path d="M721,-2163.85C721,-2157.05 721,-2149.09 721,-2141.69" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="723.28,-2141.59 721,-2135.09 718.73,-2141.59 723.28,-2141.59" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- E -->
+<g class="node" id="node7">
+<title>E</title>
+<path d="M818,-2068C818,-2068 624,-2068 624,-2068 618,-2068 612,-2062 612,-2056 612,-2056 612,-2029 612,-2029 612,-2023 618,-2017 624,-2017 624,-2017 818,-2017 818,-2017 824,-2017 830,-2023 830,-2029 830,-2029 830,-2056 830,-2056 830,-2062 824,-2068 818,-2068" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="721" y="-2052.4">查审核通过且已 FINALIZE 的 progres</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="721" y="-2039.4">s</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="721" y="-2026.4">按 update_time 和 id 取前 N 条</text>
+</g>
+<!-- D&#45;&gt;E -->
+<g class="edge" id="edge6">
+<title>D-&gt;E</title>
+<path d="M721,-2096.96C721,-2090.24 721,-2082.41 721,-2074.85" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="723.28,-2074.52 721,-2068.02 718.73,-2074.52 723.28,-2074.52" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- F -->
+<g class="node" id="node8">
+<title>F</title>
+<path d="M479.2,-1985.83C479.2,-1985.83 404.76,-1972.17 404.76,-1972.17 398.86,-1971.08 398.86,-1968.92 404.76,-1967.83 404.76,-1967.83 479.2,-1954.17 479.2,-1954.17 485.1,-1953.08 496.9,-1953.08 502.8,-1954.17 502.8,-1954.17 577.24,-1967.83 577.24,-1967.83 583.14,-1968.92 583.14,-1971.08 577.24,-1972.17 577.24,-1972.17 502.8,-1985.83 502.8,-1985.83 496.9,-1986.92 485.1,-1986.92 479.2,-1985.83" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="491" y="-1966.9">还有 progress?</text>
+</g>
+<!-- E&#45;&gt;F -->
+<g class="edge" id="edge7">
+<title>E-&gt;F</title>
+<path d="M640.88,-2016.94C604.21,-2005.7 562.31,-1992.86 532.15,-1983.61" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="532.78,-1981.43 525.9,-1981.7 531.45,-1985.78 532.78,-1981.43" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- ER -->
+<g class="node" id="node16">
+<title>ER</title>
+<path d="M708.5,-1743C708.5,-1743 621.5,-1743 621.5,-1743 615.5,-1743 609.5,-1737 609.5,-1731 609.5,-1731 609.5,-1717 609.5,-1717 609.5,-1711 615.5,-1705 621.5,-1705 621.5,-1705 708.5,-1705 708.5,-1705 714.5,-1705 720.5,-1711 720.5,-1717 720.5,-1717 720.5,-1731 720.5,-1731 720.5,-1737 714.5,-1743 708.5,-1743" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="665" y="-1727.4">Rebuild 失败</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="665" y="-1714.4">已提交 seed 保留</text>
+</g>
+<!-- E&#45;&gt;ER -->
+<g class="edge" id="edge17">
+<title>E-&gt;ER</title>
+<path d="M783.29,-2016.94C800.23,-2005.99 814,-1990.96 814,-1971 814,-1971 814,-1971 814,-1806.5 814,-1764.66 768.22,-1744.16 727.41,-1734.2" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="727.75,-1731.95 720.91,-1732.69 726.72,-1736.38 727.75,-1731.95" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="834" y="-1885">查询异常</text>
+</g>
+<!-- G -->
+<g class="node" id="node9">
+<title>G</title>
+<path d="M583,-1913C583,-1913 399,-1913 399,-1913 393,-1913 387,-1907 387,-1901 387,-1901 387,-1874 387,-1874 387,-1868 393,-1862 399,-1862 399,-1862 583,-1862 583,-1862 589,-1862 595,-1868 595,-1874 595,-1874 595,-1901 595,-1901 595,-1907 589,-1913 583,-1913" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="491" y="-1897.4">验证审核身份</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="491" y="-1884.4">根据计数和付款方式构造 0 至 2 类 s</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="491" y="-1871.4">eed</text>
+</g>
+<!-- F&#45;&gt;G -->
+<g class="edge" id="edge8">
+<title>F-&gt;G</title>
+<path d="M491,-1951.93C491,-1942.6 491,-1930.76 491,-1919.84" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="493.28,-1919.69 491,-1913.19 488.73,-1919.69 493.28,-1919.69" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="496" y="-1930">有</text>
+</g>
+<!-- L -->
+<g class="node" id="node14">
+<title>L</title>
+<path d="M699.5,-1905.5C699.5,-1905.5 632.5,-1905.5 632.5,-1905.5 626.5,-1905.5 620.5,-1899.5 620.5,-1893.5 620.5,-1893.5 620.5,-1881.5 620.5,-1881.5 620.5,-1875.5 626.5,-1869.5 632.5,-1869.5 632.5,-1869.5 699.5,-1869.5 699.5,-1869.5 705.5,-1869.5 711.5,-1875.5 711.5,-1881.5 711.5,-1881.5 711.5,-1893.5 711.5,-1893.5 711.5,-1899.5 705.5,-1905.5 699.5,-1905.5" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="666" y="-1884.4">只读巡检调用</text>
+</g>
+<!-- F&#45;&gt;L -->
+<g class="edge" id="edge15">
+<title>F-&gt;L</title>
+<path d="M517.58,-1956.77C545.48,-1943.94 589.8,-1923.55 622.75,-1908.4" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="623.81,-1910.41 628.76,-1905.63 621.91,-1906.28 623.81,-1910.41" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="584" y="-1930">无</text>
+</g>
+<!-- H -->
+<g class="node" id="node10">
+<title>H</title>
+<path d="M515.5,-1833C515.5,-1833 392.5,-1833 392.5,-1833 386.5,-1833 380.5,-1827 380.5,-1821 380.5,-1821 380.5,-1794 380.5,-1794 380.5,-1788 386.5,-1782 392.5,-1782 392.5,-1782 515.5,-1782 515.5,-1782 521.5,-1782 527.5,-1788 527.5,-1794 527.5,-1794 527.5,-1821 527.5,-1821 527.5,-1827 521.5,-1833 515.5,-1833" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="454" y="-1817.4">单条 progress 事务</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="454" y="-1804.4">按 taskCode 查存在性</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="454" y="-1791.4">缺失时 INSERT IGNORE</text>
+</g>
+<!-- G&#45;&gt;H -->
+<g class="edge" id="edge9">
+<title>G-&gt;H</title>
+<path d="M479.29,-1861.82C475.89,-1854.64 472.12,-1846.7 468.56,-1839.2" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="470.47,-1837.92 465.63,-1833.02 466.36,-1839.87 470.47,-1837.92" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- G&#45;&gt;ER -->
+<g class="edge" id="edge18">
+<title>G-&gt;ER</title>
+<path d="M512.44,-1861.77C520.02,-1852.82 528.53,-1842.56 536,-1833 553.25,-1810.94 552.49,-1801.07 573,-1782 587.71,-1768.33 606.17,-1756.14 622.69,-1746.57" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="624.15,-1748.36 628.68,-1743.17 621.9,-1744.4 624.15,-1748.36" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="583" y="-1805">异常</text>
+</g>
+<!-- I -->
+<g class="node" id="node11">
+<title>I</title>
+<path d="M311.5,-1742C311.5,-1742 184.5,-1742 184.5,-1742 178.5,-1742 172.5,-1736 172.5,-1730 172.5,-1730 172.5,-1718 172.5,-1718 172.5,-1712 178.5,-1706 184.5,-1706 184.5,-1706 311.5,-1706 311.5,-1706 317.5,-1706 323.5,-1712 323.5,-1718 323.5,-1718 323.5,-1730 323.5,-1730 323.5,-1736 317.5,-1742 311.5,-1742" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="248" y="-1720.9">提交后重查每个预期任务</text>
+</g>
+<!-- H&#45;&gt;I -->
+<g class="edge" id="edge10">
+<title>H-&gt;I</title>
+<path d="M391.91,-1781.94C361.63,-1769.95 325.7,-1755.74 297.32,-1744.51" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="297.9,-1742.3 291.02,-1742.02 296.23,-1746.53 297.9,-1742.3" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- H&#45;&gt;ER -->
+<g class="edge" id="edge19">
+<title>H-&gt;ER</title>
+<path d="M486.27,-1781.95C499.29,-1773.01 514.8,-1763.51 530,-1757 552.97,-1747.15 579.49,-1740.03 602.92,-1735.04" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="603.53,-1737.24 609.44,-1733.69 602.61,-1732.78 603.53,-1737.24" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="540" y="-1760">异常</text>
+</g>
+<!-- J -->
+<g class="node" id="node12">
+<title>J</title>
+<path d="M150.32,-1673.26C150.32,-1673.26 11.68,-1640.74 11.68,-1640.74 5.84,-1639.37 5.84,-1636.63 11.68,-1635.26 11.68,-1635.26 150.32,-1602.74 150.32,-1602.74 156.16,-1601.37 167.84,-1601.37 173.68,-1602.74 173.68,-1602.74 312.32,-1635.26 312.32,-1635.26 318.16,-1636.63 318.16,-1639.37 312.32,-1640.74 312.32,-1640.74 173.68,-1673.26 173.68,-1673.26 167.84,-1674.63 156.16,-1674.63 150.32,-1673.26" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="162" y="-1641.4">任务存在且非</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="162" y="-1628.4">SUCCESS 或 CANCELLED?</text>
+</g>
+<!-- I&#45;&gt;J -->
+<g class="edge" id="edge11">
+<title>I-&gt;J</title>
+<path d="M230.18,-1705.6C220.71,-1696.34 208.72,-1684.64 197.45,-1673.63" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="198.91,-1671.87 192.67,-1668.96 195.73,-1675.13 198.91,-1671.87" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- J&#45;&gt;F -->
+<g class="edge" id="edge12">
+<title>J-&gt;F</title>
+<path d="M151.11,-1673.79C147.32,-1688.78 144,-1706.59 144,-1723 144,-1888.5 144,-1888.5 144,-1888.5 144,-1942.06 302.83,-1959.99 405.58,-1965.99" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="405.64,-1968.27 412.26,-1966.37 405.9,-1963.73 405.64,-1968.27" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="149" y="-1805">否</text>
+</g>
+<!-- K -->
+<g class="node" id="node13">
+<title>K</title>
+<path d="M345.5,-1561C345.5,-1561 250.5,-1561 250.5,-1561 244.5,-1561 238.5,-1555 238.5,-1549 238.5,-1549 238.5,-1537 238.5,-1537 238.5,-1531 244.5,-1525 250.5,-1525 250.5,-1525 345.5,-1525 345.5,-1525 351.5,-1525 357.5,-1531 357.5,-1537 357.5,-1537 357.5,-1549 357.5,-1549 357.5,-1555 351.5,-1561 345.5,-1561" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="298" y="-1539.9">发送 S09 kick 信号</text>
+</g>
+<!-- J&#45;&gt;K -->
+<g class="edge" id="edge13">
+<title>J-&gt;K</title>
+<path d="M202.44,-1609.35C223.16,-1595.18 247.99,-1578.2 267.14,-1565.1" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="268.81,-1566.71 272.89,-1561.17 266.24,-1562.96 268.81,-1566.71" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="256" y="-1578">是</text>
+</g>
+<!-- K&#45;&gt;F -->
+<g class="edge" id="edge14">
+<title>K-&gt;F</title>
+<path d="M315.38,-1561.15C331.17,-1578.63 352,-1607.31 352,-1637 352,-1888.5 352,-1888.5 352,-1888.5 352,-1928.7 396.08,-1949.15 434.59,-1959.35" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="434.35,-1961.64 441.21,-1961.02 435.46,-1957.22 434.35,-1961.64" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- N -->
+<g class="node" id="node17">
+<title>N</title>
+<path d="M286.11,-1494.4C286.11,-1494.4 176.1,-1479.6 176.1,-1479.6 170.15,-1478.8 170.15,-1477.2 176.1,-1476.4 176.1,-1476.4 286.11,-1461.6 286.11,-1461.6 292.05,-1460.8 303.95,-1460.8 309.89,-1461.6 309.89,-1461.6 419.9,-1476.4 419.9,-1476.4 425.85,-1477.2 425.85,-1478.8 419.9,-1479.6 419.9,-1479.6 309.89,-1494.4 309.89,-1494.4 303.95,-1495.2 292.05,-1495.2 286.11,-1494.4" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="298" y="-1474.9">开关 灰度和队列准入?</text>
+</g>
+<!-- K&#45;&gt;N -->
+<g class="edge" id="edge21">
+<title>K-&gt;N</title>
+<path d="M298,-1524.78C298,-1517.98 298,-1510.04 298,-1502.71" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="300.28,-1502.69 298,-1496.19 295.73,-1502.69 300.28,-1502.69" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- M -->
+<g class="node" id="node15">
+<title>M</title>
+<path d="M717.5,-1826.5C717.5,-1826.5 614.5,-1826.5 614.5,-1826.5 608.5,-1826.5 602.5,-1820.5 602.5,-1814.5 602.5,-1814.5 602.5,-1800.5 602.5,-1800.5 602.5,-1794.5 608.5,-1788.5 614.5,-1788.5 614.5,-1788.5 717.5,-1788.5 717.5,-1788.5 723.5,-1788.5 729.5,-1794.5 729.5,-1800.5 729.5,-1800.5 729.5,-1814.5 729.5,-1814.5 729.5,-1820.5 723.5,-1826.5 717.5,-1826.5" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="666" y="-1810.9">返回扫描及补建数量</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="666" y="-1797.9">不等待异步业务</text>
+</g>
+<!-- L&#45;&gt;M -->
+<g class="edge" id="edge16">
+<title>L-&gt;M</title>
+<path d="M666,-1869.19C666,-1858.61 666,-1844.91 666,-1833.2" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="668.28,-1833.08 666,-1826.58 663.73,-1833.08 668.28,-1833.08" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- L&#45;&gt;ER -->
+<g class="edge" id="edge20">
+<title>L-&gt;ER</title>
+<path d="M702.14,-1869.42C716.34,-1860.68 731.11,-1848.56 739,-1833 749.25,-1812.78 749.01,-1802.34 739,-1782 731.92,-1767.61 719.27,-1755.84 706.41,-1746.8" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="707.57,-1744.83 700.9,-1743.1 705.03,-1748.61 707.57,-1744.83" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="756" y="-1805">异常</text>
+</g>
+<!-- O -->
+<g class="node" id="node18">
+<title>O</title>
+<path d="M424,-1421C424,-1421 314,-1421 314,-1421 308,-1421 302,-1415 302,-1409 302,-1409 302,-1397 302,-1397 302,-1391 308,-1385 314,-1385 314,-1385 424,-1385 424,-1385 430,-1385 436,-1391 436,-1397 436,-1397 436,-1409 436,-1409 436,-1415 430,-1421 424,-1421" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="369" y="-1399.9">有界线程池 kickExact</text>
+</g>
+<!-- N&#45;&gt;O -->
+<g class="edge" id="edge22">
+<title>N-&gt;O</title>
+<path d="M312.71,-1461.87C322.8,-1451.5 336.36,-1437.56 347.64,-1425.96" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="349.42,-1427.4 352.32,-1421.15 346.15,-1424.23 349.42,-1427.4" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="348" y="-1438">通过</text>
+</g>
+<!-- W -->
+<g class="node" id="node19">
+<title>W</title>
+<path d="M308,-1371C308,-1371 224,-1371 224,-1371 218,-1371 212,-1365 212,-1359 212,-1359 212,-1347 212,-1347 212,-1341 218,-1335 224,-1335 224,-1335 308,-1335 308,-1335 314,-1335 320,-1341 320,-1347 320,-1347 320,-1359 320,-1359 320,-1365 314,-1371 308,-1371" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="266" y="-1349.9">seed 留在数据库</text>
+</g>
+<!-- N&#45;&gt;W -->
+<g class="edge" id="edge23">
+<title>N-&gt;W</title>
+<path d="M293.68,-1460.41C288.13,-1439.07 278.46,-1401.88 272.14,-1377.6" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="274.29,-1376.83 270.45,-1371.11 269.89,-1377.98 274.29,-1376.83" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="305" y="-1438">未通过</text>
+</g>
+<!-- R -->
+<g class="node" id="node22">
+<title>R</title>
+<path d="M439,-1321C439,-1321 303,-1321 303,-1321 297,-1321 291,-1315 291,-1309 291,-1309 291,-1297 291,-1297 291,-1291 297,-1285 303,-1285 303,-1285 439,-1285 439,-1285 445,-1285 451,-1291 451,-1297 451,-1297 451,-1309 451,-1309 451,-1315 445,-1321 439,-1321" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="371" y="-1299.9">按任务编码查记录并 claim</text>
+</g>
+<!-- O&#45;&gt;R -->
+<g class="edge" id="edge26">
+<title>O-&gt;R</title>
+<path d="M369.35,-1384.93C369.67,-1369.15 370.15,-1345.54 370.51,-1327.89" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="372.79,-1327.75 370.65,-1321.2 368.24,-1327.66 372.79,-1327.75" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- X -->
+<g class="node" id="node20">
+<title>X</title>
+<path d="M488,-318C488,-318 334,-318 334,-318 328,-318 322,-312 322,-306 322,-306 322,-294 322,-294 322,-288 328,-282 334,-282 334,-282 488,-282 488,-282 494,-282 500,-288 500,-294 500,-294 500,-306 500,-306 500,-312 494,-318 488,-318" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="411" y="-296.9">独立 SideEffectTask 定时扫描</text>
+</g>
+<!-- W&#45;&gt;X -->
+<g class="edge" id="edge24">
+<title>W-&gt;X</title>
+<path d="M265,-1334.94C264.13,-1318.55 263,-1293.09 263,-1271 263,-1271 263,-1271 263,-481.5 263,-409.99 333.31,-351.31 377.01,-321.74" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="378.32,-323.6 382.46,-318.11 375.79,-319.82 378.32,-323.6" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- Q -->
+<g class="node" id="node21">
+<title>Q</title>
+<path d="M395.5,-252C395.5,-252 264.5,-252 264.5,-252 258.5,-252 252.5,-246 252.5,-240 252.5,-240 252.5,-226 252.5,-226 252.5,-220 258.5,-214 264.5,-214 264.5,-214 395.5,-214 395.5,-214 401.5,-214 407.5,-220 407.5,-226 407.5,-226 407.5,-240 407.5,-240 407.5,-246 401.5,-252 395.5,-252" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="330" y="-236.4">到期 PENDING 或 FAILED</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="330" y="-223.4">且未耗尽重试次数</text>
+</g>
+<!-- X&#45;&gt;Q -->
+<g class="edge" id="edge25">
+<title>X-&gt;Q</title>
+<path d="M389.72,-281.92C379.98,-274.11 368.31,-264.74 357.88,-256.37" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="359.05,-254.39 352.56,-252.1 356.2,-257.94 359.05,-254.39" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- Q&#45;&gt;R -->
+<g class="edge" id="edge27">
+<title>Q-&gt;R</title>
+<path d="M321.96,-252.4C318.59,-260.93 315,-271.31 313,-281 294.97,-368.43 301,-392.23 301,-481.5 301,-1239 301,-1239 301,-1239 301,-1256.91 313.82,-1271.03 328.48,-1281.32" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="327.27,-1283.25 333.95,-1284.94 329.79,-1279.45 327.27,-1283.25" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- S -->
+<g class="node" id="node23">
+<title>S</title>
+<path d="M436.14,-1254.2C436.14,-1254.2 341.05,-1239.8 341.05,-1239.8 335.12,-1238.9 335.12,-1237.1 341.05,-1236.2 341.05,-1236.2 436.14,-1221.8 436.14,-1221.8 442.07,-1220.9 453.93,-1220.9 459.86,-1221.8 459.86,-1221.8 554.95,-1236.2 554.95,-1236.2 560.88,-1237.1 560.88,-1238.9 554.95,-1239.8 554.95,-1239.8 459.86,-1254.2 459.86,-1254.2 453.93,-1255.1 442.07,-1255.1 436.14,-1254.2" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="448" y="-1234.9">条件更新抢占成功?</text>
+</g>
+<!-- R&#45;&gt;S -->
+<g class="edge" id="edge28">
+<title>R-&gt;S</title>
+<path d="M392.04,-1284.78C402.28,-1276.41 414.61,-1266.32 425.08,-1257.75" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="426.78,-1259.3 430.37,-1253.42 423.9,-1255.78 426.78,-1259.3" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- SK -->
+<g class="node" id="node24">
+<title>SK</title>
+<path d="M623.5,-1181C623.5,-1181 580.5,-1181 580.5,-1181 574.5,-1181 568.5,-1175 568.5,-1169 568.5,-1169 568.5,-1157 568.5,-1157 568.5,-1151 574.5,-1145 580.5,-1145 580.5,-1145 623.5,-1145 623.5,-1145 629.5,-1145 635.5,-1151 635.5,-1157 635.5,-1157 635.5,-1169 635.5,-1169 635.5,-1175 629.5,-1181 623.5,-1181" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="602" y="-1159.9">本次跳过</text>
+</g>
+<!-- S&#45;&gt;SK -->
+<g class="edge" id="edge29">
+<title>S-&gt;SK</title>
+<path d="M475.18,-1224.12C499.34,-1212.66 534.98,-1195.77 562.32,-1182.81" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="563.48,-1184.78 568.38,-1179.94 561.53,-1180.67 563.48,-1184.78" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="540" y="-1198">否</text>
+</g>
+<!-- T -->
+<g class="node" id="node25">
+<title>T</title>
+<path d="M538,-1181C538,-1181 346,-1181 346,-1181 340,-1181 334,-1175 334,-1169 334,-1169 334,-1157 334,-1157 334,-1151 340,-1145 346,-1145 346,-1145 538,-1145 538,-1145 544,-1145 550,-1151 550,-1157 550,-1157 550,-1169 550,-1169 550,-1175 544,-1181 538,-1181" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="442" y="-1159.9">RUNNING 且 running_attempt 加一</text>
+</g>
+<!-- S&#45;&gt;T -->
+<g class="edge" id="edge30">
+<title>S-&gt;T</title>
+<path d="M446.61,-1220.07C445.82,-1210.46 444.82,-1198.29 443.95,-1187.74" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="446.2,-1187.38 443.4,-1181.09 441.67,-1187.76 446.2,-1187.38" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="451" y="-1198">是</text>
+</g>
+<!-- STUCK -->
+<g class="node" id="node26">
+<title>STUCK</title>
+<path d="M654.5,-1106C654.5,-1106 551.5,-1106 551.5,-1106 545.5,-1106 539.5,-1100 539.5,-1094 539.5,-1094 539.5,-1080 539.5,-1080 539.5,-1074 545.5,-1068 551.5,-1068 551.5,-1068 654.5,-1068 654.5,-1068 660.5,-1068 666.5,-1074 666.5,-1080 666.5,-1080 666.5,-1094 666.5,-1094 666.5,-1100 660.5,-1106 654.5,-1106" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="603" y="-1090.4">保留 RUNNING</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="603" y="-1077.4">本链路不能自动接管</text>
+</g>
+<!-- T&#45;&gt;STUCK -->
+<g class="edge" id="edge31">
+<title>T-&gt;STUCK</title>
+<path d="M479.34,-1144.84C502.63,-1134.13 532.77,-1120.28 557.46,-1108.93" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="558.66,-1110.88 563.61,-1106.1 556.76,-1106.75 558.66,-1110.88" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="577" y="-1123">进程退出且未写终态</text>
+</g>
+<!-- V -->
+<g class="node" id="node27">
+<title>V</title>
+<path d="M509,-1106C509,-1106 349,-1106 349,-1106 343,-1106 337,-1100 337,-1094 337,-1094 337,-1080 337,-1080 337,-1074 343,-1068 349,-1068 349,-1068 509,-1068 509,-1068 515,-1068 521,-1074 521,-1080 521,-1080 521,-1094 521,-1094 521,-1100 515,-1106 509,-1106" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="429" y="-1090.4">校验 payload 和 progress 身份</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="429" y="-1077.4">校验 FINALIZE 门禁</text>
+</g>
+<!-- T&#45;&gt;V -->
+<g class="edge" id="edge32">
+<title>T-&gt;V</title>
+<path d="M438.98,-1144.84C437.31,-1135.31 435.2,-1123.29 433.35,-1112.76" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="435.55,-1112.11 432.18,-1106.1 431.06,-1112.9 435.55,-1112.11" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- TYPE -->
+<g class="node" id="node28">
+<title>TYPE</title>
+<path d="M700.31,-1036.29C700.31,-1036.29 645.92,-1023.71 645.92,-1023.71 640.08,-1022.35 640.08,-1019.65 645.92,-1018.29 645.92,-1018.29 700.31,-1005.71 700.31,-1005.71 706.15,-1004.35 717.85,-1004.35 723.69,-1005.71 723.69,-1005.71 778.08,-1018.29 778.08,-1018.29 783.92,-1019.65 783.92,-1022.35 778.08,-1023.71 778.08,-1023.71 723.69,-1036.29 723.69,-1036.29 717.85,-1037.65 706.15,-1037.65 700.31,-1036.29" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="712" y="-1017.9">副作用类型</text>
+</g>
+<!-- V&#45;&gt;TYPE -->
+<g class="edge" id="edge33">
+<title>V-&gt;TYPE</title>
+<path d="M508.96,-1067.92C560.58,-1056.24 625.76,-1041.5 668.14,-1031.92" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="668.64,-1034.14 674.48,-1030.48 667.64,-1029.7 668.64,-1034.14" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- FAIL -->
+<g class="node" id="node29">
+<title>FAIL</title>
+<path d="M653,-463C653,-463 541,-463 541,-463 535,-463 529,-457 529,-451 529,-451 529,-437 529,-437 529,-431 535,-425 541,-425 541,-425 653,-425 653,-425 659,-425 665,-431 665,-437 665,-437 665,-451 665,-451 665,-457 659,-463 653,-463" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="597" y="-447.4">任务 FAILED 次数加一</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="597" y="-434.4">写退避时间和错误</text>
+</g>
+<!-- V&#45;&gt;FAIL -->
+<g class="edge" id="edge34">
+<title>V-&gt;FAIL</title>
+<path d="M407.77,-1067.76C396.52,-1056.01 385,-1039.66 385,-1022 385,-1022 385,-1022 385,-526.5 385,-496.25 461.13,-472.99 522.15,-459.2" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="522.9,-461.37 528.75,-457.73 521.92,-456.92 522.9,-461.37" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="405" y="-800.5">校验异常</text>
+</g>
+<!-- PA -->
+<g class="node" id="node32">
+<title>PA</title>
+<path d="M681.5,-964C681.5,-964 542.5,-964 542.5,-964 536.5,-964 530.5,-958 530.5,-952 530.5,-952 530.5,-938 530.5,-938 530.5,-932 536.5,-926 542.5,-926 542.5,-926 681.5,-926 681.5,-926 687.5,-926 693.5,-932 693.5,-938 693.5,-938 693.5,-952 693.5,-952 693.5,-958 687.5,-964 681.5,-964" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="612" y="-948.4">按版本轮次读全部正式明细</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="612" y="-935.4">验证并形成整单通知快照</text>
+</g>
+<!-- TYPE&#45;&gt;PA -->
+<g class="edge" id="edge38">
+<title>TYPE-&gt;PA</title>
+<path d="M694.12,-1006.77C679.69,-996.09 659.06,-980.82 642.09,-968.26" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="643.06,-966.16 636.48,-964.12 640.36,-969.81 643.06,-966.16" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="701.5" y="-981">合作方校核结果</text>
+</g>
+<!-- BA -->
+<g class="node" id="node40">
+<title>BA</title>
+<path d="M879.11,-895.37C879.11,-895.37 771.99,-880.63 771.99,-880.63 766.04,-879.82 766.04,-878.18 771.99,-877.37 771.99,-877.37 879.11,-862.63 879.11,-862.63 885.06,-861.82 896.94,-861.82 902.89,-862.63 902.89,-862.63 1010.01,-877.37 1010.01,-877.37 1015.96,-878.18 1015.96,-879.82 1010.01,-880.63 1010.01,-880.63 902.89,-895.37 902.89,-895.37 896.94,-896.18 885.06,-896.18 879.11,-895.37" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="891" y="-875.9">当前付款单仍为司库?</text>
+</g>
+<!-- TYPE&#45;&gt;BA -->
+<g class="edge" id="edge50">
+<title>TYPE-&gt;BA</title>
+<path d="M728.84,-1006.83C760.86,-981.79 830.59,-927.25 867.31,-898.53" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="868.76,-900.29 872.47,-894.49 865.95,-896.7 868.76,-900.29" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="859.5" y="-942.5">司库基础数据</text>
+</g>
+<!-- OLD -->
+<g class="node" id="node46">
+<title>OLD</title>
+<path d="M1435,-546.5C1435,-546.5 1285,-546.5 1285,-546.5 1279,-546.5 1273,-540.5 1273,-534.5 1273,-534.5 1273,-520.5 1273,-520.5 1273,-514.5 1279,-508.5 1285,-508.5 1285,-508.5 1435,-508.5 1435,-508.5 1441,-508.5 1447,-514.5 1447,-520.5 1447,-520.5 1447,-534.5 1447,-534.5 1447,-540.5 1441,-546.5 1435,-546.5" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="1360" y="-530.9">额外等待锁释放完成</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="1360" y="-517.9">只写或刷新 type 30 预留日志</text>
+</g>
+<!-- TYPE&#45;&gt;OLD -->
+<g class="edge" id="edge63">
+<title>TYPE-&gt;OLD</title>
+<path d="M781.44,-1019.02C945.62,-1015.78 1344,-1002.13 1344,-946 1344,-946 1344,-946 1344,-616.5 1344,-594.84 1348.75,-570.66 1353.07,-553.13" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1355.36,-553.39 1354.76,-546.53 1350.95,-552.26 1355.36,-553.39" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="1388" y="-800.5">历史不合格预留类型</text>
+</g>
+<!-- RET -->
+<g class="node" id="node30">
+<title>RET</title>
+<path d="M585.14,-393.2C585.14,-393.2 490.05,-378.8 490.05,-378.8 484.12,-377.9 484.12,-376.1 490.05,-375.2 490.05,-375.2 585.14,-360.8 585.14,-360.8 591.07,-359.9 602.93,-359.9 608.86,-360.8 608.86,-360.8 703.95,-375.2 703.95,-375.2 709.88,-376.1 709.88,-377.9 703.95,-378.8 703.95,-378.8 608.86,-393.2 608.86,-393.2 602.93,-394.1 591.07,-394.1 585.14,-393.2" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="597" y="-373.9">自动次数尚未耗尽?</text>
+</g>
+<!-- FAIL&#45;&gt;RET -->
+<g class="edge" id="edge35">
+<title>FAIL-&gt;RET</title>
+<path d="M597,-424.89C597,-417.76 597,-409.47 597,-401.86" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="599.28,-401.62 597,-395.12 594.73,-401.62 599.28,-401.62" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- RET&#45;&gt;X -->
+<g class="edge" id="edge36">
+<title>RET-&gt;X</title>
+<path d="M566.29,-363.62C537.24,-351.9 493.2,-334.14 459.43,-320.53" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="460.13,-318.36 453.25,-318.03 458.42,-322.58 460.13,-318.36" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="537" y="-336">是 到期后</text>
+</g>
+<!-- MAN -->
+<g class="node" id="node31">
+<title>MAN</title>
+<path d="M681.5,-318C681.5,-318 530.5,-318 530.5,-318 524.5,-318 518.5,-312 518.5,-306 518.5,-306 518.5,-294 518.5,-294 518.5,-288 524.5,-282 530.5,-282 530.5,-282 681.5,-282 681.5,-282 687.5,-282 693.5,-288 693.5,-294 693.5,-294 693.5,-306 693.5,-306 693.5,-312 687.5,-318 681.5,-318" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="606" y="-296.9">需人工按任务重试或处理数据</text>
+</g>
+<!-- RET&#45;&gt;MAN -->
+<g class="edge" id="edge37">
+<title>RET-&gt;MAN</title>
+<path d="M599.04,-358.98C600.25,-348.89 601.81,-335.94 603.14,-324.84" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="605.42,-324.94 603.93,-318.21 600.9,-324.39 605.42,-324.94" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="608" y="-336">否</text>
+</g>
+<!-- PA&#45;&gt;FAIL -->
+<g class="edge" id="edge47">
+<title>PA-&gt;FAIL</title>
+<path d="M530.17,-940.18C491.21,-933.45 453,-917.34 453,-880 453,-880 453,-880 453,-526.5 453,-490.67 487.19,-470.4 522.25,-459.05" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="523.25,-461.12 528.8,-457.03 521.91,-456.77 523.25,-461.12" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="473" y="-697.5">数据异常</text>
+</g>
+<!-- PB -->
+<g class="node" id="node33">
+<title>PB</title>
+<path d="M600.11,-895.37C600.11,-895.37 492.99,-880.63 492.99,-880.63 487.04,-879.82 487.04,-878.18 492.99,-877.37 492.99,-877.37 600.11,-862.63 600.11,-862.63 606.06,-861.82 617.94,-861.82 623.89,-862.63 623.89,-862.63 731.01,-877.37 731.01,-877.37 736.96,-878.18 736.96,-879.82 731.01,-880.63 731.01,-880.63 623.89,-895.37 623.89,-895.37 617.94,-896.18 606.06,-896.18 600.11,-895.37" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="612" y="-875.9">外部幂等日志已存在?</text>
+</g>
+<!-- PA&#45;&gt;PB -->
+<g class="edge" id="edge39">
+<title>PA-&gt;PB</title>
+<path d="M612,-925.83C612,-918.93 612,-910.96 612,-903.62" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="614.28,-903.61 612,-897.11 609.73,-903.61 614.28,-903.61" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- PC -->
+<g class="node" id="node34">
+<title>PC</title>
+<path d="M776,-770C776,-770 600,-770 600,-770 594,-770 588,-764 588,-758 588,-758 588,-744 588,-744 588,-738 594,-732 600,-732 600,-732 776,-732 776,-732 782,-732 788,-738 788,-744 788,-744 788,-758 788,-758 788,-764 782,-770 776,-770" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="688" y="-754.4">不投递</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="688" y="-741.4">遗留 WAIT_PROCESS 关闭为 FAIL</text>
+</g>
+<!-- PB&#45;&gt;PC -->
+<g class="edge" id="edge40">
+<title>PB-&gt;PC</title>
+<path d="M633.67,-863.93C647.36,-853.88 664.25,-839.15 674,-822 681.84,-808.2 685.34,-790.7 686.88,-776.64" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="689.16,-776.73 687.49,-770.05 684.63,-776.31 689.16,-776.73" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="668" y="-839">是</text>
+</g>
+<!-- PD -->
+<g class="node" id="node35">
+<title>PD</title>
+<path d="M653.5,-822C653.5,-822 492.5,-822 492.5,-822 486.5,-822 480.5,-816 480.5,-810 480.5,-810 480.5,-796 480.5,-796 480.5,-790 486.5,-784 492.5,-784 492.5,-784 653.5,-784 653.5,-784 659.5,-784 665.5,-790 665.5,-796 665.5,-796 665.5,-810 665.5,-810 665.5,-816 659.5,-822 653.5,-822" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="573" y="-806.4">在 fenced 事务中</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="573" y="-793.4">提交 WAIT_PROCESS 预占日志</text>
+</g>
+<!-- PB&#45;&gt;PD -->
+<g class="edge" id="edge41">
+<title>PB-&gt;PD</title>
+<path d="M603.54,-861.94C598.32,-852.04 591.53,-839.16 585.68,-828.06" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="587.59,-826.79 582.54,-822.11 583.56,-828.92 587.59,-826.79" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="600" y="-839">否</text>
+</g>
+<!-- OK -->
+<g class="node" id="node39">
+<title>OK</title>
+<path d="M1275,-462C1275,-462 1165,-462 1165,-462 1159,-462 1153,-456 1153,-450 1153,-450 1153,-438 1153,-438 1153,-432 1159,-426 1165,-426 1165,-426 1275,-426 1275,-426 1281,-426 1287,-432 1287,-438 1287,-438 1287,-450 1287,-450 1287,-456 1281,-462 1275,-462" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="1220" y="-440.9">副作用任务 SUCCESS</text>
+</g>
+<!-- PC&#45;&gt;OK -->
+<g class="edge" id="edge45">
+<title>PC-&gt;OK</title>
+<path d="M740.55,-731.93C787.75,-716.39 859.24,-694.56 923,-682 980.02,-670.77 995.99,-679.27 1053,-668 1092.05,-660.28 1113.21,-673.32 1139,-643 1179.72,-595.12 1186.93,-552.86 1150,-502 1138.19,-485.74 1118.81,-504.26 1107,-488 1104.13,-484.04 1104.05,-480.9 1107,-477 1108.55,-474.96 1126.32,-469.58 1147.33,-463.8" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1147.96,-465.99 1153.63,-462.08 1146.76,-461.6 1147.96,-465.99" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- PD&#45;&gt;FAIL -->
+<g class="edge" id="edge48">
+<title>PD-&gt;FAIL</title>
+<path d="M556.83,-783.71C541.57,-764.51 521,-732.75 521,-701 521,-701 521,-701 521,-526.5 521,-502.05 528.6,-495.13 545,-477 548.23,-473.43 551.94,-470.12 555.87,-467.1" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="557.41,-468.79 561.34,-463.14 554.74,-465.11 557.41,-468.79" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="550.5" y="-615">本地写入异常</text>
+</g>
+<!-- PE -->
+<g class="node" id="node36">
+<title>PE</title>
+<path d="M745.5,-718C745.5,-718 568.5,-718 568.5,-718 562.5,-718 556.5,-712 556.5,-706 556.5,-706 556.5,-694 556.5,-694 556.5,-688 562.5,-682 568.5,-682 568.5,-682 745.5,-682 745.5,-682 751.5,-682 757.5,-688 757.5,-694 757.5,-694 757.5,-706 757.5,-706 757.5,-712 751.5,-718 745.5,-718" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="657" y="-696.9">事务外 Feign 到 inputpiece-plant</text>
+</g>
+<!-- PD&#45;&gt;PE -->
+<g class="edge" id="edge42">
+<title>PD-&gt;PE</title>
+<path d="M572.23,-783.7C572.53,-768.33 575.3,-746.6 587,-732 590.03,-728.22 593.61,-724.89 597.53,-721.96" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="598.97,-723.73 603.07,-718.2 596.41,-719.97 598.97,-723.73" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- PF -->
+<g class="node" id="node37">
+<title>PF</title>
+<path d="M821.5,-636.5C821.5,-636.5 648.5,-636.5 648.5,-636.5 642.5,-636.5 636.5,-630.5 636.5,-624.5 636.5,-624.5 636.5,-610.5 636.5,-610.5 636.5,-604.5 642.5,-598.5 648.5,-598.5 648.5,-598.5 821.5,-598.5 821.5,-598.5 827.5,-598.5 833.5,-604.5 833.5,-610.5 833.5,-610.5 833.5,-624.5 833.5,-624.5 833.5,-630.5 827.5,-636.5 821.5,-636.5" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="735" y="-620.9">按字典和系统配置</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="735" y="-607.9">跳过或加密签名后发合作方 HTTP</text>
+</g>
+<!-- PE&#45;&gt;PF -->
+<g class="edge" id="edge43">
+<title>PE-&gt;PF</title>
+<path d="M673.54,-681.93C684.91,-670.19 700.14,-654.47 712.6,-641.62" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="714.51,-642.92 717.4,-636.67 711.24,-639.75 714.51,-642.92" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- PG -->
+<g class="node" id="node38">
+<title>PG</title>
+<path d="M789,-546.5C789,-546.5 637,-546.5 637,-546.5 631,-546.5 625,-540.5 625,-534.5 625,-534.5 625,-520.5 625,-520.5 625,-514.5 631,-508.5 637,-508.5 637,-508.5 789,-508.5 789,-508.5 795,-508.5 801,-514.5 801,-520.5 801,-520.5 801,-534.5 801,-534.5 801,-540.5 795,-546.5 789,-546.5" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="713" y="-530.9">在 fenced 事务中</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="713" y="-517.9">写外部日志 SUCCESS 或 FAIL</text>
+</g>
+<!-- PF&#45;&gt;PG -->
+<g class="edge" id="edge44">
+<title>PF-&gt;PG</title>
+<path d="M730.44,-598.27C727.17,-585.17 722.72,-567.37 719.13,-553.03" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="721.34,-552.46 717.55,-546.71 716.92,-553.57 721.34,-552.46" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- PG&#45;&gt;FAIL -->
+<g class="edge" id="edge49">
+<title>PG-&gt;FAIL</title>
+<path d="M687.26,-508.41C669.83,-496.17 646.72,-479.93 628.25,-466.95" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="629.3,-464.91 622.67,-463.04 626.68,-468.64 629.3,-464.91" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="684.5" y="-480">结果落库异常</text>
+</g>
+<!-- PG&#45;&gt;OK -->
+<g class="edge" id="edge46">
+<title>PG-&gt;OK</title>
+<path d="M772.45,-508.39C811,-497.41 862.52,-484.19 909,-477 1012.4,-461.01 1040.48,-478.22 1144,-463 1144.83,-462.88 1145.66,-462.75 1146.5,-462.62" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1146.95,-464.85 1152.98,-461.54 1146.2,-460.36 1146.95,-464.85" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- BA&#45;&gt;FAIL -->
+<g class="edge" id="edge59">
+<title>BA-&gt;FAIL</title>
+<path d="M869.27,-863.78C855.08,-853.57 837.03,-838.71 825,-822 785.66,-767.34 817.86,-726.15 767,-682 718.55,-639.94 675.93,-685.65 628,-643 575.01,-595.85 590.55,-558.93 590,-488 589.96,-483.11 589.47,-481.86 590,-477 590.26,-474.6 590.63,-472.11 591.06,-469.63" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="593.31,-469.98 592.32,-463.16 588.84,-469.11 593.31,-469.98" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="768.5" y="-660">付款单缺失</text>
+</g>
+<!-- BA&#45;&gt;OK -->
+<g class="edge" id="edge51">
+<title>BA-&gt;OK</title>
+<path d="M1000.1,-875.92C1104.11,-870.88 1245,-854.7 1245,-804 1245,-804 1245,-804 1245,-526.5 1245,-506.12 1237.76,-484.08 1231.08,-468.06" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1233.13,-467.08 1228.46,-462.02 1228.96,-468.89 1233.13,-467.08" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="1279.5" y="-660">非司库历史任务</text>
+</g>
+<!-- BB -->
+<g class="node" id="node41">
+<title>BB</title>
+<path d="M936.5,-822C936.5,-822 845.5,-822 845.5,-822 839.5,-822 833.5,-816 833.5,-810 833.5,-810 833.5,-796 833.5,-796 833.5,-790 839.5,-784 845.5,-784 845.5,-784 936.5,-784 936.5,-784 942.5,-784 948.5,-790 948.5,-796 948.5,-796 948.5,-810 948.5,-810 948.5,-816 942.5,-822 936.5,-822" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="891" y="-806.4">付款单级 Redis 锁</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="891" y="-793.4">查已有推送批次</text>
+</g>
+<!-- BA&#45;&gt;BB -->
+<g class="edge" id="edge52">
+<title>BA-&gt;BB</title>
+<path d="M891,-860.84C891,-851.31 891,-839.29 891,-828.76" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="893.28,-828.6 891,-822.1 888.73,-828.6 893.28,-828.6" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="896" y="-839">是</text>
+</g>
+<!-- BB&#45;&gt;FAIL -->
+<g class="edge" id="edge60">
+<title>BB-&gt;FAIL</title>
+<path d="M892.89,-783.94C896.05,-743.17 897.45,-643.56 843,-592 768.67,-521.62 688.53,-625.24 616,-553 594.3,-531.39 592.37,-494.29 593.93,-469.7" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="596.21,-469.78 594.45,-463.12 591.67,-469.42 596.21,-469.78" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="904.5" y="-615">锁或来源冲突</text>
+</g>
+<!-- BC -->
+<g class="node" id="node42">
+<title>BC</title>
+<path d="M1027.17,-716.01C1027.17,-716.01 943.6,-701.99 943.6,-701.99 937.69,-700.99 937.69,-699.01 943.6,-698.01 943.6,-698.01 1027.17,-683.99 1027.17,-683.99 1033.08,-682.99 1044.92,-682.99 1050.83,-683.99 1050.83,-683.99 1134.4,-698.01 1134.4,-698.01 1140.31,-699.01 1140.31,-700.99 1134.4,-701.99 1134.4,-701.99 1050.83,-716.01 1050.83,-716.01 1044.92,-717.01 1033.08,-717.01 1027.17,-716.01" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="1039" y="-696.9">同源批次已存在?</text>
+</g>
+<!-- BB&#45;&gt;BC -->
+<g class="edge" id="edge53">
+<title>BB-&gt;BC</title>
+<path d="M917.46,-783.94C944.63,-765.4 986.62,-736.74 1013.45,-718.43" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1014.85,-720.24 1018.94,-714.69 1012.29,-716.48 1014.85,-720.24" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- BC&#45;&gt;OK -->
+<g class="edge" id="edge54">
+<title>BC-&gt;OK</title>
+<path d="M1092.53,-690.93C1122.34,-683.56 1157.47,-669.55 1178,-643 1218.33,-590.83 1222.1,-508.76 1221.24,-468.65" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1223.51,-468.56 1221.05,-462.13 1218.97,-468.69 1223.51,-468.56" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="1216" y="-570">是</text>
+</g>
+<!-- BD -->
+<g class="node" id="node43">
+<title>BD</title>
+<path d="M1117.5,-643C1117.5,-643 960.5,-643 960.5,-643 954.5,-643 948.5,-637 948.5,-631 948.5,-631 948.5,-604 948.5,-604 948.5,-598 954.5,-592 960.5,-592 960.5,-592 1117.5,-592 1117.5,-592 1123.5,-592 1129.5,-598 1129.5,-604 1129.5,-604 1129.5,-631 1129.5,-631 1129.5,-637 1123.5,-643 1117.5,-643" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="1039" y="-627.4">取当前版本项目付款信息</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="1039" y="-614.4">查询档案 配置 编号及可付明细</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="1039" y="-601.4">付款前复核</text>
+</g>
+<!-- BC&#45;&gt;BD -->
+<g class="edge" id="edge55">
+<title>BC-&gt;BD</title>
+<path d="M1039,-681.93C1039,-672.6 1039,-660.76 1039,-649.84" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1041.28,-649.69 1039,-643.19 1036.73,-649.69 1041.28,-649.69" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="1044" y="-660">否</text>
+</g>
+<!-- BD&#45;&gt;FAIL -->
+<g class="edge" id="edge61">
+<title>BD-&gt;FAIL</title>
+<path d="M948.41,-592.3C907.26,-580.16 864.01,-565.43 847,-553 824.39,-536.47 833.04,-517.91 810,-502 775.13,-477.93 758.93,-487.97 718,-477 703.03,-472.99 687.02,-468.73 671.69,-464.67" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="672.04,-462.41 665.17,-462.94 670.88,-466.81 672.04,-462.41" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="891" y="-525">复核或远程查询异常</text>
+</g>
+<!-- BE -->
+<g class="node" id="node44">
+<title>BE</title>
+<path d="M1128.5,-553C1128.5,-553 955.5,-553 955.5,-553 949.5,-553 943.5,-547 943.5,-541 943.5,-541 943.5,-514 943.5,-514 943.5,-508 949.5,-502 955.5,-502 955.5,-502 1128.5,-502 1128.5,-502 1134.5,-502 1140.5,-508 1140.5,-514 1140.5,-514 1140.5,-541 1140.5,-541 1140.5,-547 1134.5,-553 1128.5,-553" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="1042" y="-537.4">同一事务内按公司及拆分规则</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="1042" y="-524.4">保存批次和明细</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="1042" y="-511.4">付款单 push_status 置 PUSHING</text>
+</g>
+<!-- BD&#45;&gt;BE -->
+<g class="edge" id="edge56">
+<title>BD-&gt;BE</title>
+<path d="M1039.84,-591.99C1040.17,-582.06 1040.57,-570.47 1040.93,-559.93" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1043.21,-559.76 1041.16,-553.19 1038.66,-559.61 1043.21,-559.76" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- BE&#45;&gt;FAIL -->
+<g class="edge" id="edge62">
+<title>BE-&gt;FAIL</title>
+<path d="M956.96,-501.97C924.07,-493.14 885.99,-483.71 851,-477 817.73,-470.62 734.01,-460.49 671.73,-453.34" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="671.73,-451.05 665.01,-452.57 671.21,-455.57 671.73,-451.05" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="918" y="-480">落库异常</text>
+</g>
+<!-- BE&#45;&gt;OK -->
+<g class="edge" id="edge57">
+<title>BE-&gt;OK</title>
+<path d="M1055.36,-501.76C1061.44,-492.68 1069.43,-483.14 1079,-477 1103.87,-461.04 1115.18,-469.52 1144,-463 1144.82,-462.81 1145.64,-462.63 1146.47,-462.44" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1147.05,-464.64 1152.88,-460.98 1146.04,-460.21 1147.05,-464.64" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- BF -->
+<g class="node" id="node45">
+<title>BF</title>
+<path d="M941,-462C941,-462 777,-462 777,-462 771,-462 765,-456 765,-450 765,-450 765,-438 765,-438 765,-432 771,-426 777,-426 777,-426 941,-426 941,-426 947,-426 953,-432 953,-438 953,-438 953,-450 953,-450 953,-456 947,-462 941,-462" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="859" y="-440.9">事务提交后 Kafka 创建批次通知</text>
+</g>
+<!-- BE&#45;&gt;BF -->
+<g class="edge" id="edge58">
+<title>BE-&gt;BF</title>
+<path d="M1023.24,-501.89C1015.16,-492.83 1005.03,-483.27 994,-477 983.3,-470.92 971.49,-465.99 959.45,-462" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="960.02,-459.79 953.13,-459.99 958.64,-464.13 960.02,-459.79" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- BG -->
+<g class="node" id="node47">
+<title>BG</title>
+<path d="M1062.5,-396C1062.5,-396 935.5,-396 935.5,-396 929.5,-396 923.5,-390 923.5,-384 923.5,-384 923.5,-370 923.5,-370 923.5,-364 929.5,-358 935.5,-358 935.5,-358 1062.5,-358 1062.5,-358 1068.5,-358 1074.5,-364 1074.5,-370 1074.5,-370 1074.5,-384 1074.5,-384 1074.5,-390 1068.5,-396 1062.5,-396" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="999" y="-380.4">进件服务查询待推送批次</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="999" y="-367.4">逐批 pushPayment</text>
+</g>
+<!-- BF&#45;&gt;BG -->
+<g class="edge" id="edge66">
+<title>BF-&gt;BG</title>
+<path d="M895.78,-425.92C913.54,-417.68 935.02,-407.71 953.77,-399" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="955.08,-400.9 960.01,-396.1 953.16,-396.77 955.08,-400.9" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- OLD&#45;&gt;FAIL -->
+<g class="edge" id="edge65">
+<title>OLD-&gt;FAIL</title>
+<path d="M1272.85,-515.08C1188.38,-504.27 1056.56,-488.09 942,-477 859.49,-469.01 838.54,-470.78 756,-463 728.46,-460.41 698.3,-457.11 671.71,-454.04" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="671.75,-451.76 665.03,-453.27 671.23,-456.28 671.75,-451.76" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="1084.5" y="-480">锁释放门禁未满足</text>
+</g>
+<!-- OLD&#45;&gt;OK -->
+<g class="edge" id="edge64">
+<title>OLD-&gt;OK</title>
+<path d="M1328.93,-508.41C1307.1,-495.7 1277.85,-478.68 1255.16,-465.47" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1256.31,-463.5 1249.55,-462.2 1254.02,-467.44 1256.31,-463.5" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- BH -->
+<g class="node" id="node49">
+<title>BH</title>
+<path d="M1073,-319C1073,-319 925,-319 925,-319 919,-319 913,-313 913,-307 913,-307 913,-293 913,-293 913,-287 919,-281 925,-281 925,-281 1073,-281 1073,-281 1079,-281 1085,-287 1085,-293 1085,-293 1085,-307 1085,-307 1085,-313 1079,-319 1073,-319" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="999" y="-303.4">策略调用司库</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="999" y="-290.4">Feign 回财务更新批次和明细</text>
+</g>
+<!-- BG&#45;&gt;BH -->
+<g class="edge" id="edge68">
+<title>BG-&gt;BH</title>
+<path d="M999,-357.84C999,-348.24 999,-336.31 999,-325.86" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1001.28,-325.75 999,-319.25 996.73,-325.75 1001.28,-325.75" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- PR -->
+<g class="node" id="node48">
+<title>PR</title>
+<path d="M1122.5,-462C1122.5,-462 983.5,-462 983.5,-462 977.5,-462 971.5,-456 971.5,-450 971.5,-450 971.5,-438 971.5,-438 971.5,-432 977.5,-426 983.5,-426 983.5,-426 1122.5,-426 1122.5,-426 1128.5,-426 1134.5,-432 1134.5,-438 1134.5,-438 1134.5,-450 1134.5,-450 1134.5,-456 1128.5,-462 1122.5,-462" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="1053" y="-440.9">独立付款批次推送重试任务</text>
+</g>
+<!-- PR&#45;&gt;BG -->
+<g class="edge" id="edge67">
+<title>PR-&gt;BG</title>
+<path d="M1038.81,-425.92C1032.62,-418.47 1025.25,-409.6 1018.55,-401.53" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1019.94,-399.65 1014.04,-396.1 1016.44,-402.55 1019.94,-399.65" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- BI -->
+<g class="node" id="node50">
+<title>BI</title>
+<path d="M1188.5,-252C1188.5,-252 1049.5,-252 1049.5,-252 1043.5,-252 1037.5,-246 1037.5,-240 1037.5,-240 1037.5,-226 1037.5,-226 1037.5,-220 1043.5,-214 1049.5,-214 1049.5,-214 1188.5,-214 1188.5,-214 1194.5,-214 1200.5,-220 1200.5,-226 1200.5,-226 1200.5,-240 1200.5,-240 1200.5,-246 1194.5,-252 1188.5,-252" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="1119" y="-236.4">独立查证任务查询司库结果</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="1119" y="-223.4">回写批次与明细</text>
+</g>
+<!-- BH&#45;&gt;BI -->
+<g class="edge" id="edge69">
+<title>BH-&gt;BI</title>
+<path d="M1032.43,-280.89C1047.12,-272.93 1064.48,-263.53 1079.78,-255.24" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1081.12,-257.11 1085.75,-252.01 1078.95,-253.1 1081.12,-257.11" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- BJ -->
+<g class="node" id="node51">
+<title>BJ</title>
+<path d="M1055.5,-185C1055.5,-185 868.5,-185 868.5,-185 862.5,-185 856.5,-179 856.5,-173 856.5,-173 856.5,-159 856.5,-159 856.5,-153 862.5,-147 868.5,-147 868.5,-147 1055.5,-147 1055.5,-147 1061.5,-147 1067.5,-153 1067.5,-159 1067.5,-159 1067.5,-173 1067.5,-173 1067.5,-179 1061.5,-185 1055.5,-185" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="962" y="-169.4">提交后 paymentQueryCallback</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="962" y="-156.4">过滤当前发布身份和未同步终态明细</text>
+</g>
+<!-- BH&#45;&gt;BJ -->
+<g class="edge" id="edge71">
+<title>BH-&gt;BJ</title>
+<path d="M978.86,-280.84C971.44,-272.82 963.89,-262.77 960,-252 953.01,-232.63 954.23,-209.14 956.79,-191.76" fill="none" stroke="black" stroke-dasharray="5,2" stroke-width="0.8"></path>
+<polygon fill="black" points="959.06,-191.97 957.86,-185.19 954.57,-191.24 959.06,-191.97" stroke="black" stroke-width="0.8"></polygon>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="10.00" text-anchor="middle" x="994.5" y="-230.5">存在终态明细时</text>
+</g>
+<!-- BI&#45;&gt;BJ -->
+<g class="edge" id="edge70">
+<title>BI-&gt;BJ</title>
+<path d="M1075.27,-213.89C1055.53,-205.72 1032.12,-196.03 1011.73,-187.59" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="1012.37,-185.39 1005.5,-185.01 1010.63,-189.6 1012.37,-185.39" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- BK -->
+<g class="node" id="node52">
+<title>BK</title>
+<path d="M1019.5,-118C1019.5,-118 904.5,-118 904.5,-118 898.5,-118 892.5,-112 892.5,-106 892.5,-106 892.5,-79 892.5,-79 892.5,-73 898.5,-67 904.5,-67 904.5,-67 1019.5,-67 1019.5,-67 1025.5,-67 1031.5,-73 1031.5,-79 1031.5,-79 1031.5,-106 1031.5,-106 1031.5,-112 1025.5,-118 1019.5,-118" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="962" y="-102.4">写财务付款结果</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="962" y="-89.4">result_synced 置 1</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="962" y="-76.4">更新正式账单支付摘要</text>
+</g>
+<!-- BJ&#45;&gt;BK -->
+<g class="edge" id="edge72">
+<title>BJ-&gt;BK</title>
+<path d="M962,-146.96C962,-140.24 962,-132.41 962,-124.85" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="964.28,-124.52 962,-118.02 959.73,-124.52 964.28,-124.52" stroke="black" stroke-width="0.8"></polygon>
+</g>
+<!-- BL -->
+<g class="node" id="node53">
+<title>BL</title>
+<path d="M1025.5,-38C1025.5,-38 898.5,-38 898.5,-38 892.5,-38 886.5,-32 886.5,-26 886.5,-26 886.5,-12 886.5,-12 886.5,-6 892.5,0 898.5,0 898.5,0 1025.5,0 1025.5,0 1031.5,0 1037.5,-6 1037.5,-12 1037.5,-12 1037.5,-26 1037.5,-26 1037.5,-32 1031.5,-38 1025.5,-38" fill="none" stroke="black" stroke-width="0.8"></path>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="962" y="-22.4">提交后刷新站月底层状态</text>
+<text font-family="Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.00" text-anchor="middle" x="962" y="-9.4">释放活跃账单锁</text>
+</g>
+<!-- BK&#45;&gt;BL -->
+<g class="edge" id="edge73">
+<title>BK-&gt;BL</title>
+<path d="M962,-66.89C962,-59.86 962,-52.2 962,-45.14" fill="none" stroke="black" stroke-width="0.8"></path>
+<polygon fill="black" points="964.28,-44.83 962,-38.33 959.73,-44.83 964.28,-44.83" stroke="black" stroke-width="0.8"></polygon>
+</g>
+</g>
+</svg>

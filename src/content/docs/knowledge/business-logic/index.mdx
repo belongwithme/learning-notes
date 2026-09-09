@@ -15,7 +15,7 @@ import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
 
 ## 居民收益付款
 
-围绕居民收益付款流程，梳理选单工作台、候选规则和异步任务之间的关系。目前收录 **6 篇**，按 S01 工作集构建 → S02 批量调整 → S03 提交构建 → S04 锁激活 → S05 审核计划创建理解主线；S06 说明失败提交的锁释放补偿分支。
+围绕居民收益付款流程，梳理选单工作台、候选规则和异步任务之间的关系。目前收录 **10 篇**。先读 S01～S05，理解从选单到审核计划创建的主线；再读 S07～S09，理解审核回调、明细进度与独立后续任务。S06 说明失败提交的锁释放补偿，S10 说明审核后续任务的缺失补建。
 
 <div className="business-logic-catalog">
 
@@ -27,6 +27,10 @@ import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
 | S04 | [账单锁激活任务，通俗完整版](/knowledge/business-logic/resident-income/s04-账单锁激活任务/) | 13 章及原文对照：锁激活、底表同步、事务与执行权、失败重试、审核创建交接和源码索引。 |
 | S05 | [审核计划创建任务，通俗完整版](/knowledge/business-logic/resident-income/s05-审核计划创建任务/) | 12 章及原文对照：远程审核配置、本地审批实例、状态推进、重试与独立回调链的边界。 |
 | S06 | [账单锁释放补偿任务，通俗完整版](/knowledge/business-logic/resident-income/s06-账单锁释放补偿任务/) | 11 章及源码附录、原文对照：失败提交的精确锁释放、领取条件、事务边界、重试与最终清理。 |
+| S07 | [审核回调任务，通俗完整版](/knowledge/business-logic/resident-income/s07-审核回调任务/) | 12 章及原文对照：审核结果受理、回调消费、明细进度、主业务生效、重试与独立后续支线。 |
+| S08 | [审核回调进度任务，通俗完整版](/knowledge/business-logic/resident-income/s08-审核回调进度任务/) | 13 章及原文对照：分批明细推进、主业务生效、状态刷新、执行权、恢复机制和源码索引。 |
+| S09 | [审核后续任务，通俗完整版](/knowledge/business-logic/resident-income/s09-审核后续任务/) | 12 章及原文对照：审核通过后的通知、付款批次准备、任务领取、失败重试与实际支付边界。 |
+| S10 | [审核回调副作用补建，通俗完整版](/knowledge/business-logic/resident-income/s10-审核回调副作用补建/) | 12 章及原文对照：后续任务缺失补建、候选筛选、幂等受理、事务边界和消费者分工。 |
 
 </div>
 
@@ -40,12 +44,14 @@ import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
 | 理解新建与重提 | [NEW 模式](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s9) → [REVISE 模式](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s12) |
 | 理解批量调整 | [S02 任务概览](/knowledge/business-logic/resident-income/s02-选单工作集批量调整/#s1) → [筛选规则](/knowledge/business-logic/resident-income/s02-选单工作集批量调整/#s4) → [分批与事务边界](/knowledge/business-logic/resident-income/s02-选单工作集批量调整/#s5) → [成功、失败与重复执行](/knowledge/business-logic/resident-income/s02-选单工作集批量调整/#s8) |
 | 理解提交到审核 | [S03 提交构建](/knowledge/business-logic/resident-income/s03-居民收益提交构建/#chapter-3) → [S04 锁激活与同步](/knowledge/business-logic/resident-income/s04-账单锁激活任务/#sec-3) → [S05 审核计划创建](/knowledge/business-logic/resident-income/s05-审核计划创建任务/#ch-3) |
+| 理解审核结果如何生效 | [S07 回调受理与消费](/knowledge/business-logic/resident-income/s07-审核回调任务/#chapter-3) → [S08 分批推进与刷新](/knowledge/business-logic/resident-income/s08-审核回调进度任务/#chapter-3) → [S09 独立后续任务](/knowledge/business-logic/resident-income/s09-审核后续任务/#chapter-3) |
+| 排查后续任务缺失与重试 | [S10 补建候选规则](/knowledge/business-logic/resident-income/s10-审核回调副作用补建/#chapter-04) → [补建的异常与重复执行](/knowledge/business-logic/resident-income/s10-审核回调副作用补建/#chapter-08) → [S09 消费失败与重试](/knowledge/business-logic/resident-income/s09-审核后续任务/#chapter-8) |
 | 排查失败提交与锁释放 | [S03 失败与补偿](/knowledge/business-logic/resident-income/s03-居民收益提交构建/#chapter-8) → [S06 释放范围](/knowledge/business-logic/resident-income/s06-账单锁释放补偿任务/#ch-4) → [事务、重试与重复执行](/knowledge/business-logic/resident-income/s06-账单锁释放补偿任务/#ch-8) |
 | 理解并发与恢复 | [两层所有权](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s7) → [重试与补偿](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s16) → [故障判断顺序](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s17) |
 | 对照排查依据 | [只读 SQL](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s21) → [源码证据索引](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s23) → [证据等级](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s24) |
 
 ## 来源与内容状态
 
-六篇文章均来自提供的 HTML 阅读版，具体文件名保留在文章元数据中。导入保留原有章节、业务说明、示例、表格、代码与证据边界，并适配平台的目录、搜索和代码复制功能；S02～S06 保留逐章原文对照，S03～S06 另保留完整流程图及 Mermaid 源码。
+十篇文章均来自提供的 HTML 阅读版，具体文件名保留在文章元数据中。导入保留原有章节、业务说明、示例、表格、代码与证据边界，并适配平台的目录、搜索和代码复制功能；S02～S10 保留逐章原文对照，S03～S10 另保留完整流程图及 Mermaid 源码。
 
-文章目前标记为 **草稿**：本次完成内容导入与格式校验。S01 对应其原文源码基线及 2026-09-04 数据库核验；S02～S06 保留各自原文的源码分析日期、工作区状态和未验证事项，本次导入未重新检查业务源码、运行任务或核验数据库及线上环境。S05、S06 中原文归档编号与源码阶段编号的差异也按原文保留。各篇结论的适用范围以篇首说明为准。
+文章目前标记为 **草稿**：本次完成内容导入与格式校验。S01 对应其原文源码基线及 2026-09-04 数据库核验；S02～S10 保留各自原文的源码分析日期、工作区状态和未验证事项，本次导入未重新检查业务源码、运行任务或核验数据库及线上环境。部分文档中原文归档编号与源码阶段编号的差异也按原文保留。各篇结论的适用范围以篇首说明为准。
