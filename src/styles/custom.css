@@ -169,6 +169,21 @@ html[data-has-sidebar] .main-pane:has(.business-logic-article) h1:not(.hero h1) 
 	overflow-wrap: normal;
 }
 
+.business-logic-flow img {
+	display: block;
+	width: 100%;
+	height: auto;
+	background: #fff;
+	border: 1px solid var(--sl-color-hairline);
+	border-radius: 0.5rem;
+}
+
+.business-logic-flow figcaption {
+	margin-top: 0.75rem;
+	font-size: 0.85rem;
+	color: var(--sl-color-gray-2);
+}
+
 html:not([data-has-sidebar]) {
 	--sl-content-width: 100%;
 }
