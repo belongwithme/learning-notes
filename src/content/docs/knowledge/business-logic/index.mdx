@@ -15,7 +15,7 @@ import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
 
 ## 居民收益付款
 
-围绕居民收益付款流程，梳理选单工作台、候选规则和异步任务之间的关系。目前收录 **14 篇**。先读 S01～S05，理解从选单到审核计划创建的主线；再读 S07～S09，理解审核回调、明细进度与独立后续任务。S06 说明失败提交的锁释放补偿，S10 说明审核后续任务的缺失补建。S11～S14 继续说明付款状态刷新、查询快照与作废后的数据更新。
+围绕居民收益付款流程，梳理选单工作台、候选规则和异步任务之间的关系。目前收录 **16 篇**。先读 S01～S05，理解从选单到审核计划创建的主线；再读 S07～S09，理解审核回调、明细进度与独立后续任务。S06 说明失败提交的锁释放补偿，S10 说明审核后续任务的缺失补建。S11～S14 继续说明付款状态刷新、查询快照与作废后的数据更新。另有两篇扩展阅读，连接月度全量统计提交、批量后台处理与已有快照刷新。
 
 <div className="business-logic-catalog">
 
@@ -35,6 +35,8 @@ import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
 | S12 | [付款状态分片刷新，通俗完整版](/knowledge/business-logic/resident-income/s12-付款状态分片刷新/) | 13 章及原文对照：审核后的精确分片、状态规则、事务与执行权、聚合放行和快照交接。 |
 | S13 | [付款结果查询快照刷新，通俗完整版](/knowledge/business-logic/resident-income/s13-付款结果查询快照刷新/) | 13 章及原文对照：审核快照资格、创建与刷新范围、付款事实聚合、金额与状态判断及源码索引。 |
 | S14 | [付款单作废刷新，通俗完整版](/knowledge/business-logic/resident-income/s14-付款单作废刷新/) | 13 章及原文对照：作废后的底表状态重算、处理范围、已有快照刷新、独立事务和失败重试。 |
+| 扩展 | [居民收益月度全量统计刷新，通俗完整版](/knowledge/business-logic/resident-income/monthly-full-stat-refresh/) | 12 章及源码定位索引、原文对照：账户扫描与批量任务提交、截止账期、金额口径、逐户事务、投影与已有快照刷新。 |
+| 扩展 | [居民收益付款状态批量刷新，通俗完整版](/knowledge/business-logic/resident-income/payment-status-refresh-bulk-task/) | 13 章及原文对照：任务领取、逐户重算、断点与事务、已有快照交接、历史初始化分支和完成判据。 |
 
 </div>
 
@@ -53,11 +55,12 @@ import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
 | 排查失败提交与锁释放 | [S03 失败与补偿](/knowledge/business-logic/resident-income/s03-居民收益提交构建/#chapter-8) → [S06 释放范围](/knowledge/business-logic/resident-income/s06-账单锁释放补偿任务/#ch-4) → [事务、重试与重复执行](/knowledge/business-logic/resident-income/s06-账单锁释放补偿任务/#ch-8) |
 | 理解状态与查询数据更新 | [S11 普通状态刷新](/knowledge/business-logic/resident-income/s11-付款状态刷新任务/#chapter-3) → [S12 审核后的分片刷新](/knowledge/business-logic/resident-income/s12-付款状态分片刷新/#chapter-3) → [S13 查询快照的创建与刷新规则](/knowledge/business-logic/resident-income/s13-付款结果查询快照刷新/#chapter-4) |
 | 排查作废后的数据更新 | [S14 作废刷新调用链](/knowledge/business-logic/resident-income/s14-付款单作废刷新/#ch3) → [异常与重复执行](/knowledge/business-logic/resident-income/s14-付款单作废刷新/#ch8) → [S13 快照刷新与重试](/knowledge/business-logic/resident-income/s13-付款结果查询快照刷新/#chapter-7) |
+| 理解月度统计与批量处理 | [月度入口提交与消费链](/knowledge/business-logic/resident-income/monthly-full-stat-refresh/#chapter-3) → [统计金额与落库](/knowledge/business-logic/resident-income/monthly-full-stat-refresh/#chapter-6) → [批量任务执行链](/knowledge/business-logic/resident-income/payment-status-refresh-bulk-task/#chapter-3) → [整条链路完成判据](/knowledge/business-logic/resident-income/payment-status-refresh-bulk-task/#chapter-11) |
 | 理解并发与恢复 | [两层所有权](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s7) → [重试与补偿](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s16) → [故障判断顺序](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s17) |
 | 对照排查依据 | [只读 SQL](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s21) → [源码证据索引](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s23) → [证据等级](/knowledge/business-logic/resident-income/s01-选单工作集构建/#s24) |
 
 ## 来源与内容状态
 
-十四篇文章均来自提供的 HTML 阅读版，具体文件名保留在文章元数据中。导入保留原有章节、业务说明、示例、表格、代码与证据边界，并适配平台的目录、搜索和代码复制功能；S02～S14 保留逐章原文对照，S03～S14 另保留完整流程图及 Mermaid 源码。
+十六篇文章均来自提供的 HTML 阅读版，具体文件名保留在文章元数据中。导入保留原有章节、业务说明、示例、表格、代码与证据边界，并适配平台的目录、搜索和代码复制功能；S02～S14 及两篇扩展阅读保留逐章原文对照，S03～S14 及两篇扩展阅读另保留完整流程图及 Mermaid 源码。
 
-文章目前标记为 **草稿**：本次完成内容导入与格式校验。S01 对应其原文源码基线及 2026-09-04 数据库核验；S02～S14 保留各自原文的源码分析日期、工作区状态和未验证事项，本次导入未重新检查业务源码、运行任务或核验数据库及线上环境。部分文档中原文归档编号与源码阶段编号的差异也按原文保留。各篇结论的适用范围以篇首说明为准。
+文章目前标记为 **草稿**：本次完成内容导入与格式校验。S01 对应其原文源码基线及 2026-09-04 数据库核验；S02～S14 及两篇扩展阅读保留各自原文的源码分析日期、工作区状态和未验证事项，本次导入未重新检查业务源码、运行任务或核验数据库及线上环境。部分文档中原文归档编号与源码阶段编号的差异也按原文保留。各篇结论的适用范围以篇首说明为准。
