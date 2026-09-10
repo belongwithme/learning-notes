@@ -1,0 +1,54 @@
+<script>
+	function isEditable(event: Event) {
+		return event.composedPath().some(target => target instanceof HTMLElement && (
+			target.matches('input, textarea') || target.isContentEditable
+		));
+	}
+
+	function selectionIncludesContent() {
+		const main = document.querySelector('main');
+		const selection = window.getSelection();
+		if (!main || !selection || selection.isCollapsed) return false;
+		for (let index = 0; index < selection.rangeCount; index++) {
+			if (selection.getRangeAt(index).intersectsNode(main)) return true;
+		}
+		return false;
+	}
+
+	for (const type of ['copy', 'cut', 'selectstart', 'contextmenu', 'dragstart']) {
+		document.addEventListener(type, event => {
+			if (isEditable(event)) return;
+			const insideContent = event.composedPath().some(target =>
+				target instanceof Element && target.matches('main')
+			);
+			// Copy events can target the body even when the selected text is in the article.
+			if (insideContent || ((type === 'copy' || type === 'cut') && selectionIncludesContent())) {
+				event.preventDefault();
+			}
+		}, { capture: true });
+	}
+
+	document.addEventListener('keydown', event => {
+		if (isEditable(event) || event.altKey || event.shiftKey) return;
+		if ((event.ctrlKey || event.metaKey) && ['a', 'c', 'x'].includes(event.key.toLowerCase())
+			&& document.querySelector('main')) {
+			event.preventDefault();
+		}
+	}, { capture: true });
+</script>
+
+<style is:global>
+	main,
+	main * {
+		-webkit-user-select: none;
+		user-select: none;
+		-webkit-touch-callout: none;
+	}
+
+	main :is(input, textarea, [contenteditable=''], [contenteditable='true'], [contenteditable='plaintext-only']),
+	main :is([contenteditable=''], [contenteditable='true'], [contenteditable='plaintext-only']) * {
+		-webkit-user-select: text;
+		user-select: text;
+		-webkit-touch-callout: default;
+	}
+</style>

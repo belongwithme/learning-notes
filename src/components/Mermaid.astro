@@ -17,9 +17,11 @@
 
 	async function renderDiagram(pre: HTMLElement) {
 		const source = pre.closest<HTMLElement>('.expressive-code') ?? pre;
-		// Expressive Code keeps the copyable source independently of highlighted spans.
-		const encoded = source.querySelector<HTMLElement>('[data-code]')?.dataset.code;
-		const code = encoded?.replace(/\x7f/g, '\n') ?? pre.textContent ?? '';
+		// Highlighted lines are separate elements; textContent alone loses their newlines.
+		const lines = pre.querySelectorAll('.ec-line .code');
+		const code = lines.length
+			? Array.from(lines, line => line.textContent ?? '').join('\n')
+			: pre.textContent ?? '';
 		const figure = document.createElement('figure');
 		figure.className = 'mermaid-diagram';
 		const viewport = document.createElement('div');
@@ -68,7 +70,7 @@
 			pre.dataset.mermaidState = 'error';
 			const notice = document.createElement('p');
 			notice.className = 'mermaid-error';
-			notice.textContent = '此图暂时无法显示，下面保留完整源码，可继续查看和复制。';
+			notice.textContent = '此图暂时无法显示，下面保留完整源码，可继续查看。';
 			source.before(notice);
 			console.warn('Mermaid diagram could not be rendered:', error);
 		}
