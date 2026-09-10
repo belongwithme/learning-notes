@@ -1,0 +1,154 @@
+<script>
+	let renderer: Promise<typeof import('mermaid')['default']> | undefined;
+	let diagramId = 0;
+
+	function loadMermaid() {
+		return (renderer ??= import('mermaid').then(({ default: mermaid }) => {
+			mermaid.initialize({
+				startOnLoad: false,
+				securityLevel: 'strict',
+				suppressErrorRendering: true,
+				theme: 'neutral',
+				fontFamily: 'Noto Sans SC Variable, PingFang SC, sans-serif',
+			});
+			return mermaid;
+		}));
+	}
+
+	async function renderDiagram(pre: HTMLElement) {
+		const source = pre.closest<HTMLElement>('.expressive-code') ?? pre;
+		// Expressive Code keeps the copyable source independently of highlighted spans.
+		const encoded = source.querySelector<HTMLElement>('[data-code]')?.dataset.code;
+		const code = encoded?.replace(/\x7f/g, '\n') ?? pre.textContent ?? '';
+		const figure = document.createElement('figure');
+		figure.className = 'mermaid-diagram';
+		const viewport = document.createElement('div');
+		viewport.className = 'mermaid-viewport not-content';
+		viewport.tabIndex = 0;
+		viewport.setAttribute('aria-label', 'Mermaid 图表，可横向滚动');
+
+		try {
+			const mermaid = await loadMermaid();
+			if (!source.isConnected) return;
+			figure.append(viewport);
+			source.before(figure);
+			const { svg, bindFunctions } = await mermaid.render(`mermaid-diagram-${++diagramId}`, code, viewport);
+			viewport.innerHTML = svg;
+			bindFunctions?.(viewport);
+
+			const image = viewport.querySelector('svg');
+			if (image?.viewBox.baseVal.width) {
+				image.style.width = `${Math.ceil(image.viewBox.baseVal.width)}px`;
+				image.style.maxWidth = '100%';
+			}
+
+			const toolbar = document.createElement('div');
+			toolbar.className = 'mermaid-toolbar';
+			const resize = document.createElement('button');
+			resize.type = 'button';
+			resize.textContent = '原尺寸';
+			resize.setAttribute('aria-pressed', 'false');
+			resize.addEventListener('click', () => {
+				const expanded = viewport.classList.toggle('mermaid-expanded');
+				resize.textContent = expanded ? '适合宽度' : '原尺寸';
+				resize.setAttribute('aria-pressed', String(expanded));
+			});
+			toolbar.append(resize);
+			figure.prepend(toolbar);
+
+			const details = document.createElement('details');
+			details.className = 'mermaid-source';
+			const summary = document.createElement('summary');
+			summary.textContent = '查看 Mermaid 源码';
+			details.append(summary, source);
+			figure.append(details);
+			pre.dataset.mermaidState = 'rendered';
+		} catch (error) {
+			figure.remove();
+			pre.dataset.mermaidState = 'error';
+			const notice = document.createElement('p');
+			notice.className = 'mermaid-error';
+			notice.textContent = '此图暂时无法显示，下面保留完整源码，可继续查看和复制。';
+			source.before(notice);
+			console.warn('Mermaid diagram could not be rendered:', error);
+		}
+	}
+
+	function observeDiagrams() {
+		const observer = new IntersectionObserver(entries => {
+			for (const entry of entries) {
+				if (!entry.isIntersecting) continue;
+				observer.unobserve(entry.target);
+				void renderDiagram(entry.target as HTMLElement);
+			}
+		}, { rootMargin: '200px' });
+
+		for (const pre of document.querySelectorAll<HTMLElement>('.sl-markdown-content pre[data-language="mermaid"]')) {
+			if (pre.dataset.mermaidState) continue;
+			pre.dataset.mermaidState = 'pending';
+			// Closed <details> are observed when opened, so labels are measured at a real width.
+			observer.observe(pre);
+		}
+	}
+
+	observeDiagrams();
+	document.addEventListener('astro:page-load', observeDiagrams);
+</script>
+
+<style is:global>
+	.mermaid-diagram {
+		margin: 1.5rem 0;
+		min-width: 0;
+		padding: 1rem;
+		border: 1px solid var(--sl-color-hairline);
+		border-radius: 0.5rem;
+		background: var(--sl-color-bg);
+	}
+
+	.mermaid-toolbar {
+		display: flex;
+		justify-content: flex-end;
+		margin-bottom: 0.75rem;
+	}
+
+	.mermaid-toolbar button {
+		padding: 0.35rem 0.75rem;
+		border: 1px solid var(--sl-color-hairline);
+		border-radius: 0.35rem;
+		background: var(--sl-color-bg);
+		color: var(--sl-color-text);
+		font: inherit;
+		font-size: 0.85rem;
+		cursor: pointer;
+	}
+
+	.mermaid-viewport {
+		max-width: 100%;
+		overflow: auto;
+		background: #fff;
+	}
+
+	.mermaid-viewport svg {
+		display: block;
+		height: auto;
+		margin-inline: auto;
+	}
+
+	.mermaid-expanded svg {
+		max-width: none !important;
+	}
+
+	.mermaid-source {
+		margin-top: 1rem;
+	}
+
+	.mermaid-source > summary {
+		cursor: pointer;
+		font-size: 0.9rem;
+	}
+
+	.mermaid-error {
+		font-size: 0.9rem;
+		color: var(--sl-color-gray-2);
+	}
+</style>

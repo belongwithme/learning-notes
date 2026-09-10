@@ -52,6 +52,21 @@ src/content/docs/
 
 Markdown 和 MDX 文件会根据 `src/content/docs/` 下的路径生成对应页面。
 
+## Mermaid 图表
+
+在 Markdown 或 MDX 中使用 `mermaid` 代码围栏，页面会自动显示图表：
+
+````markdown
+```mermaid
+flowchart LR
+  A[接收请求] --> B{校验通过?}
+  B -->|是| C[保存数据]
+  B -->|否| D[返回错误]
+```
+````
+
+图表进入阅读区域时按需渲染，放在 `<details>` 中的图表会在展开后渲染。支持切换原尺寸、查看和复制源码；语法错误或加载失败时保留源码，不影响其他内容。Mermaid 随站点打包，无需在文章中引入脚本或使用外部 CDN。
+
 ## 笔记元数据
 
 ```yaml
