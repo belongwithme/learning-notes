@@ -1,0 +1,42 @@
+---
+title: 推送链路专辑
+description: 梳理合作方请求进入平台后的校验、消息交接、事务提交、异步刷新和完成证据。
+hero:
+  title: 推送链路
+  tagline: 从一批外部业务数据出发，看清它如何被接收、持久化、交接和刷新，以及失败后会停在哪一层。
+sidebar:
+  label: 专辑概览
+  order: 0
+tableOfContents:
+  minHeadingLevel: 2
+  maxHeadingLevel: 2
+---
+
+[业务逻辑](/knowledge/business-logic/) / 推送链路
+
+## 文章目录
+
+目前收录 **1 篇**，围绕合作方居民收益账单推送，连接接口、Kafka 消息、单站事务、差异台账和后台账户刷新。
+
+<div className="business-logic-catalog">
+
+| 顺序 | 文章 | 主要内容 |
+| --- | --- | --- |
+| 01 | [合作方居民收益账单推送链路，通俗完整版](/knowledge/business-logic/push-pipeline/partner-bill-push/) | 8 章完整正文、步骤 0–18、32 段关键源码及逐章原文对照：接收与过滤、账户和账单持久化、差异与精确任务、异步账户刷新、回滚重试和成功层级。 |
+
+</div>
+
+## 阅读路线
+
+| 阅读目的 | 从这里开始 |
+| --- | --- |
+| 理解整条业务链 | [链路概览](/knowledge/business-logic/push-pipeline/partner-bill-push/#chapter-1) → [接口接收](/knowledge/business-logic/push-pipeline/partner-bill-push/#chapter-2) → [账户与账单持久化](/knowledge/business-logic/push-pipeline/partner-bill-push/#chapter-3) |
+| 跟进异步交接 | [差异台账与精确刷新任务](/knowledge/business-logic/push-pipeline/partner-bill-push/#chapter-4) → [Unified Bulk 账户刷新](/knowledge/business-logic/push-pipeline/partner-bill-push/#chapter-5) |
+| 排查失败与部分成功 | [异常、回滚与重试边界](/knowledge/business-logic/push-pipeline/partner-bill-push/#chapter-6) → [成功层级与完成证据](/knowledge/business-logic/push-pipeline/partner-bill-push/#chapter-7) |
+| 对照源码与历史版本 | [主链、兼容支线与源码定位](/knowledge/business-logic/push-pipeline/partner-bill-push/#chapter-8) |
+
+## 来源与内容状态
+
+文章来自提供的《合作方推送链路-HTML阅读版.html》，保留原文的章节、关键代码、主链步骤图、Mermaid 源码和本地源码定位，并适配平台目录、搜索、折叠与代码复制功能。
+
+内容标记为 **草稿**。原文整理日期为 2026-09-09，声明的源码基线为 `zxbaif` 提交 `c4665e3ad6b180b5c572d81da13a34016856e051`；其静态分析与历史定位说明均按原文保留。本次导入只校验内容和阅读格式，未重新核验业务源码或执行接口、Kafka、数据库及 Worker 验收。

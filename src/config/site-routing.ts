@@ -130,6 +130,7 @@ export const KnowledgeSubcategories: Record<string, SubcategoryItem[]> = {
   ],
   'business-logic': [
     { id: 'resident-income', label: '居民收益付款' },
+    { id: 'push-pipeline', label: '推送链路' },
   ],
   miscellaneous: [
     { id: 'personal-growth', label: '个人成长' },
