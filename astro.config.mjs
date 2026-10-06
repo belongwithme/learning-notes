@@ -21,9 +21,6 @@ export default defineConfig({
 				root: { label: '简体中文', lang: 'zh-CN' },
 			},
 			customCss: ['./src/styles/custom.css'],
-			expressiveCode: {
-				frames: { showCopyToClipboardButton: false },
-			},
 			credits: false,
 			lastUpdated: true,
 			sidebar: [

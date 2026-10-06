@@ -60,6 +60,15 @@ html {
 	scroll-behavior: smooth;
 }
 
+/* Allow selecting and copying site content, including mobile long-press menus. */
+html,
+body,
+body * {
+	-webkit-user-select: text;
+	user-select: text;
+	-webkit-touch-callout: default;
+}
+
 body {
 	letter-spacing: normal;
 }
