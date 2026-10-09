@@ -255,6 +255,9 @@ function card(e: Entry, detail = false) {
     <p class="example" lang="en">${escape(e.example)}</p>
     <button type="button" class="reveal" data-reveal aria-expanded="false">回忆一下，再查看释义 ↓</button>
     <div class="answer" hidden><p class="meaning">${escape(e.meaning)}</p><p class="translation">${escape(e.translation)}</p><p class="grammar"><strong>用法提示</strong> · ${escape(e.note)}</p>
+    ${e.collocation ? `<p class="grammar"><strong>常用搭配</strong> · <span lang="en">${escape(e.collocation)}</span></p>` : ""}
+    ${e.level ? `<p class="grammar"><strong>学习层级</strong> · ${escape(e.level)}</p>` : ""}
+    ${e.references?.length ? `<details><summary>主题参考（非逐词出处）</summary><div class="sources">${e.references.map(url => `<a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(url)}</a>`).join("")}</div></details>` : ""}
     <div class="review-buttons" aria-label="记录本次学习"><button type="button" data-result="forgot">忘了</button><button type="button" data-result="vague">模糊</button><button type="button" data-result="remembered" class="primary">记得 ✓</button></div></div>
     <div class="card-bottom"><span>${authenticated ? (p.dueDate ? `复习安排 · ${escape(p.dueDate)}` : "复习日期尚未安排") : "输入个人口令后即可记录学习"} </span>${detail ? "" : `<div><button type="button" data-open="${e.id}">安排 / 笔记</button><button type="button" data-next>换一个 →</button></div>`}</div>
     ${detail ? editForm(p) : ""}</article>`;
@@ -368,7 +371,7 @@ function matches(e: Entry, history?: Review) {
     q = input("query").trim().toLowerCase();
   if (
     q &&
-    ![e.id, e.term, e.meaning, e.example, e.translation, e.note]
+    ![e.id, e.term, e.meaning, e.example, e.translation, e.note, e.collocation, e.level]
       .join(" ")
       .toLowerCase()
       .includes(q)
@@ -438,7 +441,7 @@ function renderCollection() {
   page = Math.min(page, maxPage);
   el("result-count").textContent = historyMode
     ? `找到 ${rows.length} 次学习记录`
-    : `找到 ${rows.length} / 1000 条内容`;
+    : `找到 ${rows.length} / ${catalog.entries.length} 条内容`;
   el("page-number").textContent = `${page} / ${maxPage}`;
   el<HTMLButtonElement>("previous-page").disabled = page === 1;
   el<HTMLButtonElement>("next-page").disabled = page === maxPage;

@@ -188,7 +188,7 @@ const mutationSchema = z.discriminatedUnion("action", [
   z.object({
     action: z.literal("import"),
     operationId: z.uuid(),
-    progress: z.array(progressSchema).max(1000),
+    progress: z.array(progressSchema).max(catalog.entries.length),
     reviews: z.array(reviewSchema).max(100000),
   }),
 ]);
