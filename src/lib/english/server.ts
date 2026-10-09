@@ -17,7 +17,7 @@ export class HttpError extends Error {
 function settings() {
   const url = process.env.DATABASE_URL;
   const passphrase = process.env.ENGLISH_PASSPHRASE;
-  if (!url || !passphrase || passphrase.length < 16)
+  if (!url || !passphrase || passphrase.length < 4)
     throw new HttpError(
       503,
       "学习记录服务尚未配置，请先完成数据库与个人口令设置。",

@@ -88,7 +88,7 @@ flowchart LR
 使用 Node.js 22.12+。把 `.env.example` 复制为 `.env.local`，设置：
 
 - `DATABASE_URL`：PostgreSQL 连接串。云端可使用 Neon 的带 TLS 的连接串。
-- `ENGLISH_PASSPHRASE`：至少 16 个字符的个人口令。不要提交到 Git，也不要使用 `PUBLIC_` 前缀。
+- `ENGLISH_PASSPHRASE`：至少 4 个字符的个人口令。不要提交到 Git，也不要使用 `PUBLIC_` 前缀。
 
 初始化与后台启动：
 
