@@ -8,6 +8,20 @@ import { CsdnRedirects } from './src/config/csdn-redirects.mjs';
 // https://astro.build/config
 export default defineConfig({
 	adapter: vercel(),
+	vite: {
+		build: {
+			rolldownOptions: {
+				treeshake: {
+					// The Vercel adapter's runtime constants also import its build tooling.
+					// Drop only the unused bundler import from the deployed function.
+					moduleSideEffects: [
+						{ test: /^rolldown$/, external: true, sideEffects: false },
+						{ test: /.*/, sideEffects: true },
+					],
+				},
+			},
+		},
+	},
 	redirects: CsdnRedirects,
 	integrations: [
 		starlight({
