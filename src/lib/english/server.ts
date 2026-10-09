@@ -3,7 +3,7 @@ import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import type { APIContext } from "astro";
 import { z } from "astro/zod";
 import catalog from "../../data/english.json";
-import { isDate, type LearningData, type Progress, type Review } from "./model";
+import { isDate, type LearningData } from "./model";
 
 let pool: pg.Pool | undefined;
 export class HttpError extends Error {
@@ -194,25 +194,18 @@ const mutationSchema = z.discriminatedUnion("action", [
 ]);
 const selectProgress =
   'SELECT word_id AS "wordId", status, priority, planned_date AS "plannedDate", due_date AS "dueDate", note, version, updated_at AS "updatedAt" FROM english_progress';
-export async function loadData(): Promise<LearningData> {
-  const client = await db().connect();
-  try {
-    await client.query("BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");
-    const progress = await client.query<Progress>(selectProgress);
-    const reviews = await client.query<Review>(
-      'SELECT id, word_id AS "wordId", result, studied_at AS "studiedAt" FROM english_reviews ORDER BY studied_at DESC, id',
-    );
-    await client.query("COMMIT");
-    return {
-      progress: Object.fromEntries(progress.rows.map((p) => [p.wordId, p])),
-      reviews: reviews.rows,
-    };
-  } catch (error) {
-    await client.query("ROLLBACK");
-    throw error;
-  } finally {
-    client.release();
-  }
+export async function loadData(wordId?: string): Promise<LearningData> {
+  // One statement gives both collections the same snapshot in one round trip.
+  const result = await db().query<LearningData>(
+    `SELECT
+      COALESCE((SELECT jsonb_object_agg(p."wordId", to_jsonb(p)) FROM
+        (${selectProgress} WHERE ($1::text IS NULL OR word_id=$1)) p), '{}'::jsonb) AS progress,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r."studiedAt" DESC, r.id) FROM
+        (SELECT id,word_id AS "wordId",result,studied_at AS "studiedAt"
+         FROM english_reviews WHERE ($1::text IS NULL OR word_id=$1)) r), '[]'::jsonb) AS reviews`,
+    [wordId ?? null],
+  );
+  return result.rows[0];
 }
 async function ensureWord(client: PoolClient, id: string) {
   await client.query(
@@ -302,6 +295,11 @@ export async function mutate(input: unknown) {
       }
     }
     await client.query("COMMIT");
+    return mutation.action === "import"
+      ? undefined
+      : mutation.action === "update"
+        ? mutation.progress.wordId
+        : mutation.wordId;
   } catch (error) {
     await client.query("ROLLBACK");
     throw error;

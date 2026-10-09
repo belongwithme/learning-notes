@@ -107,6 +107,8 @@ node --env-file=.env.local node_modules/astro/bin/astro.mjs dev --background
 
 生产环境和测试环境应使用独立数据库。数据库凭据和口令不会写入静态页面；不要把 `.env.local`、`.vercel` 或 `.local` 上传到仓库。
 
+`vercel.json` 将接口固定在新加坡 `sin1`，与当前 Neon 数据库同区域，避免每次保存跨洲往返。如果迁移数据库，请同时调整此区域。词条保存只回传当前词条的状态与历史；刷新与备份仍读取完整记录。
+
 ### 集成验证
 
 `npm run test:english` 会针对运行中的本地网站检查权限、输入校验、两端读取、重试去重、冲突保护、历史保留和备份合并，并直接读数据库确认结果。它仅允许本机名为 `english_dev` 的独立测试库，使用并清理 W497—W500 测试词条；已有这些词条的数据时拒绝运行。测试默认网站地址为 `http://127.0.0.1:4321`，可通过 `ENGLISH_TEST_URL` 调整。

@@ -18,6 +18,11 @@ export const POST: APIRoute = (context) =>
   handle(async () => {
     sameOrigin(context);
     requireAuth(context);
-    await mutate(await readBody(context.request, 4_000_000));
-    return json(await loadData());
+    const wordId = await mutate(await readBody(context.request, 4_000_000));
+    // Older open tabs still receive the full response they expect.
+    return json(
+      await loadData(
+        context.url.searchParams.get("response") === "word" ? wordId : undefined,
+      ),
+    );
   });

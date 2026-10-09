@@ -203,6 +203,17 @@ try {
     [duplicate.operationId],
   );
   assert.equal(duplicateRows.rowCount, 1);
+  const partial = await request("data?response=word", {
+    method: "POST",
+    cookie: a.cookie,
+    body: duplicate,
+  });
+  assert.deepEqual(Object.keys(partial.value.progress), ["W498"]);
+  assert.equal(partial.value.reviews.length, 1);
+  assert.equal(partial.value.reviews[0].id, duplicate.operationId);
+  const full = await request("data", { cookie: b.cookie });
+  assert.equal(full.value.progress.W497.priority, "high");
+  assert.equal(full.value.reviews.filter((r) => r.wordId === "W497").length, 2);
   const imported = {
     action: "import",
     operationId: op(),
@@ -212,7 +223,7 @@ try {
     ],
     reviews: [],
   };
-  const merged = await request("data", {
+  const merged = await request("data?response=word", {
     method: "POST",
     cookie: a.cookie,
     body: imported,

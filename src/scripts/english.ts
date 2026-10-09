@@ -187,12 +187,41 @@ async function save(mutation?: Mutation) {
   if (!pending) return;
   busy = true;
   const action = pending;
-  notify("正在保存到云端…");
+  const resultButton =
+    action.action === "review"
+      ? document.querySelector<HTMLButtonElement>(
+          `${dialog.open ? "#word-dialog" : "#practice"} [data-word="${action.wordId}"] [data-result="${action.result}"]`,
+        )
+      : null;
+  const resultLabel = resultButton?.textContent ?? "";
+  if (resultButton && action.action === "review")
+    resultButton.textContent = `${results[action.result]} · 保存中…`;
+  notify(
+    action.action === "review"
+      ? `已选择「${results[action.result]}」，正在保存…`
+      : "正在保存到云端…",
+  );
   document
     .querySelectorAll<HTMLButtonElement>("[data-result], #save-word, #retry")
     .forEach((b) => (b.disabled = true));
   try {
-    data = await api("data", "POST", action);
+    const saved: LearningData = await api("data?response=word", "POST", action);
+    if (action.action === "import") data = saved;
+    else {
+      const wordId =
+        action.action === "review" ? action.wordId : action.progress.wordId;
+      data = {
+        progress: { ...data.progress, ...saved.progress },
+        reviews: [
+          ...data.reviews.filter((r) => r.wordId !== wordId),
+          ...saved.reviews,
+        ].sort(
+          (a, b) =>
+            Date.parse(b.studiedAt) - Date.parse(a.studiedAt) ||
+            a.id.localeCompare(b.id),
+        ),
+      };
+    }
     pending = null;
     persistPending();
     dirty = false;
@@ -208,6 +237,7 @@ async function save(mutation?: Mutation) {
     failure(error);
   } finally {
     busy = false;
+    if (resultButton?.isConnected) resultButton.textContent = resultLabel;
     document
       .querySelectorAll<HTMLButtonElement>("[data-result], #save-word, #retry")
       .forEach((b) => (b.disabled = false));
