@@ -1,11 +1,13 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import vercel from '@astrojs/vercel';
 import { KnowledgeCategories, KnowledgeSubcategories, TopLevelSections } from './src/config/site-routing';
 import { CsdnRedirects } from './src/config/csdn-redirects.mjs';
 
 // https://astro.build/config
 export default defineConfig({
+	adapter: vercel(),
 	redirects: CsdnRedirects,
 	integrations: [
 		starlight({
@@ -45,6 +47,7 @@ export default defineConfig({
 				{
 					label: '探索',
 					items: [
+						{ label: '英语学习', link: '/english/' },
 						{ label: '学习路线', slug: 'learning-paths' },
 						{
 							label: '问题复盘',

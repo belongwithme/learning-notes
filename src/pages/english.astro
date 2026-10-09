@@ -1,0 +1,58 @@
+---
+import '@fontsource-variable/noto-sans-sc/wght.css';
+import '@fontsource-variable/noto-serif-sc/wght.css';
+import '../styles/english.css';
+import catalog from '../data/english.json';
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="在技术语境里学习英语。记录每次学习，按日期与优先级安排复习。" />
+    <title>英语学习 · 学习档案</title>
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到学习内容</a>
+    <header class="site-bar">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">学</span>学习档案 <span class="brand-divider">/</span> <span class="brand-section">英语学习</span></a>
+      <div class="header-actions"><a href="/knowledge/">知识库 ↗</a><button id="account" type="button">个人口令</button></div>
+    </header>
+    <main id="main">
+      <section class="intro">
+        <div><p class="eyebrow">ENGLISH, IN CONTEXT</p><h1>读懂一个词，<br /><em>读准一句话。</em></h1><p class="intro-copy">从熟悉的 Java 世界开始，让每一次学习都有迹可循。</p></div>
+        <div class="edition"><span>TECHNICAL ENGLISH · VOL. 01</span><strong>500 <small>词汇</small> + 500 <small>表达</small></strong><span>20 个主题 · 例句与用法 · 持续复习</span></div>
+      </section>
+      <section id="connection" class="connection" aria-label="保存状态"><span id="sync-status" role="status" aria-live="polite">正在连接学习记录…</span><div><button id="refresh" type="button">刷新记录</button><button id="retry" type="button" hidden>重试保存</button><button id="cancel-pending" type="button" hidden>取消待保存操作</button></div></section>
+      <section id="login-panel" class="login-panel" hidden>
+        <div><h2>你的学习，在不同设备上继续。</h2><p>输入个人口令即可读取和保存记录。词库可以直接浏览。</p></div>
+        <form id="login-form"><label for="passphrase" class="sr-only">个人口令</label><input id="passphrase" type="password" autocomplete="current-password" placeholder="个人口令" required maxlength="256" /><button class="primary" type="submit">解锁记录</button></form>
+      </section>
+      <nav class="view-tabs" aria-label="学习视图"><button data-view="today" aria-current="page">今日学习</button><button data-view="library">全部词库 <span>1000</span></button><button data-view="history">学习记录</button></nav>
+      <section id="today-view" aria-labelledby="today-heading">
+        <div class="section-heading"><div><p class="eyebrow" id="today-date"></p><h2 id="today-heading">给英语一点日常。</h2></div><p>先回忆，再看解释，最后记录。</p></div>
+        <div class="stats"><div><span>今天已学</span><strong id="stat-today">—</strong></div><div><span>到期复习</span><strong id="stat-due">—</strong></div><div><span>已学词条</span><strong id="stat-studied">—</strong></div><div><span>当前掌握</span><strong id="stat-mastered">—</strong></div></div>
+        <div class="practice-layout"><div id="practice"></div><aside class="practice-aside"><p class="eyebrow">A SMALL STEP, EVERY DAY</p><h3>不急着记住全部。<br />先读懂这一句。</h3><ol><li><span>01</span> 看英文，试着解释例句。</li><li><span>02</span> 展开释义，检查理解。</li><li><span>03</span> 如实记录，安排下次复习。</li></ol><div class="aside-note">到期和已安排的内容优先，其次是学习中的词与新词。同组按优先级排序。</div><button type="button" data-view="library" class="text-button">去词库安排学习 →</button></aside></div>
+      </section>
+      <section id="collection-view" hidden>
+        <div class="section-heading"><div><p class="eyebrow" id="collection-kicker">YOUR WORD COLLECTION</p><h2 id="collection-heading">每个词，都有它的语境。</h2></div><div class="backup-actions"><button id="export" type="button">导出备份</button><button id="import" type="button">导入记录</button><input id="import-file" type="file" accept="application/json,.json" hidden /></div></div>
+        <form id="filters" class="filters" role="search">
+          <label class="search-field"><span class="sr-only">搜索英文、中文或用法</span><input id="query" type="search" placeholder="搜索英文、中文、例句或用法…" /></label>
+          <label>主题<select id="album"><option value="">全部主题</option>{catalog.albums.map(a => <option value={a.id}>{String(a.id).padStart(2,'0')} · {a.title}</option>)}</select></label>
+          <label>内容<select id="kind"><option value="">词汇与表达</option><option value="words">词汇</option><option value="phrases">表达</option></select></label>
+          <label>优先级<select id="priority"><option value="">全部优先级</option><option value="high">高优先级</option><option value="medium">中优先级</option><option value="low">低优先级</option></select></label>
+          <label>当前状态<select id="status"><option value="">全部状态</option><option value="new">未学</option><option value="learning">学习中</option><option value="mastered">已掌握</option></select></label>
+          <div class="date-filters"><label>日期类型<select id="date-type"><option value="studied">实际学习日期</option><option value="planned">计划学习日期</option><option value="due">下次复习日期</option></select></label><label>开始日期<input id="date-from" type="date" /></label><label>结束日期<input id="date-to" type="date" /></label><label>排序<select id="sort"><option value="default">主题顺序</option><option value="priority">优先级从高到低</option><option value="recent">最近学习优先</option></select></label><button id="clear-filters" type="button">清除筛选</button></div>
+        </form>
+        <div class="list-heading"><p id="result-count" role="status"></p><span id="list-note">点击词条查看释义与安排</span></div>
+        <div id="entries"></div>
+        <div class="pagination"><button id="previous-page" type="button">← 上一页</button><span id="page-number"></span><button id="next-page" type="button">下一页 →</button></div>
+      </section>
+      <details class="content-notes"><summary>关于这份词库与学习记录</summary><p>内容来自《Java 技术英语：500 词汇＋500 表达》离线版，保留 20 个主题、原词条编号、双语例句与语法提示。它是按学习目标编排的清单，并非语料统计的高频榜；例句是教学示例，不代表项目中的实际规则。</p><p>学习日期按北京时间记录。“记得”标为已掌握，“模糊”或“忘了”标为学习中；只打开释义不会生成学习记录。已有学习记录不会因状态变化而消失。复习日期由你安排，不会自动覆盖。</p><p>旧版进度仅包含状态，导入后历史日期显示未知。备份导入合并缺少的词条及学习记录，不覆盖已有云端设置。没有网络时暂不支持继续同步；请保留页面中的待保存操作并联网重试。</p><div class="sources">{catalog.sources.map(s => <a href={s.url} target="_blank" rel="noopener noreferrer">{s.id} · {s.title}</a>)}</div></details>
+      <footer><span>学习档案 / ENGLISH</span><span>从认识，到理解，再到运用。</span></footer>
+    </main>
+    <dialog id="word-dialog" aria-labelledby="detail-title"><div class="dialog-toolbar"><span>词条详情与学习安排</span><button type="button" id="close-dialog" aria-label="关闭词条详情">✕</button></div><div id="detail-content"></div></dialog>
+    <noscript><p class="no-script">请启用 JavaScript 来使用词库搜索与学习记录。</p></noscript>
+    <script>import '../scripts/english';</script>
+  </body>
+</html>

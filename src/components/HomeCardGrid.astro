@@ -3,6 +3,10 @@ import { Routes } from '../config/site-routing';
 ---
 
 <div class="home-card-grid">
+  <a class="home-card home-card--soft home-card--english" href={Routes.English}>
+    <div class="home-card-topline"><span>ENGLISH / DAILY PRACTICE</span><span aria-hidden="true">↗</span></div>
+    <div><p class="home-card-label">英语学习</p><h3>读懂一个词，<br />读准一句话。</h3><p>从 Java 技术英语开始，记录每次学习，让复习有迹可循。</p></div>
+  </a>
   <a class="home-card home-card--dark home-card--large" href={Routes.Knowledge}>
     <div class="home-card-topline">
       <span>01 / KNOWLEDGE</span>
@@ -135,6 +139,11 @@ import { Routes } from '../config/site-routing';
 .home-card--soft h3 {
 	max-width: 7em;
 	font-size: clamp(2.3rem, 3.2vw, 3rem);
+}
+
+.home-card--english {
+	grid-column: 1 / -1;
+	min-height: 22rem;
 }
 
 .home-card--blue {

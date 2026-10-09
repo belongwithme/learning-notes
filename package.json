@@ -10,22 +10,27 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build --force",
-		"check": "npm run check:headings && astro check",
-		"check:headings": "node scripts/normalize-markdown-headings.mjs --check",
+    "check": "npm run check:headings && astro check",
+    "check:headings": "node scripts/normalize-markdown-headings.mjs --check",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "db:english": "node --env-file-if-exists=.env.local scripts/english-db.mjs",
+    "test:english": "node --env-file=.env.local scripts/test-english.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.41.3",
+    "@astrojs/vercel": "^11.0.13",
     "@fontsource-variable/noto-sans-sc": "^5.2.10",
     "@fontsource-variable/noto-serif-sc": "^5.2.10",
     "@vercel/speed-insights": "^2.0.0",
     "astro": "^7.0.2",
     "mermaid": "^11.17.2",
+    "pg": "^8.23.1",
     "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@types/pg": "^8.23.1",
     "typescript": "^6.0.3"
   }
 }

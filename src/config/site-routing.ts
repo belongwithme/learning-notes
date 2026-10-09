@@ -2,6 +2,7 @@
 
 export const Routes = {
   Home: '/',
+  English: '/english/',
   Knowledge: '/knowledge/',
   LearningPaths: '/learning-paths/',
   Retrospectives: '/retrospectives/',
@@ -138,6 +139,7 @@ export const KnowledgeSubcategories: Record<string, SubcategoryItem[]> = {
 };
 
 export const TopLevelSections: CategoryItem[] = [
+  { id: 'english', label: '英语学习', slug: 'english', url: '/english/' },
   { id: 'knowledge', label: '全部专题', slug: 'knowledge', url: '/knowledge/' },
   { id: 'learning-paths', label: '学习路线', slug: 'learning-paths', url: '/learning-paths/' },
   { id: 'retrospectives', label: '问题复盘', slug: 'retrospectives', url: '/retrospectives/' },
