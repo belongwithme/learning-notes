@@ -1,4 +1,5 @@
 import catalog from "../data/english.json";
+import dialogues from "../data/english-dialogues.json";
 import { initAnalysis } from "./english-analysis";
 import {
   emptyProgress,
@@ -41,6 +42,9 @@ const escape = (value: string | number) =>
       ]!,
   );
 const entriesById = new Map(catalog.entries.map((e) => [e.id, e]));
+const dialoguesByWord = new Map(
+  dialogues.flatMap((dialogue) => dialogue.wordIds.map((id) => [id, dialogue] as const)),
+);
 const albums = new Map(catalog.albums.map((a) => [a.id, a.title]));
 const dialog = el<HTMLDialogElement>("word-dialog");
 let data: LearningData = { progress: {}, reviews: [] };
@@ -250,6 +254,21 @@ function tags(p: Progress) {
   if (!authenticated) return '<span class="tag">未解锁记录</span>';
   return `<span class="tag ${p.priority}">${priorities[p.priority]}</span><span class="tag ${p.status}">${statuses[p.status]}</span>`;
 }
+function dialogueCard(e: Entry) {
+  const dialogue = dialoguesByWord.get(e.id);
+  if (!dialogue) return "";
+  const target = new RegExp(`\\b(${e.term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})\\b`, "gi");
+  const highlight = (text: string) => text.split(target)
+    .map((part, index) => index % 2 ? `<mark>${escape(part)}</mark>` : escape(part)).join("");
+  const recall = dialogue.lines.find((line) => line.en.split(target).length > 1)!;
+  return `<section class="dialogue" aria-label="情景对话">
+    <p class="dialogue-kicker">情景对话 <span>4 句 · 先读英文，再看翻译</span></p>
+    <p class="dialogue-scene">${escape(dialogue.scene)}</p>
+    <ol class="dialogue-lines">${dialogue.lines.map((line) => `<li><span class="dialogue-speaker" aria-label="说话人 ${line.speaker}">${line.speaker}</span><p lang="en">${highlight(line.en)}</p></li>`).join("")}</ol>
+    <details class="dialogue-translation"><summary>展开中文翻译</summary><ol class="dialogue-lines">${dialogue.lines.map((line) => `<li><span class="dialogue-speaker" aria-label="说话人 ${line.speaker}">${line.speaker}</span><p>${escape(line.zh)}</p></li>`).join("")}</ol></details>
+    <div class="dialogue-recall"><p><strong>一句回忆</strong> · 先遮住上面的英文，试着用 <span lang="en">${escape(e.term)}</span> 说出这句话：</p><p class="recall-prompt">${escape(recall.zh)}</p><details><summary>查看参考答案</summary><p class="recall-answer" lang="en">${highlight(recall.en)}</p></details></div>
+  </section>`;
+}
 function card(e: Entry, detail = false) {
   const p = getProgress(e.id);
   return `<article class="word-card" data-word="${e.id}">
@@ -260,6 +279,7 @@ function card(e: Entry, detail = false) {
     <div class="answer" hidden><p class="meaning">${escape(e.meaning)}</p><p class="translation">${escape(e.translation)}</p><p class="grammar"><strong>用法提示</strong> · ${escape(e.note)}</p>
     ${e.collocation ? `<p class="grammar"><strong>常用搭配</strong> · <span lang="en">${escape(e.collocation)}</span></p>` : ""}
     ${e.level ? `<p class="grammar"><strong>学习层级</strong> · ${escape(e.level)}</p>` : ""}
+    ${dialogueCard(e)}
     ${e.references?.length ? `<details><summary>主题参考（非逐词出处）</summary><div class="sources">${e.references.map(url => `<a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(url)}</a>`).join("")}</div></details>` : ""}
     <div class="review-buttons" aria-label="记录本次学习"><button type="button" data-result="forgot">忘了</button><button type="button" data-result="vague">模糊</button><button type="button" data-result="remembered" class="primary">记得 ✓</button></div></div>
     <div class="card-bottom"><span>${authenticated ? (p.dueDate ? `复习安排 · ${escape(p.dueDate)}` : "复习日期尚未安排") : "输入个人口令后即可记录学习"} </span>${detail ? "" : `<div><button type="button" data-open="${e.id}">安排 / 笔记</button><button type="button" data-next>换一个 →</button></div>`}</div>
@@ -547,6 +567,7 @@ document.addEventListener("click", (event) => {
   if (button.dataset.open) {
     renderDetail(button.dataset.open);
     dialog.showModal();
+    dialog.scrollTop = 0;
   }
   if (button.hasAttribute("data-reveal")) {
     button.hidden = true;

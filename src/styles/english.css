@@ -505,6 +505,87 @@ main {
   gap: 9px;
   margin-top: 24px;
 }
+.dialogue {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.dialogue-kicker {
+  color: var(--green);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.dialogue-kicker span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+.dialogue-scene {
+  margin: 10px 0 16px;
+  font-weight: 550;
+}
+.dialogue-lines {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+.dialogue-lines li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+}
+.dialogue-lines p {
+  margin: 0;
+  line-height: 1.8;
+  font-size: 0.925rem;
+}
+.dialogue-speaker {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.dialogue mark {
+  background: #e2ebd9;
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 1px 2px;
+  font-weight: 600;
+}
+.dialogue summary {
+  cursor: pointer;
+  color: var(--green);
+  font-size: 0.8rem;
+  width: fit-content;
+  padding: 8px 0;
+}
+.dialogue summary:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+.dialogue-translation {
+  margin-top: 12px;
+}
+.dialogue-translation .dialogue-lines {
+  margin-top: 8px;
+  color: var(--muted);
+}
+.dialogue-recall {
+  margin-top: 18px;
+  padding: 14px 16px;
+  background: var(--warm);
+  border-radius: 7px;
+  font-size: 0.8rem;
+  line-height: 1.8;
+}
+.recall-prompt, .recall-answer {
+  margin: 8px 0 0;
+}
 .review-buttons button {
   padding: 12px 8px;
 }

@@ -25,7 +25,7 @@ const phraseCount = catalog.entries.filter(entry => entry.kind === 'phrases').le
     <main id="main">
       <section class="intro">
         <div><p class="eyebrow">ENGLISH, IN CONTEXT</p><h1>读懂一个词，<br /><em>读准一句话。</em></h1><p class="intro-copy">从熟悉的 Java 世界开始，让每一次学习都有迹可循。</p></div>
-        <div class="edition"><span>TECHNICAL ENGLISH · VOL. 01 + 02</span><strong>{wordCount} <small>词汇</small> + {phraseCount} <small>表达</small></strong><span>{catalog.albums.length} 个主题 · 例句与用法 · 持续复习</span></div>
+        <div class="edition"><span>TECHNICAL ENGLISH · VOL. 01 + 02</span><strong>{wordCount} <small>词汇</small> + {phraseCount} <small>表达</small></strong><span>{catalog.albums.length} 个主题 · 单词情景对话 · 持续复习</span></div>
       </section>
       <section id="connection" class="connection" aria-label="保存状态"><span id="sync-status" role="status" aria-live="polite">正在连接学习记录…</span><div><button id="refresh" type="button">刷新记录</button><button id="retry" type="button" hidden>重试保存</button><button id="cancel-pending" type="button" hidden>取消待保存操作</button></div></section>
       <section id="login-panel" class="login-panel" hidden>
@@ -53,7 +53,7 @@ const phraseCount = catalog.entries.filter(entry => entry.kind === 'phrases').le
         <div id="entries"></div>
         <div class="pagination"><button id="previous-page" type="button">← 上一页</button><span id="page-number"></span><button id="next-page" type="button">下一页 →</button></div>
       </section>
-      <details class="content-notes"><summary>关于这份词库与学习记录</summary><p>内容来自《Java 技术英语：500 词汇＋500 表达》离线版及《Java 英语第二册》新增 500 词汇，沿用 20 个主题，保留原词条编号、双语例句与语法提示；第二册同时提供常用搭配、学习层级与主题参考（非逐词出处）。它是按学习目标编排的清单，并非语料统计的高频榜；例句是教学示例，不代表项目中的实际规则。</p><p>学习日期按北京时间记录。“记得”标为已掌握，“模糊”或“忘了”标为学习中；只打开释义不会生成学习记录。已有学习记录不会因状态变化而消失。复习日期由你安排，不会自动覆盖。</p><p>旧版进度仅包含状态，导入后历史日期显示未知。备份导入合并缺少的词条及学习记录，不覆盖已有云端设置。没有网络时暂不支持继续同步；请保留页面中的待保存操作并联网重试。</p><div class="sources">{catalog.sources.map(s => <a href={s.url} target="_blank" rel="noopener noreferrer">{s.id} · {s.title}</a>)}</div></details>
+      <details class="content-notes"><summary>关于这份词库与学习记录</summary><p>内容来自《Java 技术英语：500 词汇＋500 表达》离线版及《Java 英语第二册》新增 500 词汇，沿用 20 个主题，保留原词条编号、双语例句与语法提示；第二册同时提供常用搭配、学习层级与主题参考（非逐词出处）。全部单词另配四句双语情景对话与一句回忆；相关单词共用场景，当前词会在对话中突出显示。对话是教学示例，中文翻译和参考答案可按需展开，查看不会生成学习记录。它是按学习目标编排的清单，并非语料统计的高频榜；例句是教学示例，不代表项目中的实际规则。</p><p>学习日期按北京时间记录。“记得”标为已掌握，“模糊”或“忘了”标为学习中；只打开释义不会生成学习记录。已有学习记录不会因状态变化而消失。复习日期由你安排，不会自动覆盖。</p><p>旧版进度仅包含状态，导入后历史日期显示未知。备份导入合并缺少的词条及学习记录，不覆盖已有云端设置。没有网络时暂不支持继续同步；请保留页面中的待保存操作并联网重试。</p><div class="sources">{catalog.sources.map(s => <a href={s.url} target="_blank" rel="noopener noreferrer">{s.id} · {s.title}</a>)}</div></details>
       <footer><span>学习档案 / ENGLISH</span><span>从认识，到理解，再到运用。</span></footer>
     </main>
     <dialog id="word-dialog" aria-labelledby="detail-title"><div class="dialog-toolbar"><span>词条详情与学习安排</span><button type="button" id="close-dialog" aria-label="关闭词条详情">✕</button></div><div id="detail-content"></div></dialog>

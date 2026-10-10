@@ -1,0 +1,4362 @@
+[
+  {
+    "id": "D001",
+    "wordIds": [
+      "W001",
+      "W002",
+      "W003",
+      "W004",
+      "W005",
+      "W006",
+      "W007"
+    ],
+    "scene": "结对开发：保存用户偏好",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can we read and update the preferences here?",
+        "zh": "我们能在这里读取和更新偏好吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. First create a file, then write the settings to it.",
+        "zh": "能。先创建文件，再把设置写进去。"
+      },
+      {
+        "speaker": "A",
+        "en": "How do I add or remove a setting?",
+        "zh": "怎么添加或移除一项设置？"
+      },
+      {
+        "speaker": "B",
+        "en": "Use these buttons. Only delete the file when you want to reset everything.",
+        "zh": "用这些按钮。想重置全部设置时才删除文件。"
+      }
+    ]
+  },
+  {
+    "id": "D002",
+    "wordIds": [
+      "W008",
+      "W009",
+      "W010",
+      "W011",
+      "W012",
+      "W013",
+      "W014",
+      "W015"
+    ],
+    "scene": "代码评审：处理一次请求",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "What happens when we receive a request?",
+        "zh": "收到请求后会发生什么？"
+      },
+      {
+        "speaker": "B",
+        "en": "We process it, set the status, and return a result.",
+        "zh": "我们处理请求、设置状态，再返回结果。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should I call this method and pass the user ID?",
+        "zh": "我应该调用这个方法并传入用户编号吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Invoke it once, then send the result to the client.",
+        "zh": "对。调用一次，然后把结果发送给客户端。"
+      }
+    ]
+  },
+  {
+    "id": "D003",
+    "wordIds": [
+      "W016",
+      "W017",
+      "W018",
+      "W019",
+      "W020",
+      "W021",
+      "W022",
+      "W023",
+      "W024",
+      "W025"
+    ],
+    "scene": "排查问题：草稿没有保存",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why does the form not allow me to save?",
+        "zh": "为什么表单不让我保存？"
+      },
+      {
+        "speaker": "B",
+        "en": "We require a title. Please provide one so we can validate the draft.",
+        "zh": "我们要求填写标题。请提供标题，以便校验草稿。"
+      },
+      {
+        "speaker": "A",
+        "en": "I'll check that we store it correctly, then load it again.",
+        "zh": "我会检查是否正确存储，再重新加载。"
+      },
+      {
+        "speaker": "B",
+        "en": "Good. We must retrieve the saved draft to prevent silent data loss.",
+        "zh": "好。我们必须取回已保存的草稿，防止数据悄悄丢失。"
+      }
+    ]
+  },
+  {
+    "id": "D004",
+    "wordIds": [
+      "W501",
+      "W502",
+      "W503",
+      "W504",
+      "W505",
+      "W506",
+      "W507",
+      "W508"
+    ],
+    "scene": "接口讨论：哪些输入可以接受",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can this tool manipulate the image after I obtain permission?",
+        "zh": "获得许可后，这个工具能处理图片吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Supply a PNG; we accept that format but deny access without permission.",
+        "zh": "能。请提供 PNG；我们接受这种格式，但没有许可就拒绝访问。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can I omit the caption and discard the preview?",
+        "zh": "我能省略说明文字并丢弃预览吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Then dismiss the dialog to return to the editor.",
+        "zh": "能。然后关闭对话框，返回编辑器。"
+      }
+    ]
+  },
+  {
+    "id": "D005",
+    "wordIds": [
+      "W509",
+      "W510",
+      "W511",
+      "W512",
+      "W513",
+      "W514",
+      "W515"
+    ],
+    "scene": "一起定位启动故障",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can you help me troubleshoot this startup error?",
+        "zh": "能帮我排查这个启动错误吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Let's inspect the log and determine which step failed.",
+        "zh": "我们检查日志，确定哪一步失败了。"
+      },
+      {
+        "speaker": "A",
+        "en": "I recognize this message. How can we locate the config file?",
+        "zh": "我认得这条消息。怎么找到配置文件？"
+      },
+      {
+        "speaker": "B",
+        "en": "The log shows its path. Verify the values and confirm the fix with a restart.",
+        "zh": "日志里有路径。核验配置值，再通过重启确认修复结果。"
+      }
+    ]
+  },
+  {
+    "id": "D006",
+    "wordIds": [
+      "W516",
+      "W517",
+      "W518",
+      "W519",
+      "W520",
+      "W521",
+      "W522",
+      "W523",
+      "W524",
+      "W525"
+    ],
+    "scene": "清洗导入的文本",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "How do we transform this text into a report?",
+        "zh": "怎么把这段文本转换成报告？"
+      },
+      {
+        "speaker": "B",
+        "en": "Trim the spaces, split the lines, and parse each date.",
+        "zh": "去掉首尾空格、拆分行，再解析每个日期。"
+      },
+      {
+        "speaker": "A",
+        "en": "Then extract the names and concatenate them?",
+        "zh": "然后提取姓名并把它们连接起来吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Prepend a title, append a date, and format the report; don't truncate any names.",
+        "zh": "对。前面加标题，后面加日期，再排好格式；不要截断任何姓名。"
+      }
+    ]
+  },
+  {
+    "id": "D007",
+    "wordIds": [
+      "W026",
+      "W027",
+      "W028",
+      "W029",
+      "W030",
+      "W031",
+      "W032",
+      "W033",
+      "W034",
+      "W035"
+    ],
+    "scene": "排查上传失败",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can you check whether the file uploaded?",
+        "zh": "能检查一下文件是否上传成功吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "It failed because it was too large. If we compress it, we can try again.",
+        "zh": "因为文件太大而失败了。压缩后可以再试。"
+      },
+      {
+        "speaker": "A",
+        "en": "Although it's smaller now, the name is also wrong.",
+        "zh": "虽然现在小了，但文件名也不对。"
+      },
+      {
+        "speaker": "B",
+        "en": "Rename it first; otherwise it will fail. However, don't retry unless it's ready; use the link instead. Therefore, send me the link for now.",
+        "zh": "先改名，否则还会失败。不过，没准备好就别重试，改用链接。所以暂时把链接发给我吧。"
+      }
+    ]
+  },
+  {
+    "id": "D008",
+    "wordIds": [
+      "W036",
+      "W037",
+      "W038",
+      "W039",
+      "W040",
+      "W041",
+      "W042",
+      "W043",
+      "W044",
+      "W045",
+      "W046"
+    ],
+    "scene": "检查两个导入文件",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Did both files pass every check?",
+        "zh": "两个文件都通过了每项检查吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Neither passed. Some rows are empty, and none have a date.",
+        "zh": "都没通过。有些行是空的，而且没有一行有日期。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can we fix either file without changing all the rows?",
+        "zh": "能不能修好其中一个文件，又不用改所有行？"
+      },
+      {
+        "speaker": "B",
+        "en": "Only after checking each row. Even one missing date matters; don't skip any.",
+        "zh": "得先逐行检查。哪怕只缺一个日期也有影响，任何一行都别跳过。"
+      }
+    ]
+  },
+  {
+    "id": "D009",
+    "wordIds": [
+      "W047",
+      "W048",
+      "W049",
+      "W050",
+      "W527",
+      "W528",
+      "W526"
+    ],
+    "scene": "安排数据迁移的先后顺序",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "What should I do before the migration?",
+        "zh": "迁移之前该做什么？"
+      },
+      {
+        "speaker": "B",
+        "en": "Back up the data and wait until the team is ready.",
+        "zh": "备份数据，等团队准备好。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can I watch the logs while it runs and check the data after it finishes?",
+        "zh": "运行时能看日志，结束后再检查数据吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Log errors whenever they occur, wherever they occur, thereby helping us trace failures.",
+        "zh": "能。无论何时何处发生错误都记下来，这样有助于追踪故障。"
+      }
+    ]
+  },
+  {
+    "id": "D010",
+    "wordIds": [
+      "W529",
+      "W530",
+      "W531",
+      "W532",
+      "W533",
+      "W534"
+    ],
+    "scene": "评审报告里的转折与补充",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "The report says, \"Notwithstanding the delay, the release succeeded.\" What does that mean?",
+        "zh": "报告说“尽管延迟，发布仍然成功了”，是什么意思？"
+      },
+      {
+        "speaker": "B",
+        "en": "It succeeded despite the delay, whereas the previous release failed.",
+        "zh": "它虽然延迟但还是成功了，而上一次发布失败了。"
+      },
+      {
+        "speaker": "A",
+        "en": "Nevertheless, we still need to investigate the delay.",
+        "zh": "即便如此，我们还是需要调查延迟原因。"
+      },
+      {
+        "speaker": "B",
+        "en": "Agreed. Moreover, users noticed it. Furthermore, our alert arrived too late.",
+        "zh": "同意。而且用户注意到了；此外，我们的告警来得太晚。"
+      }
+    ]
+  },
+  {
+    "id": "D011",
+    "wordIds": [
+      "W535",
+      "W536",
+      "W537",
+      "W538",
+      "W539",
+      "W540",
+      "W541"
+    ],
+    "scene": "比较两种缓存方案",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "This cache uses more memory; hence the larger server.",
+        "zh": "这个缓存更占内存，因此用了更大的服务器。"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Consequently, costs increased, and we adjusted the budget accordingly.",
+        "zh": "对。所以成本增加了，我们相应地调整了预算。"
+      },
+      {
+        "speaker": "A",
+        "en": "Alternatively, could we cache fewer results? Conversely, would that increase database traffic?",
+        "zh": "或者，我们能少缓存一些结果吗？反过来看，这会增加数据库流量吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. The other team has the same problem; likewise, they need tests. Thus, let's compare both options first.",
+        "zh": "会。另一组也有同样的问题，同样需要测试。因此，我们先比较两种方案吧。"
+      }
+    ]
+  },
+  {
+    "id": "D012",
+    "wordIds": [
+      "W542",
+      "W543",
+      "W544",
+      "W545",
+      "W546",
+      "W547",
+      "W548",
+      "W549",
+      "W550"
+    ],
+    "scene": "同步压测进展",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "The two runs took approximately ten and twenty seconds, respectively.",
+        "zh": "两次运行分别耗时约十秒和二十秒。"
+      },
+      {
+        "speaker": "B",
+        "en": "So the second was roughly twice as slow. Meanwhile, did memory usage change?",
+        "zh": "所以第二次大约慢了一倍。同时，内存使用量有变化吗？"
+      },
+      {
+        "speaker": "A",
+        "en": "It stayed nearly constant throughout. We subsequently found a slow query.",
+        "zh": "全程几乎没变。随后我们发现了一条慢查询。"
+      },
+      {
+        "speaker": "B",
+        "en": "Good. Ultimately, we need to fix that query, not merely add servers.",
+        "zh": "好。最终我们需要修复那条查询，不能只是增加服务器。"
+      }
+    ]
+  },
+  {
+    "id": "D013",
+    "wordIds": [
+      "W051",
+      "W052",
+      "W053",
+      "W054",
+      "W055",
+      "W056",
+      "W057",
+      "W058",
+      "W059",
+      "W060"
+    ],
+    "scene": "确认表单字段规则",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Do we have a valid email address for this user?",
+        "zh": "我们有这个用户的有效邮箱地址吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "No. This one is invalid, so the account may be unavailable to them.",
+        "zh": "没有。这个地址无效，所以用户可能无法使用账号。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can we ask for a new one? What should the message say?",
+        "zh": "能请用户提供新地址吗？提示应该怎么写？"
+      },
+      {
+        "speaker": "B",
+        "en": "Say that they must enter an address they can access. Help is available here.",
+        "zh": "告诉他们必须填写自己能使用的地址。这里可以获得帮助。"
+      }
+    ]
+  },
+  {
+    "id": "D014",
+    "wordIds": [
+      "W061",
+      "W062",
+      "W063",
+      "W064",
+      "W065",
+      "W066",
+      "W067",
+      "W068",
+      "W069",
+      "W070"
+    ],
+    "scene": "讨论缺省设置",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Is this optional field empty, or is the whole setting missing?",
+        "zh": "是这个可选字段为空，还是整个设置都缺失了？"
+      },
+      {
+        "speaker": "B",
+        "en": "The setting is missing. The current default differs from the previous one.",
+        "zh": "设置缺失了。当前默认值和之前不同。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we use an explicit value for the initial setup?",
+        "zh": "首次设置时要使用明确的值吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Avoid that implicit assumption; this temporary value will do for the demo.",
+        "zh": "对。不要依赖那个隐含假设，演示时先用这个临时值。"
+      }
+    ]
+  },
+  {
+    "id": "D015",
+    "wordIds": [
+      "W071",
+      "W072",
+      "W073",
+      "W074",
+      "W075",
+      "W551",
+      "W552",
+      "W553",
+      "W554",
+      "W555"
+    ],
+    "scene": "决定配置放在哪里",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Is it feasible to keep the configuration local instead of remote?",
+        "zh": "把配置放在本地而不是远端，可行吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. You're responsible for updates, and a backup is essential.",
+        "zh": "可行。你负责更新，而且备份必不可少。"
+      },
+      {
+        "speaker": "A",
+        "en": "Is a mutable copy sufficient, or is an immutable snapshot mandatory?",
+        "zh": "一份可修改的副本够吗，还是必须有不可修改的快照？"
+      },
+      {
+        "speaker": "B",
+        "en": "Keep an immutable snapshot. Then this machine is eligible for the offline trial.",
+        "zh": "保留不可修改的快照。这样这台机器才符合离线试用条件。"
+      }
+    ]
+  },
+  {
+    "id": "D016",
+    "wordIds": [
+      "W556",
+      "W557",
+      "W558",
+      "W559",
+      "W560",
+      "W561",
+      "W562"
+    ],
+    "scene": "审核一份测试结论",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Is this an appropriate fix for a permanent failure?",
+        "zh": "这个修复适用于永久性故障吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "We don't know yet. The log is ambiguous; it could be transient.",
+        "zh": "还不知道。日志含义不清，也可能是暂时性故障。"
+      },
+      {
+        "speaker": "A",
+        "en": "Then choosing an arbitrary retry count would be risky.",
+        "zh": "那么随便选一个重试次数就有风险。"
+      },
+      {
+        "speaker": "B",
+        "en": "Right. We need a rigorous test and accurate results first.",
+        "zh": "对。我们先需要严格测试和准确结果。"
+      }
+    ]
+  },
+  {
+    "id": "D017",
+    "wordIds": [
+      "W563",
+      "W564",
+      "W565",
+      "W566",
+      "W567",
+      "W568",
+      "W569",
+      "W570"
+    ],
+    "scene": "检查任务队列是否卡住",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why is this task still pending if a worker is idle?",
+        "zh": "有工作线程空闲，为什么这个任务还在等待？"
+      },
+      {
+        "speaker": "B",
+        "en": "Its input file is absent. The other worker is busy, but the system is stable.",
+        "zh": "它的输入文件不在。另一个工作线程正忙，不过系统稳定。"
+      },
+      {
+        "speaker": "A",
+        "en": "Is the old retry setting obsolete now?",
+        "zh": "旧的重试设置现在过时了吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, and the extra flag is superfluous. Restore the file and the task will be ready.",
+        "zh": "对，额外的标志也多余。恢复文件后任务就准备好了。"
+      }
+    ]
+  },
+  {
+    "id": "D018",
+    "wordIds": [
+      "W571",
+      "W572",
+      "W573",
+      "W574",
+      "W575"
+    ],
+    "scene": "为配置工具选择限制",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can we make the parser more flexible without making it less robust?",
+        "zh": "能让解析器更灵活，同时保持稳健吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Be strict about required fields, but allow a finite set of aliases.",
+        "zh": "能。严格检查必填字段，但允许一组有限的别名。"
+      },
+      {
+        "speaker": "A",
+        "en": "Would loose validation make setup easier?",
+        "zh": "宽松校验会让设置更容易吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Perhaps, but clear errors are more useful than silently accepting bad input.",
+        "zh": "也许，但清楚地报错比默默接受错误输入更有用。"
+      }
+    ]
+  },
+  {
+    "id": "D019",
+    "wordIds": [
+      "W076",
+      "W077",
+      "W078",
+      "W079",
+      "W080",
+      "W081",
+      "W082",
+      "W083"
+    ],
+    "scene": "一起写接口文档",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can you define \"active\" and describe this status field?",
+        "zh": "能定义一下“活跃”，并描述这个状态字段吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "It can represent a connected user. A green dot will indicate that state.",
+        "zh": "它可以表示用户已连接。绿点会标示这种状态。"
+      },
+      {
+        "speaker": "A",
+        "en": "Does it mean the user is typing? Please explain.",
+        "zh": "这意味着用户正在输入吗？请解释一下。"
+      },
+      {
+        "speaker": "B",
+        "en": "No. Specify that distinction, and refer readers to the connection rules.",
+        "zh": "不是。请写明这个区别，并引导读者查看连接规则。"
+      }
+    ]
+  },
+  {
+    "id": "D020",
+    "wordIds": [
+      "W084",
+      "W085",
+      "W086",
+      "W087",
+      "W088",
+      "W089",
+      "W090",
+      "W091",
+      "W092"
+    ],
+    "scene": "确认离线模式的承诺",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can we assume this app will support offline editing?",
+        "zh": "能假定这个应用支持离线编辑吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Not yet. We expect to include it next month, but don't guarantee a date.",
+        "zh": "还不能。我们预计下个月加入，但不保证日期。"
+      },
+      {
+        "speaker": "A",
+        "en": "What will the update contain? Does it depend on the sync service?",
+        "zh": "更新会包含什么？它依赖同步服务吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "It will consist of an editor and a local queue. We must ensure sync works after reconnecting.",
+        "zh": "它将由编辑器和本地队列组成。我们必须确保重新联网后能同步。"
+      }
+    ]
+  },
+  {
+    "id": "D021",
+    "wordIds": [
+      "W093",
+      "W094",
+      "W095",
+      "W096",
+      "W097",
+      "W098",
+      "W099",
+      "W100"
+    ],
+    "scene": "评审库升级建议",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Could you compare these libraries and explain how they differ?",
+        "zh": "能比较这两个库并解释区别吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "I prefer the smaller one, but we should consider compatibility before we replace anything.",
+        "zh": "我更喜欢小的那个，但替换之前应考虑兼容性。"
+      },
+      {
+        "speaker": "A",
+        "en": "What do you recommend to avoid surprises?",
+        "zh": "为了避免意外，你建议怎么做？"
+      },
+      {
+        "speaker": "B",
+        "en": "Test our real inputs. Also, note that the new library requires a newer Java version.",
+        "zh": "测试真实输入。另外，注意新库要求更高版本的 Java。"
+      }
+    ]
+  },
+  {
+    "id": "D022",
+    "wordIds": [
+      "W576",
+      "W577",
+      "W578",
+      "W579",
+      "W580",
+      "W581",
+      "W582"
+    ],
+    "scene": "准备一次五分钟分享",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can you outline the talk and clarify the main problem?",
+        "zh": "能列出分享提纲并讲清主要问题吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "I'll illustrate it with a failed request, then demonstrate the fix.",
+        "zh": "我会用一次失败请求来说明，再演示修复方法。"
+      },
+      {
+        "speaker": "A",
+        "en": "Please emphasize the retry limit and highlight the remaining risk.",
+        "zh": "请强调重试次数限制，并突出剩余风险。"
+      },
+      {
+        "speaker": "B",
+        "en": "Sure. I'll summarize those points on the last slide.",
+        "zh": "好。我会在最后一页总结这些要点。"
+      }
+    ]
+  },
+  {
+    "id": "D023",
+    "wordIds": [
+      "W583",
+      "W584",
+      "W585",
+      "W586",
+      "W587",
+      "W588",
+      "W589",
+      "W590"
+    ],
+    "scene": "从监控数据得出结论",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Does lower latency imply that the new cache caused the improvement?",
+        "zh": "延迟降低是否意味着改进由新缓存带来？"
+      },
+      {
+        "speaker": "B",
+        "en": "No. We can't infer that from one run or deduce causation from correlation.",
+        "zh": "不是。不能凭一次运行推断这一点，也不能由相关性推导因果。"
+      },
+      {
+        "speaker": "A",
+        "en": "I suggest more tests. Would the current result justify a full rollout?",
+        "zh": "我建议多做测试。当前结果足以支持全面上线吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "It can motivate further study, but not that decision. I propose we wait before we conclude.",
+        "zh": "它能促使我们进一步研究，但不足以支持这个决定。我提议先别下结论。"
+      }
+    ]
+  },
+  {
+    "id": "D024",
+    "wordIds": [
+      "W591",
+      "W592",
+      "W593",
+      "W594",
+      "W595",
+      "W596",
+      "W597",
+      "W598",
+      "W599",
+      "W600"
+    ],
+    "scene": "讨论设计方案的取舍",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Let's discuss the rationale and examine the cost estimate.",
+        "zh": "我们讨论一下设计理由，再检查成本估算。"
+      },
+      {
+        "speaker": "B",
+        "en": "First, distinguish cost from latency. Clear terminology helps us assess the trade-off.",
+        "zh": "先区分成本和延迟。明确术语有助于评估取舍。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can we quantify the savings and characterize the risk?",
+        "zh": "能量化节省的费用并描述风险特征吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, with one caveat: this estimate assumes traffic stays steady.",
+        "zh": "能，但有一个限制：这个估算假设流量保持稳定。"
+      }
+    ]
+  },
+  {
+    "id": "D025",
+    "wordIds": [
+      "W101",
+      "W102",
+      "W103",
+      "W104",
+      "W105",
+      "W106",
+      "W107",
+      "W108",
+      "W109",
+      "W110",
+      "W111"
+    ],
+    "scene": "解释一行变量声明",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "What does this declaration tell us about the variable?",
+        "zh": "这条声明告诉我们变量的什么信息？"
+      },
+      {
+        "speaker": "B",
+        "en": "Its type is int. The assignment gives it a value from this expression.",
+        "zh": "类型是 int。赋值操作把这个表达式的值赋给它。"
+      },
+      {
+        "speaker": "A",
+        "en": "Is the plus sign an operator, and is each number an operand?",
+        "zh": "加号是运算符，每个数字都是操作数吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Each number is a literal. This statement doesn't make the variable a constant.",
+        "zh": "对。每个数字都是字面量。这条语句不会把变量变成常量。"
+      }
+    ]
+  },
+  {
+    "id": "D026",
+    "wordIds": [
+      "W112",
+      "W113",
+      "W114",
+      "W115",
+      "W116",
+      "W117",
+      "W118",
+      "W119",
+      "W120"
+    ],
+    "scene": "处理数值转换",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Is this a primitive integer or a reference to an Integer object?",
+        "zh": "这是原始类型的整数，还是指向 Integer 对象的引用？"
+      },
+      {
+        "speaker": "B",
+        "en": "It's a primitive int. This cast changes it to a double.",
+        "zh": "是原始类型 int。这个强制转换把它变成 double。"
+      },
+      {
+        "speaker": "A",
+        "en": "Could we use a float or a character instead? What about a boolean?",
+        "zh": "能换成 float 或字符吗？boolean 呢？"
+      },
+      {
+        "speaker": "B",
+        "en": "Choose by meaning and range. Java doesn't allow numeric conversion to boolean.",
+        "zh": "要根据含义和范围选择。Java 不允许把数值转换为 boolean。"
+      }
+    ]
+  },
+  {
+    "id": "D027",
+    "wordIds": [
+      "W121",
+      "W122",
+      "W123",
+      "W124",
+      "W125",
+      "W601",
+      "W602",
+      "W603",
+      "W604",
+      "W605"
+    ],
+    "scene": "排查数字文本解析错误",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why does parsing this string fail? Is its syntax wrong?",
+        "zh": "为什么解析这个字符串会失败？是语法错了吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "The lexical rules expect decimal input here, but this is hexadecimal.",
+        "zh": "这里的词法规则要求十进制输入，而这个是十六进制。"
+      },
+      {
+        "speaker": "A",
+        "en": "Once parsed, will it fit in one byte without overflow?",
+        "zh": "解析后能装进一个字节而不溢出吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check the range and each sign bit. The semantics of conversion matter; lost precision can change the value.",
+        "zh": "检查范围和符号位。转换的语义很重要，精度损失可能改变数值。"
+      }
+    ]
+  },
+  {
+    "id": "D028",
+    "wordIds": [
+      "W606",
+      "W607",
+      "W608",
+      "W609",
+      "W610",
+      "W611",
+      "W612",
+      "W613",
+      "W614"
+    ],
+    "scene": "阅读浮点数表示",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why does the binary display look different from the octal one?",
+        "zh": "为什么二进制显示和八进制显示不一样？"
+      },
+      {
+        "speaker": "B",
+        "en": "They use a different radix, so each digit has a different place value.",
+        "zh": "它们的基数不同，因此每位数字的位权不同。"
+      },
+      {
+        "speaker": "A",
+        "en": "For floating-point numbers, do the sign, mantissa, and exponent determine the value?",
+        "zh": "对浮点数来说，符号、尾数和指数决定数值吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. If its magnitude becomes too small, underflow can occur.",
+        "zh": "对。如果绝对值变得太小，就可能发生下溢。"
+      }
+    ]
+  },
+  {
+    "id": "D029",
+    "wordIds": [
+      "W615",
+      "W616",
+      "W617",
+      "W618",
+      "W619",
+      "W620",
+      "W621"
+    ],
+    "scene": "检查金额计算表达式",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why is the quotient wrong in this arithmetic expression?",
+        "zh": "为什么这个算术表达式的商不对？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check operator precedence and associativity. The unary minus applies here.",
+        "zh": "检查运算符优先级和结合性。一元负号作用在这里。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should I calculate the remainder separately before using the ternary operator?",
+        "zh": "我应该在使用三元运算符前单独计算余数吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Separate steps will make this calculation easier to review.",
+        "zh": "对。分开步骤更容易审查这个计算。"
+      }
+    ]
+  },
+  {
+    "id": "D030",
+    "wordIds": [
+      "W622",
+      "W623",
+      "W624",
+      "W625"
+    ],
+    "scene": "代码评审：转换与空值",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Is this int-to-long conversion widening?",
+        "zh": "这个 int 转 long 是拓宽转换吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. The reverse is narrowing and may lose information.",
+        "zh": "对。反过来是窄化转换，可能丢失信息。"
+      },
+      {
+        "speaker": "A",
+        "en": "Does boxing store the int in an Integer object?",
+        "zh": "装箱会把 int 放进 Integer 对象吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. But unboxing a null Integer throws an exception.",
+        "zh": "对。但对 null 的 Integer 拆箱会抛出异常。"
+      }
+    ]
+  },
+  {
+    "id": "D031",
+    "wordIds": [
+      "W126",
+      "W127",
+      "W128",
+      "W129",
+      "W130",
+      "W131",
+      "W132",
+      "W133",
+      "W134",
+      "W135"
+    ],
+    "scene": "给新同事解释服务类",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "How do I create an instance of this class?",
+        "zh": "怎么创建这个类的实例？"
+      },
+      {
+        "speaker": "B",
+        "en": "Call its constructor. Pass the URL argument for the url parameter.",
+        "zh": "调用构造方法。为 url 参数传入 URL 实参。"
+      },
+      {
+        "speaker": "A",
+        "en": "Does the object store that URL in a field?",
+        "zh": "对象会把 URL 存在字段里吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Then call this method through the interface; this class provides its implementation.",
+        "zh": "对。然后通过接口调用这个方法，这个类提供了实现。"
+      }
+    ]
+  },
+  {
+    "id": "D032",
+    "wordIds": [
+      "W136",
+      "W137",
+      "W138",
+      "W139",
+      "W140",
+      "W141",
+      "W142",
+      "W143",
+      "W144",
+      "W145"
+    ],
+    "scene": "评审继承设计",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should this subclass override the method from its superclass?",
+        "zh": "这个子类应该重写父类的方法吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. The superclass is abstract; inheritance gives us a shared contract.",
+        "zh": "对。父类是抽象类，继承让我们共享约定。"
+      },
+      {
+        "speaker": "A",
+        "en": "Would we overload it to get polymorphism?",
+        "zh": "要通过重载来获得多态吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Here we need overriding. Preserve encapsulation and check the visibility modifier too.",
+        "zh": "这里需要的是重写。也要保持封装，并检查可见性修饰符。"
+      }
+    ]
+  },
+  {
+    "id": "D033",
+    "wordIds": [
+      "W146",
+      "W147",
+      "W148",
+      "W149",
+      "W150",
+      "W626",
+      "W627",
+      "W628",
+      "W629",
+      "W630"
+    ],
+    "scene": "为订单模型选择结构",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should the order status be an enum in this package?",
+        "zh": "订单状态应该用这个包中的枚举吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Import it into the record. Use composition for the address.",
+        "zh": "对。把它导入 record，地址则采用组合。"
+      },
+      {
+        "speaker": "A",
+        "en": "Do we need a sealed hierarchy or an anonymous class?",
+        "zh": "需要密封的继承层次或匿名类吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Neither for this model. Keep helper state private; use protected only when subclass access is needed.",
+        "zh": "这个模型都不需要。辅助状态保持私有，只有子类需要访问时才用 protected。"
+      }
+    ]
+  },
+  {
+    "id": "D034",
+    "wordIds": [
+      "W631",
+      "W632",
+      "W633",
+      "W634",
+      "W635",
+      "W636",
+      "W637",
+      "W638",
+      "W639",
+      "W640"
+    ],
+    "scene": "拆分职责过多的服务",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can this subtype honor the contract of its supertype?",
+        "zh": "这个子类型能遵守父类型的约定吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Only if every mutator preserves the invariant. This accessor must not expose mutable state.",
+        "zh": "只有每个修改方法都维持不变量才行。这个访问方法不能暴露可变状态。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we move payment ownership to a collaborator?",
+        "zh": "要把支付职责交给一个协作对象吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. That can improve cohesion, but keep coupling low with a small interface.",
+        "zh": "可以。这样能提高内聚性，但要用小接口降低耦合。"
+      }
+    ]
+  },
+  {
+    "id": "D035",
+    "wordIds": [
+      "W641",
+      "W642",
+      "W643",
+      "W644",
+      "W645",
+      "W646"
+    ],
+    "scene": "讨论第三方接口接入方案",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should we put a facade in front of the payment library?",
+        "zh": "要在支付库前加一个外观接口吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, and an adapter can translate its response into our model.",
+        "zh": "可以，再用适配器把它的响应转成我们的模型。"
+      },
+      {
+        "speaker": "A",
+        "en": "Would a decorator add logging, and a strategy select the provider?",
+        "zh": "装饰器可以加日志，策略可以选择供应商吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. We don't need a visitor or a template method for this small integration.",
+        "zh": "可以。这个小型接入不需要访问者或模板方法。"
+      }
+    ]
+  },
+  {
+    "id": "D036",
+    "wordIds": [
+      "W647",
+      "W648",
+      "W649",
+      "W650"
+    ],
+    "scene": "检查内部类是否持有外部对象",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "This builder has a fluent API. Can we chain its methods?",
+        "zh": "这个构建器用了流式接口，能链式调用吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. But look at the nested class before using it.",
+        "zh": "能。不过使用前先看一下嵌套类。"
+      },
+      {
+        "speaker": "A",
+        "en": "Does it keep a reference to the enclosing instance?",
+        "zh": "它会持有外围实例的引用吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "This non-static inner class does. A static nested builder would not need that outer reference.",
+        "zh": "这个非静态内部类会。静态嵌套构建器则不需要那个外部引用。"
+      }
+    ]
+  },
+  {
+    "id": "D037",
+    "wordIds": [
+      "W151",
+      "W152",
+      "W153",
+      "W154",
+      "W155",
+      "W156",
+      "W157",
+      "W158",
+      "W159",
+      "W160"
+    ],
+    "scene": "为待办列表选容器",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should this collection be a list or an array?",
+        "zh": "这个集合应该用列表还是数组？"
+      },
+      {
+        "speaker": "B",
+        "en": "Use a list if the size changes. Capacity is the space it can hold before growing.",
+        "zh": "大小会变化就用列表。容量是扩容前能容纳的空间。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can I access an element by index or use an iterator?",
+        "zh": "我能按索引访问元素，也能用迭代器吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. For a full traversal, iteration is convenient; don't confuse size with capacity.",
+        "zh": "对。完整遍历时迭代很方便，别把大小和容量混淆。"
+      }
+    ]
+  },
+  {
+    "id": "D038",
+    "wordIds": [
+      "W161",
+      "W162",
+      "W163",
+      "W164",
+      "W165",
+      "W166",
+      "W167",
+      "W168",
+      "W169",
+      "W170"
+    ],
+    "scene": "为搜索结果去重排序",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can we sort these results before we search within a range?",
+        "zh": "能先排序，再在一定范围内搜索吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. A stable order also makes each position easier to explain.",
+        "zh": "能。稳定的顺序也让每个位置更容易解释。"
+      },
+      {
+        "speaker": "A",
+        "en": "How do we remove a duplicate and keep unique items?",
+        "zh": "怎么去掉重复项，只保留不重复的项？"
+      },
+      {
+        "speaker": "B",
+        "en": "Use equality checks. A matching hash only puts items in a candidate bucket; it doesn't prove equality.",
+        "zh": "使用相等性检查。哈希值相同只会让条目落入候选桶，并不能证明它们相等。"
+      }
+    ]
+  },
+  {
+    "id": "D039",
+    "wordIds": [
+      "W171",
+      "W172",
+      "W173",
+      "W174",
+      "W175",
+      "W651",
+      "W652",
+      "W653",
+      "W654"
+    ],
+    "scene": "选择任务队列和查询结构",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Do we need a linked queue or a deque for these jobs?",
+        "zh": "这些任务需要链式队列还是双端队列？"
+      },
+      {
+        "speaker": "B",
+        "en": "A deque, since we remove from both ends. Store each job entry under its key in a map too.",
+        "zh": "用双端队列，因为两端都要移除。还要用键把每个任务条目存入映射。"
+      },
+      {
+        "speaker": "A",
+        "en": "What about a tree, a trie, a vector, or a matrix?",
+        "zh": "树、字典树、向量或矩阵呢？"
+      },
+      {
+        "speaker": "B",
+        "en": "They solve other problems. A trie is useful for prefix lookup, not this queue.",
+        "zh": "它们解决的是别的问题。字典树适合前缀查找，不适合这个队列需求。"
+      }
+    ]
+  },
+  {
+    "id": "D040",
+    "wordIds": [
+      "W655",
+      "W656",
+      "W657",
+      "W658",
+      "W659",
+      "W660",
+      "W661",
+      "W662",
+      "W663",
+      "W664"
+    ],
+    "scene": "画出文件夹关系图",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "In this graph, does each vertex represent a folder?",
+        "zh": "这个图里的每个顶点都代表文件夹吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, and each edge records adjacency between parent and child. A leaf has no children.",
+        "zh": "对，每条边记录父子相邻关系。叶节点没有子节点。"
+      },
+      {
+        "speaker": "A",
+        "en": "Is this folder a descendant of root and a sibling of docs?",
+        "zh": "这个文件夹是根目录的后代，也是 docs 的兄弟节点吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Root is its ancestor. Compare breadth-first and depth-first traversal on this drawing.",
+        "zh": "对。根目录是它的祖先。在图上比较一下广度优先和深度优先遍历吧。"
+      }
+    ]
+  },
+  {
+    "id": "D041",
+    "wordIds": [
+      "W665",
+      "W666",
+      "W667",
+      "W668",
+      "W669",
+      "W670",
+      "W671",
+      "W672"
+    ],
+    "scene": "合并两份用户集合",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Are these two user sets disjoint? Which one gets priority?",
+        "zh": "这两个用户集合互不相交吗？哪个优先？"
+      },
+      {
+        "speaker": "B",
+        "en": "No, their intersection is nonempty. First compute the union; it's a superset of both.",
+        "zh": "不是，交集非空。先求并集，它是两者的超集。"
+      },
+      {
+        "speaker": "A",
+        "en": "Then the active users form a subset. Should we use a sparse or dense bitmap?",
+        "zh": "然后活跃用户构成一个子集。应该用稀疏还是密集位图？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check how many IDs are present before choosing the representation.",
+        "zh": "先检查有多少编号实际存在，再决定表示方式。"
+      }
+    ]
+  },
+  {
+    "id": "D042",
+    "wordIds": [
+      "W673",
+      "W674",
+      "W675"
+    ],
+    "scene": "解释编号为什么排序奇怪",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why does item 10 appear before item 2?",
+        "zh": "为什么第 10 项排在第 2 项前面？"
+      },
+      {
+        "speaker": "B",
+        "en": "We're using lexicographic order on strings, not numeric order.",
+        "zh": "我们对字符串采用字典序，而不是数值顺序。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can we use the enum ordinal to fix this permutation?",
+        "zh": "能用枚举序号修正这个排列吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Use an explicit numeric key instead; an ordinal can change when enum constants move.",
+        "zh": "改用明确的数值键；枚举常量调整位置时序号可能变化。"
+      }
+    ]
+  },
+  {
+    "id": "D043",
+    "wordIds": [
+      "W176",
+      "W177",
+      "W178",
+      "W179",
+      "W180",
+      "W181",
+      "W182",
+      "W183",
+      "W184"
+    ],
+    "scene": "理解一个泛型方法",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why does this generic function use a wildcard with an upper bound?",
+        "zh": "为什么这个泛型函数使用带上界的通配符？"
+      },
+      {
+        "speaker": "B",
+        "en": "It reads values of related types. Type erasure removes much generic type information at runtime.",
+        "zh": "它读取一组相关类型的值。类型擦除会移除运行时的大量泛型类型信息。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can I pass a lambda as the predicate? What about a supplier?",
+        "zh": "能把 lambda 当作谓词传入吗？供应器呢？"
+      },
+      {
+        "speaker": "B",
+        "en": "Use the required interface: a predicate tests, a supplier provides, and a consumer accepts a value.",
+        "zh": "要使用要求的接口：谓词判断，供应器提供值，消费者接收值。"
+      }
+    ]
+  },
+  {
+    "id": "D044",
+    "wordIds": [
+      "W185",
+      "W186",
+      "W187",
+      "W188",
+      "W189",
+      "W190",
+      "W191",
+      "W192",
+      "W193",
+      "W194",
+      "W195"
+    ],
+    "scene": "用 Stream 汇总订单",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "How does this stream pipeline calculate the total?",
+        "zh": "这条 Stream 流水线怎么算总额？"
+      },
+      {
+        "speaker": "B",
+        "en": "We flatten the groups, filter out cancelled orders, then map the rest to amounts.",
+        "zh": "我们展开分组、过滤掉取消的订单，再把剩余订单映射成金额。"
+      },
+      {
+        "speaker": "A",
+        "en": "Are those intermediate steps? Should we reduce or collect at the end?",
+        "zh": "那些都是中间步骤吗？最后该归约还是收集？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Use a terminal reduction for one total, or a collector with an accumulator for grouped results.",
+        "zh": "对。一个总额用终止归约操作，分组结果则用带累加器的收集器。"
+      }
+    ]
+  },
+  {
+    "id": "D045",
+    "wordIds": [
+      "W196",
+      "W197",
+      "W198",
+      "W199",
+      "W200",
+      "W676",
+      "W677",
+      "W678",
+      "W679",
+      "W680"
+    ],
+    "scene": "评估是否使用并行流",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can this parallel operation aggregate faster than the sequential version?",
+        "zh": "这个并行操作能比顺序版本更快地聚合吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Maybe. The spliterator divides work, and the combiner joins partial results.",
+        "zh": "可能。可分割迭代器拆分工作，合并器合并局部结果。"
+      },
+      {
+        "speaker": "A",
+        "en": "Does this fold need an identity? And what does the finisher do?",
+        "zh": "这个折叠操作需要单位元吗？最终转换器做什么？"
+      },
+      {
+        "speaker": "B",
+        "en": "Here, yes. The finisher converts the result. A gatherer is another tool for intermediate operations; the pipeline remains lazy.",
+        "zh": "这里需要。最终转换器转换结果。聚集器则是处理中间操作的另一种工具，流水线仍是惰性的。"
+      }
+    ]
+  },
+  {
+    "id": "D046",
+    "wordIds": [
+      "W681",
+      "W682",
+      "W683",
+      "W684",
+      "W685",
+      "W686",
+      "W687",
+      "W688",
+      "W689"
+    ],
+    "scene": "讨论回调与类型变化",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Does this closure capture any mutable state?",
+        "zh": "这个闭包捕获了可变状态吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "No, which helps with purity. Its target type is this functional interface.",
+        "zh": "没有，这有助于保持纯度。它的目标类型是这个函数式接口。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can you explain variance, especially covariance and contravariance?",
+        "zh": "能解释型变，尤其是协变和逆变吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Let's draw input and output types first. Whether a type is denotable or reifiable is a separate question.",
+        "zh": "先画出输入和输出类型。类型能否写出或能否在运行时具体表示，是另外的问题。"
+      }
+    ]
+  },
+  {
+    "id": "D047",
+    "wordIds": [
+      "W690",
+      "W691",
+      "W692",
+      "W693",
+      "W694",
+      "W695"
+    ],
+    "scene": "读懂泛型教材中的术语",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why replace the raw type with the diamond syntax here?",
+        "zh": "为什么这里要把原始类型换成菱形语法？"
+      },
+      {
+        "speaker": "B",
+        "en": "It keeps type inference and checking. We shouldn't assume equivalence with the raw form.",
+        "zh": "这样能保留类型推断和检查。不能假定它和原始形式等价。"
+      },
+      {
+        "speaker": "A",
+        "en": "The textbook mentions existential and universal types. Are those Java keywords?",
+        "zh": "教材提到存在类型和全称类型，它们是 Java 关键字吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "No. They're theoretical terms; substitution means replacing a type variable with a type.",
+        "zh": "不是。它们是理论术语，类型替换指用一个类型替换类型变量。"
+      }
+    ]
+  },
+  {
+    "id": "D048",
+    "wordIds": [
+      "W696",
+      "W697",
+      "W698",
+      "W699",
+      "W700"
+    ],
+    "scene": "排查流处理中的日志",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why doesn't peek print every item after I skip the first chunk?",
+        "zh": "跳过第一块数据后，为什么 peek 没打印每一项？"
+      },
+      {
+        "speaker": "B",
+        "en": "Peek is not a reliable place for required side effects; execution may optimize away work.",
+        "zh": "不应把必须执行的副作用放在 peek 里，执行过程可能优化掉部分工作。"
+      },
+      {
+        "speaker": "A",
+        "en": "Would a sliding window or operation fusion change that?",
+        "zh": "滑动窗口或操作融合会改变这一点吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Neither gives that guarantee. Put required logging in an explicit processing step.",
+        "zh": "都不能提供这个保证。必须执行的日志应放在明确的处理步骤里。"
+      }
+    ]
+  },
+  {
+    "id": "D049",
+    "wordIds": [
+      "W201",
+      "W202",
+      "W203",
+      "W204",
+      "W205",
+      "W206",
+      "W207",
+      "W208",
+      "W209",
+      "W210"
+    ],
+    "scene": "排查文件读取失败",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "What is the cause of this file-reading failure?",
+        "zh": "这次文件读取失败是什么原因？"
+      },
+      {
+        "speaker": "B",
+        "en": "Catch the exception and inspect it. Don't suppress the error without reporting it.",
+        "zh": "捕获异常并检查它。不要不报告就压下错误。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should I wrap it, throw it again, or let it propagate?",
+        "zh": "应该包装后再抛出，还是让它直接传播？"
+      },
+      {
+        "speaker": "B",
+        "en": "Preserve the cause if you wrap it. Use finally for cleanup that must run when leaving the block.",
+        "zh": "包装时保留原因。离开代码块时必须执行的清理放在 finally 中。"
+      }
+    ]
+  },
+  {
+    "id": "D050",
+    "wordIds": [
+      "W211",
+      "W212",
+      "W213",
+      "W214",
+      "W215",
+      "W216",
+      "W217",
+      "W218",
+      "W219",
+      "W220"
+    ],
+    "scene": "审核输入校验代码",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Is this parameter nullable, or is non-null a precondition?",
+        "zh": "这个参数可以为空，还是非空是前置条件？"
+      },
+      {
+        "speaker": "B",
+        "en": "Reject null and malformed input. An assertion isn't enough for public input validation.",
+        "zh": "拒绝空值和格式错误的输入。公共输入校验不能只靠断言。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we use a checked exception or an unchecked runtime exception?",
+        "zh": "应该用受检异常，还是未受检的运行时异常？"
+      },
+      {
+        "speaker": "B",
+        "en": "Follow the API contract. Use a fallback only when it has a valid business meaning.",
+        "zh": "遵循接口约定。只有业务上合理时才采用备用方案。"
+      }
+    ]
+  },
+  {
+    "id": "D051",
+    "wordIds": [
+      "W221",
+      "W222",
+      "W223",
+      "W224",
+      "W225",
+      "W701",
+      "W702",
+      "W703",
+      "W704",
+      "W705"
+    ],
+    "scene": "讨论超时任务如何恢复",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can we recover from this timeout with a retry?",
+        "zh": "这次超时能通过重试恢复吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Only if repeating the operation is safe. Run validation before we resume.",
+        "zh": "只有重复操作安全时才行。恢复之前先做校验。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should I interrupt the task, abort this attempt, or halt the whole process?",
+        "zh": "应该中断任务、终止本次尝试，还是停止整个进程？"
+      },
+      {
+        "speaker": "B",
+        "en": "Abort this attempt and discontinue automatic retries for now. A timeout doesn't necessarily mean a crash.",
+        "zh": "终止本次尝试，暂时停止自动重试。超时不一定意味着崩溃。"
+      }
+    ]
+  },
+  {
+    "id": "D052",
+    "wordIds": [
+      "W706",
+      "W707",
+      "W708",
+      "W709",
+      "W710",
+      "W711",
+      "W712",
+      "W713",
+      "W714",
+      "W715"
+    ],
+    "scene": "处理导入中的异常数据",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Is this anomaly a code defect or data corruption?",
+        "zh": "这个异常现象是代码缺陷，还是数据损坏？"
+      },
+      {
+        "speaker": "B",
+        "en": "We need evidence. Sanitize external input and run cleanup only on confirmed temporary files.",
+        "zh": "需要证据。清理外部输入，只对确认过的临时文件执行清理。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can we repair the records and compensate users to mitigate the impact?",
+        "zh": "能修复记录并补偿用户，减轻影响吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, after review. That remedy helps recovery; better validation helps us withstand bad input.",
+        "zh": "审核后可以。这种补救有助于恢复，更好的校验则有助于应对错误输入。"
+      }
+    ]
+  },
+  {
+    "id": "D053",
+    "wordIds": [
+      "W716",
+      "W717",
+      "W718",
+      "W719",
+      "W720"
+    ],
+    "scene": "为严重错误设置告警",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should we warn the operator about this failure?",
+        "zh": "要警告操作人员这次失败吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Report its severity clearly; this one is fatal to the import task.",
+        "zh": "要。清楚地报告严重程度，这次错误会导致导入任务终止。"
+      },
+      {
+        "speaker": "A",
+        "en": "What safeguard can prevent a partial import from being used?",
+        "zh": "什么保护措施能避免使用只导入了一部分的数据？"
+      },
+      {
+        "speaker": "B",
+        "en": "Mark the import incomplete until all required checks pass.",
+        "zh": "在所有必要检查通过前，都把导入标为未完成。"
+      }
+    ]
+  },
+  {
+    "id": "D054",
+    "wordIds": [
+      "W721",
+      "W722",
+      "W723",
+      "W724",
+      "W725"
+    ],
+    "scene": "解释接口的危险用法",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why does the API reject this illegal state change?",
+        "zh": "为什么接口拒绝这个非法状态变更？"
+      },
+      {
+        "speaker": "B",
+        "en": "It's a breach of its contract. Calling it repeatedly is misuse, not a recovery strategy.",
+        "zh": "这违反了接口约定。反复调用属于误用，不是恢复策略。"
+      },
+      {
+        "speaker": "A",
+        "en": "Could that lead to resource exhaustion?",
+        "zh": "这可能导致资源耗尽吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. That's a common pitfall; stop and fix the state first.",
+        "zh": "会。这是常见陷阱，先停下来修复状态。"
+      }
+    ]
+  },
+  {
+    "id": "D055",
+    "wordIds": [
+      "W226",
+      "W227",
+      "W228",
+      "W229",
+      "W230",
+      "W231",
+      "W232",
+      "W233",
+      "W234",
+      "W235"
+    ],
+    "scene": "提交后台报表任务",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should this report run as a synchronous or asynchronous task?",
+        "zh": "这个报表应该同步还是异步执行？"
+      },
+      {
+        "speaker": "B",
+        "en": "Asynchronous. Submit it to the executor and keep the future.",
+        "zh": "异步。把它提交给执行器，并保留 Future。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can we schedule concurrent reports or cancel one later?",
+        "zh": "能调度多个并发报表，或稍后取消某个吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, but cancellation is cooperative here. The worker thread must respond to it.",
+        "zh": "可以，但这里的取消需要配合，工作线程必须响应取消请求。"
+      }
+    ]
+  },
+  {
+    "id": "D056",
+    "wordIds": [
+      "W236",
+      "W237",
+      "W238",
+      "W239",
+      "W240",
+      "W241",
+      "W242",
+      "W243",
+      "W244"
+    ],
+    "scene": "排查线程池计数错误",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why does this pool report completion before every worker finishes?",
+        "zh": "为什么这个线程池在所有工作线程结束前就报告完成？"
+      },
+      {
+        "speaker": "B",
+        "en": "There's a race in the counter. Volatile doesn't make an increment atomic.",
+        "zh": "计数器有竞态问题。volatile 不能让自增成为原子操作。"
+      },
+      {
+        "speaker": "A",
+        "en": "Would synchronization fix it, or create too much contention?",
+        "zh": "同步能修复它吗，还是会造成太多争用？"
+      },
+      {
+        "speaker": "B",
+        "en": "Use an atomic counter and measure. Also, a daemon thread won't keep the JVM alive on its own.",
+        "zh": "使用原子计数器并测量。另外，守护线程本身不能阻止 JVM 退出。"
+      }
+    ]
+  },
+  {
+    "id": "D057",
+    "wordIds": [
+      "W245",
+      "W246",
+      "W247",
+      "W248",
+      "W249",
+      "W250",
+      "W726",
+      "W727",
+      "W728",
+      "W729"
+    ],
+    "scene": "等待一组任务到达同一点",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should we await a latch or use a barrier here?",
+        "zh": "这里该等待闭锁，还是使用屏障？"
+      },
+      {
+        "speaker": "B",
+        "en": "Use a barrier for repeated rounds. A semaphore limits access through each permit.",
+        "zh": "重复多轮协作时用屏障。信号量通过许可限制访问。"
+      },
+      {
+        "speaker": "A",
+        "en": "Is waiting blocking? Can notify or signal cause a wakeup?",
+        "zh": "等待是阻塞的吗？notify 或 signal 能唤醒线程吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, with the matching lock API. Recheck the condition after waking; use another design for nonblocking behavior.",
+        "zh": "可以，但要使用匹配的锁 API。唤醒后重新检查条件；非阻塞行为需要另一种设计。"
+      }
+    ]
+  },
+  {
+    "id": "D058",
+    "wordIds": [
+      "W730",
+      "W731",
+      "W732",
+      "W733",
+      "W734",
+      "W735",
+      "W736",
+      "W737"
+    ],
+    "scene": "排查线程一直等不到执行",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Will calling yield or sleep guarantee fairness?",
+        "zh": "调用 yield 或 sleep 能保证公平性吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "No. A thread can still suffer starvation, and repeated retries can cause livelock.",
+        "zh": "不能。线程仍可能饥饿，反复重试还可能造成活锁。"
+      },
+      {
+        "speaker": "A",
+        "en": "Could park and unpark help at our rendezvous point?",
+        "zh": "park 和 unpark 能帮助线程在会合点协作吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "They can support coordination, but we still need a correct condition and wakeup protocol.",
+        "zh": "它们能支持协调，但仍然需要正确的条件与唤醒协议。"
+      }
+    ]
+  },
+  {
+    "id": "D059",
+    "wordIds": [
+      "W738",
+      "W739",
+      "W740",
+      "W741",
+      "W742",
+      "W743",
+      "W744"
+    ],
+    "scene": "分析线程执行交错",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Does this reentrant lock provide mutual exclusion?",
+        "zh": "这把可重入锁提供互斥吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. But interleaving outside the protected section can still change the result.",
+        "zh": "提供。但受保护区域之外的交错执行仍可能改变结果。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should a waiting thread spin, or allow suspension and preemption?",
+        "zh": "等待线程应该自旋，还是允许挂起和抢占？"
+      },
+      {
+        "speaker": "B",
+        "en": "Prefer the library's waiting policy. Our cancellation protocol is cooperative, so tasks must check it.",
+        "zh": "优先使用库的等待策略。我们的取消协议需要协作，因此任务必须检查取消状态。"
+      }
+    ]
+  },
+  {
+    "id": "D060",
+    "wordIds": [
+      "W745",
+      "W746",
+      "W747",
+      "W748",
+      "W749",
+      "W750"
+    ],
+    "scene": "为高峰期调度设置边界",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can we fork this job and let another worker steal the extra work?",
+        "zh": "能拆分这个任务，让其他工作线程窃取额外工作吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, if the tasks are independent. Watch pool saturation near the deadline.",
+        "zh": "能，前提是任务独立。临近截止时间要注意线程池饱和。"
+      },
+      {
+        "speaker": "A",
+        "en": "Does the handoff require CPU affinity?",
+        "zh": "任务交接要求 CPU 亲和性吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Not here. Keep the scheduling simple until measurements show a need.",
+        "zh": "这里不需要。测量证明有需求之前，保持调度简单。"
+      }
+    ]
+  },
+  {
+    "id": "D061",
+    "wordIds": [
+      "W251",
+      "W252",
+      "W253",
+      "W254",
+      "W255",
+      "W256",
+      "W257",
+      "W258",
+      "W259",
+      "W260"
+    ],
+    "scene": "排查进程内存持续上涨",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why does the memory footprint keep growing?",
+        "zh": "为什么内存占用一直增长？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check heap allocation and object retention. Reachable objects aren't eligible for garbage reclamation.",
+        "zh": "检查堆分配和对象保留。仍可达的对象不满足垃圾回收条件。"
+      },
+      {
+        "speaker": "A",
+        "en": "Could this be a leak rather than normal stack usage?",
+        "zh": "这会是泄漏，而不是正常的栈使用吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Possibly. Compare snapshots and identify what keeps those objects reachable.",
+        "zh": "有可能。比较快照，确定是什么让那些对象一直可达。"
+      }
+    ]
+  },
+  {
+    "id": "D062",
+    "wordIds": [
+      "W261",
+      "W262",
+      "W263",
+      "W264",
+      "W265",
+      "W266",
+      "W267",
+      "W268",
+      "W269",
+      "W270"
+    ],
+    "scene": "查看一次 GC 暂停",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can the profiler explain this long pause?",
+        "zh": "分析器能解释这次长暂停吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "It can help. Take a heap dump and a thread snapshot, then inspect GC logs by generation and region.",
+        "zh": "能提供帮助。采集堆转储和线程快照，再按代和区域检查 GC 日志。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we also inspect the classloader and bytecode execution?",
+        "zh": "还要检查类加载器和字节码执行吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "If the evidence points there. The interpreter and compiler handle execution differently, so avoid guessing.",
+        "zh": "证据指向那里时再检查。解释器和编译器的执行方式不同，别凭猜测下结论。"
+      }
+    ]
+  },
+  {
+    "id": "D063",
+    "wordIds": [
+      "W271",
+      "W272",
+      "W273",
+      "W274",
+      "W275",
+      "W751",
+      "W752",
+      "W753",
+      "W754",
+      "W755"
+    ],
+    "scene": "讨论对象进入老年代",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Could recursion be exhausting a resource by adding one frame per call?",
+        "zh": "递归会不会每次调用增加一个栈帧，从而耗尽资源？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check the stack first. That's different from young-generation allocation in Eden.",
+        "zh": "先检查栈。这与 Eden 区的新生代分配不是一回事。"
+      },
+      {
+        "speaker": "A",
+        "en": "Do surviving objects move through a survivor space before we tenure them?",
+        "zh": "存活对象晋升老年代之前会经过 Survivor 区吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Depending on the collector. Humongous objects and native memory need separate checks before any optimization.",
+        "zh": "取决于收集器。做优化前，还要单独检查巨型对象和本地内存。"
+      }
+    ]
+  },
+  {
+    "id": "D064",
+    "wordIds": [
+      "W756",
+      "W757",
+      "W758",
+      "W759",
+      "W760",
+      "W761",
+      "W762",
+      "W763",
+      "W764",
+      "W765"
+    ],
+    "scene": "读懂垃圾回收日志",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Does compaction reduce fragmentation after a mark-and-sweep cycle?",
+        "zh": "标记清除周期之后，压缩整理能减少碎片吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "It can. This collector also uses evacuation to move live objects; details depend on its design.",
+        "zh": "能。这个收集器还通过转移搬动存活对象，细节取决于设计。"
+      },
+      {
+        "speaker": "A",
+        "en": "Is a safepoint the same as a thread-local handshake?",
+        "zh": "安全点和线程局部握手是一回事吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "No. Let's separate those mechanisms from compiler topics such as inlining, escape analysis, and scalar replacement.",
+        "zh": "不是。我们先把这些机制与内联、逃逸分析、标量替换等编译器话题分开。"
+      }
+    ]
+  },
+  {
+    "id": "D065",
+    "wordIds": [
+      "W766",
+      "W767",
+      "W768",
+      "W769",
+      "W770",
+      "W771"
+    ],
+    "scene": "查看编译后的执行热点",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why does this instruction spend so much time moving data?",
+        "zh": "为什么这条指令花了这么多时间搬运数据？"
+      },
+      {
+        "speaker": "B",
+        "en": "A register spill may be involved. Check the opcode and generated code.",
+        "zh": "可能涉及寄存器溢出到内存。检查操作码和生成的代码。"
+      },
+      {
+        "speaker": "A",
+        "en": "Is this related to pinning or the native memory arena?",
+        "zh": "这与固定操作或本地内存分配区有关吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "We need evidence. Also track metaspace separately; it stores class metadata.",
+        "zh": "需要证据。另外单独跟踪元空间，它存储类元数据。"
+      }
+    ]
+  },
+  {
+    "id": "D066",
+    "wordIds": [
+      "W772",
+      "W773",
+      "W774",
+      "W775"
+    ],
+    "scene": "解释监控中的内存数字",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why is memory reservation larger than resident memory?",
+        "zh": "为什么预留内存比驻留内存大？"
+      },
+      {
+        "speaker": "B",
+        "en": "Reserved address space doesn't mean every page is currently in physical memory.",
+        "zh": "预留地址空间不意味着每个页面当前都在物理内存中。"
+      },
+      {
+        "speaker": "A",
+        "en": "Could alignment padding or an intrinsic change these numbers?",
+        "zh": "对齐填充或内建优化会改变这些数字吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "They can affect allocation or execution, but first compare measurements using the same definitions.",
+        "zh": "它们可能影响分配或执行，但首先应使用相同口径比较测量值。"
+      }
+    ]
+  },
+  {
+    "id": "D067",
+    "wordIds": [
+      "W276",
+      "W277",
+      "W278",
+      "W279",
+      "W280",
+      "W281",
+      "W282",
+      "W283",
+      "W284",
+      "W285"
+    ],
+    "scene": "排查 Spring 配置未生效",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why didn't the container create this bean with the expected property?",
+        "zh": "为什么容器创建这个 Bean 时没使用预期属性？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check the active profile and configuration. Dependency injection uses the selected definition.",
+        "zh": "检查当前配置档和配置。依赖注入使用选中的定义。"
+      },
+      {
+        "speaker": "A",
+        "en": "Does singleton scope affect its lifecycle?",
+        "zh": "单例作用域会影响它的生命周期吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. In this container, one shared instance is managed for that bean definition.",
+        "zh": "会。这个容器会为该 Bean 定义管理一个共享实例。"
+      }
+    ]
+  },
+  {
+    "id": "D068",
+    "wordIds": [
+      "W286",
+      "W287",
+      "W288",
+      "W289",
+      "W290",
+      "W291",
+      "W292",
+      "W293",
+      "W294"
+    ],
+    "scene": "给组件加请求日志",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should this component be prototype-scoped in the application context?",
+        "zh": "这个组件在应用上下文中应该采用原型作用域吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Only if each request for it needs a new instance. A factory can handle creation.",
+        "zh": "只有每次获取都需要新实例时才这样。可以由工厂负责创建。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can an annotation enable an aspect with logging advice?",
+        "zh": "注解能启用包含日志通知的切面吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, with the right configuration. Remember that a proxy or interceptor must actually intercept the call.",
+        "zh": "配置正确就可以。要注意，代理或拦截器必须实际拦截到调用。"
+      }
+    ]
+  },
+  {
+    "id": "D069",
+    "wordIds": [
+      "W295",
+      "W296",
+      "W297",
+      "W298",
+      "W299",
+      "W300",
+      "W776",
+      "W777",
+      "W778"
+    ],
+    "scene": "启动时找不到依赖",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why does bootstrap fail before we initialize the service?",
+        "zh": "为什么初始化服务之前，启动过程就失败了？"
+      },
+      {
+        "speaker": "B",
+        "en": "We can't resolve a dependency. Check its stereotype annotation and qualifier before we autowire it.",
+        "zh": "无法解析一个依赖。自动装配前检查构造型注解和限定符。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we bind these settings from the environment first?",
+        "zh": "应该先从环境绑定这些设置吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. And register cleanup so we destroy owned resources when the context closes.",
+        "zh": "对。还要注册清理逻辑，在上下文关闭时销毁自己拥有的资源。"
+      }
+    ]
+  },
+  {
+    "id": "D070",
+    "wordIds": [
+      "W779",
+      "W780",
+      "W781",
+      "W782",
+      "W783",
+      "W784",
+      "W785",
+      "W786"
+    ],
+    "scene": "检查代理为什么没有通知",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why doesn't this advisor apply to our candidate bean?",
+        "zh": "为什么这个通知器没作用于候选 Bean？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check the pointcut and proxy creation. A postprocessor may customize the bean before use.",
+        "zh": "检查切点和代理创建。后置处理器可能在使用前定制 Bean。"
+      },
+      {
+        "speaker": "A",
+        "en": "Could an unresolved placeholder or an Aware callback affect it?",
+        "zh": "未解析的占位符或 Aware 回调会影响它吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Possibly. Trace initialization first; proxy-based weaving still requires the call to pass through the proxy.",
+        "zh": "有可能。先追踪初始化过程，基于代理的织入仍要求调用经过代理。"
+      }
+    ]
+  },
+  {
+    "id": "D071",
+    "wordIds": [
+      "W787",
+      "W788",
+      "W789",
+      "W790",
+      "W791",
+      "W792",
+      "W793",
+      "W794",
+      "W795"
+    ],
+    "scene": "阅读框架如何发现组件",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "How does the framework introspect classes on the classpath?",
+        "zh": "框架如何内省类路径上的类？"
+      },
+      {
+        "speaker": "B",
+        "en": "It can read metadata or use reflection. The infrastructure follows registration rules and convention.",
+        "zh": "可以读取元数据或使用反射。基础设施遵循注册规则和约定。"
+      },
+      {
+        "speaker": "A",
+        "en": "Does this descriptor belong to the XML namespace? What about class enhancement?",
+        "zh": "这个描述符属于该 XML 命名空间吗？类增强呢？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check the descriptor format first. Enhancement is a separate step that can generate a subclass.",
+        "zh": "先检查描述符格式。增强是另一个步骤，可以生成子类。"
+      }
+    ]
+  },
+  {
+    "id": "D072",
+    "wordIds": [
+      "W796",
+      "W797",
+      "W798",
+      "W799",
+      "W800"
+    ],
+    "scene": "选择立即初始化还是延迟初始化",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should we assemble this client during eager initialization?",
+        "zh": "应该在立即初始化阶段组装这个客户端吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Only if startup needs it. Otherwise, deferred creation may be enough.",
+        "zh": "只有启动时需要它才这样，否则延迟创建可能就够了。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can we populate the settings now and add a proxy for indirection?",
+        "zh": "能先填充设置，再加一层代理间接访问吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "We can, but use that extra layer only if it solves a real lifecycle problem.",
+        "zh": "可以，但只有确实解决生命周期问题时才增加这一层。"
+      }
+    ]
+  },
+  {
+    "id": "D073",
+    "wordIds": [
+      "W301",
+      "W302",
+      "W303",
+      "W304",
+      "W305",
+      "W306",
+      "W307",
+      "W308",
+      "W309",
+      "W310"
+    ],
+    "scene": "排查接口返回错误",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why did the client get this status from the endpoint?",
+        "zh": "为什么客户端从这个端点收到了这个状态码？"
+      },
+      {
+        "speaker": "B",
+        "en": "Inspect the request header and body. The server may reject an invalid payload.",
+        "zh": "检查请求头和请求体。服务端可能拒绝无效的载荷。"
+      },
+      {
+        "speaker": "A",
+        "en": "Is the response consistent with our protocol?",
+        "zh": "响应符合我们的协议吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Let's compare it with the API contract before changing the client.",
+        "zh": "修改客户端前，先拿它与接口约定比较。"
+      }
+    ]
+  },
+  {
+    "id": "D074",
+    "wordIds": [
+      "W311",
+      "W312",
+      "W313",
+      "W314",
+      "W315",
+      "W316",
+      "W317",
+      "W318"
+    ],
+    "scene": "检查登录后为何没有权限",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "This path reaches the right route. Why am I still denied access?",
+        "zh": "这个路径到达了正确路由，为什么我还是被拒绝访问？"
+      },
+      {
+        "speaker": "B",
+        "en": "Authentication checks who you are; authorization checks what you can do.",
+        "zh": "身份认证检查你是谁，授权检查你能做什么。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should I send the session cookie or an access token as my credential?",
+        "zh": "该发送会话 Cookie，还是把访问令牌作为凭证？"
+      },
+      {
+        "speaker": "B",
+        "en": "Follow this endpoint's contract, then verify the account has the required permission.",
+        "zh": "遵循这个端点的约定，再核验账号有无所需权限。"
+      }
+    ]
+  },
+  {
+    "id": "D075",
+    "wordIds": [
+      "W319",
+      "W320",
+      "W321",
+      "W322",
+      "W323",
+      "W324",
+      "W325",
+      "W801",
+      "W802",
+      "W803",
+      "W804",
+      "W805"
+    ],
+    "scene": "排查中文消息乱码",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can this socket reach the service port before the redirect?",
+        "zh": "重定向之前，这个套接字能连到服务端口吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Check the URL scheme and authority; the fragment isn't sent to the server.",
+        "zh": "能。检查 URL 的方案和权威部分，片段不会发送到服务端。"
+      },
+      {
+        "speaker": "A",
+        "en": "Why does the text break when we serialize and encode it?",
+        "zh": "为什么序列化并编码后，文本乱码了？"
+      },
+      {
+        "speaker": "B",
+        "en": "Use the same charset to decode, then deserialize. Also verify the request origin after redirecting.",
+        "zh": "解码时使用相同字符集，再反序列化。还要核验重定向后的请求来源。"
+      }
+    ]
+  },
+  {
+    "id": "D076",
+    "wordIds": [
+      "W806",
+      "W807",
+      "W808",
+      "W809",
+      "W810",
+      "W811",
+      "W812",
+      "W813"
+    ],
+    "scene": "给上传下载接口加密传输",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can this form upload a multipart attachment?",
+        "zh": "这个表单能以 multipart 格式上传附件吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. You can download it after the server accepts it.",
+        "zh": "能。服务端接受后，就可以下载。"
+      },
+      {
+        "speaker": "A",
+        "en": "Before sending it, do we verify the certificate and negotiate a cipher?",
+        "zh": "发送之前，会核验证书并协商密码算法吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "The TLS library handles that. Keep certificate verification enabled.",
+        "zh": "TLS 库会处理。请保持证书校验开启。"
+      }
+    ]
+  },
+  {
+    "id": "D077",
+    "wordIds": [
+      "W814",
+      "W815",
+      "W816",
+      "W817",
+      "W818",
+      "W819",
+      "W820",
+      "W821"
+    ],
+    "scene": "审核认证中的随机值与权限",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why do we need a nonce and a salt? Is a plain digest enough?",
+        "zh": "为什么需要一次性随机值和盐？普通摘要够吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "They serve different purposes. Use established protocols to resist forgery; a digest alone doesn't stop attempts to tamper with data.",
+        "zh": "它们用途不同。应采用成熟协议抵御伪造，单独的摘要无法阻止篡改尝试。"
+      },
+      {
+        "speaker": "A",
+        "en": "After login, is the principal granted every privilege?",
+        "zh": "登录后，主体会获得所有特权吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "No. Check each required permission and grant only what the task needs.",
+        "zh": "不会。逐项检查所需权限，只授予任务需要的权限。"
+      }
+    ]
+  },
+  {
+    "id": "D078",
+    "wordIds": [
+      "W822",
+      "W823",
+      "W824",
+      "W825"
+    ],
+    "scene": "检查令牌为什么被拒绝",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "The token hasn't expired. Why was it rejected for this tenant?",
+        "zh": "令牌还没过期，为什么在这个租户下被拒绝？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check its issuer and audience. It may have been issued for another service.",
+        "zh": "检查签发者和受众，它可能是签发给另一个服务的。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can we revoke it before its expiry time?",
+        "zh": "到期前能撤销它吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "That depends on our token design and revocation mechanism; don't assume expiry is the only check.",
+        "zh": "取决于令牌设计和撤销机制，别以为只检查到期时间。"
+      }
+    ]
+  },
+  {
+    "id": "D079",
+    "wordIds": [
+      "W326",
+      "W327",
+      "W328",
+      "W329",
+      "W330",
+      "W331",
+      "W332",
+      "W333",
+      "W334",
+      "W335"
+    ],
+    "scene": "给订单表增加查询",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Which table in this database stores an order row?",
+        "zh": "这个数据库中，哪个表存储订单行？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check the schema. This column links it to the customer; the constraint protects that link.",
+        "zh": "看一下结构定义。这个列把订单关联到客户，约束保护这种关联。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can I insert a sample and select it with a join query?",
+        "zh": "能插入样本，再用连接查询查出来吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Use the test database, then verify the returned customer and order together.",
+        "zh": "在测试数据库中做，然后一起核验返回的客户和订单。"
+      }
+    ]
+  },
+  {
+    "id": "D080",
+    "wordIds": [
+      "W336",
+      "W337",
+      "W338",
+      "W339",
+      "W340",
+      "W341",
+      "W342",
+      "W343",
+      "W344",
+      "W345"
+    ],
+    "scene": "讨论列表接口分页",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Does this entity have a primary key and a foreign key for the relation?",
+        "zh": "这个实体有主键和用于关联的外键吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Its identifier is stable, which helps cursor pagination.",
+        "zh": "有。它的标识符稳定，有助于游标分页。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we use an offset and select distinct values in the projection?",
+        "zh": "应该使用偏移量，并在投影中选取不同值吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Only if the query requires that. First define the ordering and which fields the page needs.",
+        "zh": "只有查询需要时才这样。先定义顺序，以及页面需要哪些字段。"
+      }
+    ]
+  },
+  {
+    "id": "D081",
+    "wordIds": [
+      "W346",
+      "W347",
+      "W348",
+      "W349",
+      "W350",
+      "W826",
+      "W827",
+      "W828",
+      "W829",
+      "W830",
+      "W831"
+    ],
+    "scene": "定位汇总查询为什么变慢",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why is this grouping query slow when the count is small?",
+        "zh": "结果数量很小，为什么这个分组查询还很慢？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check statistics and the histogram. Low selectivity may force many rows to be read.",
+        "zh": "检查统计信息和直方图，低选择性可能导致读取大量行。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should the mapper materialize every tuple for batch persistence?",
+        "zh": "映射器应该把每个元组都物化出来以便批量持久化吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Not necessarily. Inspect the plan first; normalization and result size affect different parts of the cost.",
+        "zh": "不一定。先看执行计划，规范化和结果大小影响的是不同成本。"
+      }
+    ]
+  },
+  {
+    "id": "D082",
+    "wordIds": [
+      "W832",
+      "W833",
+      "W834",
+      "W835",
+      "W836",
+      "W837",
+      "W838",
+      "W839",
+      "W840"
+    ],
+    "scene": "为销售报表增加统计指标",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can this subquery return the sum, average, and median sales?",
+        "zh": "这个子查询能返回销售额总和、平均值和中位数吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "With suitable database support. A lateral join may help when it depends on the current row.",
+        "zh": "数据库支持相应功能时可以。依赖当前行时，横向连接可能有帮助。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we alter or rename the summary table, then upsert results?",
+        "zh": "要修改或重命名汇总表，再插入或更新结果吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Plan the migration first. Don't drop the old table until its data is safely retained.",
+        "zh": "先规划迁移。旧表的数据安全保留之前，不要删除它。"
+      }
+    ]
+  },
+  {
+    "id": "D083",
+    "wordIds": [
+      "W841",
+      "W842",
+      "W843",
+      "W844",
+      "W845",
+      "W846",
+      "W847"
+    ],
+    "scene": "设计标签与位置数据",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should the junction table use a surrogate key?",
+        "zh": "关联表应该使用代理键吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "It can, but also constrain the actual relationship. Check collation for textual tag names.",
+        "zh": "可以，但也要约束实际关联关系。文本标签名要检查排序规则。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can a virtual column derive a numeric value from this field? What about spatial data?",
+        "zh": "虚拟列能从这个字段推导数值吗？空间数据呢？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check database support and choose types by meaning; coordinates need more than ordinary text comparison.",
+        "zh": "检查数据库支持，并按含义选择类型。坐标不能只用普通文本比较。"
+      }
+    ]
+  },
+  {
+    "id": "D084",
+    "wordIds": [
+      "W848",
+      "W849",
+      "W850"
+    ],
+    "scene": "查找表的存储位置",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Where can I find this table's tablespace?",
+        "zh": "在哪里能找到这张表所属的表空间？"
+      },
+      {
+        "speaker": "B",
+        "en": "Look in the database catalog, using the view supported by this database.",
+        "zh": "查看数据库目录，使用该数据库支持的视图。"
+      },
+      {
+        "speaker": "A",
+        "en": "And why does the report use floor when calculating whole units?",
+        "zh": "报表计算完整单位数时，为什么用 floor？"
+      },
+      {
+        "speaker": "B",
+        "en": "It rounds downward, so negative values need special attention.",
+        "zh": "它向下取整，所以要特别注意负数。"
+      }
+    ]
+  },
+  {
+    "id": "D085",
+    "wordIds": [
+      "W351",
+      "W352",
+      "W353",
+      "W354",
+      "W355",
+      "W356",
+      "W357",
+      "W358",
+      "W359"
+    ],
+    "scene": "确认转账的事务边界",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Will one transaction protect both sides of this transfer?",
+        "zh": "一个事务能保护这次转账的两边吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Atomicity means both changes commit together or rollback removes them together.",
+        "zh": "原子性意味着两处修改一起提交，或一起回滚。"
+      },
+      {
+        "speaker": "A",
+        "en": "What about isolation, consistency, and durability? Could a lock cause a deadlock?",
+        "zh": "隔离性、一致性和持久性呢？锁会导致死锁吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check those guarantees separately. Keep the lock order consistent and handle a deadlock retry safely.",
+        "zh": "分别检查这些保证。保持锁顺序一致，并安全处理死锁后的重试。"
+      }
+    ]
+  },
+  {
+    "id": "D086",
+    "wordIds": [
+      "W360",
+      "W361",
+      "W362",
+      "W363",
+      "W364",
+      "W365",
+      "W366",
+      "W367",
+      "W368",
+      "W369",
+      "W370"
+    ],
+    "scene": "两个人同时编辑一条记录",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should concurrent edits use optimistic or pessimistic locking?",
+        "zh": "并发编辑应该用乐观锁还是悲观锁？"
+      },
+      {
+        "speaker": "B",
+        "en": "Compare the conflict rate. If we acquire an exclusive lock, release it promptly; shared locks have different rules.",
+        "zh": "比较冲突率。获取排他锁后要及时释放，共享锁规则不同。"
+      },
+      {
+        "speaker": "A",
+        "en": "Does a nested call create a savepoint across this boundary?",
+        "zh": "嵌套调用跨过这个边界时会创建保存点吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check transaction propagation and database support. Also verify that autocommit isn't defeating the intended transaction.",
+        "zh": "检查事务传播与数据库支持，也要确认自动提交没有破坏预期事务。"
+      }
+    ]
+  },
+  {
+    "id": "D087",
+    "wordIds": [
+      "W371",
+      "W372",
+      "W373",
+      "W374",
+      "W375",
+      "W851",
+      "W852",
+      "W853",
+      "W854",
+      "W855"
+    ],
+    "scene": "复现事务隔离问题",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Is this a dirty read, a phantom read, or a write conflict?",
+        "zh": "这是脏读、幻读，还是写冲突？"
+      },
+      {
+        "speaker": "B",
+        "en": "Reproduce the sequence first. Repeatable read and serializable have database-specific behavior.",
+        "zh": "先复现操作顺序。可重复读和可串行化的具体行为取决于数据库。"
+      },
+      {
+        "speaker": "A",
+        "en": "Could a gap lock help? Should we inspect undo, redo, and the journal?",
+        "zh": "间隙锁会有帮助吗？应该检查撤销日志、重做日志和日志文件吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Start with locks and isolation. A checkpoint and recovery logs explain different parts of the system.",
+        "zh": "先检查锁与隔离。检查点和恢复日志解释的是系统的其他部分。"
+      }
+    ]
+  },
+  {
+    "id": "D088",
+    "wordIds": [
+      "W856",
+      "W857",
+      "W858",
+      "W859",
+      "W860",
+      "W861",
+      "W862",
+      "W863"
+    ],
+    "scene": "处理锁升级失败",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why did the database choose this transaction as the deadlock victim?",
+        "zh": "为什么数据库把这个事务选为死锁牺牲者？"
+      },
+      {
+        "speaker": "B",
+        "en": "Inspect each lock holder. It couldn't grant the requested upgrade.",
+        "zh": "检查每个锁持有者。数据库无法授予所请求的锁升级。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can we downgrade or escalate the lock to prevent write skew?",
+        "zh": "能通过降低或扩大锁级别来防止写偏差吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Those are different mechanisms. Check isolation first; linearizability is also a distinct consistency guarantee.",
+        "zh": "这些是不同机制。先检查隔离性；线性一致性也是另一种一致性保证。"
+      }
+    ]
+  },
+  {
+    "id": "D089",
+    "wordIds": [
+      "W864",
+      "W865",
+      "W866",
+      "W867",
+      "W868",
+      "W869",
+      "W870"
+    ],
+    "scene": "对账时发现借贷不平",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should we enlist this service as a transaction participant?",
+        "zh": "应该让这个服务作为事务参与者加入吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Only if the protocol supports it. For settlement, we must reconcile the ledger carefully.",
+        "zh": "只有协议支持时才这样。结算时必须仔细核对账本。"
+      },
+      {
+        "speaker": "A",
+        "en": "Do the debit and credit totals match?",
+        "zh": "借方和贷方总额一致吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Not yet. Find the missing entry before marking settlement complete.",
+        "zh": "还不一致。标记结算完成之前，先找到缺失分录。"
+      }
+    ]
+  },
+  {
+    "id": "D090",
+    "wordIds": [
+      "W871",
+      "W872",
+      "W873",
+      "W874",
+      "W875"
+    ],
+    "scene": "处理到期付款的差异",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "This payment is due today, but there's a discrepancy in the amount.",
+        "zh": "这笔付款今天到期，但金额有差异。"
+      },
+      {
+        "speaker": "B",
+        "en": "Compare the accrual with the invoice before sending it.",
+        "zh": "支付之前，先比较应计金额和发票。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we delete the old entry or create a reversal?",
+        "zh": "应该删除旧分录，还是新增冲销分录？"
+      },
+      {
+        "speaker": "B",
+        "en": "Follow the accounting rules and preserve the audit trail; don't silently rewrite history.",
+        "zh": "遵循会计规则，保留审计轨迹，不要悄悄改写历史。"
+      }
+    ]
+  },
+  {
+    "id": "D091",
+    "wordIds": [
+      "W376",
+      "W377",
+      "W378",
+      "W379",
+      "W380",
+      "W381",
+      "W382",
+      "W383",
+      "W384",
+      "W385"
+    ],
+    "scene": "排查用户看到旧数据",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why did a cache hit return stale data?",
+        "zh": "为什么缓存命中却返回了过时数据？"
+      },
+      {
+        "speaker": "B",
+        "en": "Its TTL hadn't elapsed. Expiration and eviction are different reasons for removal.",
+        "zh": "它的存活时间还没到。到期与淘汰是不同的移除原因。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we invalidate it now, refresh it, or wait for it to expire?",
+        "zh": "现在应该使它失效、刷新它，还是等它到期？"
+      },
+      {
+        "speaker": "B",
+        "en": "Invalidate it after the update, then load fresh data on a miss using our consistency policy.",
+        "zh": "更新后使它失效，再按一致性策略在未命中时加载最新数据。"
+      }
+    ]
+  },
+  {
+    "id": "D092",
+    "wordIds": [
+      "W386",
+      "W387",
+      "W388",
+      "W389",
+      "W390",
+      "W391",
+      "W392",
+      "W393",
+      "W394",
+      "W395"
+    ],
+    "scene": "维护活动计数器",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can we increment this counter and set a bit in the bitmap?",
+        "zh": "能递增这个计数器，并设置位图中的一位吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Use the event prefix and date suffix to keep the keyspace organized.",
+        "zh": "能。使用事件前缀和日期后缀来组织键空间。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we decrement on cancellation and warm the next day's keys?",
+        "zh": "取消时要递减，并预热下一天的键吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Only if the rules require it. Evict selected keys carefully; don't flush the whole cache.",
+        "zh": "只有规则需要时才这样。谨慎淘汰选定的键，不要清空整个缓存。"
+      }
+    ]
+  },
+  {
+    "id": "D093",
+    "wordIds": [
+      "W396",
+      "W397",
+      "W398",
+      "W399",
+      "W400",
+      "W876",
+      "W877",
+      "W878"
+    ],
+    "scene": "估算独立访客数量",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can this script update a hot leaderboard member and its score?",
+        "zh": "这个脚本能更新热门排行榜成员及其分数吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, but keep it short. Visitor cardinality needs a separate design.",
+        "zh": "能，但脚本要短。访客基数统计需要单独设计。"
+      },
+      {
+        "speaker": "A",
+        "en": "Would a probabilistic sketch or a Bloom filter help?",
+        "zh": "概率草图或布隆过滤器有帮助吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "A cardinality sketch can estimate the number of distinct visitors; a Bloom filter tests possible membership, not an exact count.",
+        "zh": "用于计数的草图可以估计基数，布隆过滤器判断可能存在性，不提供精确计数。"
+      }
+    ]
+  },
+  {
+    "id": "D094",
+    "wordIds": [
+      "W879",
+      "W880",
+      "W881",
+      "W882",
+      "W883",
+      "W884",
+      "W885",
+      "W886"
+    ],
+    "scene": "缓存附近门店的搜索结果",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can our geospatial query use this longitude and latitude?",
+        "zh": "地理空间查询能用这个经度和纬度吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Set a search radius and return each store's distance.",
+        "zh": "能。设置搜索半径，并返回每家店的距离。"
+      },
+      {
+        "speaker": "A",
+        "en": "Could memoization let us reuse the result for nearby requests?",
+        "zh": "记忆化能让附近的请求复用结果吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Only with a suitable cache key and freshness rule; nearby doesn't always mean the same result.",
+        "zh": "只有缓存键和新鲜度规则合适时才行，位置相近不总意味着结果相同。"
+      }
+    ]
+  },
+  {
+    "id": "D095",
+    "wordIds": [
+      "W887",
+      "W888",
+      "W889",
+      "W890",
+      "W891",
+      "W892",
+      "W893",
+      "W894"
+    ],
+    "scene": "选择缓存淘汰策略",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should this cache choose entries by frequency or recency?",
+        "zh": "缓存应该按访问频率还是最近访问时间选择条目？"
+      },
+      {
+        "speaker": "B",
+        "en": "Measure the workload. Admission decides what enters; demotion moves data to a lower tier.",
+        "zh": "测量实际负载。准入决定什么能进入，降级则把数据移至较低层级。"
+      },
+      {
+        "speaker": "A",
+        "en": "If that tier uses disk, do we need compression and a checksum?",
+        "zh": "如果低层级使用磁盘，需要压缩和校验和吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Compression saves space; a checksum helps detect corruption. Evaluate their costs separately.",
+        "zh": "压缩节省空间，校验和帮助检测损坏。分别评估它们的成本。"
+      }
+    ]
+  },
+  {
+    "id": "D096",
+    "wordIds": [
+      "W895",
+      "W896",
+      "W897",
+      "W898",
+      "W899",
+      "W900"
+    ],
+    "scene": "高峰期缓存恢复演练",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can we restore this backup without creating a hotspot?",
+        "zh": "恢复这个备份时，能避免产生热点吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Stage the traffic and add jitter to refresh times so requests don't arrive together.",
+        "zh": "分阶段放入流量，并让刷新时间带些抖动，避免请求同时到来。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we watch occupancy and clock drift during recovery?",
+        "zh": "恢复期间要观察占用率和时钟漂移吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Compare expiration behavior and memory usage before declaring the cache healthy.",
+        "zh": "要。确认缓存恢复健康之前，比较过期行为和内存使用情况。"
+      }
+    ]
+  },
+  {
+    "id": "D097",
+    "wordIds": [
+      "W401",
+      "W402",
+      "W403",
+      "W404",
+      "W405",
+      "W406",
+      "W407",
+      "W408",
+      "W409",
+      "W410"
+    ],
+    "scene": "接入订单事件订阅",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Where should the producer publish an order event?",
+        "zh": "生产者应该把订单事件发布到哪里？"
+      },
+      {
+        "speaker": "B",
+        "en": "Send the message to the orders topic through a broker; the key influences its partition.",
+        "zh": "通过代理节点把消息发送到订单主题，键会影响它所在的分区。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can the billing service subscribe now?",
+        "zh": "账单服务现在能订阅吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Check the subscription and watch consumer lag after starting it.",
+        "zh": "能。启动后检查订阅，并观察消费滞后。"
+      }
+    ]
+  },
+  {
+    "id": "D098",
+    "wordIds": [
+      "W411",
+      "W412",
+      "W413",
+      "W414",
+      "W415",
+      "W416",
+      "W417",
+      "W418",
+      "W419",
+      "W420"
+    ],
+    "scene": "处理重复消息",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why did we consume this message again after the rebalance?",
+        "zh": "为什么重新平衡之后又消费了这条消息？"
+      },
+      {
+        "speaker": "B",
+        "en": "Redelivery can happen. Our delivery guarantee requires idempotent processing.",
+        "zh": "可能发生重新投递。我们的投递保证要求处理具备幂等性。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should deduplication check the sequence before we acknowledge it?",
+        "zh": "确认消息之前，去重逻辑应该检查序列吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Follow the ordering contract and record completion safely; clearing the backlog mustn't create duplicate charges.",
+        "zh": "遵循顺序约定，并安全记录完成状态；清理积压不能造成重复扣款。"
+      }
+    ]
+  },
+  {
+    "id": "D099",
+    "wordIds": [
+      "W421",
+      "W422",
+      "W423",
+      "W424",
+      "W425",
+      "W901",
+      "W902",
+      "W903",
+      "W904",
+      "W905"
+    ],
+    "scene": "检查消费者是否失去成员资格",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Did the consumer poll in time and send its heartbeat?",
+        "zh": "消费者及时拉取并发送心跳了吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Compare the timestamp and correlation ID in its metadata.",
+        "zh": "比较它的元数据中的时间戳和关联编号。"
+      },
+      {
+        "speaker": "A",
+        "en": "The log also mentions a follower, an epoch, and fencing. Are they the same issue?",
+        "zh": "日志还提到了跟随者、纪元和隔离机制，这是同一个问题吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Not necessarily. Check each event separately; a watermark tracks progress, while a tombstone marks deletion in a compacted topic.",
+        "zh": "不一定。分别检查事件；水位标记进度，而删除标记在压缩主题中表示删除。"
+      }
+    ]
+  },
+  {
+    "id": "D100",
+    "wordIds": [
+      "W906",
+      "W907",
+      "W908",
+      "W909",
+      "W910",
+      "W911",
+      "W912"
+    ],
+    "scene": "调整消息批处理延迟",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why do messages linger in the producer buffer?",
+        "zh": "为什么消息在生产者缓冲区里停留？"
+      },
+      {
+        "speaker": "B",
+        "en": "Batching can improve throughput. Check the codec and broker segment settings too.",
+        "zh": "批处理能提高吞吐量。也检查编解码器和代理节点的日志分段设置。"
+      },
+      {
+        "speaker": "A",
+        "en": "Could the processing topology or scheduled punctuation add delay?",
+        "zh": "处理拓扑或定时触发的处理回调会增加延迟吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Possibly. Trace one record through the topology and inspect its state changelog.",
+        "zh": "有可能。沿拓扑追踪一条记录，并检查它的状态变更日志。"
+      }
+    ]
+  },
+  {
+    "id": "D101",
+    "wordIds": [
+      "W913",
+      "W914",
+      "W915",
+      "W916",
+      "W917",
+      "W918",
+      "W919",
+      "W920"
+    ],
+    "scene": "决定通知如何分发",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should we broadcast every update or use unicast?",
+        "zh": "每次更新都应该广播，还是使用单播？"
+      },
+      {
+        "speaker": "B",
+        "en": "Choose by recipients. Multicast targets a group; fanout can create one copy per destination.",
+        "zh": "根据接收者选择。组播面向一个组，扇出可以给每个目的地生成一份副本。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can we coalesce small updates before we dispatch them?",
+        "zh": "分发前能合并小更新吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Throttle traffic to respect the quota, but don't merge events whose order matters.",
+        "zh": "能。限制流量以遵守配额，但不要合并顺序有意义的事件。"
+      }
+    ]
+  },
+  {
+    "id": "D102",
+    "wordIds": [
+      "W921",
+      "W922",
+      "W923",
+      "W924",
+      "W925"
+    ],
+    "scene": "排查消息中继丢失",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Is this message still in-flight inside the relay?",
+        "zh": "这条消息还在中继中传输吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Compare ingress and egress logs using the ID in its envelope.",
+        "zh": "使用消息封装中的编号，比较入口和出口日志。"
+      },
+      {
+        "speaker": "A",
+        "en": "Does an ingress log prove the receiver has processed it?",
+        "zh": "入口日志能证明接收者已经处理它吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "No. We need the receiver's completion evidence before reporting success.",
+        "zh": "不能。报告成功前，需要接收者完成处理的证据。"
+      }
+    ]
+  },
+  {
+    "id": "D103",
+    "wordIds": [
+      "W426",
+      "W427",
+      "W428",
+      "W429",
+      "W430",
+      "W431",
+      "W432",
+      "W433",
+      "W434",
+      "W435"
+    ],
+    "scene": "讨论服务拆分方式",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Does this architecture need a separate service for every module?",
+        "zh": "这个架构需要为每个模块设立独立服务吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "No. A module can stay in the same process and layer; distributed calls add complexity.",
+        "zh": "不需要。模块可以留在同一个进程和层中，分布式调用会增加复杂性。"
+      },
+      {
+        "speaker": "A",
+        "en": "Would another node and replica improve availability in our cluster?",
+        "zh": "集群增加节点和副本会提高可用性吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "They can, with correct replication and failover. Test the failure behavior before relying on them.",
+        "zh": "正确复制和故障切换时可以。依赖它们之前，先测试故障时的行为。"
+      }
+    ]
+  },
+  {
+    "id": "D104",
+    "wordIds": [
+      "W436",
+      "W437",
+      "W438",
+      "W439",
+      "W440",
+      "W441",
+      "W442",
+      "W443",
+      "W444",
+      "W445"
+    ],
+    "scene": "识别系统扩容瓶颈",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Is bandwidth the bottleneck behind low throughput and high latency?",
+        "zh": "带宽是吞吐量低、延迟高的瓶颈吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Measure first. We also need to balance scalability with reliability.",
+        "zh": "先测量。我们还需要平衡可扩展性与可靠性。"
+      },
+      {
+        "speaker": "A",
+        "en": "Will redundancy and automatic failover give us resilience?",
+        "zh": "冗余和自动故障切换能带来韧性吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "They help, but recovery tests must show the system can actually tolerate failures.",
+        "zh": "有帮助，但必须通过恢复测试证明系统确实能容忍故障。"
+      }
+    ]
+  },
+  {
+    "id": "D105",
+    "wordIds": [
+      "W446",
+      "W447",
+      "W448",
+      "W449",
+      "W450",
+      "W926",
+      "W927",
+      "W928",
+      "W929",
+      "W930"
+    ],
+    "scene": "为协调服务选择一致性协议",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should sharding come before service decomposition?",
+        "zh": "分片应该在服务拆分之前做吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Start with the required capability. Data placement and business boundaries solve different problems.",
+        "zh": "从所需能力出发。数据位置和业务边界解决不同问题。"
+      },
+      {
+        "speaker": "A",
+        "en": "For coordination, do we need consensus, a quorum, and a lease?",
+        "zh": "协调过程需要共识、法定数量和租约吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Choose a proven protocol. Separately decide between orchestration and choreography; a gateway alone doesn't coordinate the workflow.",
+        "zh": "选择成熟协议。另行决定集中编排还是事件协作，单独的网关无法协调工作流。"
+      }
+    ]
+  },
+  {
+    "id": "D106",
+    "wordIds": [
+      "W931",
+      "W932",
+      "W933",
+      "W934",
+      "W935",
+      "W936",
+      "W937",
+      "W938",
+      "W939",
+      "W940"
+    ],
+    "scene": "评估微服务迁移是否划算",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Would moving this monolith into a microservice federation improve autonomy?",
+        "zh": "把这个单体迁移成微服务联合体系，会提高自治性吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Maybe, but a service mesh and network calls add overhead.",
+        "zh": "也许，但服务网格和网络调用会增加开销。"
+      },
+      {
+        "speaker": "A",
+        "en": "Could elasticity improve utilization for our uneven workload?",
+        "zh": "对我们不均匀的工作负载，弹性伸缩能提高利用率吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Test that hypothesis. Measure overall efficiency before committing to the migration.",
+        "zh": "测试这个假设。决定迁移之前，衡量整体效率。"
+      }
+    ]
+  },
+  {
+    "id": "D107",
+    "wordIds": [
+      "W941",
+      "W942",
+      "W943",
+      "W944",
+      "W945"
+    ],
+    "scene": "为上线设置性能余量",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Does this benchmark leave enough headroom under our latency budget?",
+        "zh": "在我们的延迟预算内，这个基准测试显示余量足够吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Only under normal traffic. We haven't tested degradation during an outage.",
+        "zh": "只在正常流量下够。还没测试故障期间的性能下降。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we test with one dependency unavailable?",
+        "zh": "应该测试一个依赖不可用的情况吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Verify both user-visible behavior and resource usage before release.",
+        "zh": "应该。发布之前，核验用户可见行为和资源使用。"
+      }
+    ]
+  },
+  {
+    "id": "D108",
+    "wordIds": [
+      "W946",
+      "W947",
+      "W948",
+      "W949",
+      "W950"
+    ],
+    "scene": "设计流量突增测试",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should we ramp up demand gradually or send one sudden burst?",
+        "zh": "应该逐步提高需求，还是突然发送一波请求？"
+      },
+      {
+        "speaker": "B",
+        "en": "Test both. A brief spike differs from a sustained surge.",
+        "zh": "两种都测。短暂尖峰不同于持续激增。"
+      },
+      {
+        "speaker": "A",
+        "en": "What should we watch when the burst ends?",
+        "zh": "突发流量结束后应该观察什么？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check queue recovery and latency; the system may stay overloaded after traffic falls.",
+        "zh": "检查队列恢复和延迟，流量下降后系统仍可能过载。"
+      }
+    ]
+  },
+  {
+    "id": "D109",
+    "wordIds": [
+      "W451",
+      "W452",
+      "W453",
+      "W454",
+      "W455",
+      "W456",
+      "W457",
+      "W458",
+      "W459",
+      "W460"
+    ],
+    "scene": "为接口补充测试",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can this test reproduce the payment failure scenario?",
+        "zh": "这个测试能复现支付失败场景吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. The fixture supplies data, and the stub returns a timeout.",
+        "zh": "能。测试夹具提供数据，桩返回超时。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we use a mock and assert the actual call count?",
+        "zh": "应该用模拟对象，并断言实际调用次数吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Only if that behavior matters. Check the regression directly; coverage alone doesn't prove correctness.",
+        "zh": "只有调用次数有意义时才这样。直接检查回归问题，覆盖率本身不能证明正确性。"
+      }
+    ]
+  },
+  {
+    "id": "D110",
+    "wordIds": [
+      "W461",
+      "W462",
+      "W463",
+      "W464",
+      "W465",
+      "W466",
+      "W467",
+      "W468",
+      "W469",
+      "W470"
+    ],
+    "scene": "从告警追踪到具体请求",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "The monitor raised an alert. Where should we start to debug this incident?",
+        "zh": "监控触发告警了，应该从哪里开始排查这次事件？"
+      },
+      {
+        "speaker": "B",
+        "en": "Record the symptom, then inspect the metric and the related log.",
+        "zh": "记录症状，再检查指标和相关日志。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can one slow span in the trace support a diagnosis?",
+        "zh": "链路中一个慢跨度能支持诊断吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "It gives us a lead, but compare other requests before deciding the cause.",
+        "zh": "它提供了线索，但确定原因前要比较其他请求。"
+      }
+    ]
+  },
+  {
+    "id": "D111",
+    "wordIds": [
+      "W471",
+      "W472",
+      "W473",
+      "W474",
+      "W475",
+      "W951",
+      "W952",
+      "W953",
+      "W954",
+      "W955"
+    ],
+    "scene": "排查偶发失败的测试",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why is this suite flaky under the test harness?",
+        "zh": "为什么这套测试在测试框架下偶发失败？"
+      },
+      {
+        "speaker": "B",
+        "en": "Collect evidence from a failing sample. A timing threshold may be too strict.",
+        "zh": "从一个失败样本中收集证据。时间阈值可能过严。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we replace the spy with a fake and compare the latency percentile?",
+        "zh": "应该把侦察对象换成伪实现，并比较延迟百分位数吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "First find the root cause. Changing the double or threshold could hide the bug.",
+        "zh": "先找根因。更换测试替身或阈值可能掩盖缺陷。"
+      }
+    ]
+  },
+  {
+    "id": "D112",
+    "wordIds": [
+      "W956",
+      "W957",
+      "W958",
+      "W959",
+      "W960",
+      "W961",
+      "W962",
+      "W963"
+    ],
+    "scene": "稳定发布前的随机测试",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can we make this fuzz test deterministic with a fixed seed?",
+        "zh": "固定种子能让这个模糊测试结果可确定吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "It helps reproduce inputs, but scheduling can still vary. Run the smoke checks too.",
+        "zh": "有助于复现输入，但调度仍可能变化。也跑一下冒烟检查。"
+      },
+      {
+        "speaker": "A",
+        "en": "Then compare canary telemetry against the baseline?",
+        "zh": "然后把金丝雀版本的遥测数据与基线比较吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Verify instrumentation first so missing measurements don't look like an improvement.",
+        "zh": "对。先核验观测埋点，避免把缺失的测量值当作改善。"
+      }
+    ]
+  },
+  {
+    "id": "D113",
+    "wordIds": [
+      "W964",
+      "W965",
+      "W966",
+      "W967",
+      "W968",
+      "W969"
+    ],
+    "scene": "整理一次故障的证据链",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can we place this observation on the incident timeline?",
+        "zh": "能把这条观察结果放进故障时间线吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. This breadcrumb records a user action, and the exemplar links the metric to a trace.",
+        "zh": "能。这条面包屑记录了用户操作，指标样例把指标关联到链路。"
+      },
+      {
+        "speaker": "A",
+        "en": "Does baggage explain the account shown on the dashboard?",
+        "zh": "链路附带上下文能解释仪表盘显示的账号吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check which context was propagated, and avoid attaching sensitive user data.",
+        "zh": "检查传播了哪些上下文，并避免附带敏感用户数据。"
+      }
+    ]
+  },
+  {
+    "id": "D114",
+    "wordIds": [
+      "W970",
+      "W971",
+      "W972",
+      "W973",
+      "W974",
+      "W975"
+    ],
+    "scene": "复盘服务不可用时间",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Did the health probe capture all the downtime?",
+        "zh": "健康探针捕捉到了全部停机时间吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Not necessarily. Compare user requests before calculating uptime.",
+        "zh": "不一定。计算在线时间之前，先比较用户请求。"
+      },
+      {
+        "speaker": "A",
+        "en": "Can the flamegraph help with triage?",
+        "zh": "火焰图有助于初步分诊吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, for CPU clues. Include confirmed causes and follow-up actions in the postmortem.",
+        "zh": "有助于发现 CPU 线索。在复盘中写明已确认的原因和后续行动。"
+      }
+    ]
+  },
+  {
+    "id": "D115",
+    "wordIds": [
+      "W476",
+      "W477",
+      "W478",
+      "W479",
+      "W480",
+      "W481",
+      "W482",
+      "W483",
+      "W484",
+      "W485"
+    ],
+    "scene": "定位 Maven 构建失败",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Why did the build fail after the merge on this branch?",
+        "zh": "为什么这个分支合并后构建失败？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check the plugin version and the goal bound to this phase.",
+        "zh": "检查插件版本，以及绑定到这个阶段的目标。"
+      },
+      {
+        "speaker": "A",
+        "en": "Could a missing artifact in the repository explain it? Should I rebase?",
+        "zh": "仓库缺少制品能解释问题吗？我应该变基吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check dependency resolution first. Changing Git history won't fix a missing artifact by itself.",
+        "zh": "先检查依赖解析。仅仅改 Git 历史不会修复制品缺失。"
+      }
+    ]
+  },
+  {
+    "id": "D116",
+    "wordIds": [
+      "W486",
+      "W487",
+      "W488",
+      "W489",
+      "W490",
+      "W491",
+      "W492",
+      "W493",
+      "W494",
+      "W495",
+      "W496"
+    ],
+    "scene": "准备修复补丁并发布",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Should I revert the bad commit or prepare a patch?",
+        "zh": "应该回退有问题的提交，还是准备补丁？"
+      },
+      {
+        "speaker": "B",
+        "en": "Review the diff first. Use checkout carefully and stage only the intended changes.",
+        "zh": "先审查差异。谨慎使用 checkout，只暂存预期修改。"
+      },
+      {
+        "speaker": "A",
+        "en": "Then tag the image, push it to the registry, and deploy?",
+        "zh": "然后给镜像打标签、推送到镜像仓库并部署吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "After validation. Check which volume to mount so the new container can access its data.",
+        "zh": "验证后再做。检查要挂载哪个卷，确保新容器能访问数据。"
+      }
+    ]
+  },
+  {
+    "id": "D117",
+    "wordIds": [
+      "W497",
+      "W498",
+      "W499",
+      "W500",
+      "W976",
+      "W977",
+      "W978",
+      "W979",
+      "W980",
+      "W981"
+    ],
+    "scene": "审核依赖与构建来源",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Is this deprecated library still compatible, or does it contain a vulnerability?",
+        "zh": "这个已弃用的库还兼容吗，还是包含漏洞？"
+      },
+      {
+        "speaker": "B",
+        "en": "Check the advisory. Fetch the correct classifier from our approved mirror.",
+        "zh": "检查安全公告。从批准的镜像源获取正确分类器对应的制品。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should we inspect the archive manifest and its provenance attestation?",
+        "zh": "应该检查归档清单和来源证明吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Verify the build source, and make sure no secret was packaged into the archive.",
+        "zh": "应该。核验构建来源，并确保没有把密钥打进归档。"
+      }
+    ]
+  },
+  {
+    "id": "D118",
+    "wordIds": [
+      "W982",
+      "W983",
+      "W984",
+      "W985",
+      "W986",
+      "W987",
+      "W988",
+      "W989",
+      "W990"
+    ],
+    "scene": "从已有提交提取修复",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Which revision introduced the bug? Can bisect help?",
+        "zh": "哪个修订引入了缺陷？二分查找有帮助吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Use blame for line history, then test in a separate worktree.",
+        "zh": "有。用 blame 查看行历史，再在独立工作树测试。"
+      },
+      {
+        "speaker": "A",
+        "en": "Should I stash local changes, cherry-pick the fix, then squash it?",
+        "zh": "应该先贮藏本地修改，拣选修复，再压缩提交吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Preserve your work first and follow the branch policy. Check the submodule state and commit hook too.",
+        "zh": "先保留工作，再遵循分支规则。也检查子模块状态和提交钩子。"
+      }
+    ]
+  },
+  {
+    "id": "D119",
+    "wordIds": [
+      "W991",
+      "W992",
+      "W993",
+      "W994",
+      "W995",
+      "W996"
+    ],
+    "scene": "在隔离环境检查启动脚本",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can we run this entrypoint inside a sandbox using a clean workspace?",
+        "zh": "能使用干净工作区，在沙箱内运行这个入口脚本吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. A working runtime is the prerequisite.",
+        "zh": "能。可用的运行时是前提。"
+      },
+      {
+        "speaker": "A",
+        "en": "What about the orphan branch and dangling Git objects from earlier experiments?",
+        "zh": "之前实验留下的孤立分支和悬空 Git 对象怎么办？"
+      },
+      {
+        "speaker": "B",
+        "en": "Leave them alone until we've checked whether they contain work we need.",
+        "zh": "先别动，直到确认它们是否含有需要保留的工作。"
+      }
+    ]
+  },
+  {
+    "id": "D120",
+    "wordIds": [
+      "W997",
+      "W998",
+      "W999",
+      "W1000"
+    ],
+    "scene": "把旧功能迁移到新版本",
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can we migrate the legacy editor to this new package?",
+        "zh": "能把旧编辑器迁移到这个新包吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "First check its license and compatibility requirements.",
+        "zh": "先检查许可证和兼容性要求。"
+      },
+      {
+        "speaker": "A",
+        "en": "Then publish a preview so we can try the editing flow?",
+        "zh": "然后发布预览，试一下编辑流程吗？"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes. Verify loading, editing, and saving before switching the main site.",
+        "zh": "对。切换主站之前，核验加载、编辑和保存。"
+      }
+    ]
+  }
+]

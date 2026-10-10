@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build --force",
+    "build": "npm run test:english-dialogues && astro build --force",
     "check": "npm run check:headings && astro check",
     "check:headings": "node scripts/normalize-markdown-headings.mjs --check",
     "preview": "astro preview",
@@ -23,6 +23,7 @@
     "english:save": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/english-save.mjs",
     "english:context:production": "env -u DATABASE_URL node --env-file=.local/english-production.env --experimental-strip-types scripts/english-context.mjs",
     "english:save:production": "env -u DATABASE_URL node --env-file=.local/english-production.env --experimental-strip-types scripts/english-save.mjs",
+    "test:english-dialogues": "node --test scripts/test-english-dialogues.mjs",
     "test:english-analysis": "node --experimental-strip-types --test scripts/test-english-analysis.mjs",
     "test:english-practice": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/test-english-practice.mjs"
   },
