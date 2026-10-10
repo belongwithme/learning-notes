@@ -15,7 +15,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "db:english": "node --env-file-if-exists=.env.local scripts/english-db.mjs",
-    "test:english": "node --env-file=.env.local scripts/test-english.mjs"
+    "test:english": "node --env-file=.env.local scripts/test-english.mjs",
+    "test:good-pairs": "node --experimental-strip-types scripts/test-good-pairs.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.41.3",

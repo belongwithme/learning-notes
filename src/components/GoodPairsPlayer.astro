@@ -1,0 +1,76 @@
+---
+import { JAVA } from '../lib/good-pairs';
+import '../styles/good-pairs.css';
+interface Props { experiment?: boolean }
+const { experiment = false } = Astro.props;
+const codeLines = (source: string) => source.split('\n').map((line, index) =>
+  `<span data-line="${index + 1}"><span class="line-number" aria-hidden="true">${index + 1}</span>${line.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;') || ' '}</span>`
+).join('');
+---
+
+<section class="pairs-player not-content" data-player={experiment ? 'experiment' : 'main'} aria-label={experiment ? '错误顺序实验' : '好数对主演示'}>
+  <p class="player-failure" role="status">交互演示尚未初始化；若此提示持续显示，表示脚本未能加载。你仍可阅读课程讲解和下方 Java 代码。</p>
+  <fieldset class="player-controls" disabled>
+    <legend class="sr-only">{experiment ? '实验控制' : '主演示控制'}</legend>
+    <div class="player-topline">
+      <span class="lab-label">{experiment ? '独立实验 · 固定输入 [1]' : '交互实验室 · 亲手推演'}</span>
+      <span data-role="position">0 / {experiment ? 4 : 16} 步</span>
+    </div>
+    <div class="method-switch" role="group" aria-label={experiment ? '实验顺序' : '选择解法'}>
+      <button type="button" data-mode="optimized" aria-pressed="true">{experiment ? '正确：先查再更新' : '优化扫描'}</button>
+      <button type="button" data-mode={experiment ? 'wrong' : 'brute'} aria-pressed="false">{experiment ? '故意错误：先更新再查' : '暴力枚举'}</button>
+    </div>
+    <p class="applied-input">当前演示数据 <strong data-role="input">{experiment ? '[1]' : '[1, 2, 1, 1]'}</strong> <span data-role="method">优化扫描</span></p>
+    <div class="array-scroll" tabindex="0" aria-label="数组与下标，可横向滚动"><div class="array-cells" data-role="array"></div></div>
+    <p class="range-note" data-role="range">尚未处理任何元素。</p>
+    <div class="action-card" aria-live="polite" aria-atomic="true">
+      <span class="lab-label" data-role="phase">初始状态</span>
+      <h3 data-role="title">准备好了，从第一个动作开始</h3>
+      <p data-role="explanation">点击“下一步”，观察每个动作如何改变状态。</p>
+      <p class="completion" data-role="completion" hidden></p>
+    </div>
+    <div class="step-controls">
+      <button type="button" data-action="prev" disabled aria-label={experiment ? '实验上一步' : '上一步'}>← 上一步</button>
+      <button type="button" data-action="next" class="primary" aria-label={experiment ? '实验下一步' : '下一步'}>下一步 →</button>
+      {!experiment && <button type="button" data-action="play" aria-pressed="false">播放</button>}
+      <button type="button" data-action="reset" aria-label={experiment ? '实验重置' : '重置'}>重置</button>
+    </div>
+    <div class="state-grid">
+      <div class="answer-tile"><span>累计答案 ans</span><strong data-role="answer">0</strong></div>
+      <div class="answer-tile"><span>本轮查询 left</span><strong data-role="left">未查询</strong></div>
+      <div class="answer-tile"><span>本动作新增</span><strong data-role="contribution">—</strong></div>
+    </div>
+    <details class="state-details" open>
+      <summary>状态详情 · 频次表与配对</summary>
+      <div class="state-columns">
+        <div><h4>频次表 cnt</h4><p data-role="map-note">值 → 出现次数</p><div data-role="counts"></div></div>
+        <div><h4>配对记录（下标）</h4><p data-role="candidate">尚未选中候选对</p><p data-role="added">本动作尚未计入数对</p><p data-role="pairs">已计入：无</p></div>
+      </div>
+      <p class="fine-print">配对下标仅作教学辅助，Java 频次表只存次数。键按数值升序显示，非 HashMap 的实际遍历顺序。</p>
+    </details>
+    <div class="ledger"><strong>复杂度账本</strong><p data-role="ledger">频次查询 0 次 · 频次更新 0 次</p><small>这里计的是教学步骤中的具体操作，不是 JVM 指令或运行耗时。</small></div>
+    {!experiment && <form class="input-form" novalidate>
+      <label for="pairs-input">编辑输入 <span>（点击应用后才影响演示）</span></label>
+      <div class="input-row"><input id="pairs-input" name="nums" value="1, 2, 1, 1" autocomplete="off" spellcheck="false" aria-describedby="pairs-input-help pairs-input-error" /><button type="submit">应用输入</button></div>
+      <p id="pairs-input-help" class="fine-print">1～12 个整数，每项 0～99；支持中英文逗号、空格与一对方括号。这是教学画面的限制。</p>
+      <p data-role="draft" class="fine-print"></p><p id="pairs-input-error" class="input-error" role="alert"></p>
+    </form>}
+  </fieldset>
+  {!experiment && <details class="java-details" id="java-code">
+    <summary>查看 Java 代码 · 与当前步骤联动</summary>
+    <p>高亮表示当前动作刚执行完成的语句，可包含多行。初始状态高亮初始化语句；最后一个动作也包含返回结果。</p>
+    {(['optimized', 'brute'] as const).map(method => <div data-code={method}>
+      <div class="code-heading"><h3>{method === 'optimized' ? '优化扫描' : '暴力枚举'} · 完整示例</h3><button type="button" data-copy={method}>复制 Java</button></div>
+      <pre tabindex="0" aria-label={`${method === 'optimized' ? '优化扫描' : '暴力枚举'} Java 代码`}><code set:html={codeLines(JAVA[method])} /></pre>
+    </div>)}
+    <p data-role="copy-status" role="status"></p>
+    <p><code>cnt</code> 保存出现次数；<code>left</code> 保存本轮查询结果；<code>ans += left</code> 累加贡献；<code>cnt.put(x, left + 1)</code> 才把当前元素加入历史。</p>
+    <p>优化模板使用增强 for，画面中的 <code>j</code> 是教学定位下标，并非该 Java 模板声明的局部变量。暴力版本中 <code>j</code> 和 <code>i</code> 是实际循环变量。</p>
+    <p>累计数量使用 <code>long</code>：长度为 100,000 的全相同数组有 4,999,950,000 对，超出 int。当前演示最多 12 项，保留 long 是为了说明通用代码的数量边界。</p>
+    <p class="fine-print">本页展示与 Java 示例对应的算法教学推演，不是在线执行任意 Java 程序。</p>
+  </details>}
+</section>
+
+<script>
+  import '../scripts/good-pairs';
+</script>
