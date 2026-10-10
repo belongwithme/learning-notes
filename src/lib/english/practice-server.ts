@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
-import type { PoolClient } from "pg";
+import type { DatabaseClient } from "./database.ts";
 import catalog from "../../data/english.json" with { type: "json" };
 import { db, HttpError } from "./server.ts";
 import { learningDay } from "./model.ts";
@@ -37,7 +37,7 @@ const hash = (v: unknown) =>
 const retestSelect = `SELECT id, source_bundle_id AS "sourceBundleId", word_id AS "wordId", usage, stage, suggested_date AS "suggestedDate", scheduled_date AS "scheduledDate", decision, manual_date AS "manualDate", manual_choice AS "manualChoice", confirmed_at AS "confirmedAt", completed_bundle_id AS "completedBundleId", completed_at AS "completedAt" FROM english_retests`;
 const iso = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 async function snapshot(
-  client: PoolClient,
+  client: DatabaseClient,
   cutoff = "9999-01-01T00:00:00Z",
 ): Promise<Snapshot> {
   const progress = await client.query(
@@ -78,7 +78,7 @@ async function snapshot(
 }
 async function transaction<T>(
   write: boolean,
-  work: (client: PoolClient) => Promise<T>,
+  work: (client: DatabaseClient) => Promise<T>,
 ): Promise<T> {
   const client = await db().connect();
   try {

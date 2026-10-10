@@ -1,11 +1,11 @@
-import pg, { type PoolClient } from "pg";
+import { createPool, type DatabaseClient } from "./database.ts";
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import type { APIContext } from "astro";
 import { z } from "astro/zod";
 import catalog from "../../data/english.json" with { type: "json" };
 import { isDate, type LearningData } from "./model.ts";
 
-let pool: pg.Pool | undefined;
+let pool: ReturnType<typeof createPool> | undefined;
 export class HttpError extends Error {
   status: number;
   constructor(status: number, message: string) {
@@ -24,13 +24,9 @@ function settings() {
   return { url, passphrase };
 }
 export function db() {
-  const { url } = settings();
-  return (pool ??= new pg.Pool({
-    connectionString: url,
-    max: 3,
-    idleTimeoutMillis: 10000,
-    connectionTimeoutMillis: 10000,
-  }));
+  const url = process.env.DATABASE_URL;
+  if (!url) throw new HttpError(503, "学习记录数据库尚未配置。");
+  return (pool ??= createPool(url));
 }
 export async function closeDb() {
   const active = pool;
@@ -211,7 +207,7 @@ export async function loadData(wordId?: string): Promise<LearningData> {
   );
   return result.rows[0];
 }
-async function ensureWord(client: PoolClient, id: string) {
+async function ensureWord(client: DatabaseClient, id: string) {
   await client.query(
     "INSERT INTO english_progress(word_id) VALUES($1) ON CONFLICT DO NOTHING",
     [id],

@@ -145,6 +145,19 @@ python3 scripts/import-english.py /path/to/Java技术英语_500词汇500表达_�
 
 固定工具使用流程（Node.js 22.12+）：
 
+连接驱动由网站、读写工具和迁移脚本共用：`DATABASE_URL` 的主机为 `*.neon.tech` 时自动使用 Neon 官方 WebSocket 驱动（TLS / 443），其他 PostgreSQL 地址继续使用 `pg` TCP。驱动随项目依赖安装，后续运行不需要重新接入；现有事务、锁、参数查询和请求去重流程保持一致。数据库 CLI 仅需数据库凭据，网站登录仍需 `ENGLISH_PASSPHRASE`。
+
+本机生产配置保存在未跟踪的 `.local/english-production.env`。自动任务使用下面的生产命令（macOS / Linux），缺少此文件时直接失败，不回退到 `.env.local` 测试库；命令会先清除继承的 `DATABASE_URL`，再从指定文件加载，避免其他环境的连接串覆盖生产配置：
+
+```sh
+npm run --silent english:context:production -- --period day --date YYYY-MM-DD --cutoff ISO时间 --mode short --out .local/english-context.json
+npm run --silent english:save:production -- --schema
+npm run --silent english:save:production -- --file .local/english-content.json
+npm run --silent english:save:production -- --request 原请求UUID
+```
+
+生产凭据或数据库地址变更时更新该配置文件即可。已有部署不会因本地修改自动更新；网站需要部署包含此驱动的代码版本。不要把连接成功当作课程保存或网站验收成功。
+
 1. **先说明数据范围。** Codex 首次运行前说明会读取所选词条、学习表现、自评、客观题作答、提示、反馈和已确认复测。私人笔记默认排除；连接信息由脚本使用，不能复制到模型上下文或生成文件中。
 2. **读取事实。** 日、周、月均用北京时间；`--date` 选择周期内任一天，省略时取今天。读取不会新增报告或改变学习记录。
 
