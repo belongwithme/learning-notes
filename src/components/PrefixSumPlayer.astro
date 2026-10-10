@@ -1,0 +1,83 @@
+---
+import { DEFAULTS, EXAMPLES, LESSON_NAMES, type Lesson } from '../lib/prefix-sum';
+import '../styles/algorithm-course.css';
+import '../styles/prefix-sum.css';
+interface Props { lesson: Lesson; experiment?: boolean }
+const { lesson, experiment = false } = Astro.props;
+const id = `prefix-${lesson}-${experiment ? 'experiment' : 'main'}`;
+const initial = DEFAULTS[lesson];
+const codeLines = (source: string) => source.split('\n').map((line, index) =>
+  `<span data-line="${index + 1}"><span class="line-number" aria-hidden="true">${index + 1}</span>${line.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;') || ' '}</span>`
+).join('');
+const faults = lesson === 'range' ? [{ id: 'boundary', label: '故意错误：读 pre[r]' }]
+  : lesson === 'count' ? [{ id: 'sentinel', label: '故意错误：漏空前缀' }, { id: 'order', label: '故意错误：提前记录' }]
+    : [{ id: 'modulo', label: '故意错误：不归一化' }];
+---
+<section class="algorithm-player prefix-player not-content" data-prefix-lesson={lesson} data-experiment={String(experiment)} aria-label={`${LESSON_NAMES[lesson]}${experiment ? '错误实验' : '主演示'}`}>
+  <p class="player-failure" role="status">演示尚未初始化；如果此提示持续显示，脚本未能加载。文字与 Java 示例仍可阅读。</p>
+  <fieldset class="player-controls" disabled>
+    <legend class="sr-only">{experiment ? '独立实验' : '交互推演'}</legend>
+    <div class="player-topline"><span class="lab-label">{experiment ? '独立错误实验 · 固定输入' : '前缀和实验室 · 亲手推演'}</span><span data-p="position">初始状态</span></div>
+    <div class="method-switch" role="group" aria-label={experiment ? '错误实验模式' : '选择解法'}>
+      <button type="button" data-mode="optimized" aria-pressed="true">{experiment ? '正确做法' : lesson === 'range' ? '前缀查询' : '前缀 + 频次'}</button>
+      {!experiment && <button type="button" data-mode="brute" aria-pressed="false">{lesson === 'range' ? '逐项累加' : '暴力枚举'}</button>}
+      {experiment && faults.map(fault => <button type="button" data-mode={fault.id} aria-pressed="false">{fault.label}</button>)}
+    </div>
+    <p class="applied-input">已应用数据 <strong data-p="input">等待初始化</strong><span data-p="mode">正确做法</span></p>
+    <p data-p="parameters" class="fine-print"></p>
+    <p class="row-label">原数组 nums · 格子上的数字是元素，下标从 0 开始</p>
+    <div class="array-scroll" tabindex="0" aria-label="原数组，可横向滚动"><div class="array-cells" data-p="array"></div></div>
+    <div data-prefix-row>
+      <p class="row-label">前缀数组 P / pre · 格子下标是取了多少个元素</p>
+      <div class="array-scroll" tabindex="0" aria-label="前缀数组，可横向滚动"><div class="array-cells" data-p="prefix"></div></div>
+      <p class="fine-print">P[t] 表示 [0,t) 的和。? 表示尚未算出，P[0]=0 是空前缀。</p>
+    </div>
+    <div class="action-card" aria-live="polite" aria-atomic="true"><span class="lab-label" data-p="phase">初始状态</span><h3 data-p="title">点击下一步开始</h3><p data-p="explanation"></p><p class="completion" data-p="completion" hidden></p></div>
+    <div class="step-controls">
+      <button type="button" data-action="prev" disabled>← 上一步</button><button type="button" data-action="next" class="primary">下一步 →</button>
+      {!experiment && <button type="button" data-action="play" aria-pressed="false">播放</button>}
+      <button type="button" data-action="reset">重置</button>
+    </div>
+    <div class="state-grid">
+      <div class="answer-tile"><span>{lesson === 'range' ? '区间和' : '累计数量 ans'}</span><strong data-p="answer">尚未计算</strong></div>
+      <div class="answer-tile"><span data-p="cur-label">{lesson === 'range' ? '右侧前缀 / 当前累加' : '当前前缀 cur'}</span><strong data-p="cur">0</strong></div>
+      <div class="answer-tile"><span>{lesson === 'range' ? '左侧前缀 before' : '本轮命中 hit'}</span><strong data-p="hit">未查询</strong></div>
+    </div>
+    <details class="state-details" open>
+      <summary>状态详情 · 边界与查询依据</summary>
+      <p data-p="history"></p><p data-p="need"></p><div data-p="counts"></div><p data-p="intervals"></p>
+      <p class="fine-print">前缀位置与区间列表仅供教学；Java 频次表存次数，不存全部位置。表中键按数值升序排版，不代表 HashMap 的遍历顺序。</p>
+    </details>
+    <div class="ledger"><strong>复杂度账本</strong><p data-p="ledger"></p><small>记录本次推演的算法动作，不代表 JVM 指令或播放性能。</small></div>
+    {!experiment && <form class="input-form" novalidate autocomplete="off">
+      <label for={`${id}-nums`}>编辑数组（应用后生效）</label>
+      <input id={`${id}-nums`} name="nums" value={initial.nums.join(', ')} spellcheck="false" aria-describedby={`${id}-help ${id}-error`} />
+      <div class="parameter-fields">
+        {lesson === 'range' ? <>
+          <label for={`${id}-left`}>闭区间 l<input id={`${id}-left`} name="left" value={initial.left} inputmode="numeric" /></label>
+          <label for={`${id}-right`}>闭区间 r<input id={`${id}-right`} name="right" value={initial.right} inputmode="numeric" /></label>
+        </> : <label for={`${id}-k`}>{lesson === 'count' ? '目标和 K' : '正整数除数 K'}<input id={`${id}-k`} name="k" value={initial.k} inputmode="text" /></label>}
+        <button type="submit">应用并推演</button>
+      </div>
+      <p id={`${id}-help`} class="fine-print">支持 1～12 个 -99～99 的整数、中英文逗号、一对方括号。{lesson === 'range' ? '需 0 ≤ l ≤ r < 数组长度。' : lesson === 'count' ? 'K：-999～999。允许负数与零。' : 'K：1～999，不允许除以 0。'}限制用于保证画面可读。</p>
+      {lesson === 'range' && <p class="fine-print">前缀已建好且数组未改变时，应用新区间会复用前缀；重置或切换解法则重新开始。</p>}
+      <p data-p="draft" class="fine-print"></p><p id={`${id}-error`} data-p="error" role="alert" class="input-error"></p>
+    </form>}
+  </fieldset>
+  {!experiment && <details class="java-details" id="prefix-java">
+    <summary>查看 Java 代码 · 当前动作语句高亮</summary>
+    <p>高亮表示刚执行完成的语句，一步可以覆盖多行；最后一步也包含返回值。代码仅为正确解法，错误实验独立展示。</p>
+    {(['optimized', 'brute'] as const).map(method => <div data-prefix-code={method}>
+      <div class="code-heading"><h3>{method === 'optimized' ? '前缀解法' : '暴力解法'}</h3><button type="button" data-copy={method}>复制 Java</button></div>
+      <pre tabindex="0" aria-label={`${method} Java`}><code set:html={codeLines(EXAMPLES[lesson][method])} /></pre>
+    </div>)}
+    <p data-p="copy" role="status"></p>
+    <p>{lesson === 'range' ? 'Java 的 pre 使用 long[]。先构造一次 NumArray，再多次调用 sumRange；调用者需保证 0 ≤ left ≤ right < nums.length。'
+      : 'cur 与 ans 都用 long，避免前缀总和或子数组数量超出 int。增强 for 中没有数组下标变量，图中的 i 是教学定位信息。'}</p>
+    <p>{lesson === 'divisible' ? '此模板要求 k > 0。cur 是 long，因此规范化中的加法先在 long 范围计算，再安全转为 int。' : lesson === 'count' ? '查询的键是 cur - k，更新的键是 cur。它们通常不是同一个键，不能用 hit + 1 更新当前前缀次数。' : '前缀下标与原数组下标相差一位源于定义，不是凭空加 1。'}</p>
+    <p class="fine-print">本页是与 Java 示例对应的教学推演，不运行任意 Java。加载完成后可断网操作；刷新清空输入、步骤和自测答案。</p>
+  </details>}
+</section>
+<script>
+  import '../scripts/prefix-sum';
+</script>

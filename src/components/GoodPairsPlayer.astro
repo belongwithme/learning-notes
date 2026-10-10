@@ -1,6 +1,6 @@
 ---
 import { JAVA } from '../lib/good-pairs';
-import '../styles/good-pairs.css';
+import '../styles/algorithm-course.css';
 interface Props { experiment?: boolean }
 const { experiment = false } = Astro.props;
 const codeLines = (source: string) => source.split('\n').map((line, index) =>
@@ -8,7 +8,7 @@ const codeLines = (source: string) => source.split('\n').map((line, index) =>
 ).join('');
 ---
 
-<section class="pairs-player not-content" data-player={experiment ? 'experiment' : 'main'} aria-label={experiment ? '错误顺序实验' : '好数对主演示'}>
+<section class="algorithm-player not-content" data-player={experiment ? 'experiment' : 'main'} aria-label={experiment ? '错误顺序实验' : '好数对主演示'}>
   <p class="player-failure" role="status">交互演示尚未初始化；若此提示持续显示，表示脚本未能加载。你仍可阅读课程讲解和下方 Java 代码。</p>
   <fieldset class="player-controls" disabled>
     <legend class="sr-only">{experiment ? '实验控制' : '主演示控制'}</legend>

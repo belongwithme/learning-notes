@@ -1,0 +1,86 @@
+---
+slug: knowledge/algorithms/algorithm-patterns/prefix-sum/range-sum
+title: 静态区间和：两个前缀相减
+description: 逐步构造前缀数组、读取两个边界并相减，理解 n+1 与闭区间 r+1。
+sidebar:
+  order: 4
+---
+
+import PrefixSumPlayer from '../../../../../components/PrefixSumPlayer.astro';
+import PrefixSumQuiz from '../../../../../components/PrefixSumQuiz.astro';
+
+[← 前缀和专题目录](/knowledge/algorithms/algorithm-patterns/prefix-sum/)
+
+<div class="course-banner">
+  <p class="course-kicker">01 · 一次记账，多次查询</p>
+  <p>同一份数组不改，却经常有人问“这一段加起来是多少”。能不能不用每次重新遍历？</p>
+  <p><a href="#simulation">手动推演</a> · <a href="#experiment">边界错误实验</a> · <a href="#prefix-java">Java 代码</a> · <a href="#quiz">自测</a></p>
+</div>
+
+## 问题与贯穿样例
+
+原数组 **[2,−1,3]**，查询闭区间 **[1,2]**。下标从 0 开始，包含下标 1 和 2，答案是 **−1+3=2**。支持负数，区间必须非空。
+
+本节静态例题始终使用这个样例。下方自定义输入只改变主演示及联动代码，错误实验与自测各有独立样例。
+
+## 从重复累加到前缀差
+
+暴力方法从 l 走到 r，读一个数加一次。单次短区间很直接，但许多重叠查询会反复累加同样的元素。
+
+先把“从最左边开始”的累计和记下来：**P=[0,2,1,4]**。其中 P[3]=4 包含前 3 项，P[1]=2 只包含前 1 项。
+
+要的区间 [1,2] 在大段 [0,3) 内。大段减掉左边多出的 [0,1)，就只剩 [1,3)，也就是原数组闭区间 [1,2]：**P[3]−P[1]=4−2=2**。共同左段会抵消，正数、负数都成立。
+
+## 为什么是 n+1 和 r+1
+
+P 的下标表示取了**多少个元素**，nums 的下标表示**第几个位置**。n 个元素有 n+1 个前缀边界，包括一个都不取的 P[0]。所以 P[i+1]=P[i]+nums[i]。
+
+闭区间 [l,r] 含 nums[r]，右前缀必须取到 P[r+1]。左前缀 P[l] 刚好排除 nums[l]。公式为 **P[r+1]−P[l]**，不需要给从 0 开始的查询额外写分支。
+
+<span id="simulation"></span>
+
+## 手动推演：先构造，再读取与相减
+
+前缀解法每步构造一格，然后分三个动作读取右前缀、读取左前缀、做差。逐项累加解法每步加一个区间内元素。首次进入暂停，前后步进恢复完整状态。
+
+<PrefixSumPlayer lesson="range" />
+
+完成构造后，仅改变 l、r 再应用：数组未变时会**复用前缀**，只演示三个查询动作。修改数组、重置或切换解法会重新开始。编辑中的数据不会提前进入图形或答案。
+
+## 正确性与复杂度账本
+
+P[r+1] 与 P[l] 的公共部分恰好是 nums[0…l−1]，相减后只留下 nums[l…r]，不漏两端，也不多算区间外元素。
+
+逐项查询长度为 m 的区间，读取并累加 m 项，时间 O(m)。前缀解法先花 **O(n)** 时间与 **O(n)** 空间建表，以后每次两次读取、一次相减，时间 **O(1)**。Q 次查询总体 O(n+Q)。对一次很短的查询，预处理未必划算；动画步数不代表性能倍数。
+
+前缀构造期间未算出的格子显示 ?，不会用 0 冒充结果。原数组改动后必须重建受影响的前缀，本课只讨论静态查询。
+
+<span id="experiment"></span>
+
+## 错误实验：少一个 +1，会漏掉什么
+
+独立固定样例 **[5]，闭区间 [0,0]**。正确答案 5。故意把 P[r+1] 写成 P[r]，得到 P[0]−P[0]=0，漏掉唯一的右端点。
+
+<PrefixSumPlayer lesson="range" experiment />
+
+实验不会改变主演示数据和步骤；进入实验会暂停主播放，返回后不会自动恢复。
+
+## Java：先构造对象，再多次调用
+
+[查看联动 Java](#prefix-java)。`long[] pre` 只构造一次；`sumRange` 每次读取 whole 与 before 再相减。为了拆开观察，本课把模板里的一行相减写成三个语句，含义不变。
+
+输入需满足 0≤left≤right&lt;nums.length。Java 示例使用 long 防止累加溢出；显示的有限输入范围是教学限制，不是 long 的数值上限。
+
+<span id="quiz"></span>
+
+## 自测：解释两种下标
+
+<PrefixSumQuiz lesson="range" />
+
+试着不看动画，解释 `[0,0]` 与 `[0,n−1]` 分别应该读哪两个前缀。自测只反馈本轮答案，不建立掌握度评分或长期记录。
+
+## 来源与下一课
+
+依据 S2 技巧 1 的 `[2,−1,3]` 样例、S1 统一坐标系、S3 §3.3 NumArray 整理。完整书目与适用范围修订见[专题目录](/knowledge/algorithms/algorithm-patterns/prefix-sum/#来源与核对记录)。插入、删除会重算后缀，不强行加入这节静态查询课。
+
+[下一课：和为 K 的子数组 →](/knowledge/algorithms/algorithm-patterns/prefix-sum/subarray-count/)

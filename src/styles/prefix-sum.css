@@ -1,0 +1,10 @@
+.prefix-player .row-label { font-size: .8rem; font-weight: 600; margin: 18px 0 0; }
+.prefix-player .array-scroll { padding-top: 8px; }
+.prefix-player .array-cell { min-width: 76px; }
+.prefix-player .array-cell strong { font-size: 1.3rem; }
+.prefix-player .input-form > input { display: block; width: 100%; margin-top: 8px; }
+.prefix-player .parameter-fields { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; margin-top: 12px; }
+.prefix-player .parameter-fields label { flex: 1; min-width: 80px; }
+.prefix-player .parameter-fields input { display: block; width: 100%; margin-top: 4px; }
+.prefix-player .state-details { overflow-wrap: anywhere; font-size: .85rem; }
+.prefix-player .answer-tile strong { overflow-wrap: anywhere; }

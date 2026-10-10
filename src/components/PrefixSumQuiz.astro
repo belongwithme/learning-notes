@@ -1,0 +1,23 @@
+---
+import type { Lesson } from '../lib/prefix-sum';
+interface Props { lesson: Lesson }
+const { lesson } = Astro.props;
+const questions = {
+  range: { input: '[2, -1, 3]', one: 'P[3] 是多少？', two: '闭区间 [1,2] 的和是多少？', choices: ['pre[r] − pre[l]', 'pre[r+1] − pre[l]', 'pre[r+1] − pre[l+1]'] },
+  count: { input: '[1, -1, 1]，K=0', one: '处理到原数组 i=1 时，need=cur−K 是多少？', two: '完整扫描后有多少个和为 0 的非空子数组？', choices: ['空前缀表示一个额外的答案', 'freq[0]=1 用来计入从下标 0 开始的合法区间', '频次表只要保存不同的键，不需要次数'] },
+  divisible: { input: '[-1, 5]，K=5', one: '当前前缀 cur=-1 时，规范化余数是多少？', two: '这个数组有多少个可被 5 整除的非空子数组？', choices: ['负余数不用处理', '((cur % K) + K) % K 将同余前缀放到同一桶', '遇到负数就重置答案'] },
+}[lesson];
+---
+<form class="algorithm-quiz not-content" data-prefix-quiz={lesson} autocomplete="off" novalidate>
+  <p data-quiz-loading>自测尚未初始化；可先用纸笔作答。</p>
+  <fieldset disabled>
+    <legend>独立自测样例：{questions.input}</legend>
+    <div class="quiz-question"><label for={`${lesson}-q1`}>1. {questions.one}<input id={`${lesson}-q1`} type="text" name="one" inputmode="text" /></label><p data-feedback aria-live="polite"></p></div>
+    <div class="quiz-question"><label for={`${lesson}-q2`}>2. {questions.two}<input id={`${lesson}-q2`} type="text" name="two" inputmode="text" /></label><p data-feedback aria-live="polite"></p></div>
+    <fieldset class="quiz-question"><legend>3. 以下哪项说法正确？</legend>
+      {questions.choices.map((choice, index) => <label class="radio-label"><input type="radio" name="reason" value={index} />{choice}</label>)}
+      <p data-feedback aria-live="polite"></p>
+    </fieldset>
+    <div class="quiz-actions"><button type="submit">提交自测</button><button type="reset">重做</button></div><p data-quiz-result role="status"></p>
+  </fieldset>
+</form>
