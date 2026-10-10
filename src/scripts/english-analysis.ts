@@ -82,6 +82,34 @@ function evidenceLine(v: Evidence) {
   }
   return `<li>${e(dateTime(v.at))} · ${e(v.wordIds.map((id) => words.get(id)?.term ?? id).join("、"))} · ${v.kind === "self-review" ? "自评" : v.kind === "answer" ? `${v.retest ? "跨日复测" : "客观题"} / ${v.independent ? "无提示首次" : "辅助作答"}` : v.kind === "feedback" ? "用户自述反馈" : "已处理的复测安排"} · ${e(result)}${v.wordIds.length > 1 && v.result === "incorrect" ? "（多词理解题，无法定位单个词）" : ""}${v.bundleId ? ` <button type="button" class="text-button" data-report="${e(v.bundleId)}">查看原练习</button>` : ""}</li>`;
 }
+function lessonHtml(
+  b: NonNullable<PracticeData["bundle"]>,
+  selected: "concepts" | null,
+) {
+  const lesson = b.content.lesson;
+  const stage = b.study.stage;
+  if (!b.study.hasLesson)
+    return `<div class="analysis-banner">这份旧版内容没有完整学习讲解。可以在 Codex 请求补充学习材料并保存新版，原题与作答会保留。</div>`;
+  const step = selected ?? stage;
+  const source = lesson?.reading.source;
+  const example = (x: { english: string; translation: string; note: string }) =>
+    `<div class="lesson-example"><blockquote lang="en">${e(x.english)}</blockquote><p>${e(x.translation)}</p><p class="analysis-meta">${e(x.note)}</p></div>`;
+  const concepts = lesson
+    ? `<p class="eyebrow">01 · UNDERSTAND THE WORDS</p><h3>先把词和用法学明白</h3>
+    <ul class="analysis-next">${lesson.objectives.map((o) => `<li>${e(o)}</li>`).join("")}</ul>
+    ${lesson.words.map((w) => `<article class="lesson-word"><h4>${e(words.get(w.wordId)?.term)} <span class="tag">${e(b.content.exercise.targets.find((t) => t.wordId === w.wordId)?.meaning)}</span></h4><p>${e(w.explanation)}</p><h5>怎样使用</h5><ul>${w.usageNotes.map((n) => `<li>${e(n)}</li>`).join("")}</ul><h5>放进句子里理解</h5>${w.examples.map(example).join("")}<h5>容易混淆的地方</h5><div class="lesson-contrast">${example(w.contrast.left)}${example(w.contrast.right)}</div><p class="lesson-note">${e(w.contrast.explanation)}</p></article>`).join("")}`
+    : "";
+  const reading = lesson
+    ? `<p class="eyebrow">02 · READ WITH GUIDANCE</p><h3>${e(lesson.reading.title)}</h3><p class="analysis-meta">${source?.kind === "excerpt" ? `真实摘录 · <a href="${e(source.url)}" target="_blank" rel="noopener noreferrer">${e(source.title)}</a>` : "Codex 生成的教学语料"} · 先通读，再对照句子拆解</p><p class="analysis-material" lang="en">${e(lesson.reading.passage)}</p><details class="lesson-translation"><summary>对照全文译文</summary><p>${e(lesson.reading.translation)}</p></details><h4>一句一句，读清关系</h4>${lesson.reading.sentences.map((s, i) => `<article class="lesson-sentence"><p class="eyebrow">SENTENCE ${i + 1}</p><blockquote lang="en">${e(s.sentence)}</blockquote><p>${e(s.translation)}</p><dl>${s.chunks.map((c) => `<div><dt lang="en">${e(c.text)}</dt><dd>${e(c.explanation)}</dd></div>`).join("")}</dl><p class="lesson-note">${e(s.takeaway)}</p></article>`).join("")}<h4>带着这几条去练习</h4><ul class="analysis-next">${lesson.takeaways.map((t) => `<li>${e(t)}</li>`).join("")}</ul>`
+    : "";
+  return `<section class="analysis-card lesson" id="analysis-lesson">
+    <p class="eyebrow">LEARN FIRST · THEN APPLY</p><h3>${e(b.study.title)}</h3>
+    <p class="analysis-meta">词汇讲解由 Codex 编写。讲解与精读约 ${b.study.estimatedMinutes} 分钟，练习时间另计。学习阶段可自由查看译文与解释；学习进度与答题成绩分别保存。</p>
+    ${b.study.required ? `<ol class="lesson-steps" aria-label="本课进度"><li ${stage === "concepts" ? 'aria-current="step"' : ""}>01 学习讲解${b.study.conceptsAt ? " ✓" : ""}</li><li ${stage === "reading" ? 'aria-current="step"' : ""}>02 语料精读${b.study.completedAt ? " ✓" : ""}</li><li ${stage === "practice" ? 'aria-current="step"' : ""}>03 课后练习</li></ol>` : '<p class="analysis-banner">本次含跨日复测，先在新语境中独立回忆。提前回看学习材料可继续作答，但未答题会记为辅助学习。</p>'}
+    ${stage === "practice" ? (lesson ? `<details class="lesson-review"><summary>回看本课讲解与精读</summary>${concepts}${reading}</details>` : `<p>学习内容已收起。用新的语境检查自己能否回忆和理解。</p><button type="button" data-help="hint" data-question="*">回看讲解与精读（未答题记为辅助）</button>`) : step === "concepts" ? `${concepts}<div class="analysis-actions"><button type="button" class="primary" data-study-complete="concepts">${b.study.conceptsAt ? "返回语料精读" : "讲解已学完，去精读"} →</button></div><p class="analysis-meta">点击后保存讲解进度，可以换设备继续。</p>` : `<button type="button" class="text-button" data-study-view="concepts">← 回看词汇讲解</button>${reading}<div class="analysis-actions"><button type="button" class="primary" data-study-complete="reading">精读已完成，开始课后练习 →</button></div><p class="analysis-meta">开始后将收起讲解；答题时再回看会记录辅助学习。完成学习不等于已掌握。</p>`}
+  </section>`;
+}
+
 export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
   const el = <T extends HTMLElement = HTMLElement>(id: string) =>
     document.getElementById(id) as T;
@@ -94,6 +122,7 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
     loading = false;
   let data: PracticeData | null = null;
   let period: PeriodKind | "history" = "day";
+  let lessonStep: "concepts" | null = null;
   let reportId = new URL(location.href).searchParams.get("report") ?? "";
   let pending: Record<string, unknown> | null = null;
   const drafts = new Map<string, [string, string][]>();
@@ -188,7 +217,7 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
           : period === "week"
             ? "本周"
             : "本月";
-    const request = `请使用 learning-notes 项目的 scripts/english-context.mjs 和 scripts/english-save.mjs（流程见 README），分析我${label}的英语学习记录，结合最近 30 个自然日的反复遗忘与已确认复测，生成一份约 5 分钟的 Java 技术英语巩固练习并保存。先说明将读取的数据范围，不包含私人笔记。沿用现有报告时给出入口；需要更新时保留旧版本。保存后读回确认，并返回网站入口。`;
+    const request = `请使用 learning-notes 项目的 scripts/english-context.mjs 和 scripts/english-save.mjs（流程见 README），分析我${label}的英语学习记录，结合最近 30 个自然日的反复遗忘与已确认复测，生成并保存一份先学后练的 Java 技术英语课程：先讲解含义、搭配、易混用法和双语例句，再提供带全文译文与句子拆解的精读语料，最后附约 5 分钟的新语境客观题。学习与练习时长分别标注，不要只给题目。先说明将读取的数据范围，不包含私人笔记。沿用现有报告时给出入口；需要更新时保留旧版本。保存后读回确认，并返回网站入口。`;
     return `<div class="analysis-card analysis-empty"><p class="eyebrow">PREPARED IN CODEX · PRACTISED HERE</p><h3>本期尚未生成</h3><p>${data?.overview.hasRecords ? "让最近的学习记录，成为下一次练习的起点。" : "暂无可用学习记录。先去词库学习，再回来准备第一份巩固练习。"}</p><p class="analysis-meta">复制下面的请求到 Codex。报告保存后会出现在这里，不会自动调用模型。</p><label for="analysis-prompt" class="sr-only">可复制到 Codex 的请求</label><textarea id="analysis-prompt" class="analysis-copy" readonly>${e(request)}</textarea><div class="analysis-actions"><button type="button" class="primary" id="analysis-copy">复制请求</button><button type="button" data-view="library">去词库学习 →</button></div></div>`;
   }
   function retests() {
@@ -267,7 +296,7 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
         return `<article class="analysis-card analysis-question" id="question-${e(q.id)}"><p class="eyebrow">QUESTION ${String(index + 1).padStart(2, "0")} / ${types[q.type]}</p><p class="analysis-material" lang="en">${e(q.context)}</p><p class="analysis-meta">考查：${q.wordIds.map((id) => e(words.get(id)?.term ?? id)).join(" · ")}${q.assisted && !first ? " · 已使用辅助材料" : ""}</p>${q.flagged ? '<div class="analysis-banner">已标记待核对，暂不参与能力分析。原答案保留，修正题将另存版本。</div>' : ""}${latest ? `<div class="analysis-result" data-correct="${latest.payload.correct}"><strong>已确认保存 · ${latest.payload.correct ? "本次答对" : "本次答错"}</strong><p>首次答案：${e(first.payload.answer)} · ${first.payload.correct ? "正确" : "错误"} · ${first.payload.assisted ? "辅助作答，不计独立正确率" : "无提示首次作答"}</p>${q.wordIds.length > 1 && !first.payload.correct ? "<p>这是多词理解题，尚不能定位具体哪个词不稳。</p>" : ""}<p>${e(dateTime(latest.createdAt))} · 共 ${q.attempts.length} 次提交</p></div><details><summary>重做此题</summary>${answerForm}</details><details><summary>查看全部作答记录</summary><ul>${q.attempts.map((a) => `<li>${e(dateTime(a.createdAt))} · ${e(a.payload.answer)} · ${a.payload.correct ? "正确" : "错误"} · ${a.payload.assisted ? "辅助或重做" : "无提示首次"}</li>`).join("")}</ul></details>` : answerForm}${q.hint ? `<div class="analysis-result">提示：${e(q.hint)}</div>` : ""}${q.answers.length ? `<div class="analysis-result"><strong>标准答案：${q.answers.map((a) => e(q.options.find((o) => o.id === a)?.text ?? a)).join(" / ")}</strong><p>${e(q.explanation)}</p></div>` : ""}<details><summary>反馈困难或标记题目有误</summary><form data-question-feedback="${e(q.id)}"><label>这道题卡在哪里？<select name="difficultyType"><option value="meaning">词义</option><option value="collocation">搭配</option><option value="comprehension">句子理解</option></select></label><button type="submit">保存困难反馈</button></form><form data-flag-form="${e(q.id)}"><label for="flag-${e(q.id)}">哪里有误或歧义？</label><textarea id="flag-${e(q.id)}" name="reason" required maxlength="1000" placeholder="描述题目、答案或技术语境的问题"></textarea><button type="submit">标记待核对</button></form></details></article>`;
       })
       .join("");
-    body.innerHTML = `${summary.hasNewRecords ? '<div class="analysis-banner">有新记录可用于更新。这份报告保留原截止时间；需要更新时请在 Codex 请求重新生成，并保留旧版本。</div>' : ""}<div class="analysis-layout"><div class="analysis-main"><section class="analysis-card hero"><p class="eyebrow">${periodNames[b.period.kind]} · VERSION ${b.version}</p><h3>${e(b.content.title)}</h3><p>${e(b.content.summary)}</p><p class="analysis-meta">${e(learningDay(b.period.start))} 至 ${e(learningDay(new Date(Date.parse(b.period.end) - 1).toISOString()))}（北京时间）<br/>${b.period.complete ? "完整历史周期" : "进行中的周期"} · 截至 ${e(dateTime(b.period.cutoff))}<br/>${ex.targets.length} 个目标词 · ${ex.questions.length} 道题 · 约 ${ex.mode === "short" ? "5" : "10–15"} 分钟</p><a href="#analysis-exercise">${complete ? "回看练习与结果" : first.length ? "继续巩固" : "开始巩固"} ↓</a> <a href="#analysis-evidence">查看依据 ↓</a></section><section aria-label="报告统计">${metrics(b.facts.metrics)}<p class="analysis-meta">实际覆盖 ${b.facts.metrics.coveredDays.length} 个学习日${b.facts.metrics.coveredDays.length ? `：${b.facts.metrics.coveredDays[0]} 至 ${b.facts.metrics.coveredDays.at(-1)}` : ""}。旧自评状态不等于长期掌握。</p><details class="analysis-evidence"><summary>${b.period.complete ? "上一个完整周期" : "上一周期相同已过时长"}的数据与比较边界</summary>${metrics(b.facts.previousMetrics)}<p class="analysis-meta">不同词条、不同题目的整体比例变化仅描述表现，不能直接断言能力提升。</p><p class="analysis-meta">同批词复测样本 ${b.facts.retestCohort.sampleCount} 题；共同目标：${b.facts.retestCohort.wordIds.map((id) => e(words.get(id)?.term ?? id)).join("、") || "暂无"}；间隔 ${b.facts.retestCohort.intervalsDays.join("、") || "暂无"} 天。样本不足时不作等级或能力推断。</p><ul>${b.facts.metrics.questionTypes.map((t) => `<li>${types[t.type]}：${accuracy(t)}${t.total ? "" : "（暂无可计算数据）"}</li>`).join("")}</ul></details></section><section class="analysis-card" id="analysis-evidence"><p class="eyebrow">WHY THESE WORDS</p><h3>本次重点与依据</h3>${ex.targets.map((t) => `<details class="analysis-evidence"><summary>${e(words.get(t.wordId)?.term ?? t.wordId)} · ${e(t.reason)}</summary><p>${wordButton(t.wordId)} · ${e(t.meaning)}${t.extension ? "（扩展含义）" : ""}</p><p>目标用法：${e(t.usage)}</p><ul>${evidence(t.evidenceIds) || "<li>用户指定补练词条，尚不构成薄弱诊断。</li>"}</ul></details>`).join("")}${b.content.findings.map((f) => `<details class="analysis-evidence"><summary><span class="analysis-label">${f.kind === "fact" ? "记录事实" : f.kind === "hypothesis" ? "可能原因 · 待验证" : "学习建议"}</span>${e(f.text)}</summary><ul>${evidence(f.evidenceIds) || "<li>这是一项建议或假设，没有作为已验证诊断。</li>"}</ul></details>`).join("")}<h4>下一步</h4><ul class="analysis-next">${b.content.nextSteps.map((s) => `<li>${e(s)}</li>`).join("")}</ul>${b.content.replaces?.map((r) => `<p class="analysis-meta">修正说明：${e(r.reason)} <button type="button" data-report="${e(r.bundleId)}">查看原题版本</button></p>`).join("") ?? ""}</section><section class="analysis-card" id="analysis-exercise"><p class="eyebrow">READ, THEN TRY</p><h3>在语境里，再认识一次。</h3><p class="analysis-meta">${ex.source.kind === "generated" ? "Codex 生成的教学材料" : `真实摘录 · <a href="${e(ex.source.url)}" target="_blank" rel="noopener noreferrer">${e(ex.source.title)}</a>`} · ${e(ex.difficulty)}</p><p class="analysis-material" lang="en">${e(ex.passage)}</p>${ex.examples.map((x) => `<div class="analysis-example"><blockquote lang="en">${e(x.english)}</blockquote>${x.translation ? `<p class="analysis-meta">${e(x.translation)}</p>` : ""}</div>`).join("")}${b.materialRevealed ? `<div class="analysis-result">${e(ex.translation)}</div>` : '<button type="button" data-help="hint" data-question="*">展开译文与释义（未答题将记为辅助作答）</button>'}<p class="analysis-meta">保存进度：${ex.questions.filter((q) => q.attempts.length).length} / ${ex.questions.length} 题 · 可以随时回来继续已保存的部分。</p></section>${questionHtml}<section class="analysis-card" id="analysis-results"><p class="eyebrow">AFTER THIS PRACTICE</p><h3>${complete ? "本次练习已完成" : "本次已保存的结果"}</h3><p>无提示首次正确：${independent.length ? `${correct} / ${independent.length}` : "暂无可计算数据"} · 辅助首次作答 ${first.filter((a) => a.payload.assisted).length} 题 · 待核对 ${ex.questions.filter((q) => q.flagged).length} 题。</p><p class="analysis-meta">首次答案与所有重做记录均保留。以下复测建议只有确认后才会加入安排。</p>${
+    const practiceHtml = `<section class="analysis-card" id="analysis-exercise"><p class="eyebrow">03 · APPLY IN A NEW CONTEXT</p><h3>换个语境，试着自己理解。</h3><p class="analysis-meta">${ex.source.kind === "generated" ? "Codex 生成的教学材料" : `真实摘录 · <a href="${e(ex.source.url)}" target="_blank" rel="noopener noreferrer">${e(ex.source.title)}</a>`} · ${e(ex.difficulty)}</p><p class="analysis-material" lang="en">${e(ex.passage)}</p>${ex.examples.map((x) => `<div class="analysis-example"><blockquote lang="en">${e(x.english)}</blockquote>${x.translation ? `<p class="analysis-meta">${e(x.translation)}</p>` : ""}</div>`).join("")}${b.materialRevealed ? `<div class="analysis-result">${e(ex.translation)}</div>` : '<button type="button" data-help="hint" data-question="*">展开译文与释义（未答题将记为辅助作答）</button>'}<p class="analysis-meta">保存进度：${ex.questions.filter((q) => q.attempts.length).length} / ${ex.questions.length} 题 · 可以随时回来继续已保存的部分。</p></section>${questionHtml}<section class="analysis-card" id="analysis-results"><p class="eyebrow">AFTER THIS PRACTICE</p><h3>${complete ? "本次练习已完成" : "本次已保存的结果"}</h3><p>无提示首次正确：${independent.length ? `${correct} / ${independent.length}` : "暂无可计算数据"} · 辅助首次作答 ${first.filter((a) => a.payload.assisted).length} 题 · 待核对 ${ex.questions.filter((q) => q.flagged).length} 题。</p><p class="analysis-meta">首次答案与所有重做记录均保留。以下复测建议只有确认后才会加入安排。</p>${
       complete
         ? b.suggestions
             .map((s) => {
@@ -277,7 +306,8 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
             .join("") ||
           '<p class="analysis-meta">暂无新的复测建议。可在下方反馈仍模糊的词条，再查看建议。</p>'
         : '<p class="analysis-meta">完成其余题目后查看复测建议。</p>'
-    }</section><section class="analysis-card analysis-feedback"><h3>这次的难度如何？</h3><form id="analysis-feedback"><label>难度反馈<select name="difficulty"><option value="suitable" ${!feedback?.difficulty || feedback.difficulty === "suitable" ? "selected" : ""}>合适</option><option value="too-hard" ${feedback?.difficulty === "too-hard" ? "selected" : ""}>太难</option><option value="too-easy" ${feedback?.difficulty === "too-easy" ? "selected" : ""}>太简单</option></select></label><p class="analysis-meta">仍然模糊的词（可选，自述反馈）：</p>${ex.targets.map((t) => `<label><input type="checkbox" name="vagueWordIds" value="${e(t.wordId)}" ${feedback?.vagueWordIds?.includes(t.wordId) ? "checked" : ""}/>${e(words.get(t.wordId)?.term ?? t.wordId)}</label>`).join("")}<button type="submit">保存反馈</button></form>${b.feedback.length ? `<p class="analysis-meta">已保存 ${b.feedback.length} 条反馈，下次 Codex 读取时可用。</p>` : ""}</section></div><aside class="analysis-sidebar">${retests()}${overview()}<section class="analysis-card"><h3>报告与练习会保留。</h3><p class="analysis-meta">每次更新都有独立版本。已保存的内容在手机和电脑上共用，无需 Codex 持续在线。</p><button type="button" class="text-button" data-period="history">查看全部历史 →</button></section></aside></div>`;
+    }</section><section class="analysis-card analysis-feedback"><h3>这次的难度如何？</h3><form id="analysis-feedback"><label>难度反馈<select name="difficulty"><option value="suitable" ${!feedback?.difficulty || feedback.difficulty === "suitable" ? "selected" : ""}>合适</option><option value="too-hard" ${feedback?.difficulty === "too-hard" ? "selected" : ""}>太难</option><option value="too-easy" ${feedback?.difficulty === "too-easy" ? "selected" : ""}>太简单</option></select></label><p class="analysis-meta">仍然模糊的词（可选，自述反馈）：</p>${ex.targets.map((t) => `<label><input type="checkbox" name="vagueWordIds" value="${e(t.wordId)}" ${feedback?.vagueWordIds?.includes(t.wordId) ? "checked" : ""}/>${e(words.get(t.wordId)?.term ?? t.wordId)}</label>`).join("")}<button type="submit">保存反馈</button></form>${b.feedback.length ? `<p class="analysis-meta">已保存 ${b.feedback.length} 条反馈，下次 Codex 读取时可用。</p>` : ""}</section>`;
+    body.innerHTML = `${summary.hasNewRecords ? '<div class="analysis-banner">有新记录可用于更新。这份报告保留原截止时间；需要更新时请在 Codex 请求重新生成，并保留旧版本。</div>' : ""}<div class="analysis-layout"><div class="analysis-main"><section class="analysis-card hero"><p class="eyebrow">${periodNames[b.period.kind]} · VERSION ${b.version}</p><h3>${e(b.content.title)}</h3><p>${e(b.content.summary)}</p><p class="analysis-meta">${e(learningDay(b.period.start))} 至 ${e(learningDay(new Date(Date.parse(b.period.end) - 1).toISOString()))}（北京时间）<br/>${b.period.complete ? "完整历史周期" : "进行中的周期"} · 截至 ${e(dateTime(b.period.cutoff))}<br/>${ex.targets.length} 个目标词 · ${ex.questions.length} 道题 · ${b.study.hasLesson ? `学习约 ${b.study.estimatedMinutes} 分钟 + ` : ""}练习约 ${ex.mode === "short" ? "5" : "10–15"} 分钟</p><a href="${b.study.stage !== "practice" ? "#analysis-lesson" : "#analysis-exercise"}">${b.study.stage === "concepts" ? "开始学习" : b.study.stage === "reading" ? "继续精读" : complete ? "回看练习与结果" : first.length ? "继续练习" : "开始课后练习"} ↓</a> <a href="#analysis-evidence">查看依据 ↓</a></section><section aria-label="报告统计">${metrics(b.facts.metrics)}<p class="analysis-meta">实际覆盖 ${b.facts.metrics.coveredDays.length} 个学习日${b.facts.metrics.coveredDays.length ? `：${b.facts.metrics.coveredDays[0]} 至 ${b.facts.metrics.coveredDays.at(-1)}` : ""}。旧自评状态不等于长期掌握。</p><details class="analysis-evidence"><summary>${b.period.complete ? "上一个完整周期" : "上一周期相同已过时长"}的数据与比较边界</summary>${metrics(b.facts.previousMetrics)}<p class="analysis-meta">不同词条、不同题目的整体比例变化仅描述表现，不能直接断言能力提升。</p><p class="analysis-meta">同批词复测样本 ${b.facts.retestCohort.sampleCount} 题；共同目标：${b.facts.retestCohort.wordIds.map((id) => e(words.get(id)?.term ?? id)).join("、") || "暂无"}；间隔 ${b.facts.retestCohort.intervalsDays.join("、") || "暂无"} 天。样本不足时不作等级或能力推断。</p><ul>${b.facts.metrics.questionTypes.map((t) => `<li>${types[t.type]}：${accuracy(t)}${t.total ? "" : "（暂无可计算数据）"}</li>`).join("")}</ul></details></section><section class="analysis-card" id="analysis-evidence"><p class="eyebrow">WHY THESE WORDS</p><h3>本次重点与依据</h3>${ex.targets.map((t) => `<details class="analysis-evidence"><summary>${e(words.get(t.wordId)?.term ?? t.wordId)} · ${e(t.reason)}</summary><p>${wordButton(t.wordId)} · ${e(t.meaning)}${t.extension ? "（扩展含义）" : ""}</p><p>目标用法：${e(t.usage)}</p><ul>${evidence(t.evidenceIds) || "<li>用户指定补练词条，尚不构成薄弱诊断。</li>"}</ul></details>`).join("")}${b.content.findings.map((f) => `<details class="analysis-evidence"><summary><span class="analysis-label">${f.kind === "fact" ? "记录事实" : f.kind === "hypothesis" ? "可能原因 · 待验证" : "学习建议"}</span>${e(f.text)}</summary><ul>${evidence(f.evidenceIds) || "<li>这是一项建议或假设，没有作为已验证诊断。</li>"}</ul></details>`).join("")}<h4>下一步</h4><ul class="analysis-next">${b.content.nextSteps.map((s) => `<li>${e(s)}</li>`).join("")}</ul>${b.content.replaces?.map((r) => `<p class="analysis-meta">修正说明：${e(r.reason)} <button type="button" data-report="${e(r.bundleId)}">查看原题版本</button></p>`).join("") ?? ""}</section>${lessonHtml(b, lessonStep)}${b.study.stage === "practice" ? practiceHtml : ""}</div><aside class="analysis-sidebar">${retests()}${overview()}<section class="analysis-card"><h3>报告与练习会保留。</h3><p class="analysis-meta">每次更新都有独立版本。已保存的内容在手机和电脑上共用，无需 Codex 持续在线。</p><button type="button" class="text-button" data-period="history">查看全部历史 →</button></section></aside></div>`;
   }
   async function refresh(keepSelection = true) {
     if (!authenticated || !active || loading || busy) return;
@@ -354,6 +384,7 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
       drafts.delete(submittedKey);
       dirty = drafts.size > 0;
       data = result;
+      lessonStep = null;
       reportId = result.bundle!.id;
       if (!authenticated) return;
       url();
@@ -388,6 +419,7 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
       return false;
     drafts.clear();
     dirty = false;
+    lessonStep = null;
     return true;
   }
   root.addEventListener("input", (event) => {
@@ -417,6 +449,21 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
       if (!canNavigate()) return;
       reportId = button.dataset.report;
       void refresh();
+    }
+    if (button.dataset.studyView) {
+      lessonStep = "concepts";
+      render();
+      restoreDrafts();
+      el("analysis-lesson").scrollIntoView({ block: "start" });
+    }
+    if (button.dataset.studyComplete) {
+      await save({ action: "study", questionId: button.dataset.studyComplete });
+      if (!pending)
+        el(
+          data?.bundle?.study.stage === "practice"
+            ? "analysis-exercise"
+            : "analysis-lesson",
+        )?.scrollIntoView({ block: "start" });
     }
     if (button.dataset.help)
       void save({

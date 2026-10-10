@@ -7,11 +7,13 @@ import {
   firstAnswers,
   evidenceFor,
   suggestionsFor,
+  studyFor,
 } from "../src/lib/english/practice-model.ts";
 import { emptyProgress } from "../src/lib/english/model.ts";
 import {
   normalizeAnswer,
   validateContent,
+  saveSchema,
 } from "../src/lib/english/practice-schema.ts";
 import catalog from "../src/data/english.json" with { type: "json" };
 import { fixtureContent } from "./english-practice-fixture.mjs";
@@ -322,4 +324,57 @@ test("retest suggestions use the latest uncertainty feedback while retaining its
   });
   assert.equal(suggestionsFor(b, s).length, 0);
   assert.deepEqual(s.events[1].payload.vagueWordIds, ["W001"]);
+});
+
+test("new content requires a complete lesson with each target and faithful sentence breakdowns", () => {
+  const s = state();
+  s.learning.reviews = ["W001", "W501", "W1000"].map((w, i) =>
+    review(String(i), "2026-10-10", "vague", w),
+  );
+  const facts = analyzeDay(s),
+    input = { includeWordIds: [], excludeWordIds: [] };
+  const content = fixtureContent({ facts });
+  for (const mutate of [
+    (c) => delete c.lesson,
+    (c) => c.lesson.words.pop(),
+    (c) => c.lesson.words.push(c.lesson.words[0]),
+    (c) => (c.lesson.reading.sentences[0].chunks[0].text = "not in the source"),
+    (c) =>
+      (c.lesson.words[0].examples[0].english = c.exercise.questions[0].context),
+    (c) => (c.lesson.reading.passage = c.exercise.passage),
+  ]) {
+    const invalid = structuredClone(content);
+    mutate(invalid);
+    assert.throws(() => validateContent(invalid, facts, s, input));
+  }
+  assert.equal(saveSchema.shape.schemaVersion.safeParse(1).success, false);
+  assert.equal(
+    saveSchema.shape.content.safeParse({ ...content, lesson: undefined })
+      .success,
+    false,
+  );
+  const incomplete = structuredClone(content);
+  incomplete.lesson.words[0].examples = [];
+  assert.equal(saveSchema.shape.content.safeParse(incomplete).success, false);
+});
+
+test("study progress is separate from assessment and old reports remain usable", () => {
+  const s = state(),
+    b = bundle();
+  s.bundles = [b];
+  assert.equal(studyFor(b, []).stage, "practice");
+  b.content.lesson = fixtureContent({ facts: { evidence: [] } }).lesson;
+  assert.equal(studyFor(b, []).stage, "concepts");
+  s.events.push({
+    id: "study",
+    bundleId: b.id,
+    kind: "study",
+    questionId: "concepts",
+    sequence: 1,
+    createdAt: "2026-10-10T02:00:00Z",
+    payload: {},
+  });
+  assert.equal(studyFor(b, s.events).stage, "reading");
+  assert.equal(analyzeDay(s).metrics.firstAccuracy.total, 0);
+  assert.equal(analyzeDay(s).metrics.practiceWords, 0);
 });

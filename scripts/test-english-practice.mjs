@@ -3,7 +3,11 @@ import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import pg from "pg";
-import { fixtureContent, fixtureWordIds } from "./english-practice-fixture.mjs";
+import {
+  fixtureContent,
+  fixtureWordIds,
+  fixtureLessonWord,
+} from "./english-practice-fixture.mjs";
 import {
   readLearningContext,
   saveLearningContent,
@@ -63,7 +67,7 @@ const makeRequest = (context, extra = {}) => {
   const requestId = randomUUID();
   ids.push(requestId);
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     requestId,
     context: context.input,
     contextHash: context.contextHash,
@@ -171,6 +175,69 @@ try {
   assert.deepEqual(view.bundle.content.exercise.questions[0].answers, []);
   assert.equal(view.bundle.content.exercise.questions[0].hint, "");
   assert.equal(view.bundle.content.exercise.translation, "");
+  assert.equal(view.bundle.study.stage, "concepts");
+  assert.equal(view.bundle.content.lesson.words.length, 3);
+  await http("practice", {
+    method: "POST",
+    cookie: a.cookie,
+    expect: 409,
+    body: action(raw.requestId, {
+      action: "answer",
+      questionId: "q1",
+      answer: "A",
+      expectedAttempt: 0,
+    }),
+  });
+  await http("practice", {
+    method: "POST",
+    cookie: a.cookie,
+    expect: 409,
+    body: action(raw.requestId, { action: "study", questionId: "reading" }),
+  });
+  const studied = action(raw.requestId, {
+    action: "study",
+    questionId: "concepts",
+  });
+  for (const body of [
+    studied,
+    studied,
+    action(raw.requestId, { action: "study", questionId: "concepts" }),
+  ])
+    await http("practice", { method: "POST", cookie: a.cookie, body });
+  view = (await http(`practice?report=${raw.requestId}`, { cookie: b.cookie }))
+    .value;
+  assert.equal(
+    view.bundle.study.stage,
+    "reading",
+    "Study progress resumes in another session.",
+  );
+  assert.equal(
+    view.overview.metrics.firstAccuracy.total,
+    0,
+    "Reading is not an answer.",
+  );
+  assert.equal(
+    (
+      await database.query(
+        "SELECT id FROM english_practice_events WHERE bundle_id=$1 AND kind='study'",
+        [raw.requestId],
+      )
+    ).rowCount,
+    1,
+  );
+  view = (
+    await http("practice", {
+      method: "POST",
+      cookie: b.cookie,
+      body: action(raw.requestId, { action: "study", questionId: "reading" }),
+    })
+  ).value;
+  assert.equal(view.bundle.study.stage, "practice");
+  assert.equal(
+    view.bundle.content.lesson,
+    undefined,
+    "Teaching content is closed during independent retrieval.",
+  );
   const first = action(raw.requestId, {
     action: "answer",
     questionId: "q1",
@@ -348,6 +415,47 @@ try {
     },
   ];
   assert.equal((await saveLearningContent(corrected)).version, 3);
+  // A legacy report remains readable and answerable without invented learning progress.
+  await database.query(
+    "UPDATE english_bundles SET content=content-'lesson' WHERE id=$1",
+    [corrected.requestId],
+  );
+  view = (
+    await http(`practice?report=${corrected.requestId}`, { cookie: b.cookie })
+  ).value;
+  assert.equal(view.bundle.study.hasLesson, false);
+  assert.equal(view.bundle.study.stage, "practice");
+  // Reopening the lesson after starting practice is recorded as assistance.
+  for (const questionId of ["concepts", "reading"])
+    await http("practice", {
+      method: "POST",
+      cookie: a.cookie,
+      body: action(updated.requestId, { action: "study", questionId }),
+    });
+  view = (
+    await http("practice", {
+      method: "POST",
+      cookie: a.cookie,
+      body: action(updated.requestId, { action: "hint", questionId: "*" }),
+    })
+  ).value;
+  assert.equal(view.bundle.content.lesson.words.length, 3);
+  view = (
+    await http("practice", {
+      method: "POST",
+      cookie: a.cookie,
+      body: action(updated.requestId, {
+        action: "answer",
+        questionId: "q1",
+        answer: "A",
+        expectedAttempt: 0,
+      }),
+    })
+  ).value;
+  assert.equal(
+    view.bundle.content.exercise.questions[0].attempts[0].payload.assisted,
+    true,
+  );
   // Eight-target standard exercise: coverage in both contextual examples and questions.
   const extra = ["W002", "W003", "W004", "W005", "W006"];
   const all = [...fixtureWordIds, ...extra];
@@ -367,6 +475,7 @@ try {
   );
   for (const wordId of extra) {
     const w = catalog.entries.find((e) => e.id === wordId);
+    eight.content.lesson.words.push(fixtureLessonWord(wordId));
     eight.content.exercise.targets.push({
       wordId,
       usage: w.term,
@@ -418,6 +527,17 @@ try {
   retestRequest.content.exercise.questions[0].prompt =
     "Which action is requested by the setup instructions?";
   await saveLearningContent(retestRequest);
+  view = (
+    await http(`practice?report=${retestRequest.requestId}`, {
+      cookie: b.cookie,
+    })
+  ).value;
+  assert.equal(
+    view.bundle.study.required,
+    false,
+    "Retests preserve retrieval before review.",
+  );
+  assert.equal(view.bundle.content.lesson, undefined);
   view = (
     await http("practice", {
       method: "POST",
@@ -491,7 +611,7 @@ try {
   assert.equal(recover.status, 0, recover.stderr);
   assert.equal(JSON.parse(recover.stdout).saved, true);
   console.log(
-    `PASS: ${checks} HTTP checks; PostgreSQL readback; two sessions; W001/W501/W1000; immutable versions; atomic save/retry; hints; correction; manual-date conflicts; cross-day retest; eight targets; CLI read/recovery.`,
+    `PASS: ${checks} HTTP checks; PostgreSQL readback; two sessions; study-before-practice and progress recovery; legacy reports; lesson review assistance; W001/W501/W1000; immutable versions; atomic save/retry; hints; correction; manual-date conflicts; cross-day retest; eight targets; CLI read/recovery.`,
   );
 } finally {
   if (owned) {

@@ -1,6 +1,102 @@
 .analysis {
   padding-bottom: 14px;
 }
+.lesson {
+  scroll-margin-top: 24px;
+}
+.lesson-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+.lesson-steps li {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.lesson-steps li[aria-current] {
+  color: var(--paper);
+  background: var(--green);
+  border-color: var(--green);
+}
+.lesson-word,
+.lesson-sentence {
+  border-top: 1px solid var(--line);
+  padding: 24px 0;
+}
+.lesson-word h4 {
+  font-size: 1.25rem;
+}
+.lesson-word h4 .tag {
+  white-space: normal;
+}
+.lesson-word h5 {
+  font-size: 0.85rem;
+  margin: 22px 0 10px;
+}
+.lesson-word ul {
+  padding-left: 20px;
+  font-size: 0.85rem;
+  line-height: 1.9;
+}
+.lesson-example {
+  margin: 12px 0;
+  padding: 14px 18px;
+  border-radius: 8px;
+  background: var(--warm);
+}
+.lesson blockquote {
+  margin: 0;
+  font-family: Georgia, serif;
+  font-size: 1.05rem;
+  line-height: 1.9;
+}
+.lesson-contrast {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.lesson-contrast .lesson-example {
+  margin: 0;
+}
+.lesson-note {
+  border-left: 3px solid var(--green);
+  padding: 10px 14px;
+  background: var(--soft);
+  line-height: 1.9;
+}
+.lesson-translation,
+.lesson-review {
+  margin: 20px 0;
+  line-height: 1.9;
+}
+.lesson summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--green);
+}
+.lesson-sentence dl {
+  margin: 18px 0;
+}
+.lesson-sentence dl div {
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--line);
+}
+.lesson-sentence dt {
+  font-family: Georgia, serif;
+  font-size: 1rem;
+  color: var(--green);
+}
+.lesson-sentence dd {
+  margin: 6px 0 0;
+  font-size: 0.8rem;
+  line-height: 1.8;
+}
 .analysis-toolbar,
 .analysis-periods,
 .analysis-status,
@@ -355,6 +451,9 @@
   }
 }
 @media (max-width: 720px) {
+  .lesson-contrast {
+    grid-template-columns: 1fr;
+  }
   .view-tabs {
     gap: 20px;
     overflow-x: auto;

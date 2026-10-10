@@ -30,6 +30,36 @@ export interface Question {
   explanation: string;
   hint: string;
 }
+export interface StudyExample {
+  english: string;
+  translation: string;
+  note: string;
+}
+export interface Lesson {
+  title: string;
+  objectives: string[];
+  estimatedMinutes: number;
+  words: {
+    wordId: string;
+    explanation: string;
+    usageNotes: string[];
+    examples: StudyExample[];
+    contrast: { left: StudyExample; right: StudyExample; explanation: string };
+  }[];
+  reading: {
+    title: string;
+    passage: string;
+    translation: string;
+    sentences: {
+      sentence: string;
+      translation: string;
+      chunks: { text: string; explanation: string }[];
+      takeaway: string;
+    }[];
+    source: { kind: "generated" | "excerpt"; url?: string; title?: string };
+  };
+  takeaways: string[];
+}
 export interface Content {
   title: string;
   summary: string;
@@ -40,6 +70,8 @@ export interface Content {
     evidenceIds: string[];
   }[];
   nextSteps: string[];
+  // Older immutable reports predate the guided lesson. New saves require it.
+  lesson?: Lesson;
   exercise: {
     mode: "short" | "standard";
     goal: "java" | "general";
@@ -57,7 +89,7 @@ export interface PracticeEvent {
   id: string;
   sequence: number;
   bundleId: string;
-  kind: "answer" | "hint" | "reveal" | "flag" | "feedback";
+  kind: "answer" | "hint" | "reveal" | "flag" | "feedback" | "study";
   questionId: string;
   payload: {
     answer?: string;
@@ -112,6 +144,31 @@ export interface Snapshot {
   bundles: Bundle[];
   events: PracticeEvent[];
   retests: Retest[];
+}
+export function studyFor(bundle: Bundle, events: PracticeEvent[]) {
+  const lesson = bundle.content.lesson;
+  const required =
+    !!lesson && !bundle.content.exercise.targets.some((t) => t.retestId);
+  const progress = events.filter(
+    (e) => e.bundleId === bundle.id && e.kind === "study",
+  );
+  const conceptsAt =
+    progress.find((e) => e.questionId === "concepts")?.createdAt ?? null;
+  const completedAt =
+    progress.find((e) => e.questionId === "reading")?.createdAt ?? null;
+  return {
+    hasLesson: !!lesson,
+    title: lesson?.title ?? "",
+    estimatedMinutes: lesson?.estimatedMinutes ?? 0,
+    required,
+    conceptsAt,
+    completedAt,
+    stage: (!required || completedAt
+      ? "practice"
+      : conceptsAt
+        ? "reading"
+        : "concepts") as "concepts" | "reading" | "practice",
+  };
 }
 export interface Metrics {
   selfReviewWords: number;

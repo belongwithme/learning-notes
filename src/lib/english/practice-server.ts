@@ -8,6 +8,7 @@ import {
   firstAnswers,
   periodFor,
   suggestionsFor,
+  studyFor,
   type Bundle,
   type Snapshot,
   type PracticeEvent,
@@ -170,6 +171,8 @@ function buildContext(input: ContextInput, state: Snapshot) {
       mode:
         input.mode ?? state.bundles.at(-1)?.content.exercise.mode ?? "short",
     },
+    generationRequirements:
+      "新生成内容使用保存 schemaVersion 2，必须同时包含完整 lesson 和 exercise：逐词讲解、用法、双语例句、易混对比、带译文和句子分块的精读语料，再提供不同语境的课后题。学习时长单独标注；跨日复测先独立回忆，讲解供答后巩固。",
     sourceHash,
     dataUse:
       "本次将选定词条、学习自评、客观题作答、提示与反馈、既有报告和复测安排交给 Codex 分析；不包含私人笔记、个人口令或数据库凭据。",
@@ -276,7 +279,7 @@ export async function saveLearningContent(raw: unknown) {
     }
     if (!request.regenerate) {
       const duplicate = await client.query(
-        `SELECT id FROM english_bundles WHERE period_kind=$1 AND period_start=$2 AND context->>'sourceHash'=$3 ORDER BY version DESC LIMIT 1`,
+        `SELECT id FROM english_bundles WHERE period_kind=$1 AND period_start=$2 AND context->>'sourceHash'=$3 AND content ? 'lesson' ORDER BY version DESC LIMIT 1`,
         [request.context.kind, context.facts.period.start, context.sourceHash],
       );
       if (duplicate.rowCount) {
@@ -325,10 +328,21 @@ function publicBundle(bundle: Bundle, state: Snapshot) {
     (e) => e.kind === "hint" && e.questionId === "*",
   );
   const ex = bundle.content.exercise;
+  const study = studyFor(bundle, events);
+  const finished = ex.questions.every((q) =>
+    events.some(
+      (e) => e.questionId === q.id && ["answer", "flag"].includes(e.kind),
+    ),
+  );
   return {
     ...bundle,
+    study,
     content: {
       ...bundle.content,
+      lesson:
+        study.stage !== "practice" || materialRevealed || finished
+          ? bundle.content.lesson
+          : undefined,
       exercise: {
         ...ex,
         translation: materialRevealed ? ex.translation : "",
@@ -454,6 +468,28 @@ export async function mutatePractice(raw: unknown) {
     const bundle = state.bundles.find((b) => b.id === action.bundleId);
     if (!bundle) throw new HttpError(404, "练习不存在。");
     const events = state.events.filter((e) => e.bundleId === bundle.id);
+    const study = studyFor(bundle, events);
+    if (action.action === "study") {
+      if (!study.required)
+        throw new HttpError(400, "该内容无需记录课前学习步骤。");
+      if (action.questionId === "reading" && !study.conceptsAt)
+        throw new HttpError(409, "请先完成词汇与用法讲解，再进行语料精读。");
+      if (
+        !events.some(
+          (e) => e.kind === "study" && e.questionId === action.questionId,
+        )
+      )
+        await client.query(
+          "INSERT INTO english_practice_events(id,bundle_id,kind,question_id,payload) VALUES($1,$2,'study',$3,'{}')",
+          [action.operationId, bundle.id, action.questionId],
+        );
+      return;
+    }
+    if (
+      ["answer", "hint", "reveal"].includes(action.action) &&
+      study.stage !== "practice"
+    )
+      throw new HttpError(409, "请先完成学习讲解与语料精读，再进入课后练习。");
     if (action.action === "schedule") {
       const existing = state.retests.find(
         (r) => r.sourceBundleId === bundle.id && r.wordId === action.wordId,

@@ -48,6 +48,71 @@ const questionSchema = z
     hint: text,
   })
   .strict();
+const sourceSchema = z
+  .object({
+    kind: z.enum(["generated", "excerpt"]),
+    url: z
+      .url()
+      .refine((v) => /^https?:\/\//.test(v))
+      .optional(),
+    title: text.optional(),
+  })
+  .strict();
+const studyExample = z
+  .object({ english: text, translation: text, note: text })
+  .strict();
+const lessonSchema = z
+  .object({
+    title: text,
+    objectives: z.array(text).min(1).max(5),
+    estimatedMinutes: z.number().int().min(1).max(60),
+    words: z
+      .array(
+        z
+          .object({
+            wordId,
+            explanation: text,
+            usageNotes: z.array(text).min(1).max(5),
+            examples: z.array(studyExample).min(2).max(4),
+            contrast: z
+              .object({
+                left: studyExample,
+                right: studyExample,
+                explanation: text,
+              })
+              .strict(),
+          })
+          .strict(),
+      )
+      .min(1)
+      .max(8),
+    reading: z
+      .object({
+        title: text,
+        passage: text,
+        translation: text,
+        sentences: z
+          .array(
+            z
+              .object({
+                sentence: text,
+                translation: text,
+                chunks: z
+                  .array(z.object({ text, explanation: text }).strict())
+                  .min(2)
+                  .max(8),
+                takeaway: text,
+              })
+              .strict(),
+          )
+          .min(2)
+          .max(8),
+        source: sourceSchema,
+      })
+      .strict(),
+    takeaways: z.array(text).min(1).max(5),
+  })
+  .strict();
 export const contentSchema = z
   .object({
     title: text,
@@ -66,6 +131,7 @@ export const contentSchema = z
       .min(1)
       .max(20),
     nextSteps: z.array(text).min(1).max(10),
+    lesson: lessonSchema,
     exercise: z
       .object({
         mode: z.enum(["short", "standard"]),
@@ -96,16 +162,7 @@ export const contentSchema = z
           .min(1)
           .max(16),
         questions: z.array(questionSchema).min(3).max(5),
-        source: z
-          .object({
-            kind: z.enum(["generated", "excerpt"]),
-            url: z
-              .url()
-              .refine((v) => /^https?:\/\//.test(v))
-              .optional(),
-            title: text.optional(),
-          })
-          .strict(),
+        source: sourceSchema,
       })
       .strict(),
     replaces: z
@@ -120,7 +177,7 @@ export const contentSchema = z
   .strict();
 export const saveSchema = z
   .object({
-    schemaVersion: z.literal(1),
+    schemaVersion: z.literal(2),
     requestId: z.uuid(),
     context: contextInputSchema,
     contextHash: z.string().regex(/^[a-f0-9]{64}$/),
@@ -129,6 +186,14 @@ export const saveSchema = z
   })
   .strict();
 export const mutationSchema = z.discriminatedUnion("action", [
+  z
+    .object({
+      action: z.literal("study"),
+      operationId: z.uuid(),
+      bundleId: z.uuid(),
+      questionId: z.enum(["concepts", "reading"]),
+    })
+    .strict(),
   z
     .object({
       action: z.literal("answer"),
@@ -186,6 +251,43 @@ export function validateContent(
     throw new HttpError(400, message);
   };
   const ex = content.exercise;
+  const lesson =
+    content.lesson ?? fail("请先提供完整学习讲解与精读内容，再保存随附练习。");
+  const lessonIds = lesson.words.map((w) => w.wordId);
+  if (
+    lessonIds.length !== ex.targets.length ||
+    new Set(lessonIds).size !== lessonIds.length ||
+    ex.targets.some((t) => !lessonIds.includes(t.wordId))
+  )
+    fail("每个目标词都必须有一份对应的学习讲解。");
+  const normalize = normalizeAnswer;
+  if (normalize(lesson.reading.passage) === normalize(ex.passage))
+    fail("精读语料与课后练习须使用不同语境。");
+  for (const sentence of lesson.reading.sentences) {
+    if (
+      !normalize(lesson.reading.passage).includes(
+        normalize(sentence.sentence),
+      ) ||
+      sentence.chunks.some(
+        (chunk) =>
+          !normalize(sentence.sentence).includes(normalize(chunk.text)),
+      )
+    )
+      fail("句子拆解必须对应精读原文，分块必须来自所拆句子。");
+  }
+  const taughtContexts = [
+    lesson.reading.passage,
+    ...lesson.reading.sentences.map((s) => s.sentence),
+    ...lesson.words.flatMap((w) =>
+      [...w.examples, w.contrast.left, w.contrast.right].map((e) => e.english),
+    ),
+  ];
+  if (
+    ex.questions.some((q) =>
+      taughtContexts.some((c) => normalize(c).includes(normalize(q.context))),
+    )
+  )
+    fail("课后题必须换用未在讲解中直接出现的语境，不能照搬例句。");
   if (!facts.hasRecords) fail("暂无可用学习记录，请先学习后再生成个人分析。");
   if (
     ex.targets.length > (ex.mode === "short" ? 5 : 8) ||
@@ -212,10 +314,12 @@ export function validateContent(
     input.includeWordIds.some((id) => !targetIds.has(id))
   )
     fail("内容未遵守指定的补练或排除词条。");
-  if (ex.source.kind === "excerpt" && (!ex.source.url || !ex.source.title))
-    fail("真实摘录必须附来源标题与 URL。");
-  if (ex.source.kind === "generated" && ex.source.url)
-    fail("生成材料不得包装成来源原文。");
+  for (const source of [ex.source, lesson.reading.source]) {
+    if (source.kind === "excerpt" && (!source.url || !source.title))
+      fail("真实摘录必须附来源标题与 URL。");
+    if (source.kind === "generated" && source.url)
+      fail("生成材料不得包装成来源原文。");
+  }
   const checkRefs = (refs: string[], words: string[], required: boolean) => {
     if (required && refs.length === 0) fail("事实结论和推荐必须引用学习证据。");
     for (const ref of refs) {
@@ -258,6 +362,15 @@ export function validateContent(
       /[.*+?^${}()|[\]\\]/g,
       "\\$&",
     );
+    const taught = lesson.words.find((w) => w.wordId === t.wordId)!;
+    if (
+      !taught.examples.every((example) =>
+        new RegExp(`(^|[^a-z])${term}([^a-z]|$)`, "i").test(
+          normalize(example.english),
+        ),
+      )
+    )
+      fail(`${t.wordId} 的学习例句须包含目标词。`);
     if (
       !contexts.some((c) =>
         new RegExp(`(^|[^a-z])${term}([^a-z]|$)`, "i").test(normalizeAnswer(c)),

@@ -49,11 +49,14 @@ CREATE TABLE IF NOT EXISTS english_practice_events (
   id uuid PRIMARY KEY,
   sequence bigserial UNIQUE,
   bundle_id uuid NOT NULL REFERENCES english_bundles(id),
-  kind text NOT NULL CHECK (kind IN ('answer','hint','reveal','flag','feedback')),
+  kind text NOT NULL CHECK (kind IN ('answer','hint','reveal','flag','feedback','study')),
   question_id text NOT NULL DEFAULT '',
   payload jsonb NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now()
 );
+ALTER TABLE english_practice_events DROP CONSTRAINT IF EXISTS english_practice_events_kind_check;
+ALTER TABLE english_practice_events ADD CONSTRAINT english_practice_events_kind_check
+  CHECK (kind IN ('answer','hint','reveal','flag','feedback','study'));
 CREATE INDEX IF NOT EXISTS english_practice_events_bundle ON english_practice_events(bundle_id, sequence);
 CREATE TABLE IF NOT EXISTS english_retests (
   id uuid PRIMARY KEY,
