@@ -18,7 +18,11 @@
     "test:english": "node --env-file=.env.local scripts/test-english.mjs",
     "test:good-pairs": "node --experimental-strip-types scripts/test-good-pairs.mjs",
     "test:prefix-sum": "node --experimental-strip-types scripts/test-prefix-sum.mjs",
-    "test:difference": "node --experimental-strip-types scripts/test-difference.mjs"
+    "test:difference": "node --experimental-strip-types scripts/test-difference.mjs",
+    "english:context": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/english-context.mjs",
+    "english:save": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/english-save.mjs",
+    "test:english-analysis": "node --experimental-strip-types --test scripts/test-english-analysis.mjs",
+    "test:english-practice": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/test-english-practice.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.41.3",

@@ -1,4 +1,5 @@
 import catalog from "../data/english.json";
+import { initAnalysis } from "./english-analysis";
 import {
   emptyProgress,
   learningDay,
@@ -138,6 +139,7 @@ function showLogin() {
   el<HTMLInputElement>("passphrase").focus();
 }
 function setAuthUI() {
+  analysis.setAuthenticated(authenticated);
   el("account").textContent = authenticated ? "锁定记录" : "个人口令";
   el("login-panel").hidden = authenticated;
   for (const id of ["export", "import"])
@@ -156,6 +158,7 @@ async function refresh(silent = false) {
     if (previousAuth !== authenticated || previousData !== JSON.stringify(data))
       render();
     else setAuthUI();
+    if (view === "analysis") analysis.refresh();
     notify(
       pending
         ? "有一项待保存操作。请重试，或读取云端记录后取消。"
@@ -492,9 +495,10 @@ function renderCollection() {
 function render() {
   setAuthUI();
   renderToday();
-  if (view !== "today") renderCollection();
+  if (view !== "today" && view !== "analysis") renderCollection();
 }
 function changeView(next: string) {
+  if (view === "analysis" && next !== view && !analysis.canNavigate()) return;
   view = next;
   page = 1;
   document
@@ -505,9 +509,16 @@ function changeView(next: string) {
       else button.removeAttribute("aria-current");
     });
   el("today-view").hidden = view !== "today";
-  el("collection-view").hidden = view === "today";
+  el("collection-view").hidden = view === "today" || view === "analysis";
+  analysis.show(view === "analysis");
+  if (view !== "analysis") {
+    const url = new URL(location.href);
+    url.searchParams.delete("view");
+    url.searchParams.delete("report");
+    history.replaceState(null, "", url);
+  }
   if (view === "today") renderToday();
-  else renderCollection();
+  else if (view !== "analysis") renderCollection();
 }
 function renderDetail(id: string) {
   detailId = id;
@@ -588,6 +599,7 @@ el("account").addEventListener("click", async () => {
     return;
   }
   if (busy) return;
+  if (!analysis.canLock()) return;
   if (
     pending &&
     !confirm("还有待保存操作。锁定将清除本机待保存操作，确定继续吗？")
@@ -595,6 +607,7 @@ el("account").addEventListener("click", async () => {
     return;
   try {
     await api("session", "DELETE");
+    analysis.clear();
     authenticated = false;
     data = { progress: {}, reviews: [] };
     pending = null;
@@ -772,5 +785,7 @@ window.addEventListener("online", () => {
 window.addEventListener("beforeunload", (event) => {
   if (pending || dirty) event.preventDefault();
 });
+const analysis = initAnalysis(api, failure);
 render();
+if (new URL(location.href).searchParams.get("view") === "analysis") changeView("analysis");
 void refresh();

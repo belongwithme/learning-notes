@@ -2,6 +2,8 @@
 import '@fontsource-variable/noto-sans-sc/wght.css';
 import '@fontsource-variable/noto-serif-sc/wght.css';
 import '../styles/english.css';
+import '../styles/english-analysis.css';
+import EnglishAnalysis from '../components/EnglishAnalysis.astro';
 import catalog from '../data/english.json';
 const wordCount = catalog.entries.filter(entry => entry.kind === 'words').length;
 const phraseCount = catalog.entries.filter(entry => entry.kind === 'phrases').length;
@@ -30,7 +32,8 @@ const phraseCount = catalog.entries.filter(entry => entry.kind === 'phrases').le
         <div><h2>你的学习，在不同设备上继续。</h2><p>输入个人口令即可读取和保存记录。词库可以直接浏览。</p></div>
         <form id="login-form"><label for="passphrase" class="sr-only">个人口令</label><input id="passphrase" type="password" autocomplete="current-password" placeholder="个人口令" required maxlength="256" /><button class="primary" type="submit">解锁记录</button></form>
       </section>
-      <nav class="view-tabs" aria-label="学习视图"><button data-view="today" aria-current="page">今日学习</button><button data-view="library">全部词库 <span>{catalog.entries.length}</span></button><button data-view="history">学习记录</button></nav>
+      <nav class="view-tabs" aria-label="学习视图"><button data-view="today" aria-current="page">今日学习</button><button data-view="library">全部词库 <span>{catalog.entries.length}</span></button><button data-view="history">学习记录</button><button data-view="analysis">分析与巩固</button></nav>
+      <EnglishAnalysis />
       <section id="today-view" aria-labelledby="today-heading">
         <div class="section-heading"><div><p class="eyebrow" id="today-date"></p><h2 id="today-heading">给英语一点日常。</h2></div><p>先回忆，再看解释，最后记录。</p></div>
         <div class="stats"><div><span>今天已学</span><strong id="stat-today">—</strong></div><div><span>到期复习</span><strong id="stat-due">—</strong></div><div><span>已学词条</span><strong id="stat-studied">—</strong></div><div><span>当前掌握</span><strong id="stat-mastered">—</strong></div></div>

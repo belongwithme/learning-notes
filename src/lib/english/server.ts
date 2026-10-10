@@ -2,16 +2,15 @@ import pg, { type PoolClient } from "pg";
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import type { APIContext } from "astro";
 import { z } from "astro/zod";
-import catalog from "../../data/english.json";
-import { isDate, type LearningData } from "./model";
+import catalog from "../../data/english.json" with { type: "json" };
+import { isDate, type LearningData } from "./model.ts";
 
 let pool: pg.Pool | undefined;
 export class HttpError extends Error {
-  constructor(
-    public status: number,
-    message: string,
-  ) {
+  status: number;
+  constructor(status: number, message: string) {
     super(message);
+    this.status = status;
   }
 }
 function settings() {
@@ -32,6 +31,11 @@ export function db() {
     idleTimeoutMillis: 10000,
     connectionTimeoutMillis: 10000,
   }));
+}
+export async function closeDb() {
+  const active = pool;
+  pool = undefined;
+  await active?.end();
 }
 const hash = (value: string) =>
   createHash("sha256").update(value).digest("hex");
