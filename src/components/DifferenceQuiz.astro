@@ -1,0 +1,18 @@
+---
+import type { Lesson } from '../lib/difference';
+interface Props { lesson: Lesson }
+const { lesson } = Astro.props;
+const q = {
+ range: { sample: '初始 [0,0,0]，闭区间 [0,1] 加 2', one: '退出点的下标是多少？', two: '还原后下标 1 的值是多少？', choices: ['diff[i] 就是最终值', '先累计变化量，再写入结果', '每条操作后都必须还原全数组'] },
+ capacity: { sample: '行程 [1,3) 两人、[3,5) 两人，容量 2', one: '坐标 3 合并事件后的净变化是多少？', two: '整个行程的载客峰值是多少？', choices: ['在 end+1 下车', '同站事件合并后再检查容量', '先上车检查，之后才处理同站下车'] },
+ shift: { sample: '初始 a，闭区间 [0,0] 位移 -1', one: '规范化后的字母编码是多少（a=0）？', two: '差分数组退出点的值是多少？', choices: ['Java 的 % 总是非负', '((x%26)+26)%26 把编码放入 0～25', '遇到负数就跳过该操作'] },
+}[lesson];
+---
+<form class="algorithm-quiz not-content" data-difference-quiz={lesson} autocomplete="off" novalidate>
+  <p data-quiz-loading>自测尚未初始化；可先用纸笔作答。</p><fieldset disabled><legend>独立自测：{q.sample}</legend>
+  <div class="quiz-question"><label for={`diff-${lesson}-one`}>1. {q.one}<input id={`diff-${lesson}-one`} name="one" type="text" /></label><p data-feedback aria-live="polite"></p></div>
+  <div class="quiz-question"><label for={`diff-${lesson}-two`}>2. {q.two}<input id={`diff-${lesson}-two`} name="two" type="text" /></label><p data-feedback aria-live="polite"></p></div>
+  <fieldset class="quiz-question"><legend>3. 哪种说法正确？</legend>{q.choices.map((c, i) => <label class="radio-label"><input type="radio" name="reason" value={i} />{c}</label>)}<p data-feedback aria-live="polite"></p></fieldset>
+  <div class="quiz-actions"><button type="submit">提交自测</button><button type="reset">重做</button></div><p data-quiz-result role="status"></p>
+  </fieldset>
+</form>

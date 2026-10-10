@@ -1,0 +1,83 @@
+---
+slug: knowledge/algorithms/algorithm-patterns/difference/range-add
+title: 区间加减：两个端点与一次还原
+description: 从相邻差构造、批量端点打标到前缀还原，比较逐项修改与差分。
+sidebar:
+  order: 8
+---
+import DifferencePlayer from '../../../../../components/DifferencePlayer.astro';
+import DifferenceQuiz from '../../../../../components/DifferenceQuiz.astro';
+
+[← 差分专题](/knowledge/algorithms/algorithm-patterns/difference/)
+
+<div class="course-banner"><p class="course-kicker">01 · 批量区间更新</p><p><strong>区间中间没有新的变化，只有进入与退出时需要记一笔。</strong></p><p>目标：能从原值构造差分，解释 r+1，正确还原含负数的结果。</p><p><a href="#simulation">直接推演</a> · <a href="#experiment">错误实验</a> · <a href="#quiz">自测</a></p></div>
+
+## 题目与固定样例
+
+给定数组 base，多条闭区间操作 [l,r] 加 v，返回所有操作完成后的数组。两端都包含；v 可以为负，表示减去。
+
+初始 **[0,0,0,0,0,0]**，先 **[1,3]+2**，再 **[2,5]+1**。逐点画出来会得到 **[0,2,3,3,1,1]**。这是本节静态讲解的样例；自定义输入只改变主演示。
+
+## 暴力为什么会重复工作
+
+第一条修改三个位置，第二条修改四个位置，总共七次逐项加法。位置 2、3 被反复访问。m 条操作、长度 n 的最坏情况为 O(mn)。
+
+观察第二条：位置 2 开始多了 1，位置 3、4、5 都保持这份额外影响，直到位置 6 才撤销。所以只需 `diff[2]+=1; diff[6]-=1`。**退出时抵消的是这条操作的影响，不是清空其他操作。**
+
+## 先分清初值与增量
+
+本课 diff 存储完整数组的相邻变化：diff[0]=base[0]，其余 diff[i]=base[i]−base[i−1]。例如 base=[3,1,4]，初始差分为 [3,−2,3,0]，前 3 项累计恢复 [3,1,4]。
+
+闭区间加 v，只改变两个相邻差：左边界 l 增加 v，右侧边界 r+1 减少 v。区间内部的两个邻居都加了 v，作差时互相抵消。
+
+从 0 扫到 n−1：先 `active += diff[i]`，再 `result[i]=active`。不能直接复制差分当结果，也不能先写结果再累计。
+
+<span id="simulation"></span>
+
+## 手动推演：构造、打标、还原
+
+每个端点单独一步；还原时“累计”与“写入”也拆成两步。构造和打标阶段结果显示 ?，避免把尚未算出的值冒充 0。上一动作可以完整回退，首次打开不会自动播放。
+
+<DifferencePlayer lesson="range" />
+
+尝试 base=[3,1,4]，操作 `0,2,-2; 1,1,5`，正确结果 **[1,4,2]**。增量为 0、不做操作、整段修改、仅修改最后一个元素，都应有清楚的边界含义。
+
+## 哨兵不是额外输出
+
+n 个元素有效下标为 0～n−1，最后一个闭区间可能结束于 n−1。退出点为 n，所以多开一格 diff[n]。写入它合法，但还原只扫描前 n 项。
+
+默认操作打标后，差分为 **[0,2,1,0,−2,0,−1]**。最后的 −1 是停止第二条操作的事件，不能作为第七个答案。
+
+## 正确性与复杂度
+
+对于每条 [l,r]+v，扫描到 l 前没有贡献；从 l 开始累计 +v；到 r+1 累计 −v 后贡献归零，所以恰好影响 l～r。多个操作相加仍成立。
+
+构造 n 项、每条操作写两次、还原 n 项，总体 **O(n+m)** 时间、O(n) 辅助空间。动画把一个算法动作拆成多步，不表示真实运行倍数。若每更新一次就全量还原，仍可能退化成 O(mn)。
+
+<span id="experiment"></span>
+
+## 错误实验：在 r 提前退出
+
+固定初值 [0,0,0]，闭区间 [0,1] 加 2。正确 **[2,2,0]**；错误地在 r=1 抵消，得到 **[2,0,0]**，遗漏右端点。
+
+<DifferencePlayer lesson="range" experiment />
+
+实验独立于主演示。进入实验会暂停播放，返回时不会自动继续。重置回到当前已应用数据的初始状态。
+
+## Java 与实际题目映射
+
+[展开完整 Java](#difference-java)。为便于完整编译，代码包含 Solution 类；输入需满足 0≤l≤r&lt;base.length。构造差分时先转 long 再减，避免两个 int 相减先溢出。
+
+航班预订题 1109 常用从 1 开始的航班编号。进入本模板前把起止编号都减 1；不要只改一个端点。撤销区间 +v 就是再加 −v，前提是撤销确有对应业务含义。
+
+<span id="quiz"></span>
+
+## 三题自测
+
+<DifferenceQuiz lesson="range" />
+
+## 来源与下一课
+
+依据 S2 技巧 1、S3 §2～3、§5 整理。完整[来源说明](/knowledge/algorithms/algorithm-patterns/difference/#来源与整理说明)。
+
+[下一课：拼车容量与半开行程 →](/knowledge/algorithms/algorithm-patterns/difference/capacity/)

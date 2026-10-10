@@ -1,0 +1,79 @@
+---
+slug: knowledge/algorithms/algorithm-patterns/difference/shifting-letters
+title: 字母移位：累计正负影响再取模
+description: 差分记录字符区间的位移量，前缀还原后规范化余数，观察 z 与 a 的循环边界。
+sidebar:
+  order: 10
+---
+import DifferencePlayer from '../../../../../components/DifferencePlayer.astro';
+import DifferenceQuiz from '../../../../../components/DifferenceQuiz.astro';
+
+[← 差分专题](/knowledge/algorithms/algorithm-patterns/difference/)
+
+<div class="course-banner"><p class="course-kicker">03 · 差分与循环字母表</p><p><strong>先把一个位置受到的所有位移相加，再决定最终字母。</strong></p><p>目标：理解正负区间更新，并把 Java 余数规范化到 0～25。</p><p><a href="#simulation">直接推演</a> · <a href="#experiment">错误实验</a> · <a href="#quiz">自测</a></p></div>
+
+## 题目与固定样例
+
+给定小写英文串，对闭区间 [l,r] 中每个字母循环移动 v 位。正数向后，负数向前；z 再向后一步回 a，a 向前一步到 z。
+
+初始 **abc**。先对 **[0,1] 移动 −1**，再对 **[1,2] 移动 +1**。每个位置的总位移为 **[−1,0,1]**，所以结果 **zbd**。
+
+LeetCode 2381 用 direction=0 表示向前一步、1 表示向后一步；先映射为 −1/+1。这里直接输入有符号位移量，还支持多步移动，是教学扩展。
+
+## 为什么只要累加位移
+
+朴素解法逐条访问区间内字符，每次修改并回绕。m 条操作最坏 O(mn)。
+
+任一位置最终只与位移总和有关：先移动 −1 再移动 +1 与不移动等价。所以 diff 从全零开始，只登记**新增位移**，不存原字符编码的相邻差。
+
+每条闭区间操作仍写 `diff[l]+=v; diff[r+1]-=v`。还原得到 active 后，还需要加上原字符编码：`raw = text[i]−'a'+active`。把原字符漏掉会把整串当作全是 a。
+
+<span id="simulation"></span>
+
+## 手动推演：端点位移、累计、映射
+
+主演示保留原串，逐项显示还原结果。差分格里的数字是位移变化，不是字符；active 是当前累计位移。
+
+<DifferencePlayer lesson="shift" />
+
+尝试初始 az，操作 `0,1,-27`，结果应为 **zy**。负数可以超过一个周期，只加一次 26 而不先取模并不充分。
+
+## Java 的 % 为什么不够
+
+字母 a 编码 0。向前一步得到 −1，而 Java 的 −1%26 仍为 −1。直接加到 'a' 上会落到字母表外。
+
+使用 **((raw%26)+26)%26**：先把绝对值缩到一个周期内，加 26 消除负号，再取模放进 0～25。对 raw=−27，先余 −1，最终得到 25，对应 z。不要使用 abs(raw%26)，它会把向前误变成向后。
+
+本课 TypeScript 推演的余数符号与 Java 一致；显示“错误字符”是固定实验，不会混入正确模板。
+
+## 正确性与复杂度
+
+端点进入与退出保证 active 恰好等于覆盖当前位置的全部位移之和。模运算满足分步取模与最后统一取模等价，因此可以把逐次字符修改推迟到最后。
+
+差分法每条操作两次写入，再扫描 n 个字符，**O(m+n)** 时间、O(n) 辅助空间。朴素方法为全部区间长度之和，最坏 O(mn)。两个 Java 示例均使用 long 参与算术，避免先在 int 中溢出。
+
+<span id="experiment"></span>
+
+## 错误实验：a 向前一步
+
+固定字符串 **a**，操作 [0,0] 移动 −1。正确结果 **z**；直接使用 Java 的负余数，得到编码 −1，对应反引号字符（U+0060），已离开 a～z。
+
+<DifferencePlayer lesson="shift" experiment />
+
+实验固定数据，独立于主演示。进入实验会暂停播放，可回退观察差分退出点其实是 +1：撤销一份负影响，需要加回来。
+
+## Java 与适用范围
+
+[展开完整 Java](#difference-java)。参数要求小写英文字符串和合法的闭区间。示例用于固定 26 字母表，不能直接套到中文、大小写混合或 Unicode 变长编码上。
+
+<span id="quiz"></span>
+
+## 三题自测
+
+<DifferenceQuiz lesson="shift" />
+
+## 来源与后续
+
+依据 S3 的 2381 练习路径及 S1/S2 区间加减框架设计，具体样例和取模错误实验为本课补充。
+
+[返回专题：选择下一项进阶能力 →](/knowledge/algorithms/algorithm-patterns/difference/#进阶能力路线)

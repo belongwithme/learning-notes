@@ -1,0 +1,83 @@
+---
+slug: knowledge/algorithms/algorithm-patterns/difference/capacity
+title: 拼车容量：半开行程与有序事件
+description: 合并同站上下车，用 TreeMap 扫描稀疏事件坐标，求载客峰值并判定容量。
+sidebar:
+  order: 9
+---
+import DifferencePlayer from '../../../../../components/DifferencePlayer.astro';
+import DifferenceQuiz from '../../../../../components/DifferenceQuiz.astro';
+
+[← 差分专题](/knowledge/algorithms/algorithm-patterns/difference/)
+
+<div class="course-banner"><p class="course-kicker">02 · 稀疏扫描线</p><p><strong>在终点下车的人，不再占用终点之后的座位。</strong></p><p>目标：解释半开边界、同站事件合并，以及“只扫描变化坐标”的理由。</p><p><a href="#simulation">直接推演</a> · <a href="#experiment">错误实验</a> · <a href="#quiz">自测</a></p></div>
+
+## 题目与固定样例
+
+每条行程为 **start,end,人数**，乘客从 start 上车，到 end 下车，在 **[start,end)** 占座。车辆容量固定，判断全程是否超载，同时计算峰值。
+
+行程 **[1,5) 两人、[3,7) 三人**，容量 4。从 1 出发有 2 人，从 3 出发有 5 人，从 5 出发剩 3 人，到 7 清零。因此峰值 **5**，首次超载坐标 **3**，结论是不足以承载全部行程。
+
+**输入次序提醒：** 本课统一用 start,end,人数；LeetCode 1094 原始 trips 是 人数,start,end。移植 Java 时要先转换顺序。
+
+## 从重复点数到事件表
+
+朴素方法每到一个可能变化的坐标，就遍历全部行程，检查 start≤x&lt;end，累加仍在车上的人数。只需要枚举端点，因为两端点之间不会有人上下车；但每个端点都重数所有行程仍是 O(m²)。
+
+事件法将每条行程拆成 `events[start]+=人数` 与 `events[end]-=人数`。用 TreeMap 按坐标升序处理；每次将该站净变化加到 active，再更新 peak。
+
+默认事件表为 **1→+2、3→+3、5→−2、7→−3**。注意退出点是 end，**没有 +1**。
+
+<span id="simulation"></span>
+
+## 手动推演：合并事件，再沿坐标扫描
+
+横向格子按事件坐标排序，间距不代表实际距离。允许坐标到十亿，也只创建少量事件格子。每站的结果代表本站全部上下车完成后的载客数，持续到下个事件点。
+
+<DifferencePlayer lesson="capacity" />
+
+试试行程 `0,1000000000,2`，容量 2：只有两个事件，峰值仍是 2。再试无行程，峰值为 0。绘图中的事件表按排序显示，不代表登记操作也必须按此顺序输入。
+
+## 同站上下车为什么必须合并
+
+假设两个人在 3 下车，另两个人在 3 上车，净变化是 −2+2=0。原来 2 人，离站后仍是 2 人。先加 2 再立刻判超载，会制造瞬间 4 人的错误峰值。
+
+本模板先聚合所有行程的端点，扫描时一次性应用本站净变化。因此不会依赖同站事件登记的先后顺序。
+
+一旦某站超过容量，后面即使清零，也不能说整段旅程合法。演示保留首次超载位置，继续扫描以得到全程峰值。
+
+## 正确性、稀疏性与成本
+
+扫描到 x 后，active 等于所有 start≤x 的上车人数减去所有 end≤x 的下车人数，恰好留下满足 start≤x&lt;end 的行程。因此 peak≤capacity 才能全程承载。
+
+m 条行程最多 2m 个不同事件点。TreeMap 插入合并为 **O(m log m)**，扫描 O(m)，空间 O(m)。朴素对照在每个端点重数 m 条行程，最坏 O(m²)；它也不会开十亿长度数组。
+
+若进一步求“人数×行驶距离”，还需用 active 乘相邻事件的真实坐标差。只按格子数量相加会出错，本课只求峰值和容量。
+
+<span id="experiment"></span>
+
+## 错误实验：把 end 写成 end+1
+
+固定两条行程 **[1,3) 两人、[3,5) 两人**，容量 2。正确峰值 **2**。若错误地把下车推迟到 4 和 6，坐标 3 会出现 **4 人**，导致错误拒绝。
+
+<DifferencePlayer lesson="capacity" experiment />
+
+进入独立实验会暂停主演示，二者数据与回退互不干扰。
+
+## Java 与坐标类型
+
+[展开完整 Java](#difference-java)。事件法以 long 保存坐标与人数累计；当前模板的输入坐标来自非负 int，转换到 long 后进入 TreeMap。稠密小范围可以用数组，不能照搬数组大小到十亿坐标。
+
+这里返回峰值，由调用方比较容量。若只关心布尔可行性，可在扫描中首次超载时直接返回 false；本课为教学继续扫描。
+
+<span id="quiz"></span>
+
+## 三题自测
+
+<DifferenceQuiz lesson="capacity" />
+
+## 来源与下一课
+
+依据 S1 B 类、S2 技巧 2、S3 的 1094 练习路径改编。S2 使用整数闭区间 r+1，本课换为拼车半开区间 end，明确区分两种约定。
+
+[下一课：字母移位与负数取模 →](/knowledge/algorithms/algorithm-patterns/difference/shifting-letters/)

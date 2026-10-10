@@ -1,0 +1,49 @@
+---
+import { DEFAULTS, JAVA, NAMES, formatOps, type Lesson } from '../lib/difference';
+import '../styles/algorithm-course.css';
+import '../styles/difference.css';
+interface Props { lesson: Lesson; experiment?: boolean }
+const { lesson, experiment = false } = Astro.props;
+const p = DEFAULTS[lesson];
+const id = `difference-${lesson}-${experiment ? 'experiment' : 'main'}`;
+const fault = lesson === 'range' ? 'boundary' : lesson === 'capacity' ? 'exit' : 'modulo';
+const faultName = { boundary: '错误：在 r 抵消', exit: '错误：在 end+1 下车', modulo: '错误：保留负余数' }[fault];
+const code = (source: string) => source.split('\n').map((line, i) => `<span data-line="${i + 1}"><span class="line-number" aria-hidden="true">${i + 1}</span>${line.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;') || ' '}</span>`).join('');
+---
+<section class="algorithm-player difference-player not-content" data-difference={lesson} data-experiment={String(experiment)} aria-label={`${NAMES[lesson]}${experiment ? '错误实验' : '主演示'}`}>
+  <p class="player-failure" role="status">演示尚未初始化；若提示持续显示，脚本未能加载。文字与 Java 仍可阅读。</p>
+  <fieldset class="player-controls" disabled>
+    <legend class="sr-only">{experiment ? '独立错误实验' : '差分推演'}</legend>
+    <div class="player-topline"><span class="lab-label">{experiment ? '固定样例 · 独立实验' : '差分实验室 · 进入、退出、还原'}</span><span data-d="position"></span></div>
+    <div class="method-switch" role="group" aria-label="选择推演方式">
+      <button type="button" data-method="diff" aria-pressed="true">{experiment ? '正确做法' : lesson === 'capacity' ? '有序事件扫描' : '差分还原'}</button>
+      <button type="button" data-method={experiment ? fault : 'brute'} aria-pressed="false">{experiment ? faultName : lesson === 'capacity' ? '逐站重数行程' : '逐项修改'}</button>
+    </div>
+    <p data-d="applied" class="applied-input"></p><p data-d="mode" class="fine-print"></p>
+    <p class="row-label">{lesson === 'capacity' ? '行程：起点、终点、人数（终点下车，不再占座）' : '操作：左端点、右端点、增量（两端都包含）'}</p>
+    <div data-d="ops" class="operation-list"></div>
+    <div data-diff-row><p class="row-label">{lesson === 'capacity' ? '事件表 events · 按真实坐标排序，不按距离等比例绘制' : '差分 diff · 最后一格是哨兵，不输出'}</p>
+      <div class="array-scroll" tabindex="0" aria-label="变化量，可横向滚动"><div class="array-cells" data-d="diff"></div></div>
+    </div>
+    <p class="row-label">{lesson === 'capacity' ? '各事件坐标出发后的载客数 · 持续到下一事件点' : lesson === 'shift' ? '结果字母 · ? 表示尚未还原' : '结果数组 · ? 表示尚未还原'}</p>
+    <div class="array-scroll" tabindex="0" aria-label="结果，可横向滚动"><div class="array-cells" data-d="values"></div></div>
+    <div class="action-card" aria-live="polite" aria-atomic="true"><h3 data-d="title">点击下一步开始</h3><p data-d="explanation"></p><p data-d="comparison" class="completion" hidden></p></div>
+    <div class="step-controls"><button type="button" data-action="prev">← 上一步</button><button type="button" data-action="next" class="primary">下一步 →</button>{!experiment && <button type="button" data-action="play" aria-pressed="false">播放</button>}<button type="button" data-action="reset">重置</button></div>
+    <div class="state-grid"><div class="answer-tile"><span>{lesson === 'capacity' ? '当前人数 active' : lesson === 'shift' ? '累计位移 active' : '累计值 active'}</span><strong data-d="active"></strong></div><div class="answer-tile"><span>{lesson === 'capacity' ? '已扫描峰值' : '当前操作'}</span><strong data-d="metric"></strong></div><div class="answer-tile"><span>完成结果</span><strong data-d="result"></strong></div></div>
+    <p data-d="status"></p>
+    <div class="ledger"><strong>复杂度账本</strong><p data-d="ledger"></p><small>算法动作计数，不是运行耗时；图中完整快照用于回退，Java 无需保存每一步。</small></div>
+    {!experiment && <form class="input-form" novalidate autocomplete="off">
+      {lesson !== 'capacity' && <label for={`${id}-base`}>{lesson === 'range' ? '初始数组（1～12 个 -99～99 的整数）' : '初始字符串（1～12 个小写字母）'}<input id={`${id}-base`} name="base" value={lesson === 'range' ? p.base.join(', ') : p.word} spellcheck="false" /></label>}
+      <label for={`${id}-ops`}>{lesson === 'capacity' ? '行程 start,end,人数' : '操作 l,r,增量'}<textarea id={`${id}-ops`} name="ops" rows="3" spellcheck="false" aria-describedby={`${id}-help ${id}-error`}>{formatOps(p)}</textarea></label>
+      {lesson === 'capacity' && <label for={`${id}-capacity`}>容量（0～999）<input id={`${id}-capacity`} name="capacity" value={p.capacity} inputmode="numeric" /></label>}
+      <p id={`${id}-help`} class="fine-print">每条用逗号分隔，条目间用分号或换行；最多 8 条，留空表示无操作。{lesson === 'capacity' ? '0 ≤ start < end ≤ 10⁹，人数 1～99。' : '0 ≤ l ≤ r < 长度，增量 -99～99。'}编辑后点击应用；错误输入保留原推演。</p>
+      <button type="submit">应用并推演</button><p data-d="draft" class="fine-print"></p><p id={`${id}-error`} data-d="error" class="input-error" role="alert"></p>
+    </form>}
+  </fieldset>
+  {!experiment && <details class="java-details" id="difference-java"><summary>完整 Java · 当前执行语句高亮</summary>
+    <p>方法可放入对应 Solution.java 编译。参数需符合本课边界约定；累计量使用 long。高亮表示刚完成的语句，动画本身不运行任意 Java。</p>
+    {(['diff', 'brute'] as const).map(method => <div data-difference-code={method}><div class="code-heading"><h3>{method === 'diff' ? '端点法' : '朴素对照'}</h3><button type="button" data-copy={method}>复制 Java</button></div><pre tabindex="0" aria-label={`${method} Java`}><code set:html={code(JAVA[lesson][method])} /></pre></div>)}
+    <p data-d="copy" role="status"></p><p class="fine-print">错误实验不改写这里的正确代码。加载完成后可离线操作；刷新会重置输入、步骤与自测，不保存掌握度。</p>
+  </details>}
+</section>
+<script>import '../scripts/difference';</script>

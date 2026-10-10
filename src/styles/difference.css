@@ -1,0 +1,9 @@
+.difference-player .input-form label { display: block; margin: 10px 0; }
+.difference-player .input-form input, .difference-player textarea { display: block; width: 100%; margin-top: 6px; }
+.difference-player textarea { font: inherit; color: #213632; background: white; padding: 10px; border: 1px solid #b4c9bc; border-radius: 8px; resize: vertical; min-height: 90px; }
+.difference-player textarea:focus-visible { outline: 3px solid #1b7862; outline-offset: 3px; }
+.difference-player .operation-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.difference-player .operation-list span { padding: 4px 8px; border: 1px solid #bacfc5; border-radius: 6px; }
+.difference-player .operation-list .current { background: #215c4e; color: white; }
+.difference-player .answer-tile strong { overflow-wrap: anywhere; font-size: 1rem; }
+.difference-player .array-cell.sentinel { border-style: double; border-width: 3px; }
