@@ -76,6 +76,7 @@ export interface Content {
     mode: "short" | "standard";
     goal: "java" | "general";
     difficulty: string;
+    estimatedMinutes?: number;
     targets: Target[];
     passage: string;
     translation: string;
@@ -144,6 +145,32 @@ export interface Snapshot {
   bundles: Bundle[];
   events: PracticeEvent[];
   retests: Retest[];
+}
+// Coverage means a complete saved lesson cites this word's latest self-review.
+// It is independent of whether the learner has opened or finished that lesson.
+export function generationCoverage(state: Snapshot, period: Period) {
+  const latest = new Map<string, LearningData["reviews"][number]>();
+  for (const review of [...state.learning.reviews].sort(
+    (a, b) => a.studiedAt.localeCompare(b.studiedAt) || a.id.localeCompare(b.id),
+  )) {
+    if (review.studiedAt >= period.start && review.studiedAt < period.cutoff)
+      latest.set(review.wordId, review);
+  }
+  const candidates = [...latest.values()]
+    .filter((r) => r.result === "forgot" || r.result === "vague")
+    .sort((a, b) => Number(a.result !== "forgot") - Number(b.result !== "forgot")
+      || a.studiedAt.localeCompare(b.studiedAt) || a.wordId.localeCompare(b.wordId));
+  const covered = new Set(candidates.filter((r) => state.bundles.some((b) =>
+    b.createdAt < period.cutoff &&
+    b.content.lesson?.words.some((w) => w.wordId === r.wordId) &&
+    b.content.exercise.targets.some((t) => t.wordId === r.wordId &&
+      t.evidenceIds.includes(`review:${r.id}`)),
+  )).map((r) => r.wordId));
+  return {
+    candidateWordIds: candidates.map((r) => r.wordId),
+    coveredWordIds: candidates.filter((r) => covered.has(r.wordId)).map((r) => r.wordId),
+    pendingWordIds: candidates.filter((r) => !covered.has(r.wordId)).map((r) => r.wordId),
+  };
 }
 export function studyFor(bundle: Bundle, events: PracticeEvent[]) {
   const lesson = bundle.content.lesson;

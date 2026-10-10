@@ -168,7 +168,9 @@ npm run --silent english:save:production -- --request 原请求UUID
 
    可选参数：`--date YYYY-MM-DD`、`--cutoff ISO时间`、`--include W001,W1000`、`--exclude W002`。`--mode` 为 `short` 或 `standard`，`--goal` 为 `java` 或 `general`。未指定的模式与目标会返回最近已保存练习的偏好；首次默认 Java 短练习。输出包含明确截止点、观察窗口、候选排序、统计分子分母、词条级证据、原题与作答、反馈及待复测安排。没有实际记录时不允许保存个人诊断。
 
-3. **按证据编写。** 阅读上下文文件，选择少量目标词，区分事实、可能原因和建议。先导出结构规范，再编写完整 JSON（仅含练习的旧格式不再用于新发布）：
+`generationCoverage` 按统计范围内每词最后一次自评返回全部候选、已覆盖和待处理词条。已覆盖指完整学习单元引用了该次自评；仅有旧练习、尚未保存的草稿或更早自评对应的课程均不算。已生成课程是否学完不影响其他词条的生成。词条多时可按主题分组，用每组 `--include` 固定成员和去重依据，在同一次运行中依次保存全部组，不截取前几个、不把未覆盖项推迟到下次。保存后用新的截止点读取覆盖清单，确认本次初始待处理词条已全部覆盖。
+
+3. **按证据编写。** 阅读上下文文件，覆盖 `generationCoverage.pendingWordIds` 中全部目标词，区分事实、可能原因和建议。先导出结构规范，再编写完整 JSON（仅含练习的旧格式不再用于新发布）：
 
    ```sh
    npm run --silent english:save -- --schema > .local/english-save.schema.json
@@ -176,7 +178,7 @@ npm run --silent english:save:production -- --request 原请求UUID
 
    顶层包含 `schemaVersion: 2`、新的 UUID `requestId`、读取结果原样保留的 `input`（放入 `context` 字段）、`contextHash`、`regenerate` 和 `content`。`content` 包含标题、总结、结论、下一步、必填的 `lesson` 学习单元和随附练习。完整字段以导出的 schema 和 `src/lib/english/practice-schema.ts` 为准；`scripts/english-practice-fixture.mjs` 是隔离测试中的完整结构示例，不能作为用户真实分析。
 
-   目标词与事实结论使用读取结果中的 `evidenceIds`。自选补练词须先在读取时用 `--include` 声明，不能伪造薄弱依据。非扩展含义须与词库 `meaning` 一致；复测目标附 `retestId`，沿用原 `usage` 与含义，并更换已练过的语境。短练习最多 5 词、80–120 个英文词、3 道题；标准练习最多 8 词、150–220 个英文词、5 道题。选择题只允许一个正确选项，文本题预先列出全部可接受答案。文本匹配仅规范化大小写、全半角和空白，不自动猜测其他词形。
+   目标词与事实结论使用读取结果中的 `evidenceIds`。自选补练词须先在读取时用 `--include` 声明，不能伪造薄弱依据。非扩展含义须与词库 `meaning` 一致；复测目标附 `retestId`，沿用原 `usage` 与含义，并更换已练过的语境。短练习为 80–120 个英文词、3 道题；标准练习为 150–220 个英文词、5 道题。两种模式均不限制目标词数量。选择题只允许一个正确选项，文本题预先列出全部可接受答案。文本匹配仅规范化大小写、全半角和空白，不自动猜测其他词形。
 
    `lesson` 必须包含 `title`、`objectives`、`estimatedMinutes`、每词一项的 `words`、`reading` 和 `takeaways`。每个词条包含 `explanation`、`usageNotes`、至少两个 `examples`（英文、译文、注释）和 `contrast`（左右对比例句与差异解释）。`reading` 包含 `passage`、`translation`、`sentences`（原句、译文、来自原句的分块及解释、理解要点）和来源。先解释为什么这样用，再用详细语料带读，不能用词库释义加题目代替教学；学习阶段的例句与题目语境必须不同。
 

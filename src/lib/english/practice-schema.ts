@@ -12,16 +12,15 @@ const text = z.string().trim().min(1).max(4000);
 const wordIds = z
   .array(wordId)
   .min(1)
-  .max(8)
   .refine((a) => new Set(a).size === a.length, "词条不可重复");
-const refs = z.array(z.string().max(120)).max(100);
+const refs = z.array(z.string().max(120));
 export const date = z.string().refine((v) => !!v && isDate(v), "日期无效");
 export const contextInputSchema = z
   .object({
     kind: z.enum(["day", "week", "month"]),
     date,
     cutoff: z.iso.datetime({ offset: true }).optional(),
-    includeWordIds: z.array(wordId).max(8).default([]),
+    includeWordIds: z.array(wordId).default([]),
     excludeWordIds: z.array(wordId).max(1500).default([]),
     goal: z.enum(["java", "general"]).optional(),
     mode: z.enum(["short", "standard"]).optional(),
@@ -65,7 +64,7 @@ const lessonSchema = z
   .object({
     title: text,
     objectives: z.array(text).min(1).max(5),
-    estimatedMinutes: z.number().int().min(1).max(60),
+    estimatedMinutes: z.number().int().min(1),
     words: z
       .array(
         z
@@ -84,8 +83,7 @@ const lessonSchema = z
           })
           .strict(),
       )
-      .min(1)
-      .max(8),
+      .min(1),
     reading: z
       .object({
         title: text,
@@ -105,8 +103,7 @@ const lessonSchema = z
               })
               .strict(),
           )
-          .min(2)
-          .max(8),
+          .min(2),
         source: sourceSchema,
       })
       .strict(),
@@ -123,7 +120,7 @@ export const contentSchema = z
           .object({
             kind: z.enum(["fact", "hypothesis", "suggestion"]),
             text,
-            wordIds: z.array(wordId).max(8),
+            wordIds: z.array(wordId),
             evidenceIds: refs,
           })
           .strict(),
@@ -137,6 +134,7 @@ export const contentSchema = z
         mode: z.enum(["short", "standard"]),
         goal: z.enum(["java", "general"]),
         difficulty: text,
+        estimatedMinutes: z.number().int().min(1).optional(),
         targets: z
           .array(
             z
@@ -151,8 +149,7 @@ export const contentSchema = z
               })
               .strict(),
           )
-          .min(1)
-          .max(8),
+          .min(1),
         passage: text,
         translation: text,
         examples: z
@@ -223,7 +220,7 @@ export const mutationSchema = z.discriminatedUnion("action", [
       difficultyType: z
         .enum(["meaning", "collocation", "comprehension"])
         .optional(),
-      vagueWordIds: z.array(wordId).max(8).optional(),
+      vagueWordIds: z.array(wordId).optional(),
     })
     .strict(),
   z
@@ -241,6 +238,15 @@ export const mutationSchema = z.discriminatedUnion("action", [
 ]);
 export const normalizeAnswer = (s: string) =>
   s.normalize("NFKC").trim().replace(/\s+/g, " ").toLocaleLowerCase("en-US");
+// A/B in phrase entries are argument slots, not literal letters in example sentences.
+export function targetTermPattern(term: string) {
+  const tokens = term.split(/\s+/).map((token) =>
+    /^[AB]$/.test(token)
+      ? "[a-z0-9][^.!?;]*?"
+      : normalizeAnswer(token).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+  );
+  return new RegExp(`(^|[^a-z])${tokens.join("\\s+")}([^a-z]|$)`, "i");
+}
 export function validateContent(
   content: Content,
   facts: Analysis,
@@ -290,10 +296,9 @@ export function validateContent(
     fail("课后题必须换用未在讲解中直接出现的语境，不能照搬例句。");
   if (!facts.hasRecords) fail("暂无可用学习记录，请先学习后再生成个人分析。");
   if (
-    ex.targets.length > (ex.mode === "short" ? 5 : 8) ||
     ex.questions.length !== (ex.mode === "short" ? 3 : 5)
   )
-    fail("目标词数量或题量不符合所选练习模式。");
+    fail("题量不符合所选练习模式。");
   if (
     (input.goal && input.goal !== ex.goal) ||
     (input.mode && input.mode !== ex.mode)
@@ -358,14 +363,11 @@ export function validateContent(
         .filter((q) => q.wordIds.includes(t.wordId))
         .map((q) => q.context),
     ];
-    const term = normalizeAnswer(word.term).replace(
-      /[.*+?^${}()|[\]\\]/g,
-      "\\$&",
-    );
+    const term = targetTermPattern(word.term);
     const taught = lesson.words.find((w) => w.wordId === t.wordId)!;
     if (
       !taught.examples.every((example) =>
-        new RegExp(`(^|[^a-z])${term}([^a-z]|$)`, "i").test(
+        term.test(
           normalize(example.english),
         ),
       )
@@ -373,7 +375,7 @@ export function validateContent(
       fail(`${t.wordId} 的学习例句须包含目标词。`);
     if (
       !contexts.some((c) =>
-        new RegExp(`(^|[^a-z])${term}([^a-z]|$)`, "i").test(normalizeAnswer(c)),
+        term.test(normalizeAnswer(c)),
       ) ||
       !ex.questions.some((q) => q.wordIds.includes(t.wordId))
     )

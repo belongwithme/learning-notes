@@ -9,6 +9,7 @@ import {
   periodFor,
   suggestionsFor,
   studyFor,
+  generationCoverage,
   type Bundle,
   type Snapshot,
   type PracticeEvent,
@@ -171,8 +172,9 @@ function buildContext(input: ContextInput, state: Snapshot) {
       mode:
         input.mode ?? state.bundles.at(-1)?.content.exercise.mode ?? "short",
     },
+    generationCoverage: generationCoverage(state, period),
     generationRequirements:
-      "新生成内容使用保存 schemaVersion 2，必须同时包含完整 lesson 和 exercise：逐词讲解、用法、双语例句、易混对比、带译文和句子分块的精读语料，再提供不同语境的课后题。学习时长单独标注；跨日复测先独立回忆，讲解供答后巩固。",
+      "处理 generationCoverage.pendingWordIds 中全部词条，不按词数截断、不留到下次。可按主题分组并在同次运行全部保存，每组读取时用 includeWordIds 固定成员。short/standard 仅控制短文长度和题量，不限制目标词数量。保存 schemaVersion 2 必须包含逐词讲解、用法、双语例句、易混对比、逐句精读和新语境课后题。保存后用新的截止点重读覆盖清单，核对本次初始待处理词条均有课程。学习完成与课程已生成分别记录。",
     sourceHash,
     dataUse:
       "本次将选定词条、学习自评、客观题作答、提示与反馈、既有报告和复测安排交给 Codex 分析；不包含私人笔记、个人口令或数据库凭据。",

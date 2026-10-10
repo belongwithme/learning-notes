@@ -8,12 +8,16 @@ import {
   evidenceFor,
   suggestionsFor,
   studyFor,
+  generationCoverage,
 } from "../src/lib/english/practice-model.ts";
 import { emptyProgress } from "../src/lib/english/model.ts";
 import {
   normalizeAnswer,
   validateContent,
   saveSchema,
+  contentSchema,
+  contextInputSchema,
+  targetTermPattern,
 } from "../src/lib/english/practice-schema.ts";
 import catalog from "../src/data/english.json" with { type: "json" };
 import { fixtureContent } from "./english-practice-fixture.mjs";
@@ -377,4 +381,52 @@ test("study progress is separate from assessment and old reports remain usable",
   assert.equal(studyFor(b, s.events).stage, "reading");
   assert.equal(analyzeDay(s).metrics.firstAccuracy.total, 0);
   assert.equal(analyzeDay(s).metrics.practiceWords, 0);
+});
+
+test('generation covers every pending word and distinguishes saved lessons from new evidence', () => {
+  const s = state();
+  s.learning.reviews = Array.from({length: 70}, (_, i) => review(`r${i}`, '2026-10-10', 'forgot', `W${String(i+1).padStart(3,'0')}`));
+  s.bundles = [bundle('complete',[{wordId:'W001',evidenceIds:['review:r0']}]),bundle('legacy',[{wordId:'W002',evidenceIds:['review:r1']}])];
+  s.bundles[0].content.lesson={words:[{wordId:'W001'}]};
+  let plan=generationCoverage(s,period());
+  assert.equal(plan.candidateWordIds.length,70);
+  assert.deepEqual(plan.coveredWordIds,['W001']);
+  assert.equal(plan.pendingWordIds.length,69);
+  assert.ok(plan.pendingWordIds.includes('W002')); // exercise-only history is not a lesson
+  s.learning.reviews.push({...review('new','2026-10-10','vague','W001'),studiedAt:'2026-10-10T02:00:00Z'});
+  s.learning.reviews.push({...review('known','2026-10-10','remembered','W003'),studiedAt:'2026-10-10T03:00:00Z'});
+  s.learning.reviews.push(review('yesterday','2026-10-09','forgot','W100'));
+  plan=generationCoverage(s,period());
+  assert.equal(plan.pendingWordIds.length,69);
+  assert.ok(plan.pendingWordIds.includes('W001'));
+  assert.ok(!plan.candidateWordIds.includes('W003'));
+  assert.ok(!plan.candidateWordIds.includes('W100'));
+});
+
+test('short lessons accept more than eight targets without removing completeness checks',()=>{
+  const s=state();const ids=['W001','W501','W1000','W002','W003','W004','W005','W006','W007','W008','W009','W010'];
+  s.learning.reviews=ids.map((w,i)=>review(`wide${i}`,'2026-10-10','forgot',w));
+  const facts=analyzeDay(s);const c=fixtureContent({facts});
+  const baseTarget=c.exercise.targets[0],baseWord=c.lesson.words[0];
+  for(const id of ids.slice(3)) {
+    const w=catalog.entries.find(w=>w.id===id);
+    c.exercise.targets.push({...baseTarget,wordId:id,meaning:w.meaning,evidenceIds:[`review:wide${ids.indexOf(id)}`]});
+    c.lesson.words.push({...baseWord,wordId:id,examples:[{english:`Please ${w.term} the item.`,translation:'测试例句',note:'结构测试'},{english:`We can ${w.term} a value.`,translation:'测试例句',note:'结构测试'}]});
+    c.exercise.examples.push({wordIds:[id],english:`Use ${w.term} in this test context.`,translation:'测试语境'});
+    c.exercise.questions[0].wordIds.push(id);
+  }
+  const input=contextInputSchema.parse({kind:'day',date:'2026-10-10',cutoff,mode:'short',includeWordIds:ids});
+  assert.doesNotThrow(()=>contentSchema.parse(c));
+  assert.doesNotThrow(()=>validateContent(c,facts,s,input));
+  c.lesson.words.pop();
+  assert.throws(()=>validateContent(c,facts,s,input),/每个目标词/);
+});
+
+test('phrase argument slots accept real objects while preserving the phrase structure',()=>{
+  const pattern=targetTermPattern('read A from B');
+  assert.ok(pattern.test('Read the token from the request header.'));
+  assert.ok(!pattern.test('Write the token to the request header.'));
+  assert.ok(!pattern.test('Read from the request header.'));
+  assert.ok(targetTermPattern('either A or B').test('Use either a file or a database.'));
+  assert.ok(!targetTermPattern('pass').test('The password is hidden.'));
 });
