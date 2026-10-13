@@ -1,6 +1,60 @@
 .analysis {
   padding-bottom: 14px;
 }
+.journey-stack {
+  display: grid;
+  gap: 20px;
+  max-width: 960px;
+  margin-inline: auto;
+}
+.journey-recommended {
+  border-color: var(--green);
+  background: var(--soft);
+}
+.journey-course > button {
+  margin-block: 12px;
+}
+.journey-other > summary {
+  cursor: pointer;
+  padding: 16px 0;
+}
+.journey-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+  margin-block: 20px;
+}
+.journey-filters label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.85rem;
+}
+.journey-filters label:first-child {
+  flex: 1 1 230px;
+}
+.journey-filters input,
+.journey-filters select {
+  max-width: 100%;
+  min-width: 0;
+}
+.journey-filters .journey-checkbox {
+  display: flex;
+  align-items: center;
+}
+.journey-checkbox input {
+  min-height: 20px;
+}
+.journey-stack details > summary {
+  cursor: pointer;
+  line-height: 1.8;
+}
+.journey-stack form textarea {
+  width: 100%;
+}
+.journey-stack .analysis-metrics {
+  color: var(--ink);
+}
 .lesson {
   scroll-margin-top: 24px;
 }
@@ -455,9 +509,9 @@
     grid-template-columns: 1fr;
   }
   .view-tabs {
-    gap: 20px;
-    overflow-x: auto;
-    white-space: nowrap;
+    gap: 8px 20px;
+    flex-wrap: wrap;
+    white-space: normal;
   }
   .view-tabs button {
     flex-shrink: 0;
@@ -467,7 +521,7 @@
     justify-content: space-between;
   }
   .analysis-periods button {
-    padding: 7px 18px;
+    padding: 7px 12px;
   }
   .analysis-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));

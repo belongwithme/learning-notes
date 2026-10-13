@@ -583,7 +583,8 @@ main {
   font-size: 0.8rem;
   line-height: 1.8;
 }
-.recall-prompt, .recall-answer {
+.recall-prompt,
+.recall-answer {
   margin: 8px 0 0;
 }
 .review-buttons button {
@@ -637,7 +638,7 @@ main {
   background: var(--surface);
   padding: 18px;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr repeat(4, minmax(0, 1fr));
   gap: 14px;
 }
 .filters label,

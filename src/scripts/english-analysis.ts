@@ -1,4 +1,14 @@
-import catalog from "../data/english.json";
+import { courseHtml, type CourseScreen } from "./english-course-view";
+import {
+  escapeHtml as e,
+  words,
+  dateTime,
+  wordButton,
+  homeHtml,
+  historyHtml,
+  preparationHtml,
+  type HistoryFilters,
+} from "./english-journey-view";
 import { learningDay } from "../lib/english/model";
 import {
   periodFor,
@@ -9,15 +19,6 @@ import {
 import type { PracticeData } from "../lib/english/practice-server";
 
 type Api = (path: string, method?: string, body?: unknown) => Promise<any>;
-const e = (v: unknown) =>
-  String(v ?? "").replace(
-    /[&<>"']/g,
-    (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
-        c
-      ]!,
-  );
-const words = new Map(catalog.entries.map((w) => [w.id, w]));
 const periodNames = { day: "日分析", week: "周分析", month: "月分析" };
 const reasons = {
   due: "待复测",
@@ -30,18 +31,6 @@ const types = {
   collocation: "搭配或选词",
   comprehension: "句子与短文理解",
 };
-const dateTime = (v: string) =>
-  new Intl.DateTimeFormat("zh-CN", {
-    timeZone: "Asia/Shanghai",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).format(new Date(v));
-const wordButton = (id: string) =>
-  `<button type="button" class="analysis-word" data-open="${e(id)}">${e(words.get(id)?.term ?? id)}</button>`;
 const accuracy = (a: { correct: number; total: number }) =>
   a.total ? `${a.correct} / ${a.total}` : "—";
 function metrics(m: Metrics) {
@@ -106,11 +95,15 @@ function lessonHtml(
     <p class="eyebrow">LEARN FIRST · THEN APPLY</p><h3>${e(b.study.title)}</h3>
     <p class="analysis-meta">词汇讲解由 Codex 编写。讲解与精读约 ${b.study.estimatedMinutes} 分钟，练习时间另计。学习阶段可自由查看译文与解释；学习进度与答题成绩分别保存。</p>
     ${b.study.required ? `<ol class="lesson-steps" aria-label="本课进度"><li ${stage === "concepts" ? 'aria-current="step"' : ""}>01 学习讲解${b.study.conceptsAt ? " ✓" : ""}</li><li ${stage === "reading" ? 'aria-current="step"' : ""}>02 语料精读${b.study.completedAt ? " ✓" : ""}</li><li ${stage === "practice" ? 'aria-current="step"' : ""}>03 课后练习</li></ol>` : '<p class="analysis-banner">本次含跨日复测，先在新语境中独立回忆。提前回看学习材料可继续作答，但未答题会记为辅助学习。</p>'}
-    ${stage === "practice" ? (lesson ? `<details class="lesson-review"><summary>回看本课讲解与精读</summary>${concepts}${reading}</details>` : `<p>学习内容已收起。用新的语境检查自己能否回忆和理解。</p><button type="button" data-help="hint" data-question="*">回看讲解与精读（未答题记为辅助）</button>`) : step === "concepts" ? `${concepts}<div class="analysis-actions"><button type="button" class="primary" data-study-complete="concepts">${b.study.conceptsAt ? "返回语料精读" : "讲解已学完，去精读"} →</button></div><p class="analysis-meta">点击后保存讲解进度，可以换设备继续。</p>` : `<button type="button" class="text-button" data-study-view="concepts">← 回看词汇讲解</button>${reading}<div class="analysis-actions"><button type="button" class="primary" data-study-complete="reading">精读已完成，开始课后练习 →</button></div><p class="analysis-meta">开始后将收起讲解；答题时再回看会记录辅助学习。完成学习不等于已掌握。</p>`}
+    ${stage === "practice" ? (lesson ? `${concepts}${reading}` : `<p>学习内容已收起。用新的语境检查自己能否回忆和理解。</p><button type="button" data-help="hint" data-question="*">回看讲解与精读（未答题记为辅助）</button>`) : step === "concepts" ? `${concepts}<div class="analysis-actions"><button type="button" class="primary" data-study-complete="concepts">${b.study.conceptsAt ? "返回语料精读" : "讲解已学完，去精读"} →</button></div><p class="analysis-meta">点击后保存讲解进度，可以换设备继续。</p>` : `<button type="button" class="text-button" data-study-view="concepts">← 回看词汇讲解</button>${reading}<div class="analysis-actions"><button type="button" class="primary" data-study-complete="reading">精读已完成，开始课后练习 →</button></div><p class="analysis-meta">开始后将收起讲解；答题时再回看会记录辅助学习。完成学习不等于已掌握。</p>`}
   </section>`;
 }
 
-export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
+export function initAnalysis(
+  api: Api,
+  authFailure: (error: unknown) => void,
+  openWord: (id: string) => void,
+) {
   const el = <T extends HTMLElement = HTMLElement>(id: string) =>
     document.getElementById(id) as T;
   const root = el("analysis-view"),
@@ -121,8 +114,16 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
     dirty = false,
     loading = false;
   let data: PracticeData | null = null;
-  let period: PeriodKind | "history" = "day";
+  let period: PeriodKind | "history" = "history";
+  let area: "home" | "reports" = "home";
+  let preparing = false;
+  let filters: HistoryFilters = { query: "", stage: "", retest: false };
   let lessonStep: "concepts" | null = null;
+  let questionId: string | null = null;
+  let courseScreen: CourseScreen = "learning";
+  let batching = false;
+  let needsReadback = false;
+  let recentWordCount: number | null = null;
   let reportId = new URL(location.href).searchParams.get("report") ?? "";
   let pending: Record<string, unknown> | null = null;
   const drafts = new Map<string, [string, string][]>();
@@ -137,6 +138,15 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
             ? `schedule:${form.dataset.scheduleForm}`
             : "feedback:";
   function rememberDraft(form: HTMLFormElement) {
+    if (form.id === "course-filters") {
+      const fields = new FormData(form);
+      filters = {
+        query: String(fields.get("query") ?? ""),
+        stage: String(fields.get("stage") ?? ""),
+        retest: fields.has("retest"),
+      };
+      return;
+    }
     drafts.set(
       formKey(form),
       [...new FormData(form)].map(([k, v]) => [k, String(v)]),
@@ -144,6 +154,9 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
     dirty = drafts.size > 0;
   }
   function restoreDrafts() {
+    for (const schedule of data?.bundle?.schedules ?? [])
+      drafts.delete(`schedule:${schedule.wordId}`);
+    dirty = drafts.size > 0;
     body.querySelectorAll<HTMLFormElement>("form").forEach((form) => {
       const values = drafts.get(formKey(form));
       if (!values) return;
@@ -199,26 +212,32 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
     el("analysis-status").parentElement!.dataset.error = String(error);
     el("analysis-retry").hidden = !pending;
     el("analysis-reconcile").hidden = !pending;
+    el("analysis-reconcile").textContent =
+      pending?.action === "schedule"
+        ? "确认待保存安排的实际结果"
+        : "读取已保存结果并取消待保存操作";
+    root
+      .querySelectorAll<HTMLElement>(".course-save-status")
+      .forEach((item) => {
+        item.textContent = message;
+        item.dataset.error = String(error);
+      });
   }
   function url() {
     const url = new URL(location.href);
-    url.searchParams.set("view", "analysis");
+    url.searchParams.set("view", area === "home" ? "today" : "analysis");
     reportId
       ? url.searchParams.set("report", reportId)
       : url.searchParams.delete("report");
     history.replaceState(null, "", url);
   }
   function requestCopy() {
-    const label =
+    return preparationHtml(
+      data!,
       period === "history"
-        ? "最近一个已结束周期"
-        : period === "day"
-          ? "今天"
-          : period === "week"
-            ? "本周"
-            : "本月";
-    const request = `请使用 learning-notes 项目的 scripts/english-context.mjs 和 scripts/english-save.mjs（流程见 README），分析我${label}的英语学习记录，结合最近 30 个自然日的反复遗忘与已确认复测，生成并保存一份先学后练的 Java 技术英语课程：先讲解含义、搭配、易混用法和双语例句，再提供带全文译文与句子拆解的精读语料，最后附约 5 分钟的新语境客观题。学习与练习时长分别标注，不要只给题目。先说明将读取的数据范围，不包含私人笔记。沿用现有报告时给出入口；需要更新时保留旧版本。保存后读回确认，并返回网站入口。`;
-    return `<div class="analysis-card analysis-empty"><p class="eyebrow">PREPARED IN CODEX · PRACTISED HERE</p><h3>本期尚未生成</h3><p>${data?.overview.hasRecords ? "让最近的学习记录，成为下一次练习的起点。" : "暂无可用学习记录。先去词库学习，再回来准备第一份巩固练习。"}</p><p class="analysis-meta">复制下面的请求到 Codex。报告保存后会出现在这里，不会自动调用模型。</p><label for="analysis-prompt" class="sr-only">可复制到 Codex 的请求</label><textarea id="analysis-prompt" class="analysis-copy" readonly>${e(request)}</textarea><div class="analysis-actions"><button type="button" class="primary" id="analysis-copy">复制请求</button><button type="button" data-view="library">去词库学习 →</button></div></div>`;
+        ? "最近的"
+        : { day: "今天的", week: "本周的", month: "本月的" }[period],
+    );
   }
   function retests() {
     const schedules = data!.retests.filter(
@@ -246,6 +265,15 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
   }
   function render() {
     if (!active) return;
+    el("analysis-heading").textContent = reportId
+      ? "跟着这一步，继续学习。"
+      : area === "home"
+        ? "今天，从这里继续。"
+        : "历史课程与学习分析";
+    el("analysis-periods").hidden = area === "home" || !!reportId || preparing;
+    el("analysis-return").hidden = area === "home" && !reportId && !preparing;
+    el("analysis-return").textContent =
+      area === "reports" && reportId ? "返回历史课程" : "返回今日学习";
     root
       .querySelectorAll("[data-period]")
       .forEach((b) =>
@@ -256,66 +284,72 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
       );
     if (!authenticated) {
       body.innerHTML =
-        '<div class="empty"><h3>你的分析，只属于你。</h3><p>输入个人口令后查看报告、练习与复测安排。</p><button type="button" data-login>解锁个人记录</button></div>';
+        '<div class="empty"><h3>解锁后继续你的学习</h3><p>输入个人口令后读取课程、保存进度与复习安排；公开词库仍可浏览。</p><button type="button" class="primary" data-login>解锁并继续</button><button type="button" data-view="library">浏览词库</button></div>';
       return;
     }
     if (!data) return;
+    if (!reportId && preparing) {
+      body.innerHTML = requestCopy();
+      return;
+    }
+    if (!reportId && area === "home") {
+      body.innerHTML = `${recentWordCount === null ? "" : `<p class="analysis-banner">本次已保存 ${recentWordCount} 次自评。可以直接结束，或按下面的推荐继续。</p>`}${homeHtml(data)}`;
+      return;
+    }
     if (period === "history" && !reportId) {
-      body.innerHTML = `<div class="analysis-layout"><div class="analysis-main"><div class="analysis-history">${data.summaries.length ? data.summaries.map((s) => `<button type="button" data-report="${e(s.id)}"><span><strong>${e(s.title)}</strong><span class="analysis-meta">${periodNames[s.period.kind]} · ${e(learningDay(s.period.start))} · 版本 ${s.version}<br/>截至 ${e(dateTime(s.period.cutoff))}</span></span><span class="tag">${s.answeredCount} / ${s.questionCount} 已答 →</span></button>`).join("") : '<div class="empty"><h3>还没有历史报告</h3><p>已保存的每个版本都会保留在这里。</p></div>'}</div></div><aside class="analysis-sidebar">${retests()}${overview()}</aside></div>`;
+      body.innerHTML = historyHtml(data, filters);
       return;
     }
     const b = data.bundle;
     if (!b) {
-      body.innerHTML = `<div class="analysis-layout"><div class="analysis-main">${requestCopy()}</div><aside class="analysis-sidebar">${retests()}${overview()}</aside></div>`;
+      body.innerHTML = `<div class="analysis-layout"><div class="analysis-main"><div class="analysis-banner">本期尚未生成分析。历史课程 ${data.summaries.length} 份仍可访问。<button type="button" data-period="history">查看历史课程</button></div>${requestCopy()}</div><aside class="analysis-sidebar">${retests()}${overview()}</aside></div>`;
       return;
     }
-    const ex = b.content.exercise,
-      summary = data.summaries.find((s) => s.id === b.id)!;
-    const feedback = b.feedback
-      .filter((event) => !event.questionId)
-      .at(-1)?.payload;
-    const first = ex.questions
-      .filter((q) => !q.flagged)
-      .flatMap((q) => q.attempts.slice(0, 1));
-    const independent = first.filter((a) => !a.payload.assisted),
-      correct = independent.filter((a) => a.payload.correct).length;
-    const complete = ex.questions.every(
-      (q) => q.flagged || q.attempts.length > 0,
-    );
     const evidence = (ids: string[]) =>
       ids
-        .map((id) => b.facts.evidence.find((v) => v.id === id))
-        .filter((v): v is Evidence => !!v)
+        .flatMap((id) => b.facts.evidence.find((item) => item.id === id) ?? [])
         .map(evidenceLine)
         .join("");
-    const questionHtml = ex.questions
-      .map((q, index) => {
-        const first = q.attempts[0],
-          latest = q.attempts.at(-1);
-        const answerForm = `<form data-answer-form="${e(q.id)}"><fieldset ${q.flagged ? "disabled" : ""}><legend>${index + 1}. ${e(q.prompt)}</legend>${q.format === "choice" ? q.options.map((o) => `<label class="analysis-option"><input type="radio" name="answer" value="${e(o.id)}" required ${latest?.payload.answer === o.id ? "checked" : ""}/><span>${e(o.text)}</span></label>`).join("") : `<label class="sr-only" for="answer-${e(q.id)}">填空答案</label><input id="answer-${e(q.id)}" type="text" name="answer" autocomplete="off" required maxlength="4000" value="${e(latest?.payload.answer ?? "")}"/>`}</fieldset><div class="analysis-actions"><button class="primary" type="submit" ${q.flagged ? "disabled" : ""}>${latest ? "保存重做答案" : "提交答案"}</button>${!latest ? `<button type="button" data-help="hint" data-question="${e(q.id)}">查看提示</button><button type="button" data-help="reveal" data-question="${e(q.id)}">查看答案</button>` : ""}</div><p class="analysis-meta">${latest ? "重做保留记录，不改变首次正确率。" : "选择后请点击提交；未提交的答案尚未保存。"}</p></form>`;
-        return `<article class="analysis-card analysis-question" id="question-${e(q.id)}"><p class="eyebrow">QUESTION ${String(index + 1).padStart(2, "0")} / ${types[q.type]}</p><p class="analysis-material" lang="en">${e(q.context)}</p><p class="analysis-meta">考查：${q.wordIds.map((id) => e(words.get(id)?.term ?? id)).join(" · ")}${q.assisted && !first ? " · 已使用辅助材料" : ""}</p>${q.flagged ? '<div class="analysis-banner">已标记待核对，暂不参与能力分析。原答案保留，修正题将另存版本。</div>' : ""}${latest ? `<div class="analysis-result" data-correct="${latest.payload.correct}"><strong>已确认保存 · ${latest.payload.correct ? "本次答对" : "本次答错"}</strong><p>首次答案：${e(first.payload.answer)} · ${first.payload.correct ? "正确" : "错误"} · ${first.payload.assisted ? "辅助作答，不计独立正确率" : "无提示首次作答"}</p>${q.wordIds.length > 1 && !first.payload.correct ? "<p>这是多词理解题，尚不能定位具体哪个词不稳。</p>" : ""}<p>${e(dateTime(latest.createdAt))} · 共 ${q.attempts.length} 次提交</p></div><details><summary>重做此题</summary>${answerForm}</details><details><summary>查看全部作答记录</summary><ul>${q.attempts.map((a) => `<li>${e(dateTime(a.createdAt))} · ${e(a.payload.answer)} · ${a.payload.correct ? "正确" : "错误"} · ${a.payload.assisted ? "辅助或重做" : "无提示首次"}</li>`).join("")}</ul></details>` : answerForm}${q.hint ? `<div class="analysis-result">提示：${e(q.hint)}</div>` : ""}${q.answers.length ? `<div class="analysis-result"><strong>标准答案：${q.answers.map((a) => e(q.options.find((o) => o.id === a)?.text ?? a)).join(" / ")}</strong><p>${e(q.explanation)}</p></div>` : ""}<details><summary>反馈困难或标记题目有误</summary><form data-question-feedback="${e(q.id)}"><label>这道题卡在哪里？<select name="difficultyType"><option value="meaning">词义</option><option value="collocation">搭配</option><option value="comprehension">句子理解</option></select></label><button type="submit">保存困难反馈</button></form><form data-flag-form="${e(q.id)}"><label for="flag-${e(q.id)}">哪里有误或歧义？</label><textarea id="flag-${e(q.id)}" name="reason" required maxlength="1000" placeholder="描述题目、答案或技术语境的问题"></textarea><button type="submit">标记待核对</button></form></details></article>`;
-      })
-      .join("");
-    const practiceHtml = `<section class="analysis-card" id="analysis-exercise"><p class="eyebrow">03 · APPLY IN A NEW CONTEXT</p><h3>换个语境，试着自己理解。</h3><p class="analysis-meta">${ex.source.kind === "generated" ? "Codex 生成的教学材料" : `真实摘录 · <a href="${e(ex.source.url)}" target="_blank" rel="noopener noreferrer">${e(ex.source.title)}</a>`} · ${e(ex.difficulty)}</p><p class="analysis-material" lang="en">${e(ex.passage)}</p>${ex.examples.map((x) => `<div class="analysis-example"><blockquote lang="en">${e(x.english)}</blockquote>${x.translation ? `<p class="analysis-meta">${e(x.translation)}</p>` : ""}</div>`).join("")}${b.materialRevealed ? `<div class="analysis-result">${e(ex.translation)}</div>` : '<button type="button" data-help="hint" data-question="*">展开译文与释义（未答题将记为辅助作答）</button>'}<p class="analysis-meta">保存进度：${ex.questions.filter((q) => q.attempts.length).length} / ${ex.questions.length} 题 · 可以随时回来继续已保存的部分。</p></section>${questionHtml}<section class="analysis-card" id="analysis-results"><p class="eyebrow">AFTER THIS PRACTICE</p><h3>${complete ? "本次练习已完成" : "本次已保存的结果"}</h3><p>无提示首次正确：${independent.length ? `${correct} / ${independent.length}` : "暂无可计算数据"} · 辅助首次作答 ${first.filter((a) => a.payload.assisted).length} 题 · 待核对 ${ex.questions.filter((q) => q.flagged).length} 题。</p><p class="analysis-meta">首次答案与所有重做记录均保留。以下复测建议只有确认后才会加入安排。</p>${
-      complete
-        ? b.suggestions
-            .map((s) => {
-              const saved = b.schedules.find((r) => r.wordId === s.wordId);
-              return `<div class="analysis-schedule">${wordButton(s.wordId)}<p>${e(s.reason)}</p>${saved ? `<p class="analysis-meta">${saved.decision === "skipped" ? "已跳过，不计为遗忘" : `已确认 ${e(saved.scheduledDate)} · ${saved.completedAt ? "已完成" : "待准备或完成复测"}`}</p>` : `<form data-schedule-form="${e(s.wordId)}">${s.manualDate ? `<div class="analysis-banner">已有手工复习日期 ${e(s.manualDate)}。请明确选择本次复测安排，原日期保留。</div>` : ""}<label>采用哪个日期？<select name="manualChoice">${s.manualDate ? '<option value="keep">保留手工日期</option>' : ""}<option value="suggested">采用建议日期 ${e(s.suggestedDate)}</option><option value="custom">自选日期</option></select></label><label hidden>自选复测日期<input type="date" name="scheduledDate" value="${e(s.suggestedDate)}" required disabled/></label><div class="analysis-actions"><button type="submit" name="decision" value="accepted" class="primary">确认复测</button><button type="submit" name="decision" value="skipped">跳过建议</button></div></form>`}</div>`;
-            })
-            .join("") ||
-          '<p class="analysis-meta">暂无新的复测建议。可在下方反馈仍模糊的词条，再查看建议。</p>'
-        : '<p class="analysis-meta">完成其余题目后查看复测建议。</p>'
-    }</section><section class="analysis-card analysis-feedback"><h3>这次的难度如何？</h3><form id="analysis-feedback"><label>难度反馈<select name="difficulty"><option value="suitable" ${!feedback?.difficulty || feedback.difficulty === "suitable" ? "selected" : ""}>合适</option><option value="too-hard" ${feedback?.difficulty === "too-hard" ? "selected" : ""}>太难</option><option value="too-easy" ${feedback?.difficulty === "too-easy" ? "selected" : ""}>太简单</option></select></label><p class="analysis-meta">仍然模糊的词（可选，自述反馈）：</p>${ex.targets.map((t) => `<label><input type="checkbox" name="vagueWordIds" value="${e(t.wordId)}" ${feedback?.vagueWordIds?.includes(t.wordId) ? "checked" : ""}/>${e(words.get(t.wordId)?.term ?? t.wordId)}</label>`).join("")}<button type="submit">保存反馈</button></form>${b.feedback.length ? `<p class="analysis-meta">已保存 ${b.feedback.length} 条反馈，下次 Codex 读取时可用。</p>` : ""}</section>`;
-    body.innerHTML = `${summary.hasNewRecords ? '<div class="analysis-banner">有新记录可用于更新。这份报告保留原截止时间；需要更新时请在 Codex 请求重新生成，并保留旧版本。</div>' : ""}<div class="analysis-layout"><div class="analysis-main"><section class="analysis-card hero"><p class="eyebrow">${periodNames[b.period.kind]} · VERSION ${b.version}</p><h3>${e(b.content.title)}</h3><p>${e(b.content.summary)}</p><p class="analysis-meta">${e(learningDay(b.period.start))} 至 ${e(learningDay(new Date(Date.parse(b.period.end) - 1).toISOString()))}（北京时间）<br/>${b.period.complete ? "完整历史周期" : "进行中的周期"} · 截至 ${e(dateTime(b.period.cutoff))}<br/>${ex.targets.length} 个目标词 · ${ex.questions.length} 道题 · ${b.study.hasLesson ? `学习约 ${b.study.estimatedMinutes} 分钟 + ` : ""}练习约 ${ex.estimatedMinutes ?? (ex.mode === "short" ? "5" : "10–15")} 分钟</p><a href="${b.study.stage !== "practice" ? "#analysis-lesson" : "#analysis-exercise"}">${b.study.stage === "concepts" ? "开始学习" : b.study.stage === "reading" ? "继续精读" : complete ? "回看练习与结果" : first.length ? "继续练习" : "开始课后练习"} ↓</a> <a href="#analysis-evidence">查看依据 ↓</a></section><section aria-label="报告统计">${metrics(b.facts.metrics)}<p class="analysis-meta">实际覆盖 ${b.facts.metrics.coveredDays.length} 个学习日${b.facts.metrics.coveredDays.length ? `：${b.facts.metrics.coveredDays[0]} 至 ${b.facts.metrics.coveredDays.at(-1)}` : ""}。旧自评状态不等于长期掌握。</p><details class="analysis-evidence"><summary>${b.period.complete ? "上一个完整周期" : "上一周期相同已过时长"}的数据与比较边界</summary>${metrics(b.facts.previousMetrics)}<p class="analysis-meta">不同词条、不同题目的整体比例变化仅描述表现，不能直接断言能力提升。</p><p class="analysis-meta">同批词复测样本 ${b.facts.retestCohort.sampleCount} 题；共同目标：${b.facts.retestCohort.wordIds.map((id) => e(words.get(id)?.term ?? id)).join("、") || "暂无"}；间隔 ${b.facts.retestCohort.intervalsDays.join("、") || "暂无"} 天。样本不足时不作等级或能力推断。</p><ul>${b.facts.metrics.questionTypes.map((t) => `<li>${types[t.type]}：${accuracy(t)}${t.total ? "" : "（暂无可计算数据）"}</li>`).join("")}</ul></details></section><section class="analysis-card" id="analysis-evidence"><p class="eyebrow">WHY THESE WORDS</p><h3>本次重点与依据</h3>${ex.targets.map((t) => `<details class="analysis-evidence"><summary>${e(words.get(t.wordId)?.term ?? t.wordId)} · ${e(t.reason)}</summary><p>${wordButton(t.wordId)} · ${e(t.meaning)}${t.extension ? "（扩展含义）" : ""}</p><p>目标用法：${e(t.usage)}</p><ul>${evidence(t.evidenceIds) || "<li>用户指定补练词条，尚不构成薄弱诊断。</li>"}</ul></details>`).join("")}${b.content.findings.map((f) => `<details class="analysis-evidence"><summary><span class="analysis-label">${f.kind === "fact" ? "记录事实" : f.kind === "hypothesis" ? "可能原因 · 待验证" : "学习建议"}</span>${e(f.text)}</summary><ul>${evidence(f.evidenceIds) || "<li>这是一项建议或假设，没有作为已验证诊断。</li>"}</ul></details>`).join("")}<h4>下一步</h4><ul class="analysis-next">${b.content.nextSteps.map((s) => `<li>${e(s)}</li>`).join("")}</ul>${b.content.replaces?.map((r) => `<p class="analysis-meta">修正说明：${e(r.reason)} <button type="button" data-report="${e(r.bundleId)}">查看原题版本</button></p>`).join("") ?? ""}</section>${lessonHtml(b, lessonStep)}${b.study.stage === "practice" ? practiceHtml : ""}</div><aside class="analysis-sidebar">${retests()}${overview()}<section class="analysis-card"><h3>报告与练习会保留。</h3><p class="analysis-meta">每次更新都有独立版本。已保存的内容在手机和电脑上共用，无需 Codex 持续在线。</p><button type="button" class="text-button" data-period="history">查看全部历史 →</button></section></aside></div>`;
+    const report = `<h3>${e(b.content.title)}</h3><p>${e(b.content.summary)}</p>
+      <p class="analysis-meta">${periodNames[b.period.kind]} · 版本 ${b.version} · 截至 ${e(dateTime(b.period.cutoff))}<br/>${e(learningDay(b.period.start))} 至 ${e(learningDay(new Date(Date.parse(b.period.end) - 1)))} · ${b.period.complete ? "完整历史周期" : "进行中的周期"}</p>
+      ${data.summaries.find((summary) => summary.id === b.id)?.hasNewRecords ? '<p class="analysis-banner">有新记录可用于更新；这份分析保留原截止时间与统计。</p>' : ""}
+      ${metrics(b.facts.metrics)}<p>实际覆盖 ${b.facts.metrics.coveredDays.length} 个学习日。自评不代表长期掌握。</p>
+      <details class="analysis-evidence"><summary>上一周期比较与边界</summary>${metrics(b.facts.previousMetrics)}<p>不同题组的整体比例不能直接解释为能力提升。同批词复测样本 ${b.facts.retestCohort.sampleCount} 题，间隔 ${b.facts.retestCohort.intervalsDays.join("、") || "暂无"} 天。</p><ul>${b.facts.metrics.questionTypes.map((item) => `<li>${types[item.type]}：${accuracy(item)}</li>`).join("")}</ul></details>
+      <h4>目标词与依据</h4>${b.content.exercise.targets.map((target) => `<details class="analysis-evidence"><summary>${e(words.get(target.wordId)?.term ?? target.wordId)} · ${e(target.reason)}</summary><p>${wordButton(target.wordId)} · ${e(target.meaning)}${target.extension ? "（扩展含义）" : ""}</p><p>目标用法：${e(target.usage)}</p><ul>${evidence(target.evidenceIds) || "<li>用户指定补练，尚不构成薄弱诊断。</li>"}</ul></details>`).join("")}
+      ${b.content.findings.map((finding) => `<details class="analysis-evidence"><summary>${finding.kind === "fact" ? "记录事实" : finding.kind === "hypothesis" ? "可能原因，待验证" : "学习建议"}：${e(finding.text)}</summary><ul>${evidence(finding.evidenceIds) || "<li>没有作为已验证诊断。</li>"}</ul></details>`).join("")}
+      <h4>当时建议的下一步</h4><ul>${b.content.nextSteps.map((step) => `<li>${e(step)}</li>`).join("")}</ul>
+      ${b.content.replaces?.map((item) => `<p>修正说明：${e(item.reason)} <button type="button" data-report="${e(item.bundleId)}">查看原版本</button></p>`).join("") ?? ""}`;
+    body.innerHTML = courseHtml(b, {
+      questionId,
+      screen: courseScreen,
+      lesson: lessonHtml(b, lessonStep),
+      report,
+    });
+    if (
+      courseScreen === "ended" &&
+      !data.home.actionIds.some((id) => id !== b.id)
+    )
+      body.querySelector("[data-another-course]")?.remove();
+    const localStatus = document.createElement("p");
+    localStatus.className = "analysis-meta course-save-status";
+    localStatus.setAttribute("role", "status");
+    localStatus.textContent = el("analysis-status").textContent;
+    body
+      .querySelector(".analysis-question, #analysis-lesson, #analysis-results")
+      ?.append(localStatus);
+    syncCustomDates();
   }
   async function refresh(keepSelection = true) {
-    if (!authenticated || !active || loading || busy) return;
-    if ((dirty && data) || pending) {
+    if (!authenticated || !active || loading || busy || batching) return false;
+    if ((dirty && data && !needsReadback) || pending) {
       status("有尚未确认保存的内容，请先提交、重试或取消待保存操作。", true);
       return;
     }
     loading = true;
+    const readingButtons = [
+      ...root.querySelectorAll<HTMLButtonElement>("button:not(:disabled)"),
+    ];
+    readingButtons.forEach((button) => (button.disabled = true));
     status("正在读取已保存的报告与练习…");
     try {
       const fresh: PracticeData = await api(
@@ -323,7 +357,13 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
       );
       if (!active || !authenticated) return;
       data = fresh;
-      if (!reportId && period !== "history") {
+      needsReadback = false;
+      if (
+        area === "reports" &&
+        !preparing &&
+        !reportId &&
+        period !== "history"
+      ) {
         const current = periodFor(
           period,
           learningDay(),
@@ -346,20 +386,23 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
           ? "已读取保存内容；当前选择仍未提交。"
           : "已读取保存内容 · 北京时间 · 手机和电脑共用",
       );
+      return true;
     } catch (error) {
       body.innerHTML =
-        '<div class="empty"><h3>暂时无法读取</h3><p>没有把读取失败计为零记录。请稍后点击“刷新分析与练习”。</p></div>';
+        '<div class="empty"><h3>暂时无法读取</h3><p>没有把读取失败计为零记录。请稍后点击“刷新学习内容”。</p></div>';
       status(error instanceof Error ? error.message : "暂时无法读取", true);
       if ((error as { status?: number }).status === 401) authFailure(error);
+      return false;
     } finally {
       loading = false;
+      readingButtons.forEach((button) => (button.disabled = false));
     }
   }
   async function save(action?: Record<string, unknown>) {
-    if (busy || !authenticated) return;
+    if (busy || loading || !authenticated || needsReadback) return false;
     if (action && pending) {
       status("请先重试或取消待保存操作。", true);
-      return;
+      return false;
     }
     if (action) {
       pending = {
@@ -369,12 +412,20 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
       };
       persist();
     }
-    if (!pending) return;
+    if (!pending) return false;
+    const submitted = pending;
     const submittedKey = `${pending.action}:${pending.questionId ?? pending.wordId ?? ""}`;
     busy = true;
     status("正在保存，尚未确认完成…");
     const enabledButtons = [
-      ...root.querySelectorAll<HTMLButtonElement>("button:not(:disabled)"),
+      ...root.querySelectorAll<
+        | HTMLButtonElement
+        | HTMLInputElement
+        | HTMLTextAreaElement
+        | HTMLSelectElement
+      >(
+        "button:not(:disabled), input:not(:disabled), textarea:not(:disabled), select:not(:disabled)",
+      ),
     ];
     enabledButtons.forEach((button) => (button.disabled = true));
     try {
@@ -384,6 +435,15 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
       drafts.delete(submittedKey);
       dirty = drafts.size > 0;
       data = result;
+      if (submitted.action === "answer")
+        questionId = String(submitted.questionId);
+      if (submitted.action === "flag") questionId = null;
+      courseScreen = "learning";
+      if (
+        submitted.action === "schedule" ||
+        (submitted.action === "feedback" && !submitted.questionId)
+      )
+        courseScreen = "results";
       lessonStep = null;
       reportId = result.bundle!.id;
       if (!authenticated) return;
@@ -395,15 +455,94 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
           ? "本次提交已保存；其他题目的选择仍未提交。"
           : "已保存并重新读取，可在其他设备继续。",
       );
+      return true;
     } catch (error) {
+      const code = (error as { status?: number }).status;
+      if (code === 400 || code === 409) {
+        // These responses mean the transaction was rejected, unlike a timeout.
+        // Refresh dates/attempt counts before creating a new operation.
+        pending = null;
+        persist();
+        needsReadback = true;
+        try {
+          data = await api(
+            `practice?report=${encodeURIComponent(String(submitted.bundleId))}`,
+          );
+          needsReadback = false;
+          render();
+          restoreDrafts();
+        } catch {
+          // Keep drafts and require a fresh read before another submission.
+        }
+      }
       status(
-        error instanceof Error ? error.message : "尚未确认保存，请重试。",
+        `${error instanceof Error ? error.message : "尚未确认保存，请重试。"}${needsReadback ? " 请先重新读取最新记录，再确认本次输入。" : ""}`,
         true,
       );
       if ((error as { status?: number }).status === 401) authFailure(error);
+      return false;
     } finally {
       busy = false;
       enabledButtons.forEach((button) => (button.disabled = false));
+    }
+  }
+  async function finishSchedules(decision: "accepted" | "skipped") {
+    if (busy || batching || pending || needsReadback || !data?.bundle) return;
+    const actions: Record<string, unknown>[] = [];
+    for (const form of body.querySelectorAll<HTMLFormElement>(
+      "[data-schedule-form]",
+    )) {
+      if (decision === "accepted" && !form.reportValidity()) return;
+      const proposal = data.bundle.suggestions.find(
+        (item) => item.wordId === form.dataset.scheduleForm,
+      )!;
+      const fields = new FormData(form);
+      const choice =
+        decision === "skipped"
+          ? "suggested"
+          : String(fields.get("manualChoice"));
+      actions.push({
+        action: "schedule",
+        wordId: proposal.wordId,
+        decision,
+        manualChoice: choice,
+        manualDate: proposal.manualDate,
+        scheduledDate:
+          choice === "keep"
+            ? proposal.manualDate
+            : choice === "custom"
+              ? fields.get("scheduledDate")
+              : proposal.suggestedDate,
+      });
+    }
+    // Optional feedback must not be silently discarded by the completion action.
+    if ([...drafts.keys()].some((key) => !key.startsWith("schedule:"))) {
+      status("还有未提交的答案或反馈，请先保存，或取消修改后再结束。", true);
+      return;
+    }
+    batching = true;
+    let finished = true;
+    try {
+      for (const action of actions) {
+        if (!(await save(action))) {
+          finished = false;
+          break;
+        }
+      }
+    } finally {
+      batching = false;
+      if (finished && !data.bundle.progress.pendingSuggestionCount)
+        courseScreen = "ended";
+      render();
+      restoreDrafts();
+      if (courseScreen === "ended")
+        el("analysis-receipt")?.scrollIntoView({ block: "start" });
+      status(
+        finished
+          ? "复习建议已处理，本次学习已保存。"
+          : "部分安排尚未确认；已保存部分保留。请先重试待保存项，再处理其余建议。",
+        !finished,
+      );
     }
   }
   function canNavigate() {
@@ -411,7 +550,7 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
       status("正在读取内容，请稍候。");
       return false;
     }
-    if (busy || pending) {
+    if (busy || batching || pending) {
       status("请先处理待保存操作。", true);
       return false;
     }
@@ -420,13 +559,15 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
     drafts.clear();
     dirty = false;
     lessonStep = null;
+    questionId = null;
+    courseScreen = "learning";
     return true;
   }
   root.addEventListener("input", (event) => {
     const form = (event.target as Element).closest("form");
     if (form) {
       rememberDraft(form);
-      status("当前修改尚未提交保存。");
+      if (form.id !== "course-filters") status("当前修改尚未提交保存。");
     }
   });
   root.addEventListener("change", (event) => {
@@ -438,17 +579,112 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
     const button = (event.target as Element).closest<HTMLButtonElement>(
       "button",
     );
-    if (!button) return;
+    if (!button || busy || batching) return;
+    if (button.dataset.open && data?.bundle?.study.stage === "practice") {
+      event.stopPropagation();
+      const wordId = button.dataset.open;
+      const unanswered = data.bundle.content.exercise.questions.filter(
+        (question) =>
+          question.wordIds.includes(wordId) &&
+          !question.attempts.length &&
+          !question.access.blocked &&
+          !question.assisted,
+      );
+      for (const question of unanswered) {
+        if (!(await save({ action: "hint", questionId: question.id }))) return;
+      }
+      openWord(wordId);
+      return;
+    }
+    if (button.hasAttribute("data-discard-drafts")) {
+      if (pending) {
+        status("请先确认待保存操作的结果。", true);
+        return;
+      }
+      drafts.clear();
+      dirty = false;
+      render();
+      status("已取消本页尚未提交的修改；已保存记录保持不变。");
+    }
+    if (
+      button.hasAttribute("data-next-question") ||
+      button.hasAttribute("data-show-results")
+    ) {
+      if (!canNavigate()) return;
+      questionId = data?.bundle?.progress.nextQuestionId ?? null;
+      courseScreen = button.hasAttribute("data-show-results")
+        ? "results"
+        : "learning";
+      render();
+      body
+        .querySelector(".analysis-question, #analysis-results")
+        ?.scrollIntoView({ block: "start" });
+    }
+    if (button.hasAttribute("data-confirm-schedules"))
+      await finishSchedules("accepted");
+    if (button.hasAttribute("data-skip-schedules"))
+      await finishSchedules("skipped");
+    if (button.hasAttribute("data-finish-course")) {
+      if (!canNavigate()) return;
+      courseScreen = "ended";
+      render();
+      el("analysis-receipt")?.scrollIntoView({ block: "start" });
+    }
+    if (button.hasAttribute("data-pause-course")) {
+      const label = data?.bundle?.progress.label;
+      if (!canNavigate()) return;
+      reportId = "";
+      url();
+      render();
+      status(
+        `已保存阶段：${label ?? "尚无记录"}。下次可继续；未提交内容未保存。`,
+      );
+      el("analysis-heading").scrollIntoView({ block: "start" });
+    }
+    if (button.hasAttribute("data-another-course")) {
+      if (!canNavigate()) return;
+      reportId = data?.home.actionIds.find((id) => id !== reportId) ?? "";
+      void refresh();
+    }
     if (button.dataset.period) {
       if (!canNavigate()) return;
+      preparing = false;
       period = button.dataset.period as typeof period;
       reportId = "";
       void refresh(false);
     }
     if (button.dataset.report) {
       if (!canNavigate()) return;
+      preparing = false;
       reportId = button.dataset.report;
-      void refresh();
+      if (await refresh())
+        el("analysis-heading").scrollIntoView({ block: "start" });
+    }
+    if (button.hasAttribute("data-prepare")) {
+      if (!canNavigate()) return;
+      preparing = true;
+      reportId = "";
+      url();
+      render();
+    }
+    if (button.hasAttribute("data-clear-courses")) {
+      filters = { query: "", stage: "", retest: false };
+      render();
+    }
+    if (button.hasAttribute("data-refresh-material")) {
+      const previous = new Set(data?.summaries.map((summary) => summary.id));
+      const read = await refresh();
+      if (read && data && preparing) {
+        const added = data.summaries.find(
+          (summary) => !previous.has(summary.id),
+        );
+        if (added) {
+          const notice = document.createElement("div");
+          notice.className = "analysis-banner";
+          notice.innerHTML = `材料已就绪：${e(added.title)} <button type="button" data-report="${e(added.id)}">打开课程</button>`;
+          body.prepend(notice);
+        } else status("尚未读取到新材料；确认 Codex 保存完成后再刷新。");
+      }
     }
     if (button.dataset.studyView) {
       lessonStep = "concepts";
@@ -484,9 +720,18 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
   });
   root.addEventListener("submit", (event) => {
     event.preventDefault();
-    const form = event.target as HTMLFormElement,
-      f = new FormData(form),
-      bundle = data!.bundle!;
+    const form = event.target as HTMLFormElement;
+    const f = new FormData(form);
+    if (form.id === "course-filters") {
+      filters = {
+        query: String(f.get("query") ?? ""),
+        stage: String(f.get("stage") ?? ""),
+        retest: f.has("retest"),
+      };
+      render();
+      return;
+    }
+    const bundle = data!.bundle!;
     if (form.dataset.answerForm) {
       const q = bundle.content.exercise.questions.find(
         (q) => q.id === form.dataset.answerForm,
@@ -516,34 +761,35 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
         difficulty: f.get("difficulty"),
         vagueWordIds: f.getAll("vagueWordIds"),
       });
-    if (form.dataset.scheduleForm) {
-      const proposal = bundle.suggestions.find(
-        (s) => s.wordId === form.dataset.scheduleForm,
-      )!;
-      const choice = String(f.get("manualChoice"));
-      const decision =
-        (event as SubmitEvent).submitter?.getAttribute("value") ?? "accepted";
-      void save({
-        action: "schedule",
-        wordId: proposal.wordId,
-        decision,
-        manualChoice: choice,
-        manualDate: proposal.manualDate,
-        scheduledDate:
-          choice === "keep"
-            ? proposal.manualDate
-            : choice === "suggested"
-              ? proposal.suggestedDate
-              : f.get("scheduledDate"),
-      });
+    if (form.dataset.scheduleForm) void finishSchedules("accepted");
+  });
+  el("analysis-return").addEventListener("click", () => {
+    if (area === "reports" && !reportId) {
+      document
+        .querySelector<HTMLButtonElement>('.view-tabs [data-view="today"]')
+        ?.click();
+      return;
     }
+    if (!canNavigate()) return;
+    reportId = "";
+    preparing = false;
+    period = "history";
+    url();
+    render();
+    void refresh(false);
   });
   el("analysis-refresh").addEventListener("click", () => {
-    if (canNavigate()) void refresh();
+    if (needsReadback || canNavigate()) void refresh();
   });
   el("analysis-retry").addEventListener("click", () => void save());
   el("analysis-reconcile").addEventListener("click", async () => {
-    if (busy || !pending) return;
+    if (busy || batching || !pending) return;
+    if (pending.action === "schedule") {
+      // An in-flight schedule may commit after a read. Resolve its original operation
+      // before allowing a conflicting skip or a new date selection.
+      await save();
+      return;
+    }
     try {
       const fresh = await api(
         `practice?report=${encodeURIComponent(String(pending.bundleId))}`,
@@ -565,6 +811,9 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
     if (pending || dirty) event.preventDefault();
   });
   return {
+    wordSessionFinished(count: number) {
+      recentWordCount = count;
+    },
     setAuthenticated(value: boolean) {
       const changed = authenticated !== value;
       authenticated = value;
@@ -578,10 +827,21 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
         } else void refresh();
       }
     },
-    show(value: boolean) {
-      active = value;
-      root.hidden = !value;
+    show(value: "home" | "reports" | null) {
+      const changed = value && (area !== value || !active);
+      active = value !== null;
+      root.hidden = !active;
       if (value) {
+        if (changed || data) {
+          area = value;
+          preparing = false;
+          // A deep link retains its exact course until navigation leaves the initial view.
+          if (data) reportId = "";
+          questionId = null;
+          courseScreen = "learning";
+          period = "history";
+        }
+        url();
         render();
         if (pending)
           status("有尚未确认保存的操作，请重试或读取已保存结果。", true);
@@ -591,6 +851,7 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
     canNavigate,
     canLock: () =>
       !busy &&
+      !batching &&
       (!(pending || dirty) ||
         confirm("有尚未保存的练习内容，锁定会清除本机待保存操作。继续吗？")),
     clear() {
@@ -599,6 +860,7 @@ export function initAnalysis(api: Api, authFailure: (error: unknown) => void) {
       drafts.clear();
       dirty = false;
       data = null;
+      needsReadback = false;
     },
     refresh: () => void refresh(),
   };

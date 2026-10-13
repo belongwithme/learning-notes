@@ -25,6 +25,7 @@
     "english:save:production": "env -u DATABASE_URL node --env-file=.local/english-production.env --experimental-strip-types scripts/english-save.mjs",
     "test:english-dialogues": "node --test scripts/test-english-dialogues.mjs",
     "test:english-analysis": "node --experimental-strip-types --test scripts/test-english-analysis.mjs",
+    "test:english-journey": "node --experimental-strip-types --test scripts/test-english-journey.mjs",
     "test:english-practice": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/test-english-practice.mjs"
   },
   "dependencies": {

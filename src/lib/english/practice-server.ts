@@ -4,10 +4,15 @@ import catalog from "../../data/english.json" with { type: "json" };
 import { db, HttpError } from "./server.ts";
 import { learningDay } from "./model.ts";
 import {
+  courseProgress,
+  currentSuggestions,
+  learningJourney,
+  questionAccess,
+} from "./journey-model.ts";
+import {
   analyze,
   firstAnswers,
   periodFor,
-  suggestionsFor,
   studyFor,
   generationCoverage,
   type Bundle,
@@ -324,7 +329,7 @@ export async function saveLearningContent(raw: unknown) {
     throw new HttpError(503, "保存结果尚未确认，请按相同请求编号查询。");
   return { ...readback, reused: saved.reused, readbackVerified: true };
 }
-function publicBundle(bundle: Bundle, state: Snapshot) {
+function publicBundle(bundle: Bundle, state: Snapshot, today = learningDay()) {
   const events = state.events.filter((e) => e.bundleId === bundle.id);
   const materialRevealed = events.some(
     (e) => e.kind === "hint" && e.questionId === "*",
@@ -339,6 +344,7 @@ function publicBundle(bundle: Bundle, state: Snapshot) {
   return {
     ...bundle,
     study,
+    progress: courseProgress(bundle, state, today),
     content: {
       ...bundle.content,
       lesson:
@@ -359,6 +365,7 @@ function publicBundle(bundle: Bundle, state: Snapshot) {
             attempts.length > 0 || history.some((e) => e.kind === "reveal");
           return {
             ...q,
+            access: questionAccess(bundle, q, state, today),
             answers: revealed ? q.answers : [],
             explanation: revealed ? q.explanation : "",
             hint: history.some((e) => e.kind === "hint") ? q.hint : "",
@@ -373,7 +380,7 @@ function publicBundle(bundle: Bundle, state: Snapshot) {
     },
     feedback: events.filter((e) => e.kind === "feedback"),
     materialRevealed,
-    suggestions: suggestionsFor(bundle, state),
+    suggestions: currentSuggestions(bundle, state, today),
     schedules: state.retests.filter((r) => r.sourceBundleId === bundle.id),
   };
 }
@@ -386,56 +393,18 @@ export async function loadPractice(reportId?: string) {
       periodFor("day", learningDay(now), now),
       catalog.entries,
     );
-    const summaries = state.bundles
-      .map((b) => ({
-        id: b.id,
-        version: b.version,
-        title: b.content.title,
-        period: b.period,
-        createdAt: b.createdAt,
-        mode: b.content.exercise.mode,
-        targetCount: b.content.exercise.targets.length,
-        questionCount: b.content.exercise.questions.length,
-        answeredCount: new Set(
-          state.events
-            .filter((e) => e.bundleId === b.id && e.kind === "answer")
-            .map((e) => e.questionId),
-        ).size,
-        hasNewRecords:
-          state.learning.reviews.some(
-            (r) =>
-              Date.parse(r.studiedAt) >= Date.parse(b.period.start) &&
-              Date.parse(r.studiedAt) < Date.parse(b.period.end) &&
-              Date.parse(r.studiedAt) >= Date.parse(b.period.cutoff),
-          ) ||
-          state.events.some(
-            (e) =>
-              Date.parse(e.createdAt) >= Date.parse(b.period.cutoff) &&
-              Date.parse(e.createdAt) >= Date.parse(b.period.start) &&
-              Date.parse(e.createdAt) < Date.parse(b.period.end),
-          ),
-      }))
-      .reverse();
-    const retests = state.retests.map((r) => ({
-      ...r,
-      readyBundleId:
-        r.completedAt || r.decision !== "accepted"
-          ? null
-          : (state.bundles.findLast(
-              (b) =>
-                b.content.exercise.targets.some((t) => t.retestId === r.id) &&
-                b.content.exercise.questions
-                  .filter((q) => q.wordIds.includes(r.wordId))
-                  .some(
-                    (q) =>
-                      !state.events.some(
-                        (e) =>
-                          e.bundleId === b.id &&
-                          e.questionId === q.id &&
-                          ["answer", "flag"].includes(e.kind),
-                      ),
-                  ),
-            )?.id ?? null),
+    const journey = learningJourney(state, overview, now);
+    const summaries = journey.summaries.map((summary) => ({
+      ...summary,
+      hasNewRecords: [
+        ...state.learning.reviews.map((review) => review.studiedAt),
+        ...state.events.map((event) => event.createdAt),
+      ].some(
+        (at) =>
+          Date.parse(at) >= Date.parse(summary.period.cutoff) &&
+          Date.parse(at) >= Date.parse(summary.period.start) &&
+          Date.parse(at) < Date.parse(summary.period.end),
+      ),
     }));
     const bundle = reportId
       ? state.bundles.find((b) => b.id === reportId)
@@ -443,9 +412,10 @@ export async function loadPractice(reportId?: string) {
     if (reportId && !bundle) throw new HttpError(404, "这份报告不存在。");
     return {
       summaries,
-      retests,
+      retests: journey.retests,
+      home: journey.home,
       overview,
-      bundle: bundle ? publicBundle(bundle, state) : null,
+      bundle: bundle ? publicBundle(bundle, state, learningDay(now)) : null,
     };
   });
 }
@@ -505,7 +475,7 @@ export async function mutatePractice(raw: unknown) {
           return;
         throw new HttpError(409, "该建议已处理，请刷新查看已确认的安排。");
       }
-      const proposal = suggestionsFor(bundle, state).find(
+      const proposal = currentSuggestions(bundle, state, learningDay()).find(
         (s) => s.wordId === action.wordId,
       );
       if (!proposal)
@@ -560,10 +530,8 @@ export async function mutatePractice(raw: unknown) {
       throw new HttpError(400, "题目不属于此练习版本。");
     let payload: PracticeEvent["payload"] = {};
     if (action.action === "answer") {
-      if (
-        events.some((e) => e.kind === "flag" && e.questionId === question!.id)
-      )
-        throw new HttpError(409, "此题正在核对，请完成其他题目。");
+      const access = questionAccess(bundle, question!, state, learningDay());
+      if (access.blocked) throw new HttpError(409, access.blocked);
       const attempts = events.filter(
         (e) => e.kind === "answer" && e.questionId === question!.id,
       );
@@ -571,20 +539,6 @@ export async function mutatePractice(raw: unknown) {
         throw new HttpError(
           409,
           "此题已在另一设备作答，请刷新后查看已保存答案。",
-        );
-      const schedules = bundle.content.exercise.targets
-        .filter((t) => question!.wordIds.includes(t.wordId) && t.retestId)
-        .map((t) => state.retests.find((r) => r.id === t.retestId)!);
-      if (
-        schedules.some(
-          (r) =>
-            r.scheduledDate > learningDay() ||
-            (r.completedAt && r.completedBundleId !== bundle.id),
-        )
-      )
-        throw new HttpError(
-          409,
-          "复测尚未到期或已在另一份练习完成，请刷新安排。",
         );
       const assisted =
         attempts.length > 0 ||

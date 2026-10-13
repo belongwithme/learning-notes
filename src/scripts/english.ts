@@ -43,7 +43,9 @@ const escape = (value: string | number) =>
   );
 const entriesById = new Map(catalog.entries.map((e) => [e.id, e]));
 const dialoguesByWord = new Map(
-  dialogues.flatMap((dialogue) => dialogue.wordIds.map((id) => [id, dialogue] as const)),
+  dialogues.flatMap((dialogue) =>
+    dialogue.wordIds.map((id) => [id, dialogue] as const),
+  ),
 );
 const albums = new Map(catalog.albums.map((a) => [a.id, a.title]));
 const dialog = el<HTMLDialogElement>("word-dialog");
@@ -52,6 +54,7 @@ let authenticated = false;
 let view = "today";
 let page = 1;
 let practiceId = "";
+let sessionReviewCount = 0;
 let detailId = "";
 let busy = false;
 let refreshing = false;
@@ -162,7 +165,7 @@ async function refresh(silent = false) {
     if (previousAuth !== authenticated || previousData !== JSON.stringify(data))
       render();
     else setAuthUI();
-    if (view === "analysis") analysis.refresh();
+    if (view === "analysis" || view === "today") analysis.refresh();
     notify(
       pending
         ? "有一项待保存操作。请重试，或读取云端记录后取消。"
@@ -232,7 +235,10 @@ async function save(mutation?: Mutation) {
     pending = null;
     persistPending();
     dirty = false;
-    if (action.action === "review") practiceId = "";
+    if (action.action === "review") {
+      practiceId = "";
+      if (view === "words" && !dialog.open) sessionReviewCount += 1;
+    }
     render();
     if (dialog.open && detailId) renderDetail(detailId);
     notify(
@@ -257,10 +263,20 @@ function tags(p: Progress) {
 function dialogueCard(e: Entry) {
   const dialogue = dialoguesByWord.get(e.id);
   if (!dialogue) return "";
-  const target = new RegExp(`\\b(${e.term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})\\b`, "gi");
-  const highlight = (text: string) => text.split(target)
-    .map((part, index) => index % 2 ? `<mark>${escape(part)}</mark>` : escape(part)).join("");
-  const recall = dialogue.lines.find((line) => line.en.split(target).length > 1)!;
+  const target = new RegExp(
+    `\\b(${e.term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})\\b`,
+    "gi",
+  );
+  const highlight = (text: string) =>
+    text
+      .split(target)
+      .map((part, index) =>
+        index % 2 ? `<mark>${escape(part)}</mark>` : escape(part),
+      )
+      .join("");
+  const recall = dialogue.lines.find(
+    (line) => line.en.split(target).length > 1,
+  )!;
   return `<section class="dialogue" aria-label="情景对话">
     <p class="dialogue-kicker">情景对话 <span>4 句 · 先读英文，再看翻译</span></p>
     <p class="dialogue-scene">${escape(dialogue.scene)}</p>
@@ -280,7 +296,7 @@ function card(e: Entry, detail = false) {
     ${e.collocation ? `<p class="grammar"><strong>常用搭配</strong> · <span lang="en">${escape(e.collocation)}</span></p>` : ""}
     ${e.level ? `<p class="grammar"><strong>学习层级</strong> · ${escape(e.level)}</p>` : ""}
     ${dialogueCard(e)}
-    ${e.references?.length ? `<details><summary>主题参考（非逐词出处）</summary><div class="sources">${e.references.map(url => `<a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(url)}</a>`).join("")}</div></details>` : ""}
+    ${e.references?.length ? `<details><summary>主题参考（非逐词出处）</summary><div class="sources">${e.references.map((url) => `<a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(url)}</a>`).join("")}</div></details>` : ""}
     <div class="review-buttons" aria-label="记录本次学习"><button type="button" data-result="forgot">忘了</button><button type="button" data-result="vague">模糊</button><button type="button" data-result="remembered" class="primary">记得 ✓</button></div></div>
     <div class="card-bottom"><span>${authenticated ? (p.dueDate ? `复习安排 · ${escape(p.dueDate)}` : "复习日期尚未安排") : "输入个人口令后即可记录学习"} </span>${detail ? "" : `<div><button type="button" data-open="${e.id}">安排 / 笔记</button><button type="button" data-next>换一个 →</button></div>`}</div>
     ${detail ? editForm(p) : ""}</article>`;
@@ -394,7 +410,16 @@ function matches(e: Entry, history?: Review) {
     q = input("query").trim().toLowerCase();
   if (
     q &&
-    ![e.id, e.term, e.meaning, e.example, e.translation, e.note, e.collocation, e.level]
+    ![
+      e.id,
+      e.term,
+      e.meaning,
+      e.example,
+      e.translation,
+      e.note,
+      e.collocation,
+      e.level,
+    ]
       .join(" ")
       .toLowerCase()
       .includes(q)
@@ -404,6 +429,16 @@ function matches(e: Entry, history?: Review) {
   if (input("kind") && e.kind !== input("kind")) return false;
   if (input("priority") && p.priority !== input("priority")) return false;
   if (input("status") && p.status !== input("status")) return false;
+  if (input("mastery")) {
+    // Reviews are ordered newest first by the API and after each save.
+    if (input("mastery") === "remembered") {
+      if (p.status !== "mastered") return false;
+    } else if (
+      p.status !== "learning" ||
+      data.reviews.find((r) => r.wordId === e.id)?.result !== input("mastery")
+    )
+      return false;
+  }
   if (input("date-from") || input("date-to")) {
     if (input("date-type") === "planned") return dateMatches(p.plannedDate);
     if (input("date-type") === "due") return dateMatches(p.dueDate);
@@ -423,8 +458,8 @@ function renderCollection() {
     ? "学过的，都留在这里。"
     : "每个词，都有它的语境。";
   el("list-note").textContent = historyMode
-    ? "日期按北京时间 · 状态与优先级为当前值"
-    : "点击词条查看释义与安排";
+    ? "日期按北京时间 · 状态、掌握程度与优先级为当前值"
+    : "点击词条查看释义与安排 · 模糊/忘记按最近一次学习记录筛选";
   let rows: (Entry | Review)[] = historyMode
     ? data.reviews.filter((r) => matches(entriesById.get(r.wordId)!, r))
     : catalog.entries.filter((e) => matches(e));
@@ -473,6 +508,7 @@ function renderCollection() {
     (historyMode ||
       input("priority") ||
       input("status") ||
+      input("mastery") ||
       input("date-from") ||
       input("date-to"))
   ) {
@@ -515,10 +551,20 @@ function renderCollection() {
 function render() {
   setAuthUI();
   renderToday();
-  if (view !== "today" && view !== "analysis") renderCollection();
+  if (!["today", "analysis", "words"].includes(view)) renderCollection();
 }
 function changeView(next: string) {
-  if (view === "analysis" && next !== view && !analysis.canNavigate()) return;
+  if (view === "words" && (busy || pending)) {
+    notify("请先确认本次自评的保存结果，再离开学词。", true);
+    return;
+  }
+  if (
+    ["today", "analysis"].includes(view) &&
+    !el("analysis-view").hidden &&
+    !analysis.canNavigate()
+  )
+    return;
+  if (next === "words" && view !== "words") sessionReviewCount = 0;
   view = next;
   page = 1;
   document
@@ -528,17 +574,26 @@ function changeView(next: string) {
         button.setAttribute("aria-current", "page");
       else button.removeAttribute("aria-current");
     });
-  el("today-view").hidden = view !== "today";
-  el("collection-view").hidden = view === "today" || view === "analysis";
-  analysis.show(view === "analysis");
-  if (view !== "analysis") {
+  el("today-view").hidden = view !== "words";
+  el("collection-view").hidden = ["today", "analysis", "words"].includes(view);
+  analysis.show(
+    view === "today" ? "home" : view === "analysis" ? "reports" : null,
+  );
+  if (!["today", "analysis"].includes(view)) {
     const url = new URL(location.href);
     url.searchParams.delete("view");
     url.searchParams.delete("report");
     history.replaceState(null, "", url);
   }
-  if (view === "today") renderToday();
-  else if (view !== "analysis") renderCollection();
+  if (view === "words") renderToday();
+  else if (!["today", "analysis"].includes(view)) renderCollection();
+  el(
+    view === "words"
+      ? "today-view"
+      : ["today", "analysis"].includes(view)
+        ? "analysis-view"
+        : "collection-view",
+  ).scrollIntoView({ block: "start" });
 }
 function renderDetail(id: string) {
   detailId = id;
@@ -559,6 +614,14 @@ function clearFilters() {
 document.addEventListener("click", (event) => {
   const button = (event.target as Element).closest<HTMLButtonElement>("button");
   if (!button) return;
+  if (button.hasAttribute("data-finish-words")) {
+    if (busy || pending) {
+      notify("请先确认本次自评的保存结果，再结束。", true);
+      return;
+    }
+    analysis.wordSessionFinished(sessionReviewCount);
+    changeView("today");
+  }
   if (button.dataset.view) changeView(button.dataset.view);
   if (button.hasAttribute("data-retry")) void save();
   if (button.hasAttribute("data-cancel-pending")) el("cancel-pending").click();
@@ -806,7 +869,15 @@ window.addEventListener("online", () => {
 window.addEventListener("beforeunload", (event) => {
   if (pending || dirty) event.preventDefault();
 });
-const analysis = initAnalysis(api, failure);
+const analysis = initAnalysis(api, failure, (id) => {
+  renderDetail(id);
+  dialog.showModal();
+  dialog.scrollTop = 0;
+});
 render();
-if (new URL(location.href).searchParams.get("view") === "analysis") changeView("analysis");
+changeView(
+  new URL(location.href).searchParams.get("view") === "analysis"
+    ? "analysis"
+    : "today",
+);
 void refresh();
