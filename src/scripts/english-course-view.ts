@@ -129,17 +129,20 @@ export function courseHtml(
     ["checking", "elsewhere", "waiting"].includes(p.stage) ||
     (b.study.stage === "practice" && !selected);
   const title = `<header class="analysis-card"><h3>${e(b.content.title)}</h3><p>${p.isRetest ? "到期复习：先独立答新题，再看解释" : b.study.hasLesson ? "1 学讲解 → 2 读短文 → 3 做练习 → 本次结果" : "旧版练习：从题目开始，原记录保留"}</p>${b.study.stage === "practice" && !p.complete ? '<p class="analysis-meta">练习期间查看词条释义，对应未答题会记为辅助作答；当前选择仍会保留。</p>' : ""}</header>`;
+  const translationReview = b.translationsAvailable
+    ? `<details class="analysis-card"><summary>查看课后译文与讲解</summary>${options.lesson}<h3>练习语境译文</h3><p class="analysis-material" lang="en">${e(exercise.passage)}</p><p>${e(exercise.translation)}</p>${exercise.examples.map((example) => `<blockquote lang="en">${e(example.english)}</blockquote><p>${e(example.translation)}</p>`).join("")}</details>`
+    : "";
   if (options.screen === "ended")
-    return `${title}<section class="analysis-card journey-recommended" id="analysis-receipt"><h3>本次学习已保存，可以离开了。</h3><p>本课有效题 ${p.answeredCount} / ${p.validCount} 已答。以下是实际保存的复习安排：</p>${schedulesHtml(b) || "<p>本次没有新增复习安排。</p>"}<p>下次打开今日学习，可继续已保存内容或查看到期复习；没有创建站外通知。</p><div class="analysis-actions"><button type="button" class="primary" data-view="today">返回今日学习</button><button type="button" data-another-course>再学一项</button></div></section>`;
+    return `${title}<section class="analysis-card journey-recommended" id="analysis-receipt"><h3>本次学习已保存，可以离开了。</h3><p>本课有效题 ${p.answeredCount} / ${p.validCount} 已答。以下是实际保存的复习安排：</p>${schedulesHtml(b) || "<p>本次没有新增复习安排。</p>"}<p>下次打开今日学习，可继续已保存内容或查看到期复习；没有创建站外通知。</p><div class="analysis-actions"><button type="button" class="primary" data-view="today">返回今日学习</button><button type="button" data-another-course>再学一项</button></div></section>${translationReview}`;
   const material = `<section class="analysis-card" id="analysis-exercise"><h3>读题目语境，独立作答</h3>
     <p class="analysis-meta">${exercise.source.kind === "generated" ? "Codex 生成的教学材料" : `真实摘录 · <a href="${e(exercise.source.url)}" target="_blank" rel="noopener noreferrer">${e(exercise.source.title)}</a>`} · ${e(exercise.difficulty)}</p>
     <p class="analysis-material" lang="en">${e(exercise.passage)}</p>${exercise.examples.map((example) => `<blockquote lang="en">${e(example.english)}</blockquote>${example.translation ? `<p>${e(example.translation)}</p>` : ""}`).join("")}
-    ${b.materialRevealed ? `<p class="analysis-result">${e(exercise.translation)}</p>` : '<button type="button" data-help="hint" data-question="*">查看译文（未答题记为辅助）</button>'}</section>`;
+    ${b.translationsAvailable ? `<p class="analysis-result">${e(exercise.translation)}</p>` : '<p class="analysis-meta">完成本课全部有效题后显示译文，不要求全部答对。</p>'}</section>`;
   const content =
     b.study.stage !== "practice" && !showResults
       ? options.lesson
       : showResults
-        ? resultsHtml(b)
+        ? `${resultsHtml(b)}${translationReview}`
         : `${material}
     ${selected ? questionHtml(selected, valid.indexOf(selected), valid.length) : ""}
     ${selected?.attempts.length || selected?.access.blocked ? `<div class="analysis-actions"><button type="button" class="primary" ${p.nextQuestionId ? "data-next-question" : "data-show-results"}>${p.nextQuestionId ? "下一题" : "查看本次结果"}</button></div>` : ""}

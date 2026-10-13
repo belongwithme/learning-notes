@@ -336,6 +336,36 @@ function publicBundle(bundle: Bundle, state: Snapshot, today = learningDay()) {
   );
   const ex = bundle.content.exercise;
   const study = studyFor(bundle, events);
+  const progress = courseProgress(bundle, state, today);
+  const translationsAvailable =
+    progress.validCount > 0 && progress.answeredCount === progress.validCount;
+  const lesson = bundle.content.lesson;
+  const visibleLesson =
+    lesson && !translationsAvailable
+      ? {
+          ...lesson,
+          words: lesson.words.map((word) => ({
+            ...word,
+            examples: word.examples.map((example) => ({
+              ...example,
+              translation: "",
+            })),
+            contrast: {
+              ...word.contrast,
+              left: { ...word.contrast.left, translation: "" },
+              right: { ...word.contrast.right, translation: "" },
+            },
+          })),
+          reading: {
+            ...lesson.reading,
+            translation: "",
+            sentences: lesson.reading.sentences.map((sentence) => ({
+              ...sentence,
+              translation: "",
+            })),
+          },
+        }
+      : lesson;
   const finished = ex.questions.every((q) =>
     events.some(
       (e) => e.questionId === q.id && ["answer", "flag"].includes(e.kind),
@@ -344,19 +374,20 @@ function publicBundle(bundle: Bundle, state: Snapshot, today = learningDay()) {
   return {
     ...bundle,
     study,
-    progress: courseProgress(bundle, state, today),
+    progress,
+    translationsAvailable,
     content: {
       ...bundle.content,
       lesson:
         study.stage !== "practice" || materialRevealed || finished
-          ? bundle.content.lesson
+          ? visibleLesson
           : undefined,
       exercise: {
         ...ex,
-        translation: materialRevealed ? ex.translation : "",
+        translation: translationsAvailable ? ex.translation : "",
         examples: ex.examples.map((e) => ({
           ...e,
-          translation: materialRevealed ? e.translation : "",
+          translation: translationsAvailable ? e.translation : "",
         })),
         questions: ex.questions.map((q) => {
           const history = events.filter((e) => e.questionId === q.id);
