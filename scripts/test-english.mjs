@@ -2,6 +2,7 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import pg from "pg";
+import { learningDay, shiftDay } from "../src/lib/english/model.ts";
 
 const base = process.env.ENGLISH_TEST_URL ?? "http://127.0.0.1:4321";
 const dbUrl = new URL(process.env.DATABASE_URL);
@@ -139,7 +140,11 @@ try {
   );
   const readback = await request("data", { cookie: b.cookie });
   assert.equal(readback.value.progress.W497.version, 2);
-  assert.equal(readback.value.progress.W497.status, "mastered");
+  // One "remembered" is not mastery: the word stays in learning and is due in
+  // 3 days; the planned date was spent by studying.
+  assert.equal(readback.value.progress.W497.status, "learning");
+  assert.equal(readback.value.progress.W497.dueDate, shiftDay(learningDay(), 3));
+  assert.equal(readback.value.progress.W497.plannedDate, "");
   await request("data", {
     method: "POST",
     cookie: b.cookie,
@@ -164,6 +169,7 @@ try {
     body: secondReview,
   });
   assert.equal(forgotten.value.progress.W497.status, "learning");
+  assert.equal(forgotten.value.progress.W497.dueDate, shiftDay(learningDay(), 1));
   assert.equal(
     forgotten.value.reviews.filter((r) => r.wordId === "W497").length,
     2,

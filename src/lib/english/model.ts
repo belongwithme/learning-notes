@@ -50,6 +50,48 @@ export function learningDay(value: string | Date = new Date()): string {
   const date = new Date(value);
   return dayFormatter.format(date);
 }
+// Spaced review: one rule shared by the server (on save) and the page (for
+// older words that were rated before due dates were scheduled automatically).
+const rememberIntervals = [3, 7, 14, 30];
+const masteredStreak = 2;
+export function shiftDay(day: string, days: number): string {
+  return new Date(Date.parse(`${day}T00:00:00Z`) + days * 86_400_000)
+    .toISOString()
+    .slice(0, 10);
+}
+export interface Schedule {
+  dueDate: string;
+  status: Status;
+}
+// Only the last rating of each learning day counts, so several ratings on one
+// day cannot raise the streak. "Remembered" must happen on masteredStreak
+// different days in a row before a word is called mastered.
+export function scheduleFor(
+  reviews: { result: Result; studiedAt: string | Date }[],
+): Schedule | null {
+  const byDay = new Map<string, Result>();
+  [...reviews]
+    .sort((a, b) => +new Date(a.studiedAt) - +new Date(b.studiedAt))
+    .forEach((r) => byDay.set(learningDay(r.studiedAt), r.result));
+  const days = [...byDay];
+  if (!days.length) return null;
+  const [lastDay, last] = days[days.length - 1];
+  if (last !== "remembered")
+    return {
+      dueDate: shiftDay(lastDay, last === "forgot" ? 1 : 2),
+      status: "learning",
+    };
+  let streak = 0;
+  for (let i = days.length - 1; i >= 0 && days[i][1] === "remembered"; i--)
+    streak++;
+  return {
+    dueDate: shiftDay(
+      lastDay,
+      rememberIntervals[Math.min(streak, rememberIntervals.length) - 1],
+    ),
+    status: streak >= masteredStreak ? "mastered" : "learning",
+  };
+}
 export function isDate(value: unknown): value is string {
   if (value === "") return true;
   return (

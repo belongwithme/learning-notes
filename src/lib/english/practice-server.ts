@@ -376,6 +376,12 @@ function publicBundle(bundle: Bundle, state: Snapshot, today = learningDay()) {
     study,
     progress,
     translationsAvailable,
+    // Per-sentence help while reading: the full translation stays hidden, but a
+    // reader who is stuck can open one sentence and is checked on it afterwards.
+    sentenceHelp:
+      lesson && !translationsAvailable && study.stage === "reading"
+        ? lesson.reading.sentences.map((sentence) => sentence.translation)
+        : [],
     content: {
       ...bundle.content,
       lesson:

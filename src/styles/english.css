@@ -1128,3 +1128,30 @@ dialog::backdrop {
 .edit-form select {
   width: 100%;
 }
+
+/* Daily plan, fill-in-the-blank recall, and sentence help */
+.word-plan {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem 1rem;
+  align-items: center;
+  margin: 0 0 1.25rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--line, rgba(127, 127, 127, 0.3));
+  border-radius: 0.75rem;
+}
+.word-plan[hidden] { display: none; }
+.word-plan p { margin: 0; }
+.word-plan #plan-summary { font-size: 1.05rem; font-weight: 600; }
+.word-plan details { grid-column: 1 / -1; font-size: 0.9rem; }
+.word-plan details label { display: inline-flex; gap: 0.4rem; align-items: center; margin-right: 1rem; }
+.plan-progress { margin: 0 0 0.75rem; font-weight: 600; }
+.recall-label { margin: 0.75rem 0 0.25rem; }
+.recall-zh { margin: 0.25rem 0 0.75rem; opacity: 0.8; }
+.recall-form { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0 1rem; }
+.recall-form input { flex: 1 1 14rem; min-width: 0; font-size: 1.05rem; padding: 0.55rem 0.75rem; }
+.recall-form[hidden] { display: none; }
+.recall-result { margin: 0 0 0.75rem; font-weight: 600; }
+@media (max-width: 640px) {
+  .word-plan { grid-template-columns: 1fr; }
+}

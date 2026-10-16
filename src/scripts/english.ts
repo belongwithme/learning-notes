@@ -1,6 +1,8 @@
 import catalog from "../data/english.json";
 import dialogues from "../data/english-dialogues.json";
 import { initAnalysis } from "./english-analysis";
+import { clozeFor, normalize, target } from "../lib/english/cloze";
+import { dailyPlan, indexReviews, studyOrderFor } from "../lib/english/plan";
 import {
   emptyProgress,
   learningDay,
@@ -48,6 +50,17 @@ const dialoguesByWord = new Map(
   ),
 );
 const albums = new Map(catalog.albums.map((a) => [a.id, a.title]));
+const studyOrder = studyOrderFor(catalog.albums, catalog.entries);
+const dailyKey = "english-daily-v1";
+let daily = { review: 8, fresh: 4 };
+try {
+  const saved = JSON.parse(localStorage.getItem(dailyKey) ?? "null");
+  if (saved?.review > 0 && saved?.fresh >= 0) daily = saved;
+} catch {
+  /* The limits are a per-device convenience; defaults apply without storage. */
+}
+let extraFresh = 0;
+let extraReview = 0;
 const dialog = el<HTMLDialogElement>("word-dialog");
 let data: LearningData = { progress: {}, reviews: [] };
 let authenticated = false;
@@ -285,21 +298,46 @@ function dialogueCard(e: Entry) {
     <div class="dialogue-recall"><p><strong>一句回忆</strong> · 先遮住上面的英文，试着用 <span lang="en">${escape(e.term)}</span> 说出这句话：</p><p class="recall-prompt">${escape(recall.zh)}</p><details><summary>查看参考答案</summary><p class="recall-answer" lang="en">${highlight(recall.en)}</p></details></div>
   </section>`;
 }
+function answerPanel(e: Entry, p: Progress) {
+  const mine = p.note
+    ? `<p class="grammar"><strong>我的例句</strong> · ${escape(p.note)}</p>`
+    : "";
+  return `<p class="meaning">${escape(e.meaning)}</p><p class="translation">${escape(e.translation)}</p><p class="grammar"><strong>用法提示</strong> · ${escape(e.note)}</p>
+    ${e.collocation ? `<p class="grammar"><strong>常用搭配</strong> · <span lang="en">${escape(e.collocation)}</span></p>` : ""}
+    ${e.level ? `<p class="grammar"><strong>学习层级</strong> · ${escape(e.level)}</p>` : ""}
+    ${mine}${dialogueCard(e)}
+    ${e.references?.length ? `<details><summary>主题参考（非逐词出处）</summary><div class="sources">${e.references.map((url) => `<a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(url)}</a>`).join("")}</div></details>` : ""}
+    <div class="review-buttons" aria-label="记录本次学习"><button type="button" data-result="forgot">忘了</button><button type="button" data-result="vague">模糊</button><button type="button" data-result="remembered" class="primary">记得 ✓</button></div>`;
+}
+function cardBottom(p: Progress, detail: boolean, id: string) {
+  return `<div class="card-bottom"><span>${authenticated ? (p.dueDate ? `复习安排 · ${escape(p.dueDate)}` : "评价后自动安排复习") : "输入个人口令后即可记录学习"} </span>${detail ? "" : `<div><button type="button" data-open="${id}">安排 / 笔记</button><button type="button" data-next>换一个 →</button></div>`}</div>`;
+}
 function card(e: Entry, detail = false) {
   const p = getProgress(e.id);
-  return `<article class="word-card" data-word="${e.id}">
-    <div class="card-top"><div><span>${e.id} · ${escape(e.part)}</span>${tags(p)}</div><span>${escape(albums.get(e.album)!)}</span></div>
+  const top = `<div class="card-top"><div><span>${e.id} · ${escape(e.part)}</span>${tags(p)}</div><span>${escape(albums.get(e.album)!)}</span></div>`;
+  const question = detail
+    ? null
+    : clozeFor(
+        e,
+        dialoguesByWord.get(e.id),
+        reviewsOf(e.id).length > 0,
+      );
+  if (!question)
+    return `<article class="word-card" data-word="${e.id}">${top}
     <h${detail ? "2" : "3"} class="word-term" ${detail ? 'id="detail-title"' : ""} lang="en">${escape(e.term)}</h${detail ? "2" : "3"}>
     <p class="example" lang="en">${escape(e.example)}</p>
     <button type="button" class="reveal" data-reveal aria-expanded="false">回忆一下，再查看释义 ↓</button>
-    <div class="answer" hidden><p class="meaning">${escape(e.meaning)}</p><p class="translation">${escape(e.translation)}</p><p class="grammar"><strong>用法提示</strong> · ${escape(e.note)}</p>
-    ${e.collocation ? `<p class="grammar"><strong>常用搭配</strong> · <span lang="en">${escape(e.collocation)}</span></p>` : ""}
-    ${e.level ? `<p class="grammar"><strong>学习层级</strong> · ${escape(e.level)}</p>` : ""}
-    ${dialogueCard(e)}
-    ${e.references?.length ? `<details><summary>主题参考（非逐词出处）</summary><div class="sources">${e.references.map((url) => `<a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(url)}</a>`).join("")}</div></details>` : ""}
-    <div class="review-buttons" aria-label="记录本次学习"><button type="button" data-result="forgot">忘了</button><button type="button" data-result="vague">模糊</button><button type="button" data-result="remembered" class="primary">记得 ✓</button></div></div>
-    <div class="card-bottom"><span>${authenticated ? (p.dueDate ? `复习安排 · ${escape(p.dueDate)}` : "复习日期尚未安排") : "输入个人口令后即可记录学习"} </span>${detail ? "" : `<div><button type="button" data-open="${e.id}">安排 / 笔记</button><button type="button" data-next>换一个 →</button></div>`}</div>
+    <div class="answer" hidden>${answerPanel(e, p)}</div>
+    ${cardBottom(p, detail, e.id)}
     ${detail ? editForm(p) : ""}</article>`;
+  const again = question.context === "dialogue";
+  return `<article class="word-card" data-word="${e.id}" data-answer="${escape(question.answer)}" data-target="${escape(target(e))}">${top}
+    <p class="recall-label">${again ? "换一个语境，补全这句话" : "补全这句话"} · 提示：<strong>${escape(e.meaning)}</strong></p>
+    <p class="example" lang="en">${escape(question.text)}</p>
+    <p class="recall-zh">${escape(question.zh)}</p>
+    <form class="recall-form" data-recall><label class="sr-only" for="recall-input">缺少的词</label><input id="recall-input" name="attempt" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="先写下你的答案" /><button type="submit" class="primary">核对答案</button><button type="button" data-skip-recall>不会，直接看答案</button></form>
+    <div class="answer" hidden><p class="recall-result" role="status"></p><h3 class="word-term" lang="en">${escape(e.term)}</h3><p class="example" lang="en">${escape(e.example)}</p>${answerPanel(e, p)}</div>
+    ${cardBottom(p, detail, e.id)}</article>`;
 }
 function editForm(p: Progress) {
   const reviews = data.reviews.filter((r) => r.wordId === p.wordId);
@@ -314,7 +352,7 @@ function editForm(p: Progress) {
     <form class="edit-form" id="edit-form"><h3>留给下次学习的安排</h3><div class="edit-grid">
     <label>优先级<select name="priority">${options(priorities, p.priority)}</select></label><label>掌握状态<select name="status">${options(statuses, p.status)}</select></label>
     <label>计划学习日期<input name="plannedDate" type="date" value="${p.plannedDate}" /></label><label>下次复习日期<input name="dueDate" type="date" value="${p.dueDate}" /></label></div>
-    <label class="note-field">自己的例句或笔记<textarea name="note" rows="3" maxlength="2000" placeholder="把这个表达放进你熟悉的场景…">${escape(p.note)}</textarea></label>
+    <label class="note-field">我的例句（摘一句自己读的代码或文档，或用 <span lang="en">${escape(entriesById.get(p.wordId)?.term ?? "")}</span> 造一句）<textarea name="note" rows="3" maxlength="2000" placeholder="例如：从你正在读的文档里抄一句用到它的话，并写下它的出处…">${escape(p.note)}</textarea></label>
     <button id="save-word" type="submit" class="primary">${authenticated ? "保存安排与笔记" : "解锁后保存"}</button></form>
     <section class="word-history"><h3>学习足迹 · ${reviews.length} 次</h3>${
       !authenticated
@@ -332,37 +370,44 @@ function editForm(p: Progress) {
           : `<p>${p.status === "new" ? "还没有学习记录。展开释义后，记录一次回忆结果。" : "已有学习状态，历史学习日期未知。"}</p>`
     }</section>`;
 }
-function queue() {
-  const today = learningDay();
-  const reviewed = new Set(
-    data.reviews
-      .filter((r) => learningDay(r.studiedAt) === today)
-      .map((r) => r.wordId),
-  );
-  return catalog.entries
-    .filter((e) => {
-      const p = getProgress(e.id);
-      if (reviewed.has(e.id)) return false;
-      if (
-        (p.dueDate && p.dueDate <= today) ||
-        (p.plannedDate && p.plannedDate <= today)
-      )
-        return true;
-      if (p.plannedDate > today || p.dueDate > today) return false;
-      return p.status !== "mastered";
-    })
-    .sort((a, b) => {
-      const pa = getProgress(a.id),
-        pb = getProgress(b.id);
-      const group = (p: Progress) =>
-        (p.dueDate && p.dueDate <= today) ||
-        (p.plannedDate && p.plannedDate <= today)
-          ? 0
-          : p.status === "learning"
-            ? 1
-            : 2;
-      return group(pa) - group(pb) || rank[pa.priority] - rank[pb.priority];
-    });
+let indexed: { source: Review[]; byWord: Map<string, Review[]> } | null = null;
+function reviewsOf(id: string) {
+  if (indexed?.source !== data.reviews)
+    indexed = { source: data.reviews, byWord: indexReviews(data.reviews) };
+  return indexed.byWord.get(id) ?? [];
+}
+function todaysWork() {
+  const plan = dailyPlan({
+    entries: catalog.entries,
+    data,
+    today: learningDay(),
+    limits: {
+      review: daily.review + extraReview,
+      fresh: daily.fresh + extraFresh,
+    },
+    order: studyOrder,
+  });
+  return { ...plan, queue: plan.queue.map((id) => entriesById.get(id)!) };
+}
+function planText(work: ReturnType<typeof todaysWork>) {
+  const review = Math.min(work.reviewLimit, work.doneReview + work.dueTotal),
+    fresh = work.freshLimit;
+  return `复习 ${work.doneReview}/${review} · 新增 ${work.doneFresh}/${fresh}`;
+}
+function renderPlan() {
+  const box = el("word-plan");
+  box.hidden = !authenticated || view !== "today";
+  if (box.hidden) return;
+  const work = todaysWork(),
+    finished = !work.queue.length;
+  el("plan-summary").textContent = finished
+    ? `今天的词卡完成了（${planText(work)}），可以休息。`
+    : `今天的词卡：${planText(work)}，做完即可结束。`;
+  el("plan-start").textContent = finished ? "再看看词库" : "开始词卡";
+  el("plan-start").dataset.view = finished ? "library" : "words";
+  const select = (id: string, value: number) => (el<HTMLSelectElement>(id).value = String(value));
+  select("plan-review", daily.review);
+  select("plan-new", daily.fresh);
 }
 function renderToday() {
   const today = learningDay();
@@ -378,11 +423,10 @@ function renderToday() {
       .filter((p) => p.status !== "new")
       .map((p) => p.wordId),
   ]);
+  const work = todaysWork();
   const stats = {
     "stat-today": learnedToday.size,
-    "stat-due": Object.values(data.progress).filter(
-      (p) => p.dueDate && p.dueDate <= today && !learnedToday.has(p.wordId),
-    ).length,
+    "stat-due": work.dueTotal,
     "stat-studied": learned.size,
     "stat-mastered": Object.values(data.progress).filter(
       (p) => p.status === "mastered",
@@ -391,12 +435,15 @@ function renderToday() {
   Object.entries(stats).forEach(
     ([id, value]) => (el(id).textContent = authenticated ? String(value) : "—"),
   );
-  const available = queue();
-  const entry = available.find((e) => e.id === practiceId) ?? available[0];
+  el("plan-progress").textContent = authenticated ? planText(work) : "";
+  const entry = work.queue.find((e) => e.id === practiceId) ?? work.queue[0];
   practiceId = entry?.id ?? "";
   el("practice").innerHTML = entry
     ? card(entry)
-    : '<div class="empty"><h3>今天的安排已完成。</h3><p>可以休息一下，或去词库挑选新的内容。</p><button data-view="library">浏览词库 →</button></div>';
+    : `<div class="empty"><h3>今天的词卡完成了。</h3><p>${authenticated ? planText(work) : ""}。可以休息，明天按安排继续。</p>${work.moreDue ? '<button type="button" data-more="review">再复习几个到期的</button>' : ""}${work.moreFresh ? '<button type="button" data-more="fresh">再学几个新的</button>' : ""}<button type="button" data-view="library">浏览词库 →</button></div>`;
+  if (entry && view === "words" && !dialog.open)
+    el<HTMLInputElement>("recall-input")?.focus({ preventScroll: true });
+  renderPlan();
 }
 function dateMatches(date: string) {
   const from = input("date-from"),
@@ -587,6 +634,7 @@ function changeView(next: string) {
   }
   if (view === "words") renderToday();
   else if (!["today", "analysis"].includes(view)) renderCollection();
+  renderPlan();
   el(
     view === "words"
       ? "today-view"
@@ -632,13 +680,20 @@ document.addEventListener("click", (event) => {
     dialog.showModal();
     dialog.scrollTop = 0;
   }
+  if (button.hasAttribute("data-skip-recall"))
+    revealAnswer(button.closest<HTMLElement>(".word-card")!, "");
+  if (button.dataset.more) {
+    if (button.dataset.more === "review") extraReview += daily.review;
+    else extraFresh += Math.max(daily.fresh, 4);
+    renderToday();
+  }
   if (button.hasAttribute("data-reveal")) {
     button.hidden = true;
     button.setAttribute("aria-expanded", "true");
     (button.nextElementSibling as HTMLElement).hidden = false;
   }
   if (button.hasAttribute("data-next")) {
-    const available = queue();
+    const available = todaysWork().queue;
     practiceId =
       available[
         (available.findIndex((e) => e.id === practiceId) + 1) % available.length
@@ -661,6 +716,33 @@ document.addEventListener("click", (event) => {
       studiedAt: new Date().toISOString(),
     });
   }
+});
+// Showing the answer is a separate step from rating, so the rating follows an
+// attempt (or an honest "I don't know") instead of the feeling of recognising.
+function revealAnswer(article: HTMLElement, attempt: string) {
+  article.querySelector<HTMLElement>(".recall-form")!.hidden = true;
+  article.querySelector<HTMLElement>(".answer")!.hidden = false;
+  const given = normalize(attempt);
+  const right =
+    !!given &&
+    [article.dataset.answer!, article.dataset.target!].some(
+      (value) => normalize(value) === given,
+    );
+  article.querySelector<HTMLElement>(".recall-result")!.textContent = !given
+    ? `参考答案：${article.dataset.answer}。没有作答时，请如实选择“忘了”或“模糊”。`
+    : right
+      ? "答对了。再如实选择记得、模糊或忘了。"
+      : `你写的是“${attempt.trim()}”，参考答案是“${article.dataset.answer}”。答错时请选“模糊”或“忘了”。`;
+  article.querySelector<HTMLElement>(".answer")!.scrollIntoView({ block: "nearest" });
+}
+document.addEventListener("submit", (event) => {
+  const form = (event.target as Element).closest<HTMLFormElement>("[data-recall]");
+  if (!form) return;
+  event.preventDefault();
+  revealAnswer(
+    form.closest<HTMLElement>(".word-card")!,
+    String(new FormData(form).get("attempt") ?? ""),
+  );
 });
 el("login-form").addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -751,6 +833,19 @@ el("detail-content").addEventListener("submit", (event) => {
     return;
   }
   void save({ action: "update", operationId: crypto.randomUUID(), progress });
+});
+el("word-plan").addEventListener("change", () => {
+  daily = {
+    review: Number(el<HTMLSelectElement>("plan-review").value),
+    fresh: Number(el<HTMLSelectElement>("plan-new").value),
+  };
+  extraReview = extraFresh = 0;
+  try {
+    localStorage.setItem(dailyKey, JSON.stringify(daily));
+  } catch {
+    /* Without storage the limits last until the page is closed. */
+  }
+  renderToday();
 });
 el("filters").addEventListener("submit", (event) => event.preventDefault());
 el("filters").addEventListener("input", () => {

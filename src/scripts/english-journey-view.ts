@@ -1,5 +1,6 @@
 import catalog from "../data/english.json";
 import { learningDay } from "../lib/english/model";
+import { addDays } from "../lib/english/practice-model";
 import { courseStages } from "../lib/english/journey-model";
 import type { PracticeData } from "../lib/english/practice-server";
 
@@ -90,7 +91,7 @@ export function homeHtml(data: PracticeData) {
         : ""
     }
     <div class="analysis-actions"><button type="button" data-view="analysis">历史课程 ${data.summaries.length} 份</button><button type="button" data-view="words">去学词</button></div>
-    ${preparing && main ? `<section class="analysis-card"><h3>待准备材料</h3><p>${data.home.preparationWordIds.length} 个目标词，${data.home.preparationRetestIds.length} 项复测需要新材料。不影响先学已有课程。</p><button type="button" data-prepare>查看准备步骤</button></section>` : ""}
+    ${preparing && main ? `<section class="analysis-card"><h3>待准备材料</h3><p>${data.home.preparationWordIds.length} 个目标词，${data.home.preparationRetestIds.length} 项复测需要新材料，其中 ${data.retests.filter((r) => data.home.preparationRetestIds.includes(r.id) && r.scheduledDate <= addDays(today, 7)).length} 项 7 天内到期。建议每周备课一次，一次备好整周，学习时就不会被打断。不影响先学已有课程。</p><button type="button" data-prepare>查看准备步骤</button></section>` : ""}
     ${schedules.length ? `<details class="analysis-card"><summary>已确认的复习安排 ${schedules.length} 项 · 到期 ${due.length} 项</summary><p>到期安排中 ${missingDue.length} 项待准备材料。安排数量与课程数量分别统计。</p>${schedules.map((r) => `<div class="analysis-evidence">${wordButton(r.wordId)}<p>${e(r.usage)} · ${e(r.scheduledDate)} · ${r.scheduledDate > today ? "尚未到期" : "已到期"}</p>${r.readyBundleId ? `<button type="button" data-report="${e(r.readyBundleId)}">${r.scheduledDate <= today ? "开始复习" : "查看安排"}</button>` : '<span class="analysis-meta">新题待准备</span>'}</div>`).join("")}</details>` : ""}
   </div>`;
 }
@@ -148,12 +149,14 @@ export function preparationHtml(data: PracticeData, periodLabel = "最近的") {
   const retests = data.retests.filter((r) =>
     data.home.preparationRetestIds.includes(r.id),
   );
-  const request = `请使用 learning-notes 项目的 scripts/english-context.mjs 和 scripts/english-save.mjs（流程见 README），读取我${periodLabel}英语学习记录与已确认复测安排。页面当前待准备词条：${wordIds.join("、") || "以最新读取结果为准"}；待准备复测安排：${retests.map((r) => `${r.id}（${r.wordId}，${r.usage}，${r.scheduledDate}）`).join("；") || "以最新读取结果为准"}。先说明数据范围，不含私人笔记。处理本次初始 generationCoverage.pendingWordIds 中全部词条，可分课但不可截断；已有课程不重复生成。按既有质量要求生成完整讲解、双语例句、逐句精读与新语境客观题；专项复测关联已确认安排与目标用法。生成并保存，保留历史版本，全部保存后读回核对覆盖情况并返回网站课程链接。`;
+  const weekEnd = addDays(learningDay(data.home.asOf), 7);
+  const soon = retests.filter((r) => r.scheduledDate <= weekEnd);
+  const request = `请使用 learning-notes 项目的 scripts/english-context.mjs 和 scripts/english-save.mjs（流程见 README），读取我${periodLabel}英语学习记录与已确认复测安排。这是每周一次的批量备课：请优先为 ${weekEnd} 前（未来 7 天）到期的 ${soon.length} 项复测安排一次备好新语境材料，再处理其余，这样这一周学习时不必再中途备课。页面当前待准备词条：${wordIds.join("、") || "以最新读取结果为准"}；待准备复测安排：${retests.map((r) => `${r.id}（${r.wordId}，${r.usage}，${r.scheduledDate}）`).join("；") || "以最新读取结果为准"}。先说明数据范围，不含私人笔记。处理本次初始 generationCoverage.pendingWordIds 中全部词条，可分课但不可截断；已有课程不重复生成。按既有质量要求生成完整讲解、双语例句、逐句精读与新语境客观题；专项复测关联已确认安排与目标用法。生成并保存，保留历史版本，全部保存后读回核对覆盖情况并返回网站课程链接。`;
   return `<section class="analysis-card"><h3>在 Codex 准备材料</h3>
     <ol class="analysis-next"><li>复制下面的准备请求。</li><li>粘贴给 Codex，等待它生成、保存并读回确认。</li><li>打开 Codex 返回的课程链接，或回到这里刷新学习内容。</li></ol>
     <p>复制请求不会启动网站后台生成。尚未读取到材料时，可以先学已有内容或随时离开。</p>
     ${wordIds.length ? `<details><summary>待准备目标词 ${wordIds.length} 个</summary><p>${wordIds.map(wordButton).join(" · ")}</p></details>` : ""}
-    ${retests.length ? `<p>需要新语境材料的复测 ${retests.length} 项；未到期安排仍须等约定日期作答。</p>` : ""}
+    ${retests.length ? `<p>需要新语境材料的复测 ${retests.length} 项，其中 ${soon.length} 项在未来 7 天内到期。建议每周备课一次，一次备好整周；未到期安排仍须等约定日期作答。</p>` : ""}
     <label for="analysis-prompt">准备请求</label><textarea id="analysis-prompt" class="analysis-copy" readonly>${e(request)}</textarea>
     <div class="analysis-actions"><button type="button" class="primary" id="analysis-copy">复制准备请求</button><button type="button" data-refresh-material>刷新学习内容</button></div>
     ${ready ? `<p>已有可学习内容：${e(ready.title)}</p><button type="button" data-report="${e(ready.id)}">先学已有内容</button>` : '<button type="button" data-view="words">去学词</button>'}

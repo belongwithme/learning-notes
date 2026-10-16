@@ -3,7 +3,7 @@ import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import type { APIContext } from "astro";
 import { z } from "astro/zod";
 import catalog from "../../data/english.json" with { type: "json" };
-import { isDate, type LearningData } from "./model.ts";
+import { isDate, scheduleFor, type LearningData, type Result } from "./model.ts";
 
 let pool: ReturnType<typeof createPool> | undefined;
 export class HttpError extends Error {
@@ -213,6 +213,24 @@ async function ensureWord(client: DatabaseClient, id: string) {
     [id],
   );
 }
+// A rating schedules the next review itself. A word becomes mastered only after
+// "remembered" on two different days; the planned date is spent by studying.
+async function reviewUpdate(
+  client: DatabaseClient,
+  id: string,
+  version: number,
+  review: { result: Result; studiedAt: string },
+) {
+  const history = await client.query(
+    'SELECT result, studied_at AS "studiedAt" FROM english_reviews WHERE word_id=$1',
+    [id],
+  );
+  const next = scheduleFor([...history.rows, review])!;
+  return client.query(
+    "UPDATE english_progress SET status=$3,due_date=$4,planned_date='',version=version+1,updated_at=now() WHERE word_id=$1 AND version=$2 RETURNING word_id",
+    [id, version, next.status, next.dueDate],
+  );
+}
 export async function mutate(input: unknown) {
   const mutation = mutationSchema.parse(input);
   const payloadHash = hash(JSON.stringify(mutation));
@@ -274,14 +292,7 @@ export async function mutate(input: unknown) {
                 mutation.progress.note,
               ],
             )
-          : await client.query(
-              "UPDATE english_progress SET status=$3,version=version+1,updated_at=now() WHERE word_id=$1 AND version=$2 RETURNING word_id",
-              [
-                id,
-                version,
-                mutation.result === "remembered" ? "mastered" : "learning",
-              ],
-            );
+          : await reviewUpdate(client, id, version, mutation);
       if (!updated.rowCount)
         throw new HttpError(
           409,

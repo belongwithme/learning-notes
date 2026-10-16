@@ -544,3 +544,10 @@
     flex-direction: column;
   }
 }
+
+/* Sentence help while reading, and the second-context check on the result page */
+.sentence-help { margin: 0.5rem 0 0.75rem; }
+.sentence-help summary { cursor: pointer; }
+.reask-item { margin: 0 0 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(127, 127, 127, 0.25); }
+.reask-item input { min-width: 12rem; max-width: 100%; margin-right: 0.5rem; padding: 0.45rem 0.65rem; }
+.reask-result { margin: 0.4rem 0 0; font-weight: 600; }

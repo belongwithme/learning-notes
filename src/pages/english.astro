@@ -33,11 +33,16 @@ const phraseCount = catalog.entries.filter(entry => entry.kind === 'phrases').le
         <form id="login-form"><label for="passphrase" class="sr-only">个人口令</label><input id="passphrase" type="password" autocomplete="current-password" placeholder="个人口令" required maxlength="256" /><button class="primary" type="submit">解锁记录</button></form>
       </section>
       <nav class="view-tabs" aria-label="学习视图"><button data-view="today" aria-current="page">今日学习</button><button data-view="library">全部词库 <span>{catalog.entries.length}</span></button><button data-view="history">学习记录</button><button data-view="analysis">分析与巩固</button></nav>
+      <section id="word-plan" class="word-plan" aria-label="今天的词卡" hidden>
+        <div><p class="eyebrow">TODAY'S CARDS</p><p id="plan-summary" role="status"></p></div>
+        <button id="plan-start" type="button" class="primary" data-view="words">开始词卡</button>
+        <details><summary>调整每天的量</summary><label>复习上限<select id="plan-review">{[4, 8, 12, 16, 24].map(n => <option value={n}>{n} 个</option>)}</select></label><label>新增<select id="plan-new">{[0, 2, 4, 6, 10].map(n => <option value={n}>{n} 个</option>)}</select></label><p>只记在这台设备上。到期的复习多于上限时，先复习最早到期的，其余顺延。</p></details>
+      </section>
       <EnglishAnalysis />
       <section id="today-view" aria-labelledby="today-heading" hidden>
-        <div class="section-heading"><div><p class="eyebrow" id="today-date"></p><h2 id="today-heading">给英语一点日常。</h2></div><p>先回忆，再看解释，最后记录。</p></div>
+        <div class="section-heading"><div><p class="eyebrow" id="today-date"></p><h2 id="today-heading">给英语一点日常。</h2></div><p>先补全句子，再看解释，最后如实记录。</p></div>
         <div class="stats"><div><span>今天已学</span><strong id="stat-today">—</strong></div><div><span>到期复习</span><strong id="stat-due">—</strong></div><div><span>已学词条</span><strong id="stat-studied">—</strong></div><div><span>当前掌握</span><strong id="stat-mastered">—</strong></div></div>
-        <div class="analysis-actions"><button type="button" data-finish-words>本次先到这里，返回今日学习</button></div><div class="practice-layout"><div id="practice"></div><aside class="practice-aside"><p class="eyebrow">A SMALL STEP, EVERY DAY</p><h3>不急着记住全部。<br />先读懂这一句。</h3><ol><li><span>01</span> 看英文，试着解释例句。</li><li><span>02</span> 展开释义，检查理解。</li><li><span>03</span> 如实记录，安排下次复习。</li></ol><div class="aside-note">到期和已安排的内容优先，其次是学习中的词与新词。同组按优先级排序。</div><button type="button" data-view="library" class="text-button">去词库安排学习 →</button></aside></div>
+        <p id="plan-progress" class="plan-progress" role="status"></p><div class="analysis-actions"><button type="button" data-finish-words>本次先到这里，返回今日学习</button></div><div class="practice-layout"><div id="practice"></div><aside class="practice-aside"><p class="eyebrow">A SMALL STEP, EVERY DAY</p><h3>不急着记住全部。<br />先读懂这一句。</h3><ol><li><span>01</span> 看提示，补全句子里缺的词。</li><li><span>02</span> 核对答案，看用法与对话。</li><li><span>03</span> 如实记录，系统自动安排下次复习。</li></ol><div class="aside-note">先复习到期的，再学新的，数量以今天的上限为准。新内容按主题顺序，一个表达配两个单词。</div><button type="button" data-view="library" class="text-button">去词库安排学习 →</button></aside></div>
       </section>
       <section id="collection-view" hidden>
         <div class="section-heading"><div><p class="eyebrow" id="collection-kicker">YOUR WORD COLLECTION</p><h2 id="collection-heading">每个词，都有它的语境。</h2></div><div class="backup-actions"><button id="export" type="button">导出备份</button><button id="import" type="button">导入记录</button><input id="import-file" type="file" accept="application/json,.json" hidden /></div></div>
@@ -54,7 +59,7 @@ const phraseCount = catalog.entries.filter(entry => entry.kind === 'phrases').le
         <div id="entries"></div>
         <div class="pagination"><button id="previous-page" type="button">← 上一页</button><span id="page-number"></span><button id="next-page" type="button">下一页 →</button></div>
       </section>
-      <details class="content-notes"><summary>关于这份词库与学习记录</summary><p>内容来自《Java 技术英语：500 词汇＋500 表达》离线版及《Java 英语第二册》新增 500 词汇，沿用 20 个主题，保留原词条编号、双语例句与语法提示；第二册同时提供常用搭配、学习层级与主题参考（非逐词出处）。全部单词另配四句双语情景对话与一句回忆；相关单词共用场景，当前词会在对话中突出显示。对话是教学示例，中文翻译和参考答案可按需展开，查看不会生成学习记录。它是按学习目标编排的清单，并非语料统计的高频榜；例句是教学示例，不代表项目中的实际规则。</p><p>学习日期按北京时间记录。“记得”标为已掌握，“模糊”或“忘了”标为学习中；只打开释义不会生成学习记录。已有学习记录不会因状态变化而消失。复习日期由你安排，不会自动覆盖。</p><p>旧版进度仅包含状态，导入后历史日期显示未知。备份导入合并缺少的词条及学习记录，不覆盖已有云端设置。没有网络时暂不支持继续同步；请保留页面中的待保存操作并联网重试。</p><div class="sources">{catalog.sources.map(s => <a href={s.url} target="_blank" rel="noopener noreferrer">{s.id} · {s.title}</a>)}</div></details>
+      <details class="content-notes"><summary>关于这份词库与学习记录</summary><p>内容来自《Java 技术英语：500 词汇＋500 表达》离线版及《Java 英语第二册》新增 500 词汇，沿用 20 个主题，保留原词条编号、双语例句与语法提示；第二册同时提供常用搭配、学习层级与主题参考（非逐词出处）。全部单词另配四句双语情景对话与一句回忆；相关单词共用场景，当前词会在对话中突出显示。对话是教学示例，中文翻译和参考答案可按需展开，查看不会生成学习记录。它是按学习目标编排的清单，并非语料统计的高频榜；例句是教学示例，不代表项目中的实际规则。</p><p>学习日期按北京时间记录。评价后自动安排下次复习：“忘了”次日，“模糊”两天后，“记得”三天后；同一词在两个不同学习日都选“记得”才标为已掌握，之后间隔依次拉长到 7、14、30 天。同一天重复评价只算一次，选“模糊”或“忘了”会回到短间隔。你手工设置的复习日期会在该词下一次评价后被新的安排替换；只打开释义不会生成学习记录，已有学习记录不会因状态变化而消失。</p><p>旧版进度仅包含状态，导入后历史日期显示未知。备份导入合并缺少的词条及学习记录，不覆盖已有云端设置。没有网络时暂不支持继续同步；请保留页面中的待保存操作并联网重试。</p><div class="sources">{catalog.sources.map(s => <a href={s.url} target="_blank" rel="noopener noreferrer">{s.id} · {s.title}</a>)}</div></details>
       <footer><span>学习档案 / ENGLISH</span><span>从认识，到理解，再到运用。</span></footer>
     </main>
     <dialog id="word-dialog" aria-labelledby="detail-title"><div class="dialog-toolbar"><span>词条详情与学习安排</span><button type="button" id="close-dialog" aria-label="关闭词条详情">✕</button></div><div id="detail-content"></div></dialog>

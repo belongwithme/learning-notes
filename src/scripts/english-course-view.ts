@@ -5,12 +5,19 @@ import {
   dateTime,
 } from "./english-journey-view";
 import type { PracticeData } from "../lib/english/practice-server";
+import dialogues from "../data/english-dialogues.json";
 import { learningDay } from "../lib/english/model";
 import { addDays } from "../lib/english/practice-model";
+import { clozeFor, target } from "../lib/english/cloze";
 
 type Course = NonNullable<PracticeData["bundle"]>;
 type Question = Course["content"]["exercise"]["questions"][number];
 export type CourseScreen = "learning" | "results" | "ended";
+const dialogueByWord = new Map(
+  dialogues.flatMap((dialogue) =>
+    dialogue.wordIds.map((id) => [id, dialogue] as const),
+  ),
+);
 const types = {
   meaning: "词义辨析",
   collocation: "搭配或选词",
@@ -94,7 +101,26 @@ function feedbackHtml(b: Course) {
     <button type="submit">保存反馈并更新建议</button><button type="button" data-discard-drafts>取消未提交修改</button></form><p class="analysis-meta">已保存 ${b.feedback.length} 条反馈；未提交的选择不影响结果。</p></details>`;
 }
 
-function resultsHtml(b: Course) {
+// Words answered wrongly on the first try, plus words from sentences the reader
+// opened for help, are asked again in a different sentence. This check is only
+// shown here: it saves nothing and counts toward nothing; the confirmed
+// next-day review is what gives independent evidence.
+function reaskHtml(b: Course, helped: string[]) {
+  const wrong = b.content.exercise.questions
+    .filter((q) => !q.flagged && q.attempts[0] && !q.attempts[0].payload.correct)
+    .flatMap((q) => q.wordIds);
+  const items = [...new Set([...wrong, ...helped])].flatMap((id) => {
+    const entry = words.get(id);
+    const cloze = entry && clozeFor(entry, dialogueByWord.get(id), true);
+    return entry && cloze ? [{ entry, cloze }] : [];
+  });
+  if (!items.length) return "";
+  return `<section class="analysis-card" id="analysis-reask"><h4>换个语境，再问一次</h4>
+    <p>刚才答错或看了译文求助的用法，换一句话再试。这里只在本页核对，不保存，也不计入成绩。</p>
+    ${items.map(({ entry, cloze }) => `<div class="reask-item" data-answer="${e(cloze.answer)}" data-target="${e(target(entry))}"><p>提示：<strong>${e(entry.meaning)}</strong></p><p lang="en">${e(cloze.text)}</p><p class="analysis-meta">${e(cloze.zh)}</p><label class="sr-only" for="reask-${e(entry.id)}">缺少的词</label><input id="reask-${e(entry.id)}" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"/> <button type="button" data-reask-check>核对</button><p class="reask-result" role="status"></p></div>`).join("")}</section>`;
+}
+
+function resultsHtml(b: Course, helped: string[]) {
   const p = b.progress;
   return `<section class="analysis-card" id="analysis-results"><p class="eyebrow">本次结果</p><h3>${e(p.label)}</h3>
     <p>${p.validCount ? `${p.correctCount} / ${p.validCount} 道有效题首次答对；已保存 ${p.answeredCount} 道有效答案。` : "暂无可统计的有效题，原答案保留。"}${p.flaggedCount ? `${p.flaggedCount} 道题待核对。` : ""}</p>
@@ -106,7 +132,7 @@ function resultsHtml(b: Course) {
         : `<p>${p.stage === "checking" ? "所有题目待核对，不能判定完成或通过。修正材料另存版本，原答案保留。" : "尚有未完成或暂不可作答的内容，已保存答案保留。"}</p>${p.nextQuestionId ? '<button type="button" class="primary" data-next-question>继续未答题</button>' : ""}`
     }
     <details class="analysis-evidence"><summary>查看判定依据</summary><p>只统计有效题的首次答案；提示、答前看答案或在练习中回看教学内容按辅助作答处理。正常课前学习与答后解释不影响已提交答案。</p><p>独立通过的目标用法：${p.passedWordIds.map((id) => e(words.get(id)?.term ?? id)).join("、") || "暂无"}。自评状态不自动修改。</p></details>
-  </section>${feedbackHtml(b)}`;
+  </section>${p.complete ? reaskHtml(b, helped) : ""}${feedbackHtml(b)}`;
 }
 
 export function courseHtml(
@@ -116,6 +142,7 @@ export function courseHtml(
     screen: CourseScreen;
     lesson: string;
     report: string;
+    helped: string[];
   },
 ) {
   const p = b.progress,
@@ -128,25 +155,27 @@ export function courseHtml(
     options.screen === "results" ||
     ["checking", "elsewhere", "waiting"].includes(p.stage) ||
     (b.study.stage === "practice" && !selected);
-  const title = `<header class="analysis-card"><h3>${e(b.content.title)}</h3><p>${p.isRetest ? "到期复习：先独立答新题，再看解释" : b.study.hasLesson ? "1 学讲解 → 2 读短文 → 3 做练习 → 本次结果" : "旧版练习：从题目开始，原记录保留"}</p>${b.study.stage === "practice" && !p.complete ? '<p class="analysis-meta">练习期间查看词条释义，对应未答题会记为辅助作答；当前选择仍会保留。</p>' : ""}</header>`;
+  const title = `<header class="analysis-card"><h3>${e(b.content.title)}</h3><p>${p.isRetest ? "到期复习：先独立答新题，再看解释" : b.study.hasLesson ? "1 学讲解 → 2 读短文 → 3 做练习 → 本次结果" : "旧版练习：从题目开始，原记录保留"}</p></header>`;
   const translationReview = b.translationsAvailable
     ? `<details class="analysis-card"><summary>查看课后译文与讲解</summary>${options.lesson}<h3>练习语境译文</h3><p class="analysis-material" lang="en">${e(exercise.passage)}</p><p>${e(exercise.translation)}</p>${exercise.examples.map((example) => `<blockquote lang="en">${e(example.english)}</blockquote><p>${e(example.translation)}</p>`).join("")}</details>`
     : "";
   if (options.screen === "ended")
     return `${title}<section class="analysis-card journey-recommended" id="analysis-receipt"><h3>本次学习已保存，可以离开了。</h3><p>本课有效题 ${p.answeredCount} / ${p.validCount} 已答。以下是实际保存的复习安排：</p>${schedulesHtml(b) || "<p>本次没有新增复习安排。</p>"}<p>下次打开今日学习，可继续已保存内容或查看到期复习；没有创建站外通知。</p><div class="analysis-actions"><button type="button" class="primary" data-view="today">返回今日学习</button><button type="button" data-another-course>再学一项</button></div></section>${translationReview}`;
-  const material = `<section class="analysis-card" id="analysis-exercise"><h3>读题目语境，独立作答</h3>
+  // The question comes first; the passage opens by itself only when the question
+  // is about the passage, and otherwise waits behind one line.
+  const material = `<details class="analysis-card" id="analysis-exercise" ${selected?.type === "comprehension" ? "open" : ""}><summary>练习语境：短文与例句</summary>
     <p class="analysis-meta">${exercise.source.kind === "generated" ? "Codex 生成的教学材料" : `真实摘录 · <a href="${e(exercise.source.url)}" target="_blank" rel="noopener noreferrer">${e(exercise.source.title)}</a>`} · ${e(exercise.difficulty)}</p>
     <p class="analysis-material" lang="en">${e(exercise.passage)}</p>${exercise.examples.map((example) => `<blockquote lang="en">${e(example.english)}</blockquote>${example.translation ? `<p>${e(example.translation)}</p>` : ""}`).join("")}
-    ${b.translationsAvailable ? `<p class="analysis-result">${e(exercise.translation)}</p>` : '<p class="analysis-meta">完成本课全部有效题后显示译文，不要求全部答对。</p>'}</section>`;
+    ${b.translationsAvailable ? `<p class="analysis-result">${e(exercise.translation)}</p>` : '<p class="analysis-meta">完成本课全部有效题后显示译文，不要求全部答对。</p>'}</details>`;
   const content =
     b.study.stage !== "practice" && !showResults
       ? options.lesson
       : showResults
-        ? `${resultsHtml(b)}${translationReview}`
-        : `${material}
-    ${selected ? questionHtml(selected, valid.indexOf(selected), valid.length) : ""}
+        ? `${resultsHtml(b, options.helped)}${translationReview}`
+        : `${selected ? questionHtml(selected, valid.indexOf(selected), valid.length) : ""}
     ${selected?.attempts.length || selected?.access.blocked ? `<div class="analysis-actions"><button type="button" class="primary" ${p.nextQuestionId ? "data-next-question" : "data-show-results"}>${p.nextQuestionId ? "下一题" : "查看本次结果"}</button></div>` : ""}
-    <details class="analysis-card"><summary>回看教学内容（尚未作答的题将记为辅助）</summary>${options.lesson}</details>`;
+    ${material}
+    <details class="analysis-card"><summary>回看教学内容（尚未作答的题将记为辅助；练习期间打开词条释义同样如此）</summary>${options.lesson}</details>`;
   return `<div class="journey-stack">${title}${content}
     <div class="analysis-actions"><button type="button" data-pause-course>先学到这里</button></div>
     <details class="analysis-card"><summary>查看当时的分析与依据</summary>${b.study.stage === "practice" && exercise.questions.some((q) => !q.attempts.length && !q.access.blocked && !q.assisted) ? '<p>分析包含目标词义与用法。练习中查看后，尚未作答的题将记为辅助；已保存答案不受影响。</p><button type="button" data-help="hint" data-question="*">查看分析（未答题记为辅助）</button>' : options.report}</details>

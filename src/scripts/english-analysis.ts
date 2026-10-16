@@ -9,6 +9,7 @@ import {
   preparationHtml,
   type HistoryFilters,
 } from "./english-journey-view";
+import { blank, normalize } from "../lib/english/cloze";
 import { learningDay } from "../lib/english/model";
 import {
   periodFor,
@@ -89,7 +90,7 @@ function lessonHtml(
     ${lesson.words.map((w) => `<article class="lesson-word"><h4>${e(words.get(w.wordId)?.term)} <span class="tag">${e(b.content.exercise.targets.find((t) => t.wordId === w.wordId)?.meaning)}</span></h4><p>${e(w.explanation)}</p><h5>怎样使用</h5><ul>${w.usageNotes.map((n) => `<li>${e(n)}</li>`).join("")}</ul><h5>放进句子里理解</h5>${w.examples.map(example).join("")}<h5>容易混淆的地方</h5><div class="lesson-contrast">${example(w.contrast.left)}${example(w.contrast.right)}</div><p class="lesson-note">${e(w.contrast.explanation)}</p></article>`).join("")}`
     : "";
   const reading = lesson
-    ? `<p class="eyebrow">02 · READ WITH GUIDANCE</p><h3>${e(lesson.reading.title)}</h3><p class="analysis-meta">${source?.kind === "excerpt" ? `真实摘录 · <a href="${e(source.url)}" target="_blank" rel="noopener noreferrer">${e(source.title)}</a>` : "Codex 生成的教学语料"} · 先通读，再对照句子拆解</p><p class="analysis-material" lang="en">${e(lesson.reading.passage)}</p>${b.translationsAvailable ? `<details class="lesson-translation" open><summary>对照全文译文</summary><p>${e(lesson.reading.translation)}</p></details>` : ""}<h4>一句一句，读清关系</h4>${lesson.reading.sentences.map((s, i) => `<article class="lesson-sentence"><p class="eyebrow">SENTENCE ${i + 1}</p><blockquote lang="en">${e(s.sentence)}</blockquote>${s.translation ? `<p>${e(s.translation)}</p>` : ""}<dl>${s.chunks.map((c) => `<div><dt lang="en">${e(c.text)}</dt><dd>${e(c.explanation)}</dd></div>`).join("")}</dl><p class="lesson-note">${e(s.takeaway)}</p></article>`).join("")}<h4>带着这几条去练习</h4><ul class="analysis-next">${lesson.takeaways.map((t) => `<li>${e(t)}</li>`).join("")}</ul>`
+    ? `<p class="eyebrow">02 · READ WITH GUIDANCE</p><h3>${e(lesson.reading.title)}</h3><p class="analysis-meta">${source?.kind === "excerpt" ? `真实摘录 · <a href="${e(source.url)}" target="_blank" rel="noopener noreferrer">${e(source.title)}</a>` : "Codex 生成的教学语料"} · 先通读，再对照句子拆解</p><p class="analysis-material" lang="en">${e(lesson.reading.passage)}</p>${b.translationsAvailable ? `<details class="lesson-translation" open><summary>对照全文译文</summary><p>${e(lesson.reading.translation)}</p></details>` : ""}<h4>一句一句，读清关系</h4>${lesson.reading.sentences.map((s, i) => `<article class="lesson-sentence"><p class="eyebrow">SENTENCE ${i + 1}</p><blockquote lang="en">${e(s.sentence)}</blockquote>${s.translation ? `<p>${e(s.translation)}</p>` : ""}${!s.translation && b.sentenceHelp?.[i] ? `<details class="sentence-help" data-words="${e(b.content.exercise.targets.filter((t) => words.get(t.wordId) && blank(s.sentence, words.get(t.wordId)!)).map((t) => t.wordId).join(","))}"><summary>这句卡住了？看这句译文</summary><p>${e(b.sentenceHelp[i])}</p><p class="analysis-meta">看过译文的句子里的目标词，课后会换个语境再问一次。</p></details>` : ""}<dl>${s.chunks.map((c) => `<div><dt lang="en">${e(c.text)}</dt><dd>${e(c.explanation)}</dd></div>`).join("")}</dl><p class="lesson-note">${e(s.takeaway)}</p></article>`).join("")}<h4>带着这几条去练习</h4><ul class="analysis-next">${lesson.takeaways.map((t) => `<li>${e(t)}</li>`).join("")}</ul>`
     : "";
   return `<section class="analysis-card lesson" id="analysis-lesson">
     <p class="eyebrow">LEARN FIRST · THEN APPLY</p><h3>${e(b.study.title)}</h3>
@@ -125,6 +126,8 @@ export function initAnalysis(
   let needsReadback = false;
   let recentWordCount: number | null = null;
   let reportId = new URL(location.href).searchParams.get("report") ?? "";
+  // Target words from sentences opened for help, per course; kept in this page only.
+  const helped = new Map<string, Set<string>>();
   let pending: Record<string, unknown> | null = null;
   const drafts = new Map<string, [string, string][]>();
   const formKey = (form: HTMLFormElement) =>
@@ -324,6 +327,7 @@ export function initAnalysis(
       screen: courseScreen,
       lesson: lessonHtml(b, lessonStep),
       report,
+      helped: [...(helped.get(b.id) ?? [])],
     });
     if (
       courseScreen === "ended" &&
@@ -575,11 +579,36 @@ export function initAnalysis(
     syncCustomDates();
     if (form) rememberDraft(form);
   });
+  root.addEventListener(
+    "toggle",
+    (event) => {
+      const help = event.target as HTMLDetailsElement;
+      const id = data?.bundle?.id;
+      if (!id || !help.classList?.contains("sentence-help") || !help.open) return;
+      const set = helped.get(id) ?? new Set<string>();
+      help.dataset.words?.split(",").filter(Boolean).forEach((word) => set.add(word));
+      helped.set(id, set);
+    },
+    true,
+  );
   root.addEventListener("click", async (event) => {
     const button = (event.target as Element).closest<HTMLButtonElement>(
       "button",
     );
     if (!button || busy || batching) return;
+    if (button.hasAttribute("data-reask-check")) {
+      const item = button.closest<HTMLElement>(".reask-item")!;
+      const given = normalize(item.querySelector("input")!.value);
+      const right = [item.dataset.answer!, item.dataset.target!].some(
+        (value) => normalize(value) === given,
+      );
+      item.querySelector(".reask-result")!.textContent = !given
+        ? `参考答案：${item.dataset.answer}。`
+        : right
+          ? "答对了。明天的复习会再检查一次。"
+          : `参考答案是“${item.dataset.answer}”，这个用法明天还会再问。`;
+      return;
+    }
     if (button.dataset.open && data?.bundle?.study.stage === "practice") {
       event.stopPropagation();
       const wordId = button.dataset.open;
