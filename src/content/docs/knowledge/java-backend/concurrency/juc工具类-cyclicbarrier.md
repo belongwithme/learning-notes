@@ -1,11 +1,17 @@
 ---
 title: "JUC工具类-CyclicBarrier"
 description: "在高并发程序设计中，实现多个线程之间的相互等待、协调推进是一项常见且具有挑战性的任务。"
-status: draft
+status: curated
 sidebar:
   order: 18
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147238412)
+
+:::tip[要点]
+- `CyclicBarrier` 让一组线程互相等待，全部到达屏障后一起继续，适合分阶段协作的并行计算。
+- 内部用 `ReentrantLock` 和一个 `Condition` 实现，每一轮称为一个 generation，结束后自动重置，可以循环使用。
+- 有线程中断或超时时屏障会被打破，其他等待线程收到 `BrokenBarrierException`。
+:::
 
 ## 1. 引言
 

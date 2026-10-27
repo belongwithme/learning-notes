@@ -1,11 +1,17 @@
 ---
 title: "JUC并发集合-ConcurrentSkipListMap"
 description: "ConcurrentSkipListMap是Java并发包(java.util.concurrent)中提供的一个线程安全的有序映射表实现，基于跳表(Skip List)数据结构。它实现了ConcurrentNavigableMap接口，提供了丰富的有序操作和导航方法，同时保证了高并发环境下的..."
-status: draft
+status: curated
 sidebar:
   order: 27
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146808069)
+
+:::tip[要点]
+- `ConcurrentSkipListMap` 是线程安全的有序 Map，基于跳表实现，相当于并发版的 `TreeMap`。
+- 增删改通过 CAS 无锁完成，删除时先给节点打标记再物理移除。
+- 需要按 key 排序或做范围查询时用它；只需要并发读写时用 `ConcurrentHashMap` 更快。
+:::
 
 ## 1. 基础概念
 

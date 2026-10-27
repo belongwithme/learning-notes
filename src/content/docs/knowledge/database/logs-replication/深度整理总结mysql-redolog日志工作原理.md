@@ -4,7 +4,7 @@ description: "你知道什么是存储引擎、随机 IO 和顺序 IO吗？你�
 status: draft
 sidebar:
   label: "redoLog日志工作原理"
-  order: 145585470
+  order: 27
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145585470)
 

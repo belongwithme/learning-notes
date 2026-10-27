@@ -3,7 +3,7 @@ title: "Redis数据结构总结-跳表"
 description: "普通链表的时间复杂度很有意思,增删改都是O(1),只有查是O(n)."
 status: draft
 sidebar:
-  order: 145731773
+  order: 9
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145731773)
 

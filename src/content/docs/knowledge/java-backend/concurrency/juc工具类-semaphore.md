@@ -1,11 +1,17 @@
 ---
 title: "JUC工具类-Semaphore"
 description: "你正在管理一个停车场，这个停车场只有 10 个停车位。同一时间，可能有几十辆甚至上百辆车想要进入停车场。"
-status: draft
+status: curated
 sidebar:
   order: 19
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147242254)
+
+:::tip[要点]
+- `Semaphore` 维护一组许可，控制同时访问某个资源的线程数，常用于限流和资源池。
+- `acquire()` 拿不到许可就阻塞，`release()` 归还许可；许可数可以大于 1，这是它和互斥锁的根本区别。
+- 有公平和非公平两种模式，基于 AQS 共享模式实现。
+:::
 
 ## 0. 前言：为什么需要 Semaphore？
 

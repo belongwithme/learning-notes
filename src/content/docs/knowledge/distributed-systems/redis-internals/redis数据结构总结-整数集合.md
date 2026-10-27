@@ -3,7 +3,7 @@ title: "Redis数据结构总结-整数集合"
 description: "整数集合是 Set 对象的底层实现之一。当一个 Set 对象只包含整数值元素，并且元素数量不大时，就会使用整数集这个数据结构作为底层实现。"
 status: draft
 sidebar:
-  order: 145729512
+  order: 8
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145729512)
 

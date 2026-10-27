@@ -3,7 +3,7 @@ title: "Redis-缓存过期和内存淘汰"
 description: "Redis 是可以对 key 设置过期时间的，因此需要有相应的机制将已过期的键值对删除,而做这个工作的就是过期键值删除策略。"
 status: draft
 sidebar:
-  order: 145756115
+  order: 18
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145756115)
 

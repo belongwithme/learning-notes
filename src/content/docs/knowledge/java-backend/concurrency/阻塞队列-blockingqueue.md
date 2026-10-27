@@ -1,11 +1,17 @@
 ---
 title: "阻塞队列-BlockingQueue"
 description: "想象一下现实生活中的流水线：上游工序不断生产零件（生产者），下游工序不断取用零件进行组装（消费者）。为了保证流水线顺畅运行，通常会在上下游之间设置一个传送带或缓冲区。这个缓冲区有几个关键作用："
-status: draft
+status: curated
 sidebar:
   order: 29
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147334606)
+
+:::tip[要点]
+- `BlockingQueue` 在队列满时阻塞生产者、队列空时阻塞消费者，是生产者-消费者模式的标准实现。
+- 四组方法行为不同：`add` / `remove` 抛异常，`offer` / `poll` 返回特殊值，`put` / `take` 阻塞，带超时的 `offer` / `poll` 等待一段时间。
+- 常见实现各有用途：`ArrayBlockingQueue` 有界、`LinkedBlockingQueue` 两把锁、`SynchronousQueue` 不存元素、`DelayQueue` 按到期时间出队。
+:::
 
 ## 0. 前言：为什么需要 BlockingQueue？
 

@@ -1,11 +1,17 @@
 ---
 title: "并发容器（一）：普通容器&&同步容器&&并发容器"
 description: "之前我们学习过了集合，并发编程，现在我们来学习并发容器，在并发编程中，经常听到Java集合类，同步容器，并发容器，那么他们之间有哪些分类，优劣呢，我们先把这个框架给分清楚了，这样后面学习的时候不会乱。"
-status: draft
+status: curated
 sidebar:
   order: 24
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126122998)
+
+:::tip[要点]
+- 普通集合（`ArrayList`、`HashMap`）不是线程安全的。
+- 同步容器（`Vector`、`Collections.synchronizedXxx`）给每个方法加锁，复合操作（先检查再执行、迭代）仍需外部加锁，并发性能差。
+- 并发容器（`ConcurrentHashMap`、`CopyOnWriteArrayList`、阻塞队列等）用更细的锁或无锁算法，是并发场景的首选。
+:::
 
 之前我们学习过了集合，并发编程，现在我们来学习并发容器，在并发编程中，经常听到Java集合类，同步容器，并发容器，那么他们之间有哪些分类，优劣呢，我们先把这个框架给分清楚了，这样后面学习的时候不会乱。
 

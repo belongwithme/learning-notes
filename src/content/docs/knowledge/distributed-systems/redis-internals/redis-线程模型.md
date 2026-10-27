@@ -3,7 +3,7 @@ title: "Redis-线程模型"
 description: "Redis 6.0 之前的单线程模型。其实从 4.0 开始，Redis 并不是严格意义上的单线程模型，因为 Redis 除了主线程外，也有一些后台的线程或者子进程在处理任务（例如清理脏数据、生成快照、AOF 重写），这个时候大家所说的单线程应该是 Redis 的主线程模型。"
 status: draft
 sidebar:
-  order: 145711338
+  order: 2
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145711338)
 

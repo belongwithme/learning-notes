@@ -4,7 +4,7 @@ description: "前面介绍的 undo log 和 redo log 这两个日志都是 Innodb
 status: draft
 sidebar:
   label: "bin Log日志工作原理"
-  order: 145588432
+  order: 28
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145588432)
 

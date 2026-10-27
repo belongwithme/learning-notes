@@ -3,7 +3,7 @@ title: "Redis-列表结构实操"
 description: "之前总结过列表的数据结构,但是只是理论知识肯定是不行的,思来想去,总结了一些实操例子和实操场景,个人觉得还是很有用的,尤其是后面的场景,平时有我遇见的然后总结下来,例子都是我自己跑过的,没什么问题,有问题评论区见."
 status: draft
 sidebar:
-  order: 145847450
+  order: 11
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145847450)
 

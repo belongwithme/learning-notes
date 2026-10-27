@@ -3,7 +3,7 @@ title: "Redis-事务"
 description: "所谓的事务，就是指对数据进行读写的一系列操作。事务在执行时，会提供专门的属性保证，包括原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）和持久性（Durability），也就是 ACID 属性。"
 status: draft
 sidebar:
-  order: 145794663
+  order: 23
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145794663)
 

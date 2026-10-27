@@ -3,7 +3,7 @@ title: "Redis-主从复制如何实现"
 description: "AOF 和 RDB，这两个持久化技术保证了即使在服务器重启的情况下也不会丢失数据（或少量损失）。"
 status: draft
 sidebar:
-  order: 145807906
+  order: 15
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145807906)
 

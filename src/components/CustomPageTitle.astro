@@ -13,7 +13,7 @@ const statusMap: Record<string, { label: string, class: string }> = {
   outdated: { label: '已过期', class: 'status-outdated' },
 };
 
-const currentStatus = location ? statusMap[data.status ?? 'draft'] : data.status && statusMap[data.status];
+const currentStatus = location && statusMap[data.status ?? 'draft'];
 // 专题概览页带 hero，不计入首页的"继续阅读"。
 const recordVisit = Boolean(location) && !data.hero;
 ---
@@ -28,9 +28,9 @@ const recordVisit = Boolean(location) && !data.hero;
 
 <h1 id="_top">{data.sidebar.label ?? data.title}</h1>
 
-{(location || currentStatus) && (
+{location && (
   <p class="page-meta">
-    {location && <span>约 {readingMinutes(entry.body)} 分钟</span>}
+    <span>约 {readingMinutes(entry.body)} 分钟</span>
     {currentStatus && (
       <a class={`page-status ${currentStatus.class}`} href="/about/#内容状态">
         <span class="status-dot" aria-hidden="true"></span>{currentStatus.label}

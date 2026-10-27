@@ -1,11 +1,17 @@
 ---
 title: "并发编程JUC深度学习(九）ReentrantLock源码解析"
 description: "上一篇文章我们细说了AQS，如果我们搞明白了一些AQS，再来学习ReentrantLock就很容易了，相对来说简单了许多，核心还是AQS的那些东西，本篇我们敞开了聊聊ReentrantLock细节内容。"
-status: draft
+status: curated
 sidebar:
   order: 14
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126131210)
+
+:::tip[要点]
+- `ReentrantLock` 的内部类 `Sync` 继承 AQS，`FairSync` 和 `NonfairSync` 分别实现公平和非公平获取。
+- 非公平锁获取时先直接 CAS 抢锁，不看队列里是否有人排队；公平锁会先检查 `hasQueuedPredecessors()`。
+- 默认是非公平锁，吞吐量更高，代价是可能出现线程饥饿。
+:::
 
 上一篇文章我们细说了AQS，如果我们搞明白了一些AQS，再来学习ReentrantLock就很容易了，相对来说简单了许多，核心还是AQS的那些东西，本篇我们敞开了聊聊ReentrantLock细节内容。
 

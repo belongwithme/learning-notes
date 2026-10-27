@@ -3,7 +3,7 @@ title: "Redis- 热key"
 description: "热Key问题是指在分布式缓存或数据库系统中，某些特定的Key在短时间内接收到大量的访问请求，导致这些Key所在的节点负载过高，形成系统瓶颈，甚至引发雪崩效应。这类似于现实世界中的’热点’现象，少数资源承受了大部分的访问压力."
 status: draft
 sidebar:
-  order: 146119685
+  order: 22
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146119685)
 

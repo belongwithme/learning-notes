@@ -3,7 +3,7 @@ title: "Redis 缓存并发问题深度解析：击穿、雪崩与穿透防治指
 description: "在现代分布式系统中，缓存是提升系统性能、降低后端负载不可或缺的关键组件。"
 status: draft
 sidebar:
-  order: 147560796
+  order: 19
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147560796)
 

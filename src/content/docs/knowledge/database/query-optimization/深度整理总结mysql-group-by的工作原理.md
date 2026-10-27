@@ -4,7 +4,7 @@ description: "group by 是用来对数据进行分组的，一般与聚合函数
 status: draft
 sidebar:
   label: "Group By的工作原理"
-  order: 145465483
+  order: 16
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145465483)
 

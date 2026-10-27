@@ -1,11 +1,17 @@
 ---
 title: "Java Lock 深度解析"
 description: "在 Java 并发编程里，synchronized 关键字是我们最早接触也最常用的同步机制。它简单易用，能解决大部分场景下的线程安全问题。然而，随着业务场景的复杂化和对性能、灵活性的更高要求，synchronized 的局限性也逐渐显现。此时，java.util.concurrent.lock..."
-status: draft
+status: curated
 sidebar:
   order: 13
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251093)
+
+:::tip[要点]
+- `Lock` 相比 `synchronized` 多了可中断获取、超时获取、尝试获取、公平锁和多个条件变量。
+- `Lock` 必须在 `finally` 里手动 `unlock()`，`synchronized` 在退出代码块或抛异常时自动释放。
+- 可重入意味着同一线程可以重复获取同一把锁，`state` 记录重入次数，释放同样次数后才真正释放。
+:::
 
 在 Java 并发编程里，`synchronized` 关键字是我们最早接触也最常用的同步机制。它简单易用，能解决大部分场景下的线程安全问题。然而，随着业务场景的复杂化和对性能、灵活性的更高要求，`synchronized` 的局限性也逐渐显现。此时，`java.util.concurrent.locks` 包下的 `Lock` 接口及其实现类应运而生，提供了更强大、更灵活的锁机制。
 

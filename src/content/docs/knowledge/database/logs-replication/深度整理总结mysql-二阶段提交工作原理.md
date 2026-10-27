@@ -4,7 +4,7 @@ description: "之前三种日志类型我们都了解过了,下面我们通过�
 status: draft
 sidebar:
   label: "二阶段提交工作原理"
-  order: 145589737
+  order: 29
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145589737)
 

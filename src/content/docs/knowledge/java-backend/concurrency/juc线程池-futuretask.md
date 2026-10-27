@@ -1,11 +1,17 @@
 ---
 title: "JUC线程池-FutureTask"
 description: "在现代软件开发中，尤其是后端服务开发，高并发和高性能是永恒的追求。为了充分利用多核处理器的能力，提升应用的响应速度和吞吐量，异步编程和"
-status: draft
+status: curated
 sidebar:
   order: 32
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147245941)
+
+:::tip[要点]
+- `FutureTask` 同时实现 `Runnable` 和 `Future`，既能交给线程执行，又能取回结果。
+- 用 `volatile int state` 加 CAS 管理任务状态，保证任务只执行一次。
+- 调用 `get()` 的线程在结果出来前被 `LockSupport.park` 挂起，任务完成或取消后逐个唤醒。
+:::
 
 ## 引言
 

@@ -5,7 +5,7 @@ import Default from '@astrojs/starlight/components/Pagination.astro';
 const { entry, pagination } = Astro.locals.starlightRoute;
 const segments = entry.id.split('/');
 const scope = segments.length >= 3 ? segments.slice(0, -1).join('/') : entry.id;
-const inScope = (link?: { href: string }) => link && decodeURI(link.href).startsWith(`/${scope}/`) ? link : undefined;
+const inScope = <T extends { href: string }>(link?: T) => (link && decodeURI(link.href).startsWith(`/${scope}/`) ? link : undefined);
 
 pagination.prev = inScope(pagination.prev);
 pagination.next = inScope(pagination.next);

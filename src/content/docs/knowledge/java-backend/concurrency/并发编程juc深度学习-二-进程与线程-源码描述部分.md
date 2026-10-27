@@ -1,11 +1,17 @@
 ---
 title: "并发编程JUC深度学习(二）进程与线程（源码描述部分）"
 description: "本文着重分析代码，理清里面的逻辑，我们主要分析Thread。"
-status: draft
+status: curated
 sidebar:
   order: 2
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125993672)
+
+:::tip[要点]
+- `Thread` 实现了 `Runnable`，真正要执行的逻辑来自构造时传入的 `target` 或子类重写的 `run()`。
+- 各个构造方法最终都走到 `init`，决定线程组、名字、是否守护线程、优先级和栈大小，这些默认继承自创建它的父线程。
+- 调用 `start()` 才会创建新线程，直接调用 `run()` 只是在当前线程里执行一个普通方法。
+:::
 
 ## Thread源码解析
  本文着重分析代码，理清里面的逻辑，我们主要分析Thread。

@@ -1,11 +1,17 @@
 ---
 title: "JUC- CompletableFuture"
 description: "Java 从早期就提供了 Thread 和 Runnable 来支持并发，后来引入了 ExecutorService 和 Future 来简化线程管理和获取异步结果。然而，Future 接口本身存在一些局限性，例如 get() 方法的阻塞性、缺乏方便的回调机制以及组合多个任务能力的不足。"
-status: draft
+status: curated
 sidebar:
   order: 34
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147267695)
+
+:::tip[要点]
+- `CompletableFuture` 用回调代替阻塞的 `get()`，可以链式组合：`thenApply` 转换、`thenCompose` 串联、`thenCombine` 合并、`allOf` / `anyOf` 聚合。
+- 不指定线程池时异步方法使用 `ForkJoinPool.commonPool()`，有阻塞 IO 的业务应传入自定义线程池。
+- 异常沿链传递，用 `exceptionally`、`handle` 或 `whenComplete` 处理，否则会被吞掉。
+:::
 
 ## 引言
 

@@ -3,7 +3,7 @@ title: "Redis- 切片集群"
 description: "Redis Cluster是Redis官方提供的分布式解决方案，它通过数据分片技术将数据自动分散存储到多个节点上，实现了水平扩展能力."
 status: draft
 sidebar:
-  order: 146119463
+  order: 17
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146119463)
 

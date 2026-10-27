@@ -1,11 +1,17 @@
 ---
 title: "JUC工具类-Phaser"
 description: "Phaser是java.util.concurrent包下的一个可重用的同步屏障（Synchronization Barrier）"
-status: draft
+status: curated
 sidebar:
   order: 21
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147240379)
+
+:::tip[要点]
+- `Phaser` 是可复用、可动态增减参与者的多阶段同步器，可以看作 `CountDownLatch` 和 `CyclicBarrier` 的增强版。
+- 参与者用 `register()` 加入、`arriveAndDeregister()` 退出，`arriveAndAwaitAdvance()` 等待本阶段所有参与者到达。
+- 重写 `onAdvance()` 可以在每个阶段结束时执行逻辑，返回 `true` 表示终止整个 `Phaser`。
+:::
 
 ## 一、 基础概念理解：Phaser是什么？
 

@@ -1,11 +1,17 @@
 ---
 title: "JUC线程池-ScheduledThreadPoolExecutor"
 description: "在 Java 开发中，我们经常会遇到需要延迟执行或周期性执行任务的场景。比如："
-status: draft
+status: curated
 sidebar:
   order: 33
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147246468)
+
+:::tip[要点]
+- `ScheduledThreadPoolExecutor` 继承 `ThreadPoolExecutor`，用按执行时间排序的 `DelayedWorkQueue` 实现延迟和周期任务。
+- `scheduleAtFixedRate` 按固定频率计算下次时间，`scheduleWithFixedDelay` 在上次结束后再等固定间隔。
+- 周期任务抛出未捕获的异常后，后续执行会被悄悄取消，任务里要自己捕获异常。
+:::
 
 ## 1. 引言：为什么需要 ScheduledThreadPoolExecutor？
 

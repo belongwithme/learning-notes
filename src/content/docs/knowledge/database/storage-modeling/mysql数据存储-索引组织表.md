@@ -3,7 +3,7 @@ title: "MySQL数据存储- 索引组织表"
 description: "InnoDB 存储引擎是 MySQL 数据库中使用最为广泛的引擎，在海量大并发的 OLTP 业务中，InnoDB 必选。这一章我们聊一聊 MySQL InnoDB 存储引擎的索引结构。"
 status: draft
 sidebar:
-  order: 145488386
+  order: 5
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145488386)
 

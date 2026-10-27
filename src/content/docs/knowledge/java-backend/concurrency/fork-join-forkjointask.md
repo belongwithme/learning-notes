@@ -1,11 +1,17 @@
 ---
 title: "Fork/Join - ForkJoinTask"
 description: "Fork/Join框架是Java 7引入的一个强大的并行处理框架，专为可以递归分解的问题设计。在这个框架中，ForkJoinTask是核心组件，它提供了支持分治算法的任务抽象。"
-status: draft
+status: curated
 sidebar:
   order: 36
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147397422)
+
+:::tip[要点]
+- `fork()` 把子任务放进当前线程的工作队列异步执行，`join()` 等待并取回结果。
+- `RecursiveTask` 有返回值，`RecursiveAction` 没有返回值，任务逻辑写在 `compute()` 里。
+- 常见写法是一个子任务 `fork()`、另一个当前线程直接 `compute()`，再 `join()` 前者，避免浪费当前线程。
+:::
 
 ## 1. 引言
 

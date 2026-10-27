@@ -3,7 +3,7 @@ title: "Redis-RDB"
 description: "因为Redis的数据都储存在内存中，当进程退出时，所有数据都将丢失。"
 status: draft
 sidebar:
-  order: 145765328
+  order: 12
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145765328)
 

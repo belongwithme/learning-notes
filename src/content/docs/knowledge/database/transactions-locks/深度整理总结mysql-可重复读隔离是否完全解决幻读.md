@@ -4,7 +4,7 @@ description: "前面我们介绍了几种隔离级别和并发执行下MySQL在�
 status: draft
 sidebar:
   label: "可重复读隔离是否完全解决幻读"
-  order: 145519650
+  order: 25
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145519650)
 

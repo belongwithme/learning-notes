@@ -4,7 +4,7 @@ description: "页是InnoDB管理存储空间的基本单位，一个页的大小
 status: draft
 sidebar:
   label: "数据页(索引页)的结构"
-  order: 145477883
+  order: 3
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145477883)
 

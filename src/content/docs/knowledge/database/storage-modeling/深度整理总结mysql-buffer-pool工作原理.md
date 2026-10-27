@@ -4,7 +4,7 @@ description: "用系统分层架构，为了加速数据访问，会把最常访
 status: draft
 sidebar:
   label: "Buffer Pool工作原理"
-  order: 145478383
+  order: 6
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145478383)
 

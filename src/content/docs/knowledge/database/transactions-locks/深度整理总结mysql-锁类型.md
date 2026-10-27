@@ -4,7 +4,7 @@ description: "MySQL的锁是比较难的(个人认为).本章简单介绍一下�
 status: draft
 sidebar:
   label: "锁类型"
-  order: 145524102
+  order: 22
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145524102)
 

@@ -1,11 +1,17 @@
 ---
 title: "JUC线程池- ForkJoinPool"
 description: "在探讨 ForkJoinPool 之前，我们先思考一个问题：对于某些特定"
-status: draft
+status: curated
 sidebar:
   order: 37
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147392232)
+
+:::tip[要点]
+- `ForkJoinPool` 为分治任务设计，核心是工作窃取：线程从自己队列的一端取任务，从别人队列的另一端偷任务。
+- `join()` 等待时线程不会干等，会去执行其他任务，因此大量阻塞操作会让池里的线程失去作用。
+- 不要在里面执行阻塞 IO；确需阻塞时用 `ManagedBlocker` 让池补充线程。
+:::
 
 ## 引言：为何需要 ForkJoinPool？
 

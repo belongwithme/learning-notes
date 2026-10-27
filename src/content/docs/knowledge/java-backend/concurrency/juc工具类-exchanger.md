@@ -1,11 +1,17 @@
 ---
 title: "JUC工具类-Exchanger"
 description: "Exchanger 是 java.util.concurrent 包中的一个同步工具类，用于两个线程之间的数据交换。它提供了一个同步点，当两个线程都到达该点时，它们就可以交换数据。"
-status: draft
+status: curated
 sidebar:
   order: 22
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147238691)
+
+:::tip[要点]
+- `Exchanger` 让两个线程在同步点交换数据，先到的线程等待另一个线程到来。
+- 只有一个槽位时，多个线程竞争会造成冲突；竞争激烈时它启用 Arena，用多个槽位分散竞争。
+- 典型场景是双缓冲：一个线程填充缓冲区，另一个线程消费，填满后交换。
+:::
 
 ## 一、Exchanger 基础概念
 

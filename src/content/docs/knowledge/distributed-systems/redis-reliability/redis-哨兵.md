@@ -3,7 +3,7 @@ title: "Redis - 哨兵"
 description: "Redis 的主从架构中，由于主从模式是读写分离的，如果主节点（master）挂了，那么将没有主节点来服务客户端的写操作请求，也没有主节点给从节点（slave）进行数据同步了。"
 status: draft
 sidebar:
-  order: 145812631
+  order: 16
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145812631)
 

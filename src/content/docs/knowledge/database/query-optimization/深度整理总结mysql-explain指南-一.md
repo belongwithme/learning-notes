@@ -4,7 +4,7 @@ description: "前面我们聊mysql的一些内容时,或多或少也用到了exp
 status: draft
 sidebar:
   label: "Explain指南(一)"
-  order: 145592540
+  order: 12
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145592540)
 

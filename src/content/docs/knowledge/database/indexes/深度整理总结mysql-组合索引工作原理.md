@@ -4,7 +4,7 @@ description: "在实际业务中，我们会遇到很多复杂的场景，比如
 status: draft
 sidebar:
   label: "组合索引工作原理"
-  order: 145489856
+  order: 9
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145489856)
 

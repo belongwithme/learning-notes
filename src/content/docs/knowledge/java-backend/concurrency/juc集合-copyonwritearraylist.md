@@ -1,11 +1,17 @@
 ---
 title: "JUC集合-CopyOnWriteArrayList"
 description: "在多线程编程成为常态的今天，如何安全、高效地处理共享数据是每个 Java 仔必须面对的课题。"
-status: draft
+status: curated
 sidebar:
   order: 25
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147248147)
+
+:::tip[要点]
+- 写操作加锁后复制一份新数组，在新数组上修改再替换引用；读操作不加锁。
+- 迭代器遍历的是创建时的快照，不会抛 `ConcurrentModificationException`，但看不到之后的修改。
+- 适合读远多于写、列表不大的场景，如监听器列表；写多或数据量大时复制开销和内存占用都很高。
+:::
 
 ## 1. 引言：并发环境中的 List 缺点
 

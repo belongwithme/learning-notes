@@ -4,7 +4,7 @@ description: "但实际上并不是从上到下去解析的,真实的执行顺�
 status: draft
 sidebar:
   label: "SQL的执行顺序和MySQL的执行流程"
-  order: 145474586
+  order: 1
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145474586)
 

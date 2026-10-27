@@ -3,7 +3,7 @@ title: "Redis数据结构总结-quickList"
 description: "为什么会出现ziplist？有两个原因促进它的出现："
 status: draft
 sidebar:
-  order: 145745965
+  order: 5
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145745965)
 

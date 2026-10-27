@@ -3,7 +3,7 @@ title: "Redis-主从架构"
 description: "Redis主从架构（MasterSlave Architecture）本质上是一种数据复制模型，它通过将数据从主节点复制到一个或多个从节点，实现数据冗余、负载分担和高可用性。"
 status: draft
 sidebar:
-  order: 146119490
+  order: 14
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146119490)
 

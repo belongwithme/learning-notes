@@ -4,7 +4,7 @@ description: "一个事务在执行过程中，在还没有提交事务之前，
 status: draft
 sidebar:
   label: "undoLog日志工作原理"
-  order: 145584538
+  order: 26
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145584538)
 

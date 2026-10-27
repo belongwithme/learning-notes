@@ -1,11 +1,17 @@
 ---
 title: "Java Fork/Join 框架详解"
 description: "在多核处理器时代，充分利用计算资源已成为提升应用性能的关键因素。然而，编写高效的并行程序一直是软件开发中的难题。开发者不仅需要考虑如何合理拆分任务，还要处理线程同步、负载均衡等复杂问题。Java作为企业级应用的主流语言，在并发编程领域不断演进，而Fork/Join框架的引入则是这一演进过程中的..."
-status: draft
+status: curated
 sidebar:
   order: 35
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146907780)
+
+:::tip[要点]
+- Fork/Join 框架用分治解决可以递归拆分的大任务：拆到足够小直接计算，再合并子结果。
+- 核心组件是 `ForkJoinPool`（执行）和 `ForkJoinTask`（任务，常用子类 `RecursiveTask`、`RecursiveAction`）。
+- 每个工作线程有自己的双端队列，空闲线程从其他线程的队列里窃取任务，实现负载均衡。
+:::
 
 ## Java Fork/Join框架详解
 

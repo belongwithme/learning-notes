@@ -3,7 +3,7 @@ title: "MySQL的存储引擎对比(InnoDB和MyISAM)"
 description: "+ 事务支持：InnoDB 是 MySQL 默认的事务型存储引擎，支持 ACID（原子性、一致性、隔离性、持久性）事务。"
 status: draft
 sidebar:
-  order: 145479328
+  order: 2
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145479328)
 

@@ -3,7 +3,7 @@ title: "Redis数据结构总结-listPack"
 description: "quicklist 虽然通过控制 quicklistNode 结构里的压缩列表的大小或者元素个数，来减少连锁更新带来的性能影响，但是并没有完全解决连锁更新的问题。"
 status: draft
 sidebar:
-  order: 145747076
+  order: 6
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145747076)
 

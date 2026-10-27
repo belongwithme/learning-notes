@@ -4,7 +4,7 @@ description: "如果我们想提高一条语句查询速度，通常都会想对
 status: draft
 sidebar:
   label: "索引失效场景"
-  order: 145491524
+  order: 10
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145491524)
 

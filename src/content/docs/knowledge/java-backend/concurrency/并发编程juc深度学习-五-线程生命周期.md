@@ -1,11 +1,17 @@
 ---
 title: "并发编程JUC深度学习(五）线程生命周期"
 description: "在java领域，实现并发程序的主要手段就是多线程，那么知道线程的生命周期是很有必要的。"
-status: draft
+status: curated
 sidebar:
   order: 3
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126028316)
+
+:::tip[要点]
+- Java 线程有 6 种状态：`NEW`、`RUNNABLE`、`BLOCKED`、`WAITING`、`TIMED_WAITING`、`TERMINATED`。
+- `BLOCKED` 只出现在等待 `synchronized` 锁时；`wait()`、`join()`、`park()` 进入的是 `WAITING`，带超时的版本进入 `TIMED_WAITING`。
+- Java 的 `RUNNABLE` 合并了操作系统层面的就绪和运行，线程阻塞在 IO 上时也显示为 `RUNNABLE`。
+:::
 
 在java领域，实现并发程序的主要手段就是多线程，那么知道线程的生命周期是很有必要的。Java语言里的线程本质上就是操作系统的线程，它们是一 一对应的。我们要学好生命周期思路非常简单：只需要搞懂生命周期中各个节点的状态转换机制就可以。虽然不同的开发语言对于操作系统线程进行了不同的封装，但是对于线程的生命周期这部分，基本上是雷同。
 

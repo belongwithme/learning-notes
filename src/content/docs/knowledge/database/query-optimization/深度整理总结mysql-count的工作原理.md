@@ -4,7 +4,7 @@ description: "我们对数据表统计的时候,习惯性用count函数来统计
 status: draft
 sidebar:
   label: "Count的工作原理"
-  order: 145461951
+  order: 19
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145461951)
 

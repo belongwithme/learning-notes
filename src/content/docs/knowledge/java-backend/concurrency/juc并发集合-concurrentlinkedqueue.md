@@ -1,11 +1,17 @@
 ---
 title: "JUC并发集合-ConcurrentLinkedQueue"
 description: "ConcurrentLinkedQueue是Java并发包(java.util.concurrent)中提供的一个线程安全的无界非阻塞队列，基于链表数据结构实现。它实现了Queue接口，遵循"
-status: draft
+status: curated
 sidebar:
   order: 28
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146808729)
+
+:::tip[要点]
+- `ConcurrentLinkedQueue` 是基于链表的无界非阻塞队列，用 CAS 实现入队和出队。
+- `head` 和 `tail` 允许暂时落后于真实的头尾（松弛不变量），以减少 CAS 次数。
+- `size()` 需要遍历整个队列，结果也不精确；判断是否为空用 `isEmpty()`。
+:::
 
 ## 1. 基础概念
 

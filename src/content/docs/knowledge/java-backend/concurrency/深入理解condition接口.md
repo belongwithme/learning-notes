@@ -1,11 +1,17 @@
 ---
 title: "深入理解Condition接口"
 description: "在多线程编程中，线程间的协作至关重要。我们经常遇到这样的场景：一个线程需要等待某个条件满足后才能继续执行，而这个条件的改变依赖于其他线程的操作。"
-status: draft
+status: curated
 sidebar:
   order: 15
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251627)
+
+:::tip[要点]
+- `Condition` 的 `await` / `signal` 对应 `Object` 的 `wait` / `notify`，但一把锁可以有多个 `Condition`，能分开唤醒不同类型的等待者。
+- 调用 `await()` 前必须持有锁；它会释放锁并进入条件队列，被唤醒后要重新获得锁才能返回。
+- 等待条件必须放在 `while` 循环里判断，以应对虚假唤醒。
+:::
 
 ## 1. 前言：为什么需要Condition？
 

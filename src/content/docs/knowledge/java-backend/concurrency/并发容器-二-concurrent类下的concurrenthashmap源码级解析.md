@@ -1,11 +1,17 @@
 ---
 title: "并发容器（二）：Concurrent类下的ConcurrentHashMap源码级解析"
 description: "之前我们在集合篇里聊完了HashMap和HashTable，我们又学习了并发编程的基本内容，现在我们来聊一聊Concurrent类下的重要容器，ConcurrentHashMap。"
-status: draft
+status: curated
 sidebar:
   order: 26
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126124080)
+
+:::tip[要点]
+- JDK 1.7 用 `Segment` 分段锁；JDK 1.8 改为数组 + 链表 / 红黑树，桶为空时 CAS 插入，否则 `synchronized` 锁住桶的头节点。
+- 扩容时多个线程可以协助迁移，迁移完的桶放一个 `ForwardingNode` 指向新表。
+- `size()` 通过 `baseCount` 加 `CounterCell` 数组汇总，思路和 `LongAdder` 相同。
+:::
 
 之前我们在集合篇里聊完了HashMap和HashTable，我们又学习了并发编程的基本内容，现在我们来聊一聊Concurrent类下的重要容器，ConcurrentHashMap。HashTable被逐渐废弃，离不开ConcurrentHashMap的出现，可以想象HashMap做为一个高频使用的集合框架，如果每次使用过程中都将整个方法synchronized，这样意味着全局加锁，肯定会导致并发的低效，所以ConcurrentHashMap的出现，改变了这种情况，接下来我们来看一看ConcurrentHashMap的神奇之处。
 

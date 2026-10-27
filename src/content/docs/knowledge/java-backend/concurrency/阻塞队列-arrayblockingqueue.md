@@ -1,11 +1,17 @@
 ---
 title: "阻塞队列-ArrayBlockingQueue"
 description: "java.util.concurrent (JUC) 包提供了多种阻塞队列的实现，其中 ArrayBlockingQueue 以其有界、基于数组和线程安全的特性，在需要精确控制资源和流量的场景中扮演着重要角色。"
-status: draft
+status: curated
 sidebar:
   order: 30
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147398714)
+
+:::tip[要点]
+- `ArrayBlockingQueue` 是基于环形数组的有界阻塞队列，容量创建时固定。
+- 入队出队共用一把 `ReentrantLock`，用 `notEmpty` 和 `notFull` 两个条件实现阻塞。
+- 和 `LinkedBlockingQueue` 相比：内存连续、不产生节点对象，但生产和消费不能同时进行。
+:::
 
 ## 1. 前言
 

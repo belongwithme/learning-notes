@@ -1,11 +1,17 @@
 ---
 title: "Java 线程中断机制详解"
 description: "在并发编程中，我们经常需要协调不同线程的执行。"
-status: draft
+status: curated
 sidebar:
   order: 4
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147280008)
+
+:::tip[要点]
+- 中断只是设置一个标志位，是请求而不是强制停止，被中断的线程自己决定何时、如何退出。
+- `isInterrupted()` 只读标志；静态方法 `Thread.interrupted()` 读完会清除标志。
+- 抛出 `InterruptedException` 时标志已被清除，处理不了就要重新调用 `interrupt()` 恢复，不要吞掉。
+:::
 
 ## 1. 引言：为什么需要线程中断？
 

@@ -4,7 +4,7 @@ description: "事务(Transaction) 是指一组操作的集合,集合中的操作
 status: draft
 sidebar:
   label: "事务简介"
-  order: 145508618
+  order: 20
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145508618)
 

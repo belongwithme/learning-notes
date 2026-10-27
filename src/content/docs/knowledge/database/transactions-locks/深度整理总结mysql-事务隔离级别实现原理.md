@@ -4,7 +4,7 @@ description: "上文我们聊过什么是事务,已经事务的特征和语法."
 status: draft
 sidebar:
   label: "事务隔离级别实现原理"
-  order: 145510931
+  order: 21
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145510931)
 

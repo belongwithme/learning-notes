@@ -3,7 +3,7 @@ title: "Redis- 对象专辑"
 description: "Redis中实际操作主要有6个对象,它们的底层会依赖一些数据结构(字符串,跳表,哈希表等),不同对象也有可能依赖相同数据结构,文章以对象为主,再介绍相关联的数据结构. 文章以实践为第一原理,结合《Redis的设计与实现》理论和n个博客构成Redis系列文章."
 status: draft
 sidebar:
-  order: 143355397
+  order: 3
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/143355397)
 

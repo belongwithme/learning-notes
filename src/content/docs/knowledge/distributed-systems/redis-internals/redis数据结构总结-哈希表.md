@@ -3,7 +3,7 @@ title: "Redis数据结构总结-哈希表"
 description: "中，Hash 表被用来辅助 SQL 查询。"
 status: draft
 sidebar:
-  order: 145727660
+  order: 7
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145727660)
 

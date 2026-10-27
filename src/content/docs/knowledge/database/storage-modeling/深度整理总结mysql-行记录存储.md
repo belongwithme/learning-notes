@@ -4,7 +4,7 @@ description: "使用MySQL的时候,MySQL对于我们来说还是一个黑盒，�
 status: draft
 sidebar:
   label: "行记录存储"
-  order: 145475832
+  order: 4
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145475832)
 

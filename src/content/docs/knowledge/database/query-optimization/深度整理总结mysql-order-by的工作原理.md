@@ -4,7 +4,7 @@ description: "这篇文章是对知识内容进行整合加上自己的理解,�
 status: draft
 sidebar:
   label: "Order By的工作原理"
-  order: 145448311
+  order: 15
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145448311)
 

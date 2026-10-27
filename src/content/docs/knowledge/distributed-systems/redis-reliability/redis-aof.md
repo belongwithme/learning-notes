@@ -3,7 +3,7 @@ title: "Redis-AOF"
 description: "RDB方式不能提供强一致性，如果Redis进程崩溃，那么两次RDB之间的数据也随之消失。那数据丢失的太多我们很难忍受,Redis推出的AOF很好的解决了数据持久化的实时性."
 status: draft
 sidebar:
-  order: 145780555
+  order: 13
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145780555)
 

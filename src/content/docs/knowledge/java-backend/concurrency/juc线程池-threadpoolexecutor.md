@@ -1,11 +1,17 @@
 ---
 title: "JUC线程池-ThreadPoolExecutor"
 description: "在探讨ThreadPoolExecutor的细节之前，我们首先要理解为什么在Java并发编程中，线程池扮演着如此重要的角色。"
-status: draft
+status: curated
 sidebar:
   order: 31
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147244662)
+
+:::tip[要点]
+- 七个参数：核心线程数、最大线程数、空闲存活时间及单位、工作队列、线程工厂、拒绝策略。
+- 提交顺序：先建核心线程，满了进队列，队列满了才建非核心线程，再满就拒绝。
+- 不要用 `Executors` 的快捷方法：无界队列或无上限的线程数在高负载下会导致内存溢出。
+:::
 
 ## 1. 引言：为什么需要线程池？
 

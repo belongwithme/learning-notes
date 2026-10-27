@@ -4,7 +4,7 @@ description: "上篇我们聊过锁都有哪些类型,那这篇我们聊MySQL什
 status: draft
 sidebar:
   label: "MySQL加锁工作原理"
-  order: 145552674
+  order: 23
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145552674)
 

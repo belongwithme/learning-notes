@@ -4,7 +4,7 @@ description: "有时候可能你会遇到MySQL 并没有按照自己的预想来
 status: draft
 sidebar:
   label: "CBO工作原理"
-  order: 145495027
+  order: 14
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145495027)
 

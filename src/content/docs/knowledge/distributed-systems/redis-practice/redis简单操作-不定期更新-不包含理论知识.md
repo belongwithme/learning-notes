@@ -3,7 +3,7 @@ title: "Redis 启动与命令行客户端"
 description: "rediscli [option] [commonds]"
 status: draft
 sidebar:
-  order: 127291307
+  order: 1
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/127291307)
 

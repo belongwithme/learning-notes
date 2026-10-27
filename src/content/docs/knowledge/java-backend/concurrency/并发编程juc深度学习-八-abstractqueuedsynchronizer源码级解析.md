@@ -1,11 +1,17 @@
 ---
 title: "并发编程JUC深度学习(八）AbstractQueuedSynchronizer源码级解析"
 description: "如果看完这篇aqs看不明白的话，可以关注一下我后面要出的ReentrantLock，Semaphore，countdownlatch这些文章，因为aqs直接去理解的话有一点难度，我刚开始学习的时候也挺蒙，后面结合着看一看，触类旁通就简单很多了。"
-status: draft
+status: curated
 sidebar:
   order: 12
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126321073)
+
+:::tip[要点]
+- AQS 用一个 `volatile int state` 表示同步状态，用 CLH 变体的双向队列管理等待线程。
+- 子类只需实现 `tryAcquire` / `tryRelease`（独占）或 `tryAcquireShared` / `tryReleaseShared`（共享），排队、阻塞和唤醒由 AQS 完成。
+- `ConditionObject` 维护单独的条件队列，`signal` 时把节点转回同步队列。
+:::
 
 如果看完这篇aqs看不明白的话，可以关注一下我后面要出的`ReentrantLock，Semaphore，countdownlatch`这些文章，因为aqs直接去理解的话有一点难度，我刚开始学习的时候也挺蒙，后面结合着看一看，触类旁通就简单很多了。
 

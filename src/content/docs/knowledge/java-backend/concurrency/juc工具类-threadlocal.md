@@ -1,11 +1,17 @@
 ---
 title: "JUC工具类-ThreadLocal"
 description: "多线程的世界里，线程安全是一个永恒的主题。"
-status: draft
+status: curated
 sidebar:
   order: 23
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147243211)
+
+:::tip[要点]
+- 每个 `Thread` 持有一个 `ThreadLocalMap`，`ThreadLocal` 对象本身只是访问这个 Map 的 key。
+- key 是弱引用、value 是强引用：`ThreadLocal` 被回收后 value 仍挂在线程上，线程不结束就可能泄漏。
+- 在线程池里使用时，必须在 `finally` 中调用 `remove()`，否则值会串到下一个任务。
+:::
 
 ## 引言：为何需要 ThreadLocal？
 

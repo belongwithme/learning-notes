@@ -1,11 +1,17 @@
 ---
 title: "LockSupport 深度解析"
 description: "在 Java 的并发世界中，线程同步是保证数据一致性和程序正确性的核心。"
-status: draft
+status: curated
 sidebar:
   order: 11
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251274)
+
+:::tip[要点]
+- `park` / `unpark` 基于每个线程一个的许可证，许可最多一个，不会累加。
+- `unpark` 可以先于 `park` 调用，之后的 `park` 会直接返回，这是它比 `wait` / `notify` 灵活的地方。
+- 它不需要先持有锁，可以精确唤醒指定线程，是 AQS 挂起和唤醒线程的底层工具。
+:::
 
 ## 1. 引言：为什么需要 LockSupport？
 

@@ -1,11 +1,17 @@
 ---
 title: "并发编程JUC深度学习(三）共享模型之管程"
 description: "本篇文章会介绍的内容不少，按需观看，全部了解会让你对锁的概念加深一层。"
-status: draft
+status: curated
 sidebar:
   order: 5
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126007233)
+
+:::tip[要点]
+- 多个线程对共享变量的读写交错就会产生竞态条件，访问共享资源的那段代码叫临界区。
+- 局部变量是线程私有的，但它引用的对象一旦逃逸出方法，就可能被多个线程共享。
+- `synchronized` 基于对象头关联的 Monitor 实现互斥，同一时刻只有一个线程能成为 Monitor 的 Owner。
+:::
 
 本篇文章会介绍的内容不少，按需观看，全部了解会让你对锁的概念加深一层。
 

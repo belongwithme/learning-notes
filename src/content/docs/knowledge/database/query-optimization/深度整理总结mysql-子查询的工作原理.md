@@ -4,7 +4,7 @@ description: "老版本的MySQL数据库中对子查询优化有限，所以很�
 status: draft
 sidebar:
   label: "子查询的工作原理"
-  order: 145467951
+  order: 18
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145467951)
 

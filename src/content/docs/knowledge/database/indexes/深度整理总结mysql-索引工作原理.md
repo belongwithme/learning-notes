@@ -4,7 +4,7 @@ description: "相信你在面试时，通常会被问到“什么是索引？”
 status: draft
 sidebar:
   label: "索引工作原理"
-  order: 145485391
+  order: 8
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145485391)
 

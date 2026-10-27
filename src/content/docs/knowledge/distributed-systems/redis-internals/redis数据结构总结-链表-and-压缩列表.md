@@ -3,7 +3,7 @@ title: "Redis数据结构总结-链表&&压缩列表"
 description: "但是我们去操作的话并不是去操作listNode,而是list."
 status: draft
 sidebar:
-  order: 145724458
+  order: 4
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145724458)
 

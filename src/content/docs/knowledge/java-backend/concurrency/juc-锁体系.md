@@ -1,11 +1,17 @@
 ---
 title: "JUC-锁体系"
 description: "Java并发锁机制可以理解为一个分层的知识体系："
-status: draft
+status: curated
 sidebar:
   order: 10
 ---
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146222694)
+
+:::tip[要点]
+- 分层看 JUC 的锁：`LockSupport` 负责阻塞和唤醒线程，AQS 负责排队和状态管理，`Lock` 接口定规范，`ReentrantLock` 等是具体实现。
+- `Condition` 依附于某把 `Lock`，相当于这把锁上的多个等待室。
+- 按场景选择：简单互斥用 `synchronized`，需要可中断、超时、公平或多个条件时用 `ReentrantLock`，读多写少用读写锁。
+:::
 
 ## 整体架构
 
