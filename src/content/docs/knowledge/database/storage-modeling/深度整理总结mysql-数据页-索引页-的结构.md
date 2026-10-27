@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——数据页(索引页)的结构"
 description: "页是InnoDB管理存储空间的基本单位，一个页的大小一般是16KB。InnoDB为了不同的目的而设计了许多种不同"
 status: draft
 sidebar:
+  label: "数据页(索引页)的结构"
   order: 145477883
 ---
 

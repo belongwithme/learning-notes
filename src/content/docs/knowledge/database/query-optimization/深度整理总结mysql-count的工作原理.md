@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——Count的工作原理"
 description: "我们对数据表统计的时候,习惯性用count函数来统计,但是count函数里面参数有很多,比如count(1),count(\\),count(字段),它们的效率有区别吗?"
 status: draft
 sidebar:
+  label: "Count的工作原理"
   order: 145461951
 ---
 

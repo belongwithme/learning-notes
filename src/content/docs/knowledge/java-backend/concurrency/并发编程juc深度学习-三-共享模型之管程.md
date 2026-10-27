@@ -3,7 +3,7 @@ title: "并发编程JUC深度学习(三）共享模型之管程"
 description: "本篇文章会介绍的内容不少，按需观看，全部了解会让你对锁的概念加深一层。"
 status: draft
 sidebar:
-  order: 126007233
+  order: 5
 ---
 
 

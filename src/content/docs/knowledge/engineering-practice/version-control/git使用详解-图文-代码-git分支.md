@@ -3,6 +3,7 @@ title: "Git使用详解(图文+代码)：Git分支"
 description: "使用分支的好处就是你可以从开发主线上分离开来，在不影响主线的同时继续工作。"
 status: draft
 sidebar:
+  label: "Git使用详解：Git分支"
   order: 128675758
 ---
 

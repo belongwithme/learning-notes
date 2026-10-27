@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——行记录存储"
 description: "使用MySQL的时候,MySQL对于我们来说还是一个黑盒，我们只负责使用客户端发送请求并等待服务器返回结果，表中的数据到底存到了哪里？以什么格式存放的？MySQL是以什么方式来访问的这些数据？这些问题我们统统不知道."
 status: draft
 sidebar:
+  label: "行记录存储"
   order: 145475832
 ---
 

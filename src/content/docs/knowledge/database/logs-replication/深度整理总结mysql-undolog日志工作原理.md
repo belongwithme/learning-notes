@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——undoLog日志工作原理"
 description: "一个事务在执行过程中，在还没有提交事务之前，如果 MySQL 发生了崩溃，要怎么回滚到事务之前的数据呢？这时候就要依靠我们下面聊的undo log了."
 status: draft
 sidebar:
+  label: "undoLog日志工作原理"
   order: 145584538
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: "1-Spring核心模块解析—BeanDifinition。"
+title: "1-Spring核心模块解析—BeanDefinition"
 description: "Spring中的BeanDifinition在Bean的实例化流程中占有着非常重要的角色，如果你不了解BeanDifinition的话，面试或者学习Bean的生命周期的话，如同空中楼阁，应付面试可以，如果你想真的成体系化，这部分内容推荐你仔细阅读。"
 status: draft
 sidebar:

@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——CBO工作原理"
 description: "有时候可能你会遇到MySQL 并没有按照自己的预想来选择索引，比如创建了索引但是选择了全表扫描，那这是 MySQL 数据库的 Bug或者是索引出错了?"
 status: draft
 sidebar:
+  label: "CBO工作原理"
   order: 145495027
 ---
 

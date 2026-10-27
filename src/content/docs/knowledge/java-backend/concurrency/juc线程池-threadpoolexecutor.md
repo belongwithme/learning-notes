@@ -3,7 +3,7 @@ title: "JUC线程池-ThreadPoolExecutor"
 description: "在探讨ThreadPoolExecutor的细节之前，我们首先要理解为什么在Java并发编程中，线程池扮演着如此重要的角色。"
 status: draft
 sidebar:
-  order: 147244662
+  order: 31
 ---
 
 

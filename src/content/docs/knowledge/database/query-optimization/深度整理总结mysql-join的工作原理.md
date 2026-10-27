@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——Join的工作原理"
 description: "这篇文章是对知识内容进行整合加上自己的理解,文章内容来自于各种文章,书籍,工作号内容."
 status: draft
 sidebar:
+  label: "Join的工作原理"
   order: 145455589
 ---
 

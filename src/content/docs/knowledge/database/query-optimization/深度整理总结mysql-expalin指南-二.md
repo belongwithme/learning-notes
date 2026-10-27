@@ -1,8 +1,9 @@
 ---
-title: "深度整理总结MySQL——Expalin指南(二)"
+title: "深度整理总结MySQL——Explain指南(二)"
 description: "本章接着上一章Expalin指南(一)续写."
 status: draft
 sidebar:
+  label: "Explain指南(二)"
   order: 145594095
 ---
 

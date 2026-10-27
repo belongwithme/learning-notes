@@ -1,9 +1,9 @@
 ---
-title: "深度学习ReentrantReadWriteLock"
+title: "深入学习 ReentrantReadWriteLock"
 description: "在并发编程中，保护共享资源是核心问题之一。"
 status: draft
 sidebar:
-  order: 147251482
+  order: 16
 ---
 
 

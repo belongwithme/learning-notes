@@ -3,7 +3,7 @@ title: "JUC工具类-Exchanger"
 description: "Exchanger 是 java.util.concurrent 包中的一个同步工具类，用于两个线程之间的数据交换。它提供了一个同步点，当两个线程都到达该点时，它们就可以交换数据。"
 status: draft
 sidebar:
-  order: 147238691
+  order: 22
 ---
 
 

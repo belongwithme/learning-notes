@@ -3,6 +3,7 @@ title: "深度学习与总结JVM专辑（三）：垃圾回收器—G1（图文+
 description: "我们之前已经了解过了基本的G1内容，现在我们来详细了解一下G1的细节与实现原理。"
 status: draft
 sidebar:
+  label: "深度学习与总结JVM专辑（三）：垃圾回收器—G1"
   order: 127968283
 ---
 

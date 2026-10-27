@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——二阶段提交工作原理"
 description: "之前三种日志类型我们都了解过了,下面我们通过一个例子来引出我们要聊的二阶段提交."
 status: draft
 sidebar:
+  label: "二阶段提交工作原理"
   order: 145589737
 ---
 

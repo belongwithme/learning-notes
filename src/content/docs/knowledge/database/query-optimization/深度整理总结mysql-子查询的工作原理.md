@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——子查询的工作原理"
 description: "老版本的MySQL数据库中对子查询优化有限，所以很多 OLTP 业务场合下，开发人员都被要求在线业务尽可能不用子查询。"
 status: draft
 sidebar:
+  label: "子查询的工作原理"
   order: 145467951
 ---
 

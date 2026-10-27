@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——MySQL加锁工作原理"
 description: "上篇我们聊过锁都有哪些类型,那这篇我们聊MySQL什么时候会把锁添加在索引上."
 status: draft
 sidebar:
+  label: "MySQL加锁工作原理"
   order: 145552674
 ---
 

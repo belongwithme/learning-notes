@@ -3,7 +3,7 @@ title: "并发编程JUC深度学习(十）Semaphore源码解析"
 description: "一般我们使用锁的时候，在多线程下严格要求只能一个线程获取到锁，但是在某些场景下，我们需要有多个线程获取到锁，但是这个时候其实称之为资源最好。"
 status: draft
 sidebar:
-  order: 126391026
+  order: 20
 ---
 
 

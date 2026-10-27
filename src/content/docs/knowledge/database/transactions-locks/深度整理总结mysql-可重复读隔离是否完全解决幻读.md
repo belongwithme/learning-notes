@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——可重复读隔离是否完全解决幻读"
 description: "前面我们介绍了几种隔离级别和并发执行下MySQL在不同隔离级别会出现的问题."
 status: draft
 sidebar:
+  label: "可重复读隔离是否完全解决幻读"
   order: 145519650
 ---
 

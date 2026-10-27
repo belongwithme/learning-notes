@@ -1,5 +1,5 @@
 ---
-title: "Redis简单操作（不定期更新）-不包含理论知识"
+title: "Redis 启动与命令行客户端"
 description: "rediscli [option] [commonds]"
 status: draft
 sidebar:
@@ -9,7 +9,6 @@ sidebar:
 
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/127291307)
 
-## Redis实操
 ## 启动Redis
 
 ### Redis启动

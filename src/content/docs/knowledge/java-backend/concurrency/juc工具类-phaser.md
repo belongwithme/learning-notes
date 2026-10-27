@@ -3,7 +3,7 @@ title: "JUC工具类-Phaser"
 description: "Phaser是java.util.concurrent包下的一个可重用的同步屏障（Synchronization Barrier）"
 status: draft
 sidebar:
-  order: 147240379
+  order: 21
 ---
 
 

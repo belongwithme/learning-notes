@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——redoLog日志工作原理"
 description: "你知道什么是存储引擎、随机 IO 和顺序 IO吗？你知道 MySQL 中的缓冲池吗？binlog 听说过吗？都有什么用？"
 status: draft
 sidebar:
+  label: "redoLog日志工作原理"
   order: 145585470
 ---
 

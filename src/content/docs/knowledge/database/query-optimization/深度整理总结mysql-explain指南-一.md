@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——Explain指南(一)"
 description: "前面我们聊mysql的一些内容时,或多或少也用到了explain,相信也有一定的了解,本章旨在进一步的解释explain基本内容."
 status: draft
 sidebar:
+  label: "Explain指南(一)"
   order: 145592540
 ---
 

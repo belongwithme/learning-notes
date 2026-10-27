@@ -3,7 +3,7 @@ title: "并发编程JUC深度学习(六）内存模型_2"
 description: "上一章我们了解到，在并发场景中，因为可见性，原子性，有序性导致的问题常常会违背我们的直觉，从而成为并发编程BUG之源。"
 status: draft
 sidebar:
-  order: 126050732
+  order: 8
 ---
 
 

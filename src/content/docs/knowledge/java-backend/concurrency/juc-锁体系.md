@@ -3,7 +3,7 @@ title: "JUC-锁体系"
 description: "Java并发锁机制可以理解为一个分层的知识体系："
 status: draft
 sidebar:
-  order: 146222694
+  order: 10
 ---
 
 

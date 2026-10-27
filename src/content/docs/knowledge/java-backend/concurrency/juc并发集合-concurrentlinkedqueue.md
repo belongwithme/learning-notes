@@ -3,7 +3,7 @@ title: "JUC并发集合-ConcurrentLinkedQueue"
 description: "ConcurrentLinkedQueue是Java并发包(java.util.concurrent)中提供的一个线程安全的无界非阻塞队列，基于链表数据结构实现。它实现了Queue接口，遵循"
 status: draft
 sidebar:
-  order: 146808729
+  order: 28
 ---
 
 

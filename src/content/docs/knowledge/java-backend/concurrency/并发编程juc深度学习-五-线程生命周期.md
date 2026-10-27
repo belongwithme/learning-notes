@@ -3,7 +3,7 @@ title: "并发编程JUC深度学习(五）线程生命周期"
 description: "在java领域，实现并发程序的主要手段就是多线程，那么知道线程的生命周期是很有必要的。"
 status: draft
 sidebar:
-  order: 126028316
+  order: 3
 ---
 
 

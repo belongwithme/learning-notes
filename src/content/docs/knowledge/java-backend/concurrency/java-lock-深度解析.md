@@ -3,7 +3,7 @@ title: "Java Lock 深度解析"
 description: "在 Java 并发编程里，synchronized 关键字是我们最早接触也最常用的同步机制。它简单易用，能解决大部分场景下的线程安全问题。然而，随着业务场景的复杂化和对性能、灵活性的更高要求，synchronized 的局限性也逐渐显现。此时，java.util.concurrent.lock..."
 status: draft
 sidebar:
-  order: 147251093
+  order: 13
 ---
 
 

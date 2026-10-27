@@ -3,7 +3,7 @@ title: "JUC集合-CopyOnWriteArrayList"
 description: "在多线程编程成为常态的今天，如何安全、高效地处理共享数据是每个 Java 仔必须面对的课题。"
 status: draft
 sidebar:
-  order: 147248147
+  order: 25
 ---
 
 

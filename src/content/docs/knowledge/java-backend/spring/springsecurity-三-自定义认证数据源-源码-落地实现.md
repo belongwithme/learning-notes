@@ -1,5 +1,5 @@
 ---
-title: "SpringSecurity(三):自定义认证数据源(源码+落地实现)。"
+title: "SpringSecurity(三):自定义认证数据源(源码+落地实现)"
 description: "看这篇文章前，请确保有一定security基础或者看过上篇文章，没基础看不太好理解。"
 status: draft
 sidebar:

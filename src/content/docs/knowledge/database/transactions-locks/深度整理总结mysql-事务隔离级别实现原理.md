@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——事务隔离级别实现原理"
 description: "上文我们聊过什么是事务,已经事务的特征和语法."
 status: draft
 sidebar:
+  label: "事务隔离级别实现原理"
   order: 145510931
 ---
 

@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——Group By的工作原理"
 description: "group by 是用来对数据进行分组的，一般与聚合函数一起使用，对分组后的数据进行聚合。"
 status: draft
 sidebar:
+  label: "Group By的工作原理"
   order: 145465483
 ---
 

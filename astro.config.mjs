@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import vercel from '@astrojs/vercel';
 import { KnowledgeCategories, KnowledgeSubcategories } from './src/config/site-routing';
-import { CsdnRedirects } from './src/config/csdn-redirects.mjs';
+import { Redirects } from './src/config/redirects.mjs';
 
 // Starlight reads "last updated" dates from `git log`. Git escapes non-ASCII paths by
 // default, which hides the date of every note with a Chinese file name.
@@ -29,7 +29,7 @@ export default defineConfig({
 			},
 		},
 	},
-	redirects: CsdnRedirects,
+	redirects: Redirects,
 	integrations: [
 		starlight({
 			title: '学习档案',

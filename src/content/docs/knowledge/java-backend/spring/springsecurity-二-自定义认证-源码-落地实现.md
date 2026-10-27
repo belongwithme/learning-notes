@@ -1,5 +1,5 @@
 ---
-title: "SpringSecurity(二):自定义认证(源码+落地实现)。"
+title: "SpringSecurity(二):自定义认证(源码+落地实现)"
 description: "对于资源来说，并不是所有的资源都需要认证和授权，有些公共的资源是可以直接访问的，所以我们要对资源有一个分类。"
 status: draft
 sidebar:

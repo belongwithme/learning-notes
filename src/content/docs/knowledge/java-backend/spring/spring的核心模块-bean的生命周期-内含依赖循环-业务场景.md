@@ -1,5 +1,5 @@
 ---
-title: "Spring的核心模块：Bean的生命周期（内含依赖循环+业务场景）。"
+title: "Spring的核心模块：Bean的生命周期（内含依赖循环+业务场景）"
 description: "上篇文章我们介绍了Spring的一个核心模块BeanDifinition。"
 status: draft
 sidebar:

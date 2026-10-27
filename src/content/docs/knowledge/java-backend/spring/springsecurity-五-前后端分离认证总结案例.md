@@ -1,5 +1,5 @@
 ---
-title: "SpringSecurity(五):前后端分离认证总结案例。"
+title: "SpringSecurity(五):前后端分离认证总结案例"
 description: "和上一篇一样，从上倒下复制粘贴，所有代码贴完再运行，代码没有问题，只要贴对，都可以顺利跑出来的。"
 status: draft
 sidebar:

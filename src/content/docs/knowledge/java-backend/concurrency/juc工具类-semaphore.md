@@ -3,7 +3,7 @@ title: "JUC工具类-Semaphore"
 description: "你正在管理一个停车场，这个停车场只有 10 个停车位。同一时间，可能有几十辆甚至上百辆车想要进入停车场。"
 status: draft
 sidebar:
-  order: 147242254
+  order: 19
 ---
 
 

@@ -3,6 +3,7 @@ title: "深度学习与总结JVM专辑（七）：垃圾回收器—CMS（图文
 description: "在Java虚拟机（JVM）的众多垃圾收集器（Garbage Collector, GC）中，CMS（Concurrent Mark Sweep）占有特殊的历史地位。虽然它在较新的JDK版本中已被标记为废弃（Deprecated）并最终移除，但理解CMS的设计理念、工作原理以及优缺点，对于深入掌..."
 status: draft
 sidebar:
+  label: "深度学习与总结JVM专辑（七）：垃圾回收器—CMS"
   order: 147406951
 ---
 

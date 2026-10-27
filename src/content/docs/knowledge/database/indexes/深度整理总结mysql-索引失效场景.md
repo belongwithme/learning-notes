@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——索引失效场景"
 description: "如果我们想提高一条语句查询速度，通常都会想对字段建立索引."
 status: draft
 sidebar:
+  label: "索引失效场景"
   order: 145491524
 ---
 

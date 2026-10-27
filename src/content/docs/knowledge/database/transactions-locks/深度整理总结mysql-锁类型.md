@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——锁类型"
 description: "MySQL的锁是比较难的(个人认为).本章简单介绍一下锁的类型,帮助我们有个大致的了解."
 status: draft
 sidebar:
+  label: "锁类型"
   order: 145524102
 ---
 

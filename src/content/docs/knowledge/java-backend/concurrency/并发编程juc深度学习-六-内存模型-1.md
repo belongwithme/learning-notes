@@ -3,7 +3,7 @@ title: "并发编程JUC深度学习(六）内存模型_1"
 description: "编写并发编程是非常困难的事情，并发程序的Bug往往是反常识的，很多错误诡异的出现又诡异的消失，让人抓狂。"
 status: draft
 sidebar:
-  order: 126028285
+  order: 7
 ---
 
 

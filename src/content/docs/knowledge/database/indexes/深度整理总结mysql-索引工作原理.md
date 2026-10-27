@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——索引工作原理"
 description: "相信你在面试时，通常会被问到“什么是索引？”而你一定要能脱口而出：索引是提升查询速度的一种数据结构。"
 status: draft
 sidebar:
+  label: "索引工作原理"
   order: 145485391
 ---
 

@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——索引正确使用姿势"
 description: "这篇文章是补充一些基本概念和实战的一些使用建议."
 status: draft
 sidebar:
+  label: "索引正确使用姿势"
   order: 145496486
 ---
 

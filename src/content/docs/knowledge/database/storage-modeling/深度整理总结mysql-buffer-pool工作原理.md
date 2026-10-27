@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——Buffer Pool工作原理"
 description: "用系统分层架构，为了加速数据访问，会把最常访问的数据，放在缓存(cache)里，避免每次都去访问数据库。"
 status: draft
 sidebar:
+  label: "Buffer Pool工作原理"
   order: 145478383
 ---
 

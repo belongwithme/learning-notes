@@ -3,7 +3,7 @@ title: "JUC线程池-ScheduledThreadPoolExecutor"
 description: "在 Java 开发中，我们经常会遇到需要延迟执行或周期性执行任务的场景。比如："
 status: draft
 sidebar:
-  order: 147246468
+  order: 33
 ---
 
 

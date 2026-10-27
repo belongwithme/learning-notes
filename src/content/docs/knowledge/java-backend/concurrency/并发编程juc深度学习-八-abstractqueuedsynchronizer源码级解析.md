@@ -3,7 +3,7 @@ title: "并发编程JUC深度学习(八）AbstractQueuedSynchronizer源码级解
 description: "如果看完这篇aqs看不明白的话，可以关注一下我后面要出的ReentrantLock，Semaphore，countdownlatch这些文章，因为aqs直接去理解的话有一点难度，我刚开始学习的时候也挺蒙，后面结合着看一看，触类旁通就简单很多了。"
 status: draft
 sidebar:
-  order: 126321073
+  order: 12
 ---
 
 

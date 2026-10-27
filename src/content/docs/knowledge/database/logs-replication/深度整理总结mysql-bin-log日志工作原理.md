@@ -3,6 +3,7 @@ title: "深度整理总结MySQL——bin Log日志工作原理"
 description: "前面介绍的 undo log 和 redo log 这两个日志都是 Innodb 存储引擎生成的。"
 status: draft
 sidebar:
+  label: "bin Log日志工作原理"
   order: 145588432
 ---
 

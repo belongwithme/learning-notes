@@ -3,7 +3,7 @@ title: "并发编程JUC深度学习(四）共享模型之管程进阶学习"
 description: "上一篇文章我们已经了解管程和锁的基本概念，这一章我们来更深入的了解他们的用处，还有一些扩展知识。"
 status: draft
 sidebar:
-  order: 126026623
+  order: 6
 ---
 
 

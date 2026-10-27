@@ -21,8 +21,7 @@ sidebar:
 1. [并发编程JUC深度学习（一）进程与线程（文字描述部分）](/knowledge/java-backend/concurrency/并发编程juc深度学习-一-进程与线程-文字描述部分/)：用类比理解进程、线程与为什么需要它们。
 2. [并发编程JUC深度学习（二）进程与线程（源码描述部分）](/knowledge/java-backend/concurrency/并发编程juc深度学习-二-进程与线程-源码描述部分/)：阅读 `Thread` 的成员变量与构造方法。
 3. [并发编程JUC深度学习（五）线程生命周期](/knowledge/java-backend/concurrency/并发编程juc深度学习-五-线程生命周期/)：Java 线程的 6 种状态及转换条件。
-4. [线程中断如何理解](/knowledge/java-backend/concurrency/线程中断如何理解/)：中断是协作，不是强制终止。
-5. [Java 线程中断机制详解](/knowledge/java-backend/concurrency/java-线程中断机制详解/)：`interrupt()`、`isInterrupted()`、`interrupted()` 与 `InterruptedException` 的正确处理。
+4. [Java 线程中断机制详解](/knowledge/java-backend/concurrency/java-线程中断机制详解/)：中断是协作，不是强制终止；`interrupt()`、`isInterrupted()`、`interrupted()` 与 `InterruptedException` 的正确处理。
 
 **自测**：`BLOCKED` 和 `WAITING` 有什么区别？捕获 `InterruptedException` 后为什么通常要恢复中断状态？
 
@@ -60,11 +59,9 @@ sidebar:
 2. [LockSupport 深度解析](/knowledge/java-backend/concurrency/locksupport-深度解析/)：`park` / `unpark` 与许可证机制，AQS 阻塞线程的地基。
 3. [并发编程JUC深度学习(八）AbstractQueuedSynchronizer源码级解析](/knowledge/java-backend/concurrency/并发编程juc深度学习-八-abstractqueuedsynchronizer源码级解析/)：`state`、CLH 队列与独占/共享获取流程。
 4. [Java Lock 深度解析](/knowledge/java-backend/concurrency/java-lock-深度解析/)：`Lock` 接口设计及其与 `synchronized` 的对比。
-5. [深入学习ReentrantLock](/knowledge/java-backend/concurrency/深入学习reentrantlock/)：可重入、公平与非公平锁的完整讲解。
-6. [并发编程JUC深度学习(九）ReentrantLock源码解析](/knowledge/java-backend/concurrency/并发编程juc深度学习-九-reentrantlock源码解析/)：补充，偏源码视角的短篇。
-7. [深入理解Condition接口](/knowledge/java-backend/concurrency/深入理解condition接口/)：`await` / `signal` 与等待队列。
-8. [JUC-Condition](/knowledge/java-backend/concurrency/juc-condition/)：补充，问答形式梳理条件队列与同步队列的区别。
-9. [深度学习ReentrantReadWriteLock](/knowledge/java-backend/concurrency/深度学习reentrantreadwritelock/)：读写分离、锁降级与 `state` 高低位拆分。
+5. [并发编程JUC深度学习(九）ReentrantLock源码解析](/knowledge/java-backend/concurrency/并发编程juc深度学习-九-reentrantlock源码解析/)：先读源码视角的短篇，再读可重入、公平与非公平锁的完整讲解。
+6. [深入理解Condition接口](/knowledge/java-backend/concurrency/深入理解condition接口/)：`await` / `signal` 与等待队列，文末用问答梳理条件队列与同步队列的区别。
+7. [深入学习 ReentrantReadWriteLock](/knowledge/java-backend/concurrency/深度学习reentrantreadwritelock/)：读写分离、锁降级与 `state` 高低位拆分。
 
 **自测**：非公平锁「不公平」在哪一步？`await()` 被唤醒后，线程要经过哪两个队列才能继续执行？为什么读写锁不支持锁升级？
 
@@ -88,12 +85,11 @@ sidebar:
 
 1. [并发容器（一）：普通容器&&同步容器&&并发容器](/knowledge/java-backend/concurrency/并发容器-一-普通容器-and-同步容器-and-并发容器/)：建立分类框架。
 2. [JUC集合-CopyOnWriteArrayList](/knowledge/java-backend/concurrency/juc集合-copyonwritearraylist/)：写时复制与弱一致性迭代器。
-3. [JUC并发集合-ConcurrentHashMap](/knowledge/java-backend/concurrency/juc并发集合-concurrenthashmap/)：JDK 1.7 与 1.8 的实现对比，CAS + `synchronized`。
-4. [并发容器（二）：Concurrent类下的ConcurrentHashMap源码级解析](/knowledge/java-backend/concurrency/并发容器-二-concurrent类下的concurrenthashmap源码级解析/)：补充，初始化、`put` 与扩容源码。
-5. [JUC并发集合-ConcurrentSkipListMap](/knowledge/java-backend/concurrency/juc并发集合-concurrentskiplistmap/)：基于跳表的有序并发 Map。
-6. [JUC并发集合-ConcurrentLinkedQueue](/knowledge/java-backend/concurrency/juc并发集合-concurrentlinkedqueue/)：无锁非阻塞队列。
-7. [阻塞队列-BlockingQueue](/knowledge/java-backend/concurrency/阻塞队列-blockingqueue/)：阻塞队列接口与各实现类对比，生产者-消费者模型。
-8. [阻塞队列-ArrayBlockingQueue](/knowledge/java-backend/concurrency/阻塞队列-arrayblockingqueue/)：有界数组队列的单锁 + 双 `Condition` 实现。
+3. [并发容器（二）：Concurrent类下的ConcurrentHashMap源码级解析](/knowledge/java-backend/concurrency/并发容器-二-concurrent类下的concurrenthashmap源码级解析/)：初始化、`put` 与扩容源码，以及 JDK 1.7 与 1.8 的实现对比（CAS + `synchronized`）。
+4. [JUC并发集合-ConcurrentSkipListMap](/knowledge/java-backend/concurrency/juc并发集合-concurrentskiplistmap/)：基于跳表的有序并发 Map。
+5. [JUC并发集合-ConcurrentLinkedQueue](/knowledge/java-backend/concurrency/juc并发集合-concurrentlinkedqueue/)：无锁非阻塞队列。
+6. [阻塞队列-BlockingQueue](/knowledge/java-backend/concurrency/阻塞队列-blockingqueue/)：阻塞队列接口与各实现类对比，生产者-消费者模型。
+7. [阻塞队列-ArrayBlockingQueue](/knowledge/java-backend/concurrency/阻塞队列-arrayblockingqueue/)：有界数组队列的单锁 + 双 `Condition` 实现。
 
 **自测**：`ConcurrentHashMap` 1.8 为什么放弃分段锁？`ArrayBlockingQueue` 和 `LinkedBlockingQueue` 的锁设计有何不同？
 
@@ -112,7 +108,7 @@ sidebar:
 
 面向可递归拆分任务的另一种线程池模型：分治与工作窃取。
 
-1. [JUC并发集合-Java Fork/Join](/knowledge/java-backend/concurrency/juc并发集合-java-fork-join/)：框架全景，篇幅较长，可先读基础概念与核心组件。
+1. [Java Fork/Join 框架详解](/knowledge/java-backend/concurrency/juc并发集合-java-fork-join/)：框架全景，篇幅较长，可先读基础概念与核心组件。
 2. [Fork/Join - ForkJoinTask](/knowledge/java-backend/concurrency/fork-join-forkjointask/)：`fork` / `join` 与 `RecursiveTask`、`RecursiveAction`。
 3. [JUC线程池- ForkJoinPool](/knowledge/java-backend/concurrency/juc线程池-forkjoinpool/)：工作窃取与双端队列。
 

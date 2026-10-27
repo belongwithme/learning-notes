@@ -3,7 +3,7 @@ title: "阻塞队列-ArrayBlockingQueue"
 description: "java.util.concurrent (JUC) 包提供了多种阻塞队列的实现，其中 ArrayBlockingQueue 以其有界、基于数组和线程安全的特性，在需要精确控制资源和流量的场景中扮演着重要角色。"
 status: draft
 sidebar:
-  order: 147398714
+  order: 30
 ---
 
 

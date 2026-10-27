@@ -3,7 +3,7 @@ title: "并发编程JUC深度学习(二）进程与线程（源码描述部分�
 description: "本文着重分析代码，理清里面的逻辑，我们主要分析Thread。"
 status: draft
 sidebar:
-  order: 125993672
+  order: 2
 ---
 
 
