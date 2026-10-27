@@ -206,7 +206,7 @@ JVM 提供了一些参数来控制 TLAB 的行为，了解它们有助于进行�
 
 这部分逻辑通常发生在 `CollectedHeap::allocate_new_tlab` 之后获取到 TLAB，或者在尝试分配小对象的核心路径上。线程对象 (`Thread`) 中通常会持有 `ThreadLocalAllocBuffer` 的实例。
 
-```
+```c
 // 位于某个分配函数内部，尝试在当前线程的 TLAB 中分配
 // size: 需要分配的对象大小（通常已经过对齐处理）
 // thread: 当前线程对象
@@ -265,7 +265,7 @@ inline HeapWord* ThreadLocalAllocBuffer::allocate(size_t size) {
 
 当 `tlab.allocate(size)` 返回 `NULL` 时，表示 TLAB 空间不足，需要进入慢速路径。慢速路径会尝试分配一个新的 TLAB（Refill），如果 Refill 成功，则在新 TLAB 上再次尝试分配；如果 Refill 失败或对象太大，则尝试直接在 Eden 区分配。
 
-```
+```c
 // 伪代码示意 TLAB 分配失败后的处理流程
 HeapWord* allocate_slow_path(Thread* thread, size_t size) {
   HeapWord* result = NULL;

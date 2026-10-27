@@ -287,7 +287,7 @@ CAP理论是分布式系统设计中的一个基础理论，由Eric Brewer在200
 
 ##### 数据模型:
 
-```
+```sql
 CREATE TABLE product_inventory (
     product_id BIGINT PRIMARY KEY,
     available_stock INT NOT NULL,
@@ -308,7 +308,7 @@ CREATE TABLE product_inventory (
    * 使用分布式锁防止并发更新冲突
 2. **库存扣减流程**
 
-```
+```java
 // 伪代码展示库存扣减的CP实现
 public boolean reduceInventory(long productId, int quantity) {
     // 1. 获取分布式锁
@@ -383,7 +383,7 @@ product:1002 -> {"id": 1002, "quantity": 1, "price": 99.00, ...},
    * 本地缓存作为降级方案
 2. **购物车操作流程**：
 
-```
+```java
 // 伪代码展示购物车的AP实现
 public void addToCart(long userId, long productId, int quantity) {
     try {
@@ -433,7 +433,7 @@ public void addToCart(long userId, long productId, int quantity) {
 
 ##### 数据模型:
 
-```
+```sql
 CREATE TABLE orders (
     order_id BIGINT PRIMARY KEY,
     user_id BIGINT NOT NULL,
@@ -459,7 +459,7 @@ CREATE TABLE order_items (
 
 1. **订单创建流程（CP优先）**：
 
-```
+```java
 // 伪代码展示订单创建的CP实现
 @Transactional
 public Order createOrder(long userId, List<OrderItem> items) {
@@ -486,7 +486,7 @@ public Order createOrder(long userId, List<OrderItem> items) {
 
 2. **订单查询流程（AP优先）**：
 
-```
+```java
 // 伪代码展示订单查询的AP实现
 public List<Order> getUserOrders(long userId) {
     try {
@@ -505,7 +505,7 @@ public List<Order> getUserOrders(long userId) {
 
 3. **订单状态更新（最终一致性）**：
 
-```
+```java
 // 伪代码展示订单状态更新的最终一致性实现
 public void updateOrderStatus(long orderId, String newStatus) {
     // 1. 更新数据库（强一致性）

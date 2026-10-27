@@ -105,7 +105,7 @@ sidebar:
 
 ### 3.1 `park()`
 
-```
+```java
 public static void park()
 
 
@@ -129,7 +129,7 @@ public static void park()
 * **使用场景**: 当线程需要等待某个条件成立，而这个条件由其他线程触发时，可以使用 `park()` 进入等待。
 * **示例**:
 
-```
+```java
 // 线程 B
 LockSupport.park(); // 阻塞线程 B，等待许可证
 
@@ -152,7 +152,7 @@ if (Thread.currentThread().isInterrupted()) {
 
 ### 3.2 `park(Object blocker)`
 
-```
+```java
 public static void park(Object blocker)
 
 
@@ -166,7 +166,7 @@ public static void park(Object blocker)
 * **推荐用法**: 在实际开发中，特别是编写同步器或框架代码时，**推荐使用 `park(Object blocker)` 而不是无参的 `park()`**。`blocker` 通常设置为 `this`（如果是在同步器类内部调用）或其他能标识阻塞原因的对象。
 * **示例 (模拟 AQS 中的用法)**:
 
-```
+```java
 // 假设在一个自定义锁的实现中
 public class MyLock {
     // ... 其他代码 ...
@@ -200,7 +200,7 @@ public class MyLock {
 
 ### 3.3 `unpark(Thread thread)`
 
-```
+```java
 public static void unpark(Thread thread)
 
 
@@ -223,7 +223,7 @@ public static void unpark(Thread thread)
 
 ### 3.4 `parkNanos(long nanos)` 和 `parkNanos(Object blocker, long nanos)`
 
-```
+```java
 public static void parkNanos(long nanos)
 public static void parkNanos(Object blocker, long nanos)
 
@@ -246,7 +246,7 @@ public static void parkNanos(Object blocker, long nanos)
 
 ### 3.5 `parkUntil(long deadline)` 和 `parkUntil(Object blocker, long deadline)`
 
-```
+```java
 public static void parkUntil(long deadline)
 public static void parkUntil(Object blocker, long deadline)
 
@@ -265,7 +265,7 @@ public static void parkUntil(Object blocker, long deadline)
 
 ### 3.6 `getBlocker(Thread t)`
 
-```
+```java
 public static Object getBlocker(Thread t)
 
 
@@ -283,7 +283,7 @@ public static Object getBlocker(Thread t)
 
 以下是 `park()` 和 `unpark()` 在 OpenJDK 中可能的简化版 Java 层实现（实际代码可能因版本和平台而异）：
 
-```
+```java
 import sun.misc.Unsafe;
 import java.lang.reflect.Field;
 
@@ -462,7 +462,7 @@ public class LockSupport {
 
 `Parker` 类（简化概念模型）：
 
-```
+```java
 // HotSpot JVM 内部 Parker 对象的简化概念表示
 class Parker {
 private:
@@ -596,7 +596,7 @@ AQS 是 JUC 中大多数同步器（`ReentrantLock`, `Semaphore`, `CountDownLatc
 
 **示例（简化 AQS 逻辑）：**
 
-```
+```java
 // AQS 内部 acquire/release 的简化逻辑示意
 abstract class AbstractQueuedSynchronizer {
     // ... state, head, tail 等字段 ...
@@ -710,7 +710,7 @@ abstract class AbstractQueuedSynchronizer {
 * **异步转同步**: 在某些异步回调场景中，需要阻塞当前线程直到异步结果返回，可以使用 `park/unpark` 来实现。主线程 `park` 等待，回调线程处理完结果后 `unpark` 主线程。
 * **简单的一次性门闩**:
 
-```
+```java
 import java.util.concurrent.locks.LockSupport;
 
 public class OneTimeLatch {
@@ -804,7 +804,7 @@ public class OneTimeLatch {
 
 **使用 `park` 时如何处理中断？**
 
-```
+```java
 LockSupport.park(this); // 阻塞
 
 // park 返回后，必须检查中断状态
@@ -847,7 +847,7 @@ if (Thread.interrupted()) { // interrupted() 会检查并清除中断状态
    * **预防**: 如果业务逻辑允许等待超时，或者为了增加系统的健壮性，应优先考虑使用 `parkNanos` 或 `parkUntil` 替代无限等待的 `park()`。
    * **示例**:
 
-     ```
+     ```java
      long waitNanos = TimeUnit.SECONDS.toNanos(30); // 最多等待30秒
      LockSupport.parkNanos(this, waitNanos);
 

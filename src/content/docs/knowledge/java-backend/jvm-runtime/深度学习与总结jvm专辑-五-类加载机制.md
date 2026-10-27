@@ -143,7 +143,7 @@ JVM初始化步骤：
 * 静态语句块中只能访问到定义在静态语句块之前的变量，在前面的静态语句块可以赋值，但是不能访问。  
    举个栗子：
 
-```
+```java
 public class Test {
     static {
         i = 0;  //  给变量复制可以正常编译通过
@@ -221,7 +221,7 @@ Java开发人员角度来看：
 
 有个好栗子：
 
-```
+```java
 public class demo4one {
     public static void main(String[] args) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -255,7 +255,7 @@ null
 
 举个栗子：
 
-```
+```java
 public class loaderTest { 
         public static void main(String[] args) throws ClassNotFoundException { 
                 ClassLoader loader = HelloWorld.class.getClassLoader(); 

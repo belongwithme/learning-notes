@@ -31,7 +31,7 @@ sidebar:
  场景：  
  小王和小黎都在银行有账户，账户表如下：
 
-```
+```sql
 CREATE TABLE account (
     id INT NOT NULL AUTO_INCREMENT COMMENT '自增id',
     name VARCHAR(100) COMMENT '客户名称',
@@ -50,7 +50,7 @@ CREATE TABLE account (
 | 2 | 小黎 | 2 |
 | 假设有一天，小黎因为学习买资料，需要借10元钱，小王决定帮他转账。现实世界中，小王在ATM机上输入小黎的账户信息，确认转账。对应的数据库操作如下： |  |  |
 
-```
+```sql
 UPDATE account SET balance = balance - 10 WHERE id = 1; -- 小王账户减10
 UPDATE account SET balance = balance + 10 WHERE id = 2; -- 小黎账户加10
 
@@ -156,7 +156,7 @@ UPDATE account SET balance = balance + 10 WHERE id = 2; -- 小黎账户加10
    数据库提供了很多内建的功能来保证数据一致性。例如，MySQL 可以为表设置 主键（Primary Key）、唯一索引（Unique Index）、外键（Foreign Key） 和 NOT NULL 约束。这些机制能够保证插入或更新数据时，不会违反一些基础的规则。  
    举例来说:
 
-```
+```sql
 CREATE TABLE account (
    id INT NOT NULL AUTO_INCREMENT COMMENT '自增id',
    name VARCHAR(100) COMMENT '客户名称',
@@ -353,7 +353,7 @@ mysql> SHOW VARIABLES LIKE 'autocommit';
 以看到它的默认值为ON，也就是说默认情况下，如果我们不显式的使用START TRANSACTION或者BEGIN语句开启一个事务，那么每一条语句都算是一个独立的事务，这种特性称之为事务的自动提交。  
  假如我们在小王向小黎转账10元时不以START TRANSACTION或者BEGIN语句显式的开启一个事务，那么下面这两条语句就相当于放到两个独立的事务中去执行：
 
-```
+```sql
 UPDATE account SET balance = balance - 10 WHERE id = 1;
 UPDATE account SET balance = balance + 10 WHERE id = 2;
 
@@ -373,7 +373,7 @@ UPDATE account SET balance = balance + 10 WHERE id = 2;
 * 定义或修改数据库对象的数据定义语言（Data definition language，缩写为：DDL）。  
    所谓的数据库对象，指的就是数据库、表、视图、存储过程等等这些东西。当我们使用CREATE、ALTER、DROP等语句去修改这些所谓的数据库对象时，就会隐式的提交前面语句所属于的事务，就像这样：
 
-```
+```sql
 BEGIN;
 
 SELECT ... # 事务中的一条语句
@@ -396,7 +396,7 @@ CREATE TABLE ... # 此语句会隐式的提交前面语句所属于的事务
 * 事务控制或关于锁定的语句  
    当我们在一个事务还没提交或者回滚时就又使用START TRANSACTION或者BEGIN语句开启了另一个事务时，会隐式的提交上一个事务，比如这样：
 
-```
+```sql
 BEGIN;
 
 SELECT ... # 事务中的一条语句

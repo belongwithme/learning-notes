@@ -118,7 +118,7 @@ synchronized(对象){
 逃离方法的作用范围通常指的是一个对象或数据从一个方法内部被传递到方法外部,从而可能在多线程环境中被多个线程共享和访问.  
  举个例子来说:
 
-```
+```java
 public class Example {  
     private static Object sharedObject; // 静态成员变量，可以被多个线程共享  
   

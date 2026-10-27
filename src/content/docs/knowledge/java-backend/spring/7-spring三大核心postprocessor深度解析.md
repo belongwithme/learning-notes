@@ -63,7 +63,7 @@ Spring PostProcessor体系
 
 #### 🔍 核心 接口源码
 
-```
+```java
 @FunctionalInterface
 public interface BeanFactoryPostProcessor {
 
@@ -225,7 +225,7 @@ postProcessBeanDefinitionRegistry
 
 #### AbstractApplicationContext.refresh() 方法中的调用
 
-```
+```java
 public abstract class AbstractApplicationContext extends DefaultResourceLoader
         implements ConfigurableApplicationContext {
 
@@ -283,7 +283,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 #### PostProcessorRegistrationDelegate 执行细节
 
-```
+```java
 final class PostProcessorRegistrationDelegate {
 
     public static void invokeBeanFactoryPostProcessors(
@@ -486,7 +486,7 @@ final class PostProcessorRegistrationDelegate {
 
 Spring内置的 `PropertySourcesPlaceholderConfigurer` 就是一个典型的 `BeanFactoryPostProcessor` 实现。
 
-```
+```java
 /**
  * Spring内置实现: 解析${...}占位符
  */
@@ -580,7 +580,7 @@ public class PropertySourcesPlaceholderConfigurer extends PlaceholderConfigurerS
 
 **使用示例:**
 
-```
+```java
 @Configuration
 public class AppConfig {
 
@@ -608,7 +608,7 @@ public class AppConfig {
 
 #### 场景2: 自定义修改BeanDefinition
 
-```
+```java
 /**
  * 自定义BeanFactoryPostProcessor: 批量修改Bean的作用域
  */
@@ -663,7 +663,7 @@ public class CustomScopeModifier implements BeanFactoryPostProcessor {
 
 #### 🔍 核心接口源码
 
-```
+```java
 public interface BeanDefinitionRegistryPostProcessor extends BeanFactoryPostProcessor {
 
     /**
@@ -685,7 +685,7 @@ public interface BeanDefinitionRegistryPostProcessor extends BeanFactoryPostProc
 
 ### 2.2 执行时机对比
 
-```
+```java
 Spring容器启动
     ↓
 【阶段1】加载初始BeanDefinition (扫描@Component、解析XML等)
@@ -729,7 +729,7 @@ Spring容器启动
 
 #### 类 定义
 
-```
+```java
 public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPostProcessor,
         PriorityOrdered, ResourceLoaderAware, BeanClassLoaderAware, EnvironmentAware {
 
@@ -967,7 +967,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 #### ConfigurationClassParser 解析逻辑
 
-```
+```java
 class ConfigurationClassParser {
 
     /**
@@ -1313,7 +1313,7 @@ loadBeanDefinitions
 
 #### 示例1: 动态注册BeanDefinition
 
-```
+```java
 /**
  * 自定义BeanDefinitionRegistryPostProcessor
  * 场景: 根据配置文件动态注册数据源Bean
@@ -1385,7 +1385,7 @@ public class DynamicDataSourceRegistrar implements BeanDefinitionRegistryPostPro
 
 #### 示例2: 自定义注解扫描器
 
-```
+```java
 /**
  * 自定义注解: 标记需要特殊处理的类
  */
@@ -1483,7 +1483,7 @@ public class MyComponentScanner implements BeanDefinitionRegistryPostProcessor,
 
 #### 🔍 核心接口源码
 
-```
+```java
 public interface BeanPostProcessor {
 
     /**
@@ -1558,7 +1558,7 @@ Bean生命周期
 
 #### AbstractAutowireCapableBeanFactory 中的调用
 
-```
+```java
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
         implements AutowireCapableBeanFactory {
 
@@ -1709,7 +1709,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 #### 1. AutowiredAnnotationBeanPostProcessor (处理@Autowired)
 
-```
+```java
 public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBeanPostProcessorAdapter
         implements MergedBeanDefinitionPostProcessor, PriorityOrdered, BeanFactoryAware {
 
@@ -1820,7 +1820,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 #### 2. AbstractAutoProxyCreator (AOP代理生成)
 
-```
+```java
 public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
         implements SmartInstantiationAwareBeanPostProcessor, BeanFactoryAware {
 
@@ -1916,7 +1916,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 #### 3. CommonAnnotationBeanPostProcessor (处理@PostConstruct和@PreDestroy)
 
-```
+```java
 public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBeanPostProcessor
         implements InstantiationAwareBeanPostProcessor, BeanFactoryAware, Serializable {
 
@@ -1956,7 +1956,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 #### 示例1: 日志增强
 
-```
+```java
 /**
  * 自定义BeanPostProcessor: 为Bean添加日志功能
  *
@@ -2016,7 +2016,7 @@ public class LoggingBeanPostProcessor implements BeanPostProcessor {
 
 #### 示例2: 性能监控
 
-```
+```java
 /**
  * 自定义BeanPostProcessor: 性能监控
  *
@@ -2085,7 +2085,7 @@ public class PerformanceMonitorBeanPostProcessor implements BeanPostProcessor {
 
 #### 示例3: Bean验证
 
-```
+```java
 /**
  * 自定义BeanPostProcessor: Bean属性验证
  *
@@ -2342,7 +2342,7 @@ Bean实例
 
 **示例代码:**
 
-```
+```java
 // ConfigurationClassPostProcessor的优先级
 public class ConfigurationClassPostProcessor
         implements BeanDefinitionRegistryPostProcessor, PriorityOrdered {
@@ -2362,7 +2362,7 @@ public class ConfigurationClassPostProcessor
 
 ### 4.4 实际运行示例
 
-```
+```java
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
@@ -2487,7 +2487,7 @@ class MyService {
 
 虽然`ConfigurationClassPostProcessor`的`getOrder()`返回`LOWEST_PRECEDENCE` (最低优先级),但它仍然最先执行,原因是:
 
-```
+```java
 public class ConfigurationClassPostProcessor
         implements BeanDefinitionRegistryPostProcessor, PriorityOrdered {
 
@@ -2529,7 +2529,7 @@ VIP客户 (PriorityOrdered)
 
 **完整流程:**
 
-```
+```java
 1. 实例化Bean (构造函数)
     ↓
 2. ⭐ AutowiredAnnotationBeanPostProcessor.postProcessProperties()
@@ -2548,7 +2548,7 @@ VIP客户 (PriorityOrdered)
 
 **源码:**
 
-```
+```java
 public class AutowiredAnnotationBeanPostProcessor
         extends InstantiationAwareBeanPostProcessorAdapter {
 
@@ -2600,7 +2600,7 @@ AOP代理在**Bean初始化之后**生成,具体在`AbstractAutoProxyCreator.pos
 
 **步骤1:** 创建自动配置类
 
-```
+```java
 @Configuration
 @ConditionalOnClass(MyService.class)
 @EnableConfigurationProperties(MyProperties.class)
@@ -2628,7 +2628,7 @@ com.example.starter.MyAutoConfiguration
 
 **步骤3:** 创建配置属性类
 
-```
+```java
 @ConfigurationProperties(prefix = "my.service")
 public class MyProperties {
     private String name;
@@ -2641,7 +2641,7 @@ public class MyProperties {
 
 **步骤4:** 使用
 
-```
+```xml
 <dependency>
     <groupId>com.example</groupId>
     <artifactId>my-spring-boot-starter</artifactId>
@@ -2651,7 +2651,7 @@ public class MyProperties {
 
 ```
 
-```
+```properties
 # application.properties
 my.service.name=test
 my.service.timeout=60
@@ -2712,7 +2712,7 @@ BeanPostProcessor
 
 #### 1️⃣ 选择合适的PostProcessor
 
-```
+```java
 需求                          选择
 ─────────────────────────────────────────
 注册新的Bean                  BeanDefinitionRegistryPostProcessor
@@ -2727,7 +2727,7 @@ BeanPostProcessor
 
 #### 2️⃣ 性能优化
 
-```
+```java
 // ❌ 不好的做法: 每次都遍历所有Bean
 @Component
 public class BadBeanPostProcessor implements BeanPostProcessor {
@@ -2770,7 +2770,7 @@ public class GoodBeanPostProcessor implements BeanPostProcessor {
 
 #### 3️⃣ 避免循环依赖
 
-```
+```java
 // ❌ 不好的做法: BeanPostProcessor依赖其他Bean
 @Component
 public class BadBeanPostProcessor implements BeanPostProcessor {
@@ -2813,7 +2813,7 @@ public class GoodBeanPostProcessor implements BeanPostProcessor, BeanFactoryAwar
 
 #### 4️⃣ 正确处理代理
 
-```
+```java
 @Component
 public class MyBeanPostProcessor implements BeanPostProcessor {
 

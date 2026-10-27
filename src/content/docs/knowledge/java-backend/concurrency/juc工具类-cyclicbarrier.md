@@ -105,7 +105,7 @@ CyclicBarrier 能够被循环利用，也就是当所有线程到达屏障后，
 
 CyclicBarrier 提供了两个构造函数：
 
-```
+```java
 public CyclicBarrier(int parties) {
     this(parties, null);
 }
@@ -142,7 +142,7 @@ await() 方法是 CyclicBarrier 的核心操作，负责让当前线程等待其
 
 最简单的 await() 实现为：
 
-```
+```java
 public int await() throws InterruptedException, BrokenBarrierException {
     try {
         return dowait(false, 0L);
@@ -160,7 +160,7 @@ public int await() throws InterruptedException, BrokenBarrierException {
 
 dowait() 方法是整个等待与唤醒机制的核心，其源码如下：
 
-```
+```java
 private int dowait(boolean timed, long nanos)
     throws InterruptedException, BrokenBarrierException, TimeoutException {
     final ReentrantLock lock = this.lock;
@@ -298,7 +298,7 @@ if (index == 0) {  // 若为最后一个线程
 
 CyclicBarrier 的循环特性得益于其自动重置机制。核心源码如下：
 
-```
+```java
 private void nextGeneration() {
     trip.signalAll();  // 1. 唤醒所有等待线程
     count = parties;   // 2. 将计数器重置为初始值
@@ -396,7 +396,7 @@ CyclicBarrier 在多线程编程中有广泛的应用。以下将详细探讨典
 
 **实现示例**：
 
-```
+```java
 public class ParallelCalculator {
     private final double[] data;
     private final CyclicBarrier barrier;
@@ -568,7 +568,7 @@ public class ParallelCalculator {
 
 下面是一个简化版的完整源码示例，帮助理解如何使用 CyclicBarrier 实现多阶段同步和数据汇总。
 
-```
+```java
 import java.util.concurrent.*;
 
 public class CyclicBarrierExample {

@@ -303,7 +303,7 @@ void G1PostWriteBarrier(oop a, oop b) {
 
 ### 概念 2: 并发优化线程处理脏卡片
 
-```
+```c
 // 伪代码：并发优化线程 (Concurrent Refinement Thread) 的主循环
 void ConcurrentRefinementThread::run() {
   while (should_continue_running()) {

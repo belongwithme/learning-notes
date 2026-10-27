@@ -39,7 +39,7 @@ sidebar:
 ![在这里插入图片描述](./assets/126391026/3310b779360d75211887ea6f.png)  
 代码实现：
 
-```
+```java
 public class Semaphore implements java.io.Serializable
 
 
@@ -49,7 +49,7 @@ public class Semaphore implements java.io.Serializable
 
 ## Doc解析
 
-```
+```java
 /**
  * A counting semaphore.  Conceptually, a semaphore maintains a set of
  * permits.  
@@ -176,7 +176,7 @@ public class Semaphore implements java.io.Serializable
 一：Sync  
 Semaphore基于AQS实现。
 
-```
+```java
     /**
      * Synchronization implementation for semaphore.  Uses AQS state
      * to represent permits. Subclassed into fair and nonfair
@@ -247,7 +247,7 @@ Semaphore基于AQS实现。
 
 二：NonfairSync
 
-```
+```java
   static final class NonfairSync extends Sync {
         private static final long serialVersionUID = -2694183684443567898L;
 
@@ -265,7 +265,7 @@ Semaphore基于AQS实现。
 
 三：FairSync
 
-```
+```java
  static final class FairSync extends Sync {
         private static final long serialVersionUID = 2014338818796000944L;
 
@@ -296,7 +296,7 @@ Semaphore基于AQS实现。
 
 1:参数为信号量
 
-```
+```java
 public Semaphore(int permits) {
     sync = new NonfairSync(permits);
 }
@@ -306,7 +306,7 @@ public Semaphore(int permits) {
 
 2:参数信号量和是否公平性
 
-```
+```java
 public Semaphore(int permits, boolean fair) {
     sync = fair ? new FairSync(permits) : new NonfairSync(permits);
 }

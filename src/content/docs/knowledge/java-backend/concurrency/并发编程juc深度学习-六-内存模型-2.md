@@ -50,7 +50,7 @@ CPU
 
 1. 写屏障（sfence）保证在该屏障之前，对共享变量的改动，都同步到主存当中
 
-```
+```java
 public void  action1(){
 num=2;
 ready=true       //ready是volatile赋值带写屏障
@@ -62,7 +62,7 @@ ready=true       //ready是volatile赋值带写屏障
 
 2. 读屏障（Ifence）保证在该屏障后，对共享变量的读取，加载的是主存中最新数据
 
-```
+```java
 public void action2(){
 //读屏障
 //ready是volatile读取值带读屏障
@@ -97,7 +97,7 @@ r=1;
  我们以一个例子来解读一格Happens-Before的六条规则：  
  例子：
 
-```
+```java
 class VolatileDemo{
 int x=0;
 volatile boolean a =false;
@@ -179,7 +179,7 @@ this.x=12;
 线程start()规则 ，这条关于线程启动的，主线程A启动子线程B后，子线程B能够看到 主线程在启动子线程B前的操作。  
  举个例子来看：
 
-```
+```java
 Thread B =new Thread(()->{
 //主线程调用B.start()之前
 //所有对共享变量的修改，此处皆可见
@@ -199,7 +199,7 @@ B.start()；
  换句话说：在线程A中，调用线程B的join()并成功返回，那么线程B中的任意操作Happens-Before于该join()操作的返回  
  举个例子：
 
-```
+```java
 class A{
 Thread B =new Thread(()->{
 //此处对共享变量var修改

@@ -45,7 +45,7 @@ sidebar:
 
 与 `synchronized` 不同，`ReentrantLock` 的锁获取和释放是**显式**的：
 
-```
+```java
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -141,7 +141,7 @@ public class ReentrantLockDemo {
 
 想象一个场景：一个类有两个方法 `methodA` 和 `methodB`，它们都需要获取同一个锁。如果 `methodA` 在执行过程中调用了 `methodB`：
 
-```
+```java
 Lock lock = new ReentrantLock();
 
 public void methodA() {
@@ -185,7 +185,7 @@ public void methodB() {
 
 我们可以通过 `getHoldCount()` 方法查询当前线程持有该锁的次数：
 
-```
+```java
 ReentrantLock lock = new ReentrantLock();
 
 public void recursiveCall(int depth) {
@@ -218,7 +218,7 @@ public void recursiveCall(int depth) {
 
 通过 `ReentrantLock` 的构造函数来指定：
 
-```
+```java
 Lock fairLock = new ReentrantLock(true); // 创建一个公平锁
 Lock nonfairLock = new ReentrantLock(); // 创建一个非公平锁 (默认)
 // 或者显式指定 false: new ReentrantLock(false);
@@ -259,7 +259,7 @@ Lock nonfairLock = new ReentrantLock(); // 创建一个非公平锁 (默认)
 * `lock()`: 获取锁，**不响应中断**。即使在等待锁的过程中线程被中断，`lock()` 方法也不会抛出 `InterruptedException`，它会继续等待直到获取锁。
 * `lockInterruptibly()`: 获取锁，但**响应中断**。如果在调用 `lockInterruptibly()` 等待锁的过程中，当前线程被中断 (`interrupt()` 方法被调用)，那么该方法会**立即**抛出 `InterruptedException`，停止等待锁。
 
-```
+```java
 Lock lock = new ReentrantLock();
 
 Thread t = new Thread(() -> {
@@ -332,7 +332,7 @@ Main thread released lock.
   + 如果在等待期间，**超时**仍未获取锁，返回 `false`。
   + 如果在等待期间，线程被**中断**，抛出 `InterruptedException`。
 
-```
+```java
 Lock lock = new ReentrantLock();
 ExecutorService executor = Executors.newFixedThreadPool(2);
 
@@ -438,7 +438,7 @@ pool-1-thread-1 released lock initially.
 
 使用 `ReentrantLock` 和两个 `Condition` 可以完美实现：
 
-```
+```java
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.Condition;
@@ -559,7 +559,7 @@ public class ProducerConsumerDemo {
 
 **示例：**
 
-```
+```java
 ReentrantLock lock = new ReentrantLock(true); // 公平锁
 
 System.out.println("Is Fair? " + lock.isFair()); // true
@@ -655,7 +655,7 @@ AQS 巧妙地运用了**模板方法模式**。它定义了同步器实现的核
 
 #### 2.2.1 同步状态 (State)
 
-```
+```java
 // AbstractQueuedSynchronizer.java
 private volatile int state; // 使用 volatile 保证可见性
 
@@ -686,7 +686,7 @@ protected final boolean compareAndSetState(int expect, int update) {
 
 **Node 结构：**
 
-```
+```java
 // AbstractQueuedSynchronizer.java
 static final class Node {
     // --- 模式标记 ---
@@ -772,7 +772,7 @@ private transient volatile Node tail; // 队列尾节点
 
 #### 2.3.1 `Sync`, `NonfairSync`, `FairSync`
 
-```
+```java
 // ReentrantLock.java
 public class ReentrantLock implements Lock, java.io.Serializable {
     // 内部的同步器实现，继承自 AQS
@@ -946,7 +946,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
 
 `acquire(int arg)` 是 AQS 中独占模式获取同步状态的核心方法。`ReentrantLock` 的 `lock()` (公平锁) 和 `lock()` (非公平锁 CAS 失败后) 都会调用它。
 
-```
+```java
 // AbstractQueuedSynchronizer.java
 public final void acquire(int arg) {
     // 1. 尝试获取锁 (调用子类实现的 tryAcquire)
@@ -1116,7 +1116,7 @@ private static void selfInterrupt() {
 
 `release(int arg)` 是 AQS 中独占模式释放同步状态的核心方法。`ReentrantLock` 的 `unlock()` 会调用它。
 
-```
+```java
 // AbstractQueuedSynchronizer.java
 public final boolean release(int arg) {
     // 1. 尝试释放锁 (调用子类实现的 tryRelease)
@@ -1196,7 +1196,7 @@ private void unparkSuccessor(Node node) { // node 一般是头节点 head
 
 **`await()` 源码分析：**
 
-```
+```java
 // AbstractQueuedSynchronizer.java -> ConditionObject
 public final void await() throws InterruptedException {
     // 1. 检查中断状态，如果已中断，直接抛异常
@@ -1331,7 +1331,7 @@ final boolean transferAfterCancelledWait(Node node) {
 
 **`signal()` 源码分析：**
 
-```
+```java
 // AbstractQueuedSynchronizer.java -> ConditionObject
 public final void signal() {
     // 1. 检查当前线程是否持有 Lock，否则抛异常
@@ -1463,7 +1463,7 @@ private void doSignalAll(Node first) {
 
 **标准范式：**
 
-```
+```java
 Lock lock = new ReentrantLock();
 // ...
 
@@ -1485,7 +1485,7 @@ public void criticalSection() {
 
 **错误示例（忘记 `finally`）：**
 
-```
+```java
 // 错误！！！非常危险！！！
 public void unsafeMethod() {
     lock.lock();
@@ -1649,7 +1649,7 @@ try {
 
 这使得在读操作频繁的场景下，并发性能可以得到极大提升。
 
-```
+```java
 ReadWriteLock rwLock = new ReentrantReadWriteLock();
 Lock readLock = rwLock.readLock();
 Lock writeLock = rwLock.writeLock();

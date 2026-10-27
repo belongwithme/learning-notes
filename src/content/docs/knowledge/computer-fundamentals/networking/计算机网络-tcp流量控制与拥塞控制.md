@@ -70,7 +70,7 @@ TCP使用滑动窗口机制实现流量控制。在TCP头部中，有一个16位
 
 接收窗口的大小取决于接收缓冲区的大小和当前已使用的空间：
 
-```
+```c
 // 简化版的tcp_select_window函数
 u16 tcp_select_window(struct sock *sk)
 {
@@ -100,7 +100,7 @@ u16 tcp_select_window(struct sock *sk)
 
 在`__tcp_select_window`函数中，会根据接收缓冲区的状态计算新的窗口大小：
 
-```
+```c
 // 简化版的__tcp_select_window函数
 u32 __tcp_select_window(struct sock *sk)
 {
@@ -129,7 +129,7 @@ u32 __tcp_select_window(struct sock *sk)
 
 当接收方的窗口大小发生变化时，需要通知发送方。这通常通过发送ACK包实现：
 
-```
+```c
 // 简化版的tcp_send_ack函数
 void tcp_send_ack(struct sock *sk)
 {
@@ -164,7 +164,7 @@ void tcp_send_ack(struct sock *sk)
 
 当发送方收到窗口更新时，会调整自己的发送窗口：
 
-```
+```c
 // 简化版的tcp_ack函数
 static bool tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 {
@@ -193,7 +193,7 @@ static bool tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 
 当接收方通告一个零窗口时，发送方会进入持续状态，并定期发送窗口探测包：
 
-```
+```c
 // 简化版的tcp_send_probe0函数
 void tcp_send_probe0(struct sock *sk)
 {
@@ -250,7 +250,7 @@ TCP头部中的窗口大小字段是16位的，最大值为65535字节。这在�
 
 在Linux内核中，窗口缩放的实现如下：
 
-```
+```c
 // 简化版的tcp_select_window函数
 u16 tcp_select_window(struct sock *sk)
 {
@@ -287,7 +287,7 @@ u16 tcp_select_window(struct sock *sk)
 
 为了适应不同的网络环境和应用需求，现代TCP实现通常会自动调整接收窗口的大小。Linux内核实现了接收窗口自动调整机制，根据应用程序的读取速率和网络状况动态调整接收窗口的大小。
 
-```
+```c
 // 简化版的tcp_rcv_space_adjust函数
 void tcp_rcv_space_adjust(struct sock *sk)
 {
@@ -380,7 +380,7 @@ TCP拥塞控制的基本算法包括慢启动、拥塞避免、快速重传和�
 
 Linux内核使用`tcp_congestion_ops`结构体表示一个拥塞控制算法：
 
-```
+```c
 // file: include/net/tcp.h
 struct tcp_congestion_ops {
     struct list_head list;
@@ -414,7 +414,7 @@ struct tcp_congestion_ops {
 
 拥塞控制算法通过`tcp_register_congestion_control`函数注册到内核中：
 
-```
+```c
 // 简化版的tcp_register_congestion_control函数
 int tcp_register_congestion_control(struct tcp_congestion_ops *ca)
 {
@@ -433,7 +433,7 @@ int tcp_register_congestion_control(struct tcp_congestion_ops *ca)
 
 慢启动和拥塞避免的核心实现在`tcp_cong_avoid`函数中：
 
-```
+```c
 // 简化版的tcp_cong_avoid函数
 void tcp_cong_avoid(struct sock *sk, u32 ack, u32 acked)
 {
@@ -453,7 +453,7 @@ void tcp_cong_avoid(struct sock *sk, u32 ack, u32 acked)
 
 在标准的拥塞避免算法中，`cong_avoid`函数的实现如下：
 
-```
+```c
 // 简化版的tcp_reno_cong_avoid函数
 void tcp_reno_cong_avoid(struct sock *sk, u32 ack, u32 acked)
 {
@@ -476,7 +476,7 @@ void tcp_reno_cong_avoid(struct sock *sk, u32 ack, u32 acked)
 
 快速重传和快速恢复的实现在`tcp_fastretrans_alert`函数中：
 
-```
+```c
 // 简化版的tcp_fastretrans_alert函数
 void tcp_fastretrans_alert(struct sock *sk, int pkts_acked, int flag)
 {
@@ -583,7 +583,7 @@ NewReno的主要改进是引入了"部分确认"（Partial ACK）的概念。部
 
 NewReno的实现在Linux内核中如下：
 
-```
+```c
 // 简化版的tcp_newreno_cong_avoid函数
 void tcp_newreno_cong_avoid(struct sock *sk, u32 ack, u32 acked)
 {
@@ -632,7 +632,7 @@ CUBIC的窗口增长函数为：
 
 CUBIC的实现在Linux内核中如下：
 
-```
+```c
 // 简化版的cubic_cong_avoid函数
 void cubic_cong_avoid(struct sock *sk, u32 ack, u32 acked)
 {
@@ -698,7 +698,7 @@ BBR定义了四个状态：
 
 BBR的实现在Linux内核中如下：
 
-```
+```c
 // 简化版的bbr_cong_avoid函数
 void bbr_cong_avoid(struct sock *sk, u32 ack, u32 acked)
 {
@@ -1081,7 +1081,7 @@ QoS（服务质量）和流量整形可以优先处理重要的TCP流，提高�
 * 使用优先级队列，优先处理重要的TCP流
 * 使用流量整形，限制非关键流的带宽使用
 
-```
+```java
 # 使用tc命令设置流量整形
 tc qdisc add dev eth0 root handle 1: htb default 10
 tc class add dev eth0 parent 1: classid 1:1 htb rate 100mbit

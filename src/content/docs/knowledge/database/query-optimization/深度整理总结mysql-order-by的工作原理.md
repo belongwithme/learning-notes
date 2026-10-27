@@ -66,7 +66,7 @@ order by可以让指定的字段排序来显示结果.
  假设你要查询城市是“杭州”的所有人名字，并且按照姓名排序返回前 1000 个人的姓名、年龄。  
  这个表的部分定义是这样的:
 
-```
+```sql
 CREATE TABLE `t` (
   `id` int(11) NOT NULL,
   `city` varchar(16) NOT NULL,
@@ -94,7 +94,7 @@ rowid 排序 (Sort by RowID / Tag Sort)：MySQL 先只读取排序依据的列�
 
 MySQL 会根据 max\_length\_for\_sort\_data 参数来决定使用哪种排序算法:
 
-```
+```sql
 -- 查看参数值(默认 1024 字节)
 SHOW VARIABLES LIKE 'max_length_for_sort_data';
 
@@ -133,7 +133,7 @@ SHOW VARIABLES LIKE 'max_length_for_sort_data';
 图中“按 name 排序”这个动作，可能在内存中完成，也可能需要使用外部排序，这取决于排序所需的内存和参数 sort\_buffer\_size。  
  你可以用下面介绍的方法，来确定一个排序语句是否使用了临时文件。
 
-```
+```sql
 /* 打开 optimizer_trace，只对本线程有效 */
 SET optimizer_trace='enabled=on'; 
  
@@ -222,7 +222,7 @@ max\_length\_for\_sort\_data，是 MySQL 中专门控制用于排序的行数据
 
 所以，我们可以在这个市民表上创建一个 city 和 name 的联合索引，对应的 SQL 语句是：
 
-```
+```sql
 alter table t add index city_user(city, name);
 
 
@@ -245,7 +245,7 @@ alter table t add index city_user(city, name);
 
 存在的优化场景
 
-```
+```sql
   SELECT category, COUNT(*) as cnt
   FROM products
   GROUP BY category
@@ -282,7 +282,7 @@ alter table t add index city_user(city, name);
 
 假设你的表里面已经有了 city\_name(city, name) 这个联合索引，然后你要查杭州和苏州两个城市中所有的市民的姓名，并且按名字排序，显示前 100 条记录。如果 SQL 查询语句是这么写的 ：
 
-```
+```sql
 select * from t where city in ('杭州'," 苏州 ") order by name limit 100;
 
 
@@ -309,7 +309,7 @@ select * from t where city in ('杭州'," 苏州 ") order by name limit 100;
 
 如果把这条 SQL 语句里“limit 100”改成“limit 10000,100”的话，处理方式其实也差不多，即：要把上面的两条语句改成写：
 
-```
+```sql
 select * from t where city=" 杭州 " order by name limit 10100; 
 和
  select * from t where city=" 苏州 " order by name limit 10100。
@@ -322,7 +322,7 @@ select * from t where city=" 杭州 " order by name limit 10100;
 当然这个方案有一个明显的损失，就是从数据库返回给客户端的数据量变大了。  
  所以，如果数据的单行比较大的话，可以考虑把这两条 SQL 语句改成下面这种写法：
 
-```
+```sql
 select id,name from t where city=" 杭州 " order by name limit 10100; 
 和
 select id,name from t where city=" 苏州 " order by name limit 10100。

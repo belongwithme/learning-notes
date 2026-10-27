@@ -48,7 +48,7 @@ Java不仅可以定义变量和方法,还可以定义类.
 
 下面我们举个例子来看一下:
 
-```
+```java
 public class Outter {
     private Inner inner = null;
     public Outter() {
@@ -74,7 +74,7 @@ public class Outter {
 ![在这里插入图片描述](./assets/136279140/d8d2d597b524536ff1a59fc0.png)  
  反编译Outter$Inner.class文件得到下面信息:
 
-```
+```java
 E:\Workspace\Test\bin\com\cxh\test2>javap -v Outter$Inner
 Compiled from "Outter.java"
 public class com.cxh.test2.Outter$Inner extends java.lang.Object
@@ -161,7 +161,7 @@ public com.cxh.test2.Outter$Inner(com.cxh.test2.Outter);
  静态内部类不需要依赖外部类,这点和静态成员属性类似,并且它不能使用外部类的非Static成员变量和方法.  
  因为没有外部类对象的情况下,我们可以创建出静态内部类对象,这时候如果允许访问外部类的非Static成员就会产生矛盾,因为外部类的非Static成员必须依附于具体的对象.
 
-```
+```java
 public class Out {
  private static int a;
  private int b;
@@ -183,7 +183,7 @@ public class Out {
 
 最普通的内部类,定义位于另一类的内部,如下面形式
 
-```
+```java
 class Circle {
     double radius = 0;
      
@@ -207,7 +207,7 @@ class Circle {
 
 * 内部类访问外部类
 
-```
+```java
 class Circle {
     private double radius = 0;
     public static int count =1;
@@ -228,7 +228,7 @@ class Circle {
 
 * 外部类访问内部类
 
-```
+```java
 class Circle {
     private double radius = 0;
  
@@ -261,7 +261,7 @@ class Circle {
 
 定义在一个方法或者一个作用域里面的内,它和成员内部类的区别在于局部内部类的访问仅限于方法内或者该作用域内.
 
-```
+```java
 class People{
     public People() {
          
@@ -291,7 +291,7 @@ class Man{
 这个应该是我们编写代码时用的最多的,在编写事件监听的代码时使用匿名内部类不但方便,而且使代码更容易维护.  
  由于没有名字,所以它创建方式有点奇怪,创建格式如下:
 
-```
+```java
 new 父类构造器(参数列表)|实现接口(){
    //匿名内部类的类体部分
 }
@@ -301,7 +301,7 @@ new 父类构造器(参数列表)|实现接口(){
 
 它是没有class关键字的,匿名内部类直接使用new来生成一个对象的引用.这个引用是隐式的.
 
-```
+```java
 public class AnonymousInnerClassExample {  
     public static void main(String[] args) {  
         // 创建一个订单处理系统实例  
@@ -350,7 +350,7 @@ public class AnonymousInnerClassExample {
 内部类在编译成功后,会产生一个class文件,该class文件与外部类并不是同一class文件,仅仅只保留对外部类的引用.  
  当外部类传入的参数需要被内部类调用时,从java程序的角度来看是直接被调用的.
 
-```
+```java
 public class OuterClass {
     public void display(final String name,String age){
         class InnerClass{
@@ -366,7 +366,7 @@ public class OuterClass {
 
 代码上来看,好像name参数应该是被内部类直接调用,但是java编译之后的实际操作如下:
 
-```
+```java
 public class OuterClass$InnerClass {
     public InnerClass(String name,String age){
         this.InnerClass$name = name;
@@ -389,7 +389,7 @@ public class OuterClass$InnerClass {
 
 一般都是利用构造器来完成某个实例的初始化工作的，但是匿名内部类是没有构造器的！那怎么来初始化匿名内部类呢？使用构造代码块！
 
-```
+```java
 public class OutClass {
     public InnerClass getInnerClass(final int age,final String name){
         return new InnerClass() {
@@ -435,7 +435,7 @@ public class OutClass {
    Java本身不支持类的多继承,但可以通过内部类来实现接口的多继承效果.我们可以在一个外部类中定义多个内部类,每个内部类都可以实现不同的接口,从而达到类类似多继承的效果.  
    举个简单的代码例子来说明这个概念:
 
-```
+```java
 // 定义一个接口A  
 interface InterfaceA {  
     void methodA();  

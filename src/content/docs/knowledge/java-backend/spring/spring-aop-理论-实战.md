@@ -168,7 +168,7 @@ Spring AOP 选择在运行时织入，这意味着它不需要特殊的编译器
 
 ### 五种通知类型
 
-```
+```java
 @Aspect
 @Component
 public class AdviceExample {
@@ -294,7 +294,7 @@ execution(com.example.entity.User *(..))
 
 ### 实战:请求日志记录
 
-```
+```java
 @Slf4j
 @Aspect
 @Component
@@ -406,7 +406,7 @@ Controller方法
 
 写法1: 直接在通知注解中写execution表达式
 
-```
+```java
   @Around("execution(* com.example.service..*.*(..))")
   public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
       // 切面逻辑
@@ -419,7 +419,7 @@ Controller方法
 
 写法2: 先定义@Pointcut,然后在通知中引用
 
-```
+```java
   @Pointcut("(execution(* com.leadyo.plm.*.controller.*.*(..)) " +
             "|| execution(* com.leadyo.plm.message.websocket.WebSocket.*(..)))" +
             "&&!execution(* com.leadyo.plm.controller.UtilsController.*(..)) ")
@@ -450,7 +450,7 @@ Controller方法
 
 **错误示例:**
 
-```
+```java
 // ❌ 错误:不返回结果
 @Around("requestLog()")
 public Object doAroundService(ProceedingJoinPoint pjp) throws Throwable {
@@ -468,7 +468,7 @@ String userName = userService.getUserName(1L);
 
 ### 实战:缓存清理
 
-```
+```java
 @Slf4j
 @Aspect
 @Component

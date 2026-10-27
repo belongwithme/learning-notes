@@ -108,7 +108,7 @@ BASE理论是对CAP理论中AP选择（可用性和分区容错性）的一种�
 
 #### 订单服务实现
 
-```
+```java
 @Service
 public class OrderServiceImpl implements OrderService {
     
@@ -242,7 +242,7 @@ public class OrderServiceImpl implements OrderService {
 
 #### 库存服务消息消费者
 
-```
+```java
 @Component
 @RocketMQMessageListener(
     topic = "topic_inventory_deduction",
@@ -301,7 +301,7 @@ public class InventoryDeductionConsumer implements RocketMQListener<InventoryDed
 
 #### 库存服务实现
 
-```
+```java
 @Service
 public class InventoryServiceImpl implements InventoryService {
     
@@ -428,7 +428,7 @@ public class InventoryServiceImpl implements InventoryService {
 
 #### 订单状态查询接口
 
-```
+```java
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {

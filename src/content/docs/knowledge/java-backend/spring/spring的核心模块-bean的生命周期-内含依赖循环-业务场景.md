@@ -81,7 +81,7 @@ Spring容器根据Bean的定义读取配置文件或者注解信息，找到Bean
 1.Bean的定义：  
  假设有一个名为 “userService” 的 Bean，在配置文件中的定义如下所示：
 
-```
+```xml
 <bean id="userService" class="com.example.UserService">
     <property name="userDao" ref="userDao" />
 </bean>
@@ -128,7 +128,7 @@ Spring 容器在销毁 MyBean 实例之前，会调用其 cleanup() 方法进行
  1.  
  a. 构造函数注入：
 
-```
+```java
 public class Person {
     private String name;
     private int age;
@@ -150,7 +150,7 @@ public class Person {
 
 b.setter方法注入:
 
-```
+```java
 public class Person {
     private String name;
     private int age;
@@ -179,7 +179,7 @@ public class Person {
  spring的自动装配，后面boot的时候我们会详细说。感兴趣可以点个关注哈哈。  
  3.字段注入
 
-```
+```java
 public class Person {
     @Value("John Doe")
     private String name;
@@ -200,7 +200,7 @@ public class Person {
 2.Aware接口注入  
  如果 Bean 实现了 Aware 接口，例如 BeanNameAware 接口，则 Spring 容器会调用相应的方法将容器中的信息注入到该 Bean 中。例如：
 
-```
+```java
 public class MyBean implements BeanNameAware {
 
     private String beanName;
@@ -218,7 +218,7 @@ public class MyBean implements BeanNameAware {
  3.BeanPostProcessor前置处理  
  如果 Bean 实现了 BeanPostProcessor 接口，例如：
 
-```
+```java
 public class MyBeanPostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -234,7 +234,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
  4.初始化方法  
  如果 Bean 实现了 InitializingBean 接口，例如：
 
-```
+```java
 public class MyBean implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -248,7 +248,7 @@ public class MyBean implements InitializingBean {
 
 或者指定了自定义的初始化方法，例如：
 
-```
+```xml
 <bean id="myBean" class="com.example.MyBean" init-method="init">
 </bean>
 
@@ -259,7 +259,7 @@ public class MyBean implements InitializingBean {
  6.BeanPostProcessor后置处理  
  如果 Bean 实现了 BeanPostProcessor 接口，例如：
 
-```
+```java
 public class MyBeanPostProcessor implements BeanPostProcessor {
 
     @Override
@@ -275,7 +275,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
 则 Spring 容器会在 Bean 初始化之后，调用其 postProcessAfterInitialization() 方法进行后置处理。例如可以在该方法中为 Bean 增加一些功能或者修改其属性值等。  
  8.DisposableBean
 
-```
+```java
 public class MyBean implements DisposableBean {
     @Override
     public void destroy() throws Exception {
@@ -290,7 +290,7 @@ public class MyBean implements DisposableBean {
 
 另外，在 XML 配置文件中也可以通过指定 destroy-method 属性来定义 Bean 的销毁方法，例如：
 
-```
+```xml
 <bean id="myBean" class="com.example.MyBean" destroy-method="cleanup">
 
 
@@ -323,7 +323,7 @@ Spring在进行属性填充的时候，会分如下几种情况：
 我们对于上面三种情况分别举出例子来说明：  
  1.注入普通属性的示例：
 
-```
+```java
 public class User {
     private String name;
     private int age;
@@ -350,7 +350,7 @@ public class User {
 
 2.注入单向对象引用属性的示例：
 
-```
+```java
 public class Order {
     private User user;
 
@@ -374,7 +374,7 @@ public class Order {
 
 3.注入双向对象引用属性的示例:
 
-```
+```java
 public class Department {
     private List<Employee> employees;
 
@@ -428,7 +428,7 @@ Department和Employee对象之间形成了双向引用关系，Department持有�
 
 代码如下：
 
-```
+```java
 public class Order {
     private User user;
 
@@ -462,7 +462,7 @@ public class User {
  Spring提供了**三级缓存**存储**完整Bean实例**和**半程品Bean实例**，用于解决循环引用问题。  
  在`DefaultListableBeanFactory`的上四级父类`DefaultSingletonBeanRegistry`中提供了如下三个Map：
 
-```
+```java
 /** Cache of singleton objects: bean name to bean instance. */
 //1.存储单例Bean成品的容器，即实例化和初始化都完成的Bean，称之为“一级缓存”
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
@@ -483,7 +483,7 @@ public class User {
  这里简单聊一下大概的过程：  
  1.首先一个`userService`实例化创建完毕之后，并不是直接存到`singletonFactories`三级缓存里面，这个`userService`会用`ObjectFactory`进行一个包装，换句话说就是为它创建一个`ObjectFactory`,然后添加到三级缓存中，我们来看一下这个类：
 
-```
+```java
 @FunctionalInterface
 public interface ObjectFactory<T> {
 

@@ -32,7 +32,7 @@ sidebar:
 ![在这里插入图片描述](./assets/125968262/85c94cfe8b035b5674d06b58.png)  
 代码实现如下：
 
-```
+```java
 public class Hashtable<K,V>
     extends Dictionary<K,V>
     implements Map<K,V>, Cloneable, java.io.Serializable
@@ -46,7 +46,7 @@ java
 
 ### Doc解读
 
-```
+```java
 /**
  * This class implements a hash table, which maps keys to values. 
  * 这个类实现了Hash 表，它将key映射到值上
@@ -177,7 +177,7 @@ Hashtable与Hashmap相似，Hashtable内部也是采用内部类来实现这些�
 
 比较核心的方法：
 
-```
+```java
       public boolean equals(Object o) {
             if (!(o instanceof Map.Entry))    //先判断传入对象的类型
                 return false;
@@ -198,7 +198,7 @@ Hashtable与Hashmap相似，Hashtable内部也是采用内部类来实现这些�
 
 Entry全部代码：
 
-```
+```java
 private static class Entry<K,V> implements Map.Entry<K,V> {
         final int hash;
         final K key;
@@ -350,7 +350,7 @@ jvm
 
 3：有参（参数是初始容量和负载因子）
 
-```
+```java
   public Hashtable(int initialCapacity, float loadFactor) {
         if (initialCapacity < 0)        
             throw new IllegalArgumentException("Illegal Capacity: "+
@@ -383,7 +383,7 @@ jvm
 
 我们以put方法为引子，注意hashtable支持同步：
 
-```
+```java
 public synchronized V put(K key, V value) {
         // Make sure the value is not null
         if (value == null) {     //判断值是否为null
@@ -416,7 +416,7 @@ public synchronized V put(K key, V value) {
 
 下面进入addEntry方法：
 
-```
+```java
    private void addEntry(int hash, K key, V value, int index) {
         modCount++;    //目的是让fail-fast可以监控到
 
@@ -444,7 +444,7 @@ public synchronized V put(K key, V value) {
 
 我们最后去看扩容方法resize：
 
-```
+```java
   protected void rehash() {
         int oldCapacity = table.length;//原始的table容量
         Entry<?,?>[] oldMap = table;     //原始的table

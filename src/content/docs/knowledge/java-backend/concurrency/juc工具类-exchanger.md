@@ -36,7 +36,7 @@ sidebar:
 
 `Exchanger` 提供了两个重载方法：
 
-```
+```java
 public V exchange(V x) throws InterruptedException
 public V exchange(V x, long timeout, TimeUnit unit) throws InterruptedException, TimeoutException
 
@@ -141,7 +141,7 @@ Arena 是 Exchanger 中为了提高多线程并发效率而引入的一种“分
 
 ### 3.3 Arena 数据结构
 
-```
+```java
 private static final int ASHIFT = 7;  // 每个槽位占据空间
 private static final int MMASK  = 0xff;
 private static final int SEQ    = 0x100;
@@ -173,7 +173,7 @@ Arena 模式的加入大幅提升了 Exchanger 在多线程场景下的扩展性
 
 ### 4.1 核心类结构
 
-```
+```java
 public class Exchanger<V> {
     private static final int FULL = Integer.MAX_VALUE;
 
@@ -196,7 +196,7 @@ public class Exchanger<V> {
 
 ### 4.2 关键方法：`exchange(V item, long timeout, TimeUnit unit)`
 
-```
+```java
 public V exchange(V item, long timeout, TimeUnit unit)
     throws InterruptedException, TimeoutException {
 
@@ -216,7 +216,7 @@ public V exchange(V item, long timeout, TimeUnit unit)
 
 ### 4.3 单槽位实现（slotExchange）
 
-```
+```java
 private Object slotExchange(Object item, boolean timed, long nanos) {
     Node p = participant.get();
     p.item = item;
@@ -237,7 +237,7 @@ private Object slotExchange(Object item, boolean timed, long nanos) {
 
 ### 4.4 Arena 模式实现（arenaExchange）
 
-```
+```java
 private Object arenaExchange(Object item, boolean timed, long nanos) {
     Node p = participant.get();
     int i = p.index;
@@ -271,7 +271,7 @@ private Object arenaExchange(Object item, boolean timed, long nanos) {
 
 ### 示例代码
 
-```
+```java
 public class ExchangerExample {
     static Exchanger<String> exchanger = new Exchanger<>();
 

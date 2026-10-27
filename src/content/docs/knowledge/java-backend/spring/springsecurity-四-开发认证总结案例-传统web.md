@@ -27,7 +27,7 @@ sidebar:
 
 注意我的数据库版本是8.0，如果你是8以下的版本，可以看视频里怎么处理的，或者看我上一篇文章的内容。
 
-```
+```xml
   <dependencies>
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -83,7 +83,7 @@ sidebar:
 
 ## properties部分
 
-```
+```properties
 server.port= 9091
 
 # 关闭thymeleaf 缓存
@@ -111,7 +111,7 @@ logging.level.com.example = debug
 
 * Role
 
-```
+```java
 public class Role {
     private Integer id;
     private String name;
@@ -148,7 +148,7 @@ public class Role {
 
 * User
 
-```
+```java
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -258,7 +258,7 @@ public class User implements UserDetails {
 
 ## Dao层
 
-```
+```java
 import com.wang.entity.Role;
 import com.wang.entity.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -283,7 +283,7 @@ public interface UserDao {
 
 #### UserDaoMapper
 
-```
+```sql
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -321,7 +321,7 @@ public interface UserDao {
 
 #### index.html
 
-```
+```xml
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
 <head>
@@ -347,7 +347,7 @@ public interface UserDao {
 
 #### login.html
 
-```
+```xml
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -374,7 +374,7 @@ public interface UserDao {
 
 ## service层
 
-```
+```java
 import com.wang.dao.UserDao;
 import com.wang.entity.Role;
 import com.wang.entity.User;
@@ -415,7 +415,7 @@ public class MyUserDetailService implements UserDetailsService {
 
 ## Controller层
 
-```
+```java
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -444,7 +444,7 @@ public class TestController {
 
 ### MvcConfigure
 
-```
+```java
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -462,7 +462,7 @@ public class MvcConfigure implements WebMvcConfigurer {
 
 ### SecuritConfigure
 
-```
+```java
 import com.wang.service.MyUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

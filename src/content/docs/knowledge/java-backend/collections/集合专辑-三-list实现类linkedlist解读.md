@@ -62,7 +62,7 @@ sidebar:
 
 ### DOC解读
 
-```
+```java
 /**
  * Doubly-linked list implementation of the {@code List} and {@code Deque} interfaces.  
  * 双向链表实现了List和Deque接口
@@ -168,7 +168,7 @@ sidebar:
 
 上面的Node是链表中的元素，它的代码如下：
 
-```
+```java
    private static class Node<E> {
         E item;   
         Node<E> next;
@@ -223,7 +223,7 @@ sidebar:
 
 #### boolean add(E e)方法：
 
-```
+```java
   /**
      * Appends the specified element to the end of this list.
      * 添加指定元素到list结尾
@@ -258,7 +258,7 @@ sidebar:
 
 #### void add(int index, E element)方法：
 
-```
+```java
   /**
      * Inserts the specified element at the specified position in this list.
      * 在指定的位置插入指定的元素
@@ -335,7 +335,7 @@ sidebar:
 
 #### E get(int index)方法：
 
-```
+```java
    /**
      * Returns the element at the specified position in this list.返回列表中指定位置的元素
      *
@@ -387,7 +387,7 @@ return 方法里的node：
 
 #### remove(int index)方法：
 
-```
+```java
   /**
      * Removes the element at the specified position in this list.  Shifts any
      * subsequent elements to the left (subtracts one from their indices).

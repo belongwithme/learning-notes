@@ -57,7 +57,7 @@ JDK中许多并发工具类的内部实现都依赖于AQS，比如`ReentrantLock
  ![在这里插入图片描述](./assets/126321073/3d8a44cbef40056094d27739.png)  
  代码实现：
 
-```
+```java
 public abstract class AbstractQueuedSynchronizer
     extends AbstractOwnableSynchronizer
     implements java.io.Serializable 
@@ -70,7 +70,7 @@ public abstract class AbstractQueuedSynchronizer
 2. 提供序列化功能  
     `AbstractOwnableSynchronizer`源码一览：
 
-```
+```java
 public abstract class AbstractOwnableSynchronizer
     implements java.io.Serializable {
 
@@ -103,7 +103,7 @@ AQS由三部分组成：`state`同步状态，`CLH`队列变体（`Node`节点�
  ![在这里插入图片描述](./assets/126321073/eb4a25b683dd2ddf1d3dad6e.png)  
  代码如下：
 
-```
+```java
  private transient volatile Node head;
  private transient volatile Node tail;
 //ConditionObject条件变量：
@@ -154,7 +154,7 @@ AQS由三部分组成：`state`同步状态，`CLH`队列变体（`Node`节点�
 
 源码解析：
 
-```
+```java
  static final class Node {
         ///共享式标记
         static final Node SHARED = new Node();
@@ -321,7 +321,7 @@ Condition接口也提供了类似Object监视器方法,与Lock配合可以实现
 
 #### 接口抽象方法用法说明
 
-```
+```java
 public interface Condition {
     //当前线程直到被通知或中断
     void await() throws InterruptedException;
@@ -344,7 +344,7 @@ public interface Condition {
 
 #### 例子一: 只有当charList中元素个数大于22,out方法才输出并返回,否则一直等待.
 
-```
+```java
 class Printer {
     private final Lock lock = new ReentrantLock();
     private final Condition lessItem = lock.newCondition();
@@ -411,7 +411,7 @@ class Printer {
 背景：获取资源失败的线程需要封装成Node节点，接着尾部入队，在AQS提供`addWaiter`函数完成Node节点的创建与入队。  
  源码：
 
-```
+```java
  private Node addWaiter(Node mode) {
        //根据当前线程创建节点，等待状态为0
         Node node = new Node(Thread.currentThread(), mode);
@@ -434,7 +434,7 @@ class Printer {
 
 ```
 
-```
+```java
 //自旋cas入队
   private Node enq(final Node node) {
         for (;;) { //死循环
@@ -506,7 +506,7 @@ class Printer {
 
 setHead方法：
 
-```
+```java
    private void setHead(Node node) {
    节点设置为头部
         head = node;
@@ -547,7 +547,7 @@ setHead方法：
 AQS目的为了实现了一个`Lock`，那么我们类比实现`Lock`接口，然后再实现一个所谓的锁。注意：AQS还分为共享和独占两种实现，我们和`Lock`对照如下：  
  我们先来浅看Lock的源码实现：
 
-```
+```java
 public interface Lock {
 
    //获取锁资源
@@ -590,7 +590,7 @@ public interface Lock {
 
 acquire源码：
 
-```
+```java
     public final void acquire(int arg) {
         if (!tryAcquire(arg) &&
             acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
@@ -605,7 +605,7 @@ acquire源码：
 
 acquireQueued源码：
 
-```
+```java
    final boolean acquireQueued(final Node node, int arg) {
    //异常状态，默认是
         boolean failed = true;
@@ -656,7 +656,7 @@ acquireQueued源码：
 
 shouldParkAfterFailedAcquire源码：
 
-```
+```java
 //node是当前节点，pred是上一个节点
   private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
     //获取上一个节点的状态
@@ -689,7 +689,7 @@ shouldParkAfterFailedAcquire源码：
 AQS提供了`release`模板函数来释放资源，流程为释放资源成功，唤醒CLH队列变体的第二个线程节点。  
  `release`源码：
 
-```
+```java
   public final boolean release(int arg) {
         if (tryRelease(arg)) { //释放资源成功，tryRelease子类实现
         //获取头部线程节点
@@ -707,7 +707,7 @@ AQS提供了`release`模板函数来释放资源，流程为释放资源成功�
 
 `unparkSuccessor`源码：
 
-```
+```java
     private void unparkSuccessor(Node node) {
        //获取节点等待状态
         int ws = node.waitStatus;
@@ -738,7 +738,7 @@ AQS提供了`release`模板函数来释放资源，流程为释放资源成功�
 
 `acquireShared`源码：
 
-```
+```java
  public final void acquireShared(int arg) {
  //如果tryAcquireShared返回负数代表失败，0代表成功，但是没有剩余资源
  //如果是正数代表成功且有剩余资源
@@ -751,7 +751,7 @@ AQS提供了`release`模板函数来释放资源，流程为释放资源成功�
 
 doAcquireShared源码：
 
-```
+```java
   private void doAcquireShared(int arg) {
         final Node node = addWaiter(Node.SHARED);//队列里加入共享节点
         boolean failed = true;
@@ -786,7 +786,7 @@ doAcquireShared源码：
 
 我们来看一看`setHeadAndPropagate`
 
-```
+```java
  private void setHeadAndPropagate(Node node, int propagate) {
         Node h = head;   //获取头节点
         setHead(node);         //节点设置为头部,清空线程,清空前驱节点
@@ -810,7 +810,7 @@ doAcquireShared源码：
 4. 后面又有一个h.waitStatus<0,我们为什么还要再判断一次，难道前面判断不成立，后面我们再判断一次就成立了？我们先分析一下doReleaseShared方法，看能不能从里面找到答案。  
     doReleaseShared源码：
 
-```
+```java
  private void doReleaseShared() {
         for (;;) { //自旋
             Node h = head;//获取头节点
@@ -949,7 +949,7 @@ doAcquireShared源码：
 AQS提供了`releaseShared`模板函数来释放资源，流程是线程释放资源成功，唤醒CLH队列变体的第二个线程节点（头节点的下一个节点）。  
  我们先来看`releaseShared`源码
 
-```
+```java
   public final boolean releaseShared(int arg) {
         if (tryReleaseShared(arg)) {  释放资源成功
              唤醒后继节点
@@ -964,7 +964,7 @@ AQS提供了`releaseShared`模板函数来释放资源，流程是线程释放�
 
 tryReleaseShared源码：
 
-```
+```java
      protected final boolean tryReleaseShared(int releases) {
             for (;;) {
             //获取到剩余资源
@@ -985,7 +985,7 @@ tryReleaseShared源码：
 
 `doReleaseShared`源码：
 
-```
+```java
   private void doReleaseShared() {
         for (;;) {
             //获取头节点
@@ -1013,7 +1013,7 @@ tryReleaseShared源码：
 
 unparkSuccessor源码：
 
-```
+```java
   private void unparkSuccessor(Node node) {
      //拿到头节点的状态
         int ws = node.waitStatus;

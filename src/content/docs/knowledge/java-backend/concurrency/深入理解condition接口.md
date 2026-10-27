@@ -40,7 +40,7 @@ Java 的 `Object` 类提供了 `wait()`, `notify()`, 和 `notifyAll()` 方法，
 
 一个 `Condition` 实例本质上是**绑定到一个 `Lock` 上的**。要获取一个 `Condition` 实例，你需要先有一个 `Lock` 对象（通常是 `ReentrantLock`），然后调用该 `Lock` 对象的 `newCondition()` 方法。
 
-```
+```java
 Lock lock = new ReentrantLock();
 Condition condition = lock.newCondition(); // Condition 必须依附于 Lock 创建
 
@@ -126,7 +126,7 @@ Condition condition = lock.newCondition(); // Condition 必须依附于 Lock 创
 
 `await()` 的作用是让当前线程等待，并释放持有的锁。
 
-```
+```java
 // 简化版 ConditionObject.await() 伪代码与注释
 public final void await() throws InterruptedException {
     // 1. 检查中断状态，如果中断了，直接抛出异常
@@ -206,7 +206,7 @@ public final void await() throws InterruptedException {
 
 `signal()` 的作用是唤醒一个在条件队列中等待的线程。
 
-```
+```java
 // 简化版 ConditionObject.signal() 伪代码与注释
 public final void signal() {
     // 1. 检查当前线程是否持有与 Condition 关联的 Lock，否则抛出 IllegalMonitorStateException
@@ -268,7 +268,7 @@ private void doSignal(Node first) {
 
 `signalAll()` 与 `signal()` 非常相似，区别在于它会唤醒**所有**在条件队列中等待的线程。
 
-```
+```java
 // 简化版 ConditionObject.signalAll() 伪代码与注释
 public final void signalAll() {
     // 1. 检查当前线程是否持有 Lock
@@ -530,7 +530,7 @@ try {
 
 生产者-消费者模式是并发编程中最经典的场景之一，也是 `Condition` 发挥优势的典型例子。我们来实现一个使用 `ReentrantLock` 和两个 `Condition` 的有界阻塞队列。
 
-```
+```java
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.Condition;

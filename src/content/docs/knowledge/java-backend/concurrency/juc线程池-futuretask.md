@@ -46,7 +46,7 @@ sidebar:
 
 **传统实现 (不使用 FutureTask):**
 
-```
+```java
 public class WithoutFutureTaskExample {
     // volatile 保证可见性，用于存储计算结果
     private static volatile Integer result = null;
@@ -157,7 +157,7 @@ public class WithoutFutureTaskExample {
 
 **使用 FutureTask 的简洁实现:**
 
-```
+```java
 import java.util.concurrent.*;
 
 public class WithFutureTaskExample {
@@ -262,7 +262,7 @@ public class WithFutureTaskExample {
 
 `FutureTask` 的强大功能源于它巧妙地实现了两个核心接口：`Runnable` 和 `Future<V>`。实际上，它实现的是 `RunnableFuture<V>` 接口，而 `RunnableFuture<V>` 同时继承了 `Runnable` 和 `Future<V>`。
 
-```
+```java
 // RunnableFuture 接口定义
 public interface RunnableFuture<V> extends Runnable, Future<V> {
     /**
@@ -289,7 +289,7 @@ public interface RunnableFuture<V> extends Runnable, Future<V> {
 
 **`Runnable` 接口：**
 
-```
+```java
 @FunctionalInterface
 public interface Runnable {
     public abstract void run();
@@ -302,7 +302,7 @@ public interface Runnable {
 
 **`Future<V>` 接口：**
 
-```
+```java
 public interface Future<V> {
     // 尝试取消任务的执行。
     // mayInterruptIfRunning 为 true 表示如果任务已开始执行，应中断执行线程。
@@ -549,7 +549,7 @@ INTERRUPTING --> INTERRUPTED ---> (Done)
 1. **`WaitNode` 等待节点**:  
     这是一个简单的内部静态类，用于封装等待结果的线程。
 
-   ```
+   ```java
    static final class WaitNode {
        volatile Thread thread; // 等待的线程实例
        volatile WaitNode next; // 指向链表中的下一个等待节点
@@ -572,7 +572,7 @@ INTERRUPTING --> INTERRUPTED ---> (Done)
 
 **`get()` 方法的阻塞流程 (简化版):**
 
-```
+```java
 public V get() throws InterruptedException, ExecutionException {
     int s = state;
     // 1. 如果任务未完成 (状态 <= COMPLETING)
@@ -696,7 +696,7 @@ private void removeWaiter(WaitNode node) {
 * 在耗时操作（如循环、`sleep`, `wait`, `join`, IO 操作）前后检查中断状态: `if (Thread.currentThread().isInterrupted()) { throw new InterruptedException("Task cancelled"); }`
 * 或者，直接捕获由阻塞方法（如 `Thread.sleep()`, `Object.wait()`, `BlockingQueue.take()`）抛出的 `InterruptedException`，并进行清理和退出。
 
-```
+```java
 Callable<String> interruptibleTask = () -> {
     try {
         for (int i = 0; i < 1000; i++) {
@@ -739,7 +739,7 @@ Callable<String> interruptibleTask = () -> {
 
 `get()` 方法中的 `report(int s)` 方法负责根据最终的 `state` 来处理 `outcome`：
 
-```
+```java
 // 根据最终状态 s 返回结果或抛出异常
 private V report(int s) throws ExecutionException {
     Object x = outcome;
@@ -760,7 +760,7 @@ private V report(int s) throws ExecutionException {
 
 `run()` 方法是 `FutureTask` 的执行入口。它必须确保即使被多个线程调用，内部的 `Callable` 或 `Runnable` 任务也只会被执行一次。
 
-```
+```java
 public void run() {
     // 1. 状态检查：如果 state 不是 NEW，或者 runner CAS 设置失败，说明任务已执行或已被其他线程抢先，直接返回。
     if (state != NEW ||
@@ -832,7 +832,7 @@ public void run() {
 
 **示例：**
 
-```
+```java
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -917,7 +917,7 @@ public class FutureTaskInThreadPool {
 
 这是 `FutureTask` 最核心的应用场景：执行一个耗时操作，并在稍后获取其结果，期间主线程可以做其他事情。
 
-```
+```java
 import java.util.concurrent.*;
 
 public class AsyncCalculationExample {
@@ -998,7 +998,7 @@ public class AsyncCalculationExample {
 
 当提交了大量任务到线程池，并且希望**哪个任务先完成就先处理哪个**时，`FutureTask` 结合 `ExecutorCompletionService` 非常有用。`ExecutorCompletionService` 内部维护一个完成队列，任务完成后其对应的 `Future` 会被放入队列中。
 
-```
+```java
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -1091,7 +1091,7 @@ public class CompletionServiceExample {
 
 `FutureTask` 可以用来构建一个简单的“计算一次，后续复用”的缓存机制。当多个线程请求同一个计算结果时，只有一个线程实际执行计算，其他线程等待该计算完成并复用结果。
 
-```
+```java
 import java.util.concurrent.*;
 
 public class SimpleCache<K, V> {
@@ -1209,7 +1209,7 @@ Java 8 引入了 `CompletableFuture`，它提供了比 `FutureTask` 更强大、
 
 **使用 `FutureTask` (需要手动等待和获取):**
 
-```
+```java
 ExecutorService executor = Executors.newFixedThreadPool(2);
 FutureTask<String> task1 = new FutureTask<>(() -> { TimeUnit.SECONDS.sleep(2); return "Result 1"; });
 FutureTask<Integer> task2 = new FutureTask<>(() -> { TimeUnit.SECONDS.sleep(3); return 100; });
@@ -1229,7 +1229,7 @@ executor.shutdown();
 
 **使用 `CompletableFuture` (非阻塞组合):**
 
-```
+```java
 ExecutorService executor = Executors.newFixedThreadPool(2);
 
 CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
@@ -1285,7 +1285,7 @@ OpenJDK
 
 ### 5.1 `run()` 方法
 
-```
+```java
 public void run() {
     // 1. 状态与执行权检查
     // 如果 state 不是 NEW (任务已开始/完成/取消)
@@ -1344,7 +1344,7 @@ public void run() {
 
 这两个方法逻辑非常相似，负责在任务执行完成后设置最终状态和结果/异常。
 
-```
+```java
 /**
  * 设置任务的正常结果。
  */
@@ -1394,7 +1394,7 @@ protected void setException(Throwable t) {
 
 `get()` 方法负责获取结果，如果任务未完成则阻塞。核心的等待逻辑在 `awaitDone()` 中。
 
-```
+```java
 public V get() throws InterruptedException, ExecutionException {
     int s = state;
     // 1. 快速路径：如果任务已完成 (状态 > COMPLETING)，直接报告结果
@@ -1495,7 +1495,7 @@ private int awaitDone(boolean timed, long nanos) throws InterruptedException {
 
 `finishCompletion()` 在任务状态变为最终态（`NORMAL`, `EXCEPTIONAL`, `CANCELLED`, `INTERRUPTED`）时被调用，负责唤醒所有等待者。`removeWaiter()` 则在等待者不再需要等待时（中断、超时）将其从队列移除。
 
-```
+```java
 /**
  * 任务完成后的收尾工作：唤醒等待者、调用 done() 钩子、清理 callable。
  */
@@ -1573,7 +1573,7 @@ private void removeWaiter(WaitNode node) {
 
 ### 5.5 `cancel(boolean mayInterruptIfRunning)`
 
-```
+```java
 public boolean cancel(boolean mayInterruptIfRunning) {
     // 1. 只能取消 NEW 状态的任务
     // 如果 state 不是 NEW，直接返回 false

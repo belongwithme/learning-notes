@@ -64,7 +64,7 @@ ConcurrentHashMap在JDK1.7中,提供了一种颗粒度更细的加锁机制.
 
 #### HashEntry
 
-```
+```java
 static final class HashEntry<K,V> {
         final int hash;
         final K key;
@@ -85,7 +85,7 @@ static final class HashEntry<K,V> {
 
 #### Segment
 
-```
+```java
 static final class Segment<K,V> extends ReentrantLock implements Serializable {
 
         private static final long serialVersionUID = 2249069246763182397L;
@@ -178,7 +178,7 @@ static final int DEFAULT_CONCURRENCY_LEVEL = 16;
 
 ```
 
-```
+```java
     @SuppressWarnings("unchecked")
     public ConcurrentHashMap(int initialCapacity,
                              float loadFactor, int concurrencyLevel) {
@@ -231,7 +231,7 @@ static final int DEFAULT_CONCURRENCY_LEVEL = 16;
 
 ### Put方法
 
-```
+```java
  public V put(K key, V value) {
         Segment<K,V> s;
         //校验传入的value是否为空
@@ -261,7 +261,7 @@ static final int DEFAULT_CONCURRENCY_LEVEL = 16;
 
 然后继续看下一层的put代码
 
-```
+```java
  final V put(K key, int hash, V value, boolean onlyIfAbsent) {
  //在往segment写入前,需要先获取该segment的独占锁
             HashEntry<K,V> node = tryLock() ? null : scanAndLockForPut(key, hash, value);
@@ -328,7 +328,7 @@ static final int DEFAULT_CONCURRENCY_LEVEL = 16;
 
 #### 扩容rehash方法
 
-```
+```java
   private void rehash(HashEntry<K,V> node) {
             HashEntry<K,V>[] oldTable = table;
              //旧容量

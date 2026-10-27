@@ -136,7 +136,7 @@ ReentrantLock是一把**可重入锁**和**互斥锁**，它具有与synchronize
 
 ### 基本语法
 
-```
+```java
 //获取ReentrantLock对象
 private ReentrantLock lock = new ReentrantLock();
 //加锁

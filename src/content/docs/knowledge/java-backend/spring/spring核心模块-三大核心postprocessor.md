@@ -46,7 +46,7 @@ beanFactoryPostProcessor是一个接口规范，实现了该接口的
 类 
 只要交由Spring容器管理的话，那么Spring就会回调该接口的方法，用于对**BeanDefinition注册和修改的功能**。
 
-```
+```java
 @FunctionalInterface
 public interface BeanFactoryPostProcessor {
 
@@ -60,7 +60,7 @@ public interface BeanFactoryPostProcessor {
 我们先来关注一下接口里面方法的参数：`ConfigurableListableBeanFactory`  
  本质来说，这个参数其实是BeanFacotry的子接口，我们看一下这层关系：
 
-```
+```java
 public interface ConfigurableListableBeanFactory
 		extends ListableBeanFactory, AutowireCapableBeanFactory, ConfigurableBeanFactory 
 
@@ -69,7 +69,7 @@ public interface ConfigurableListableBeanFactory
 
 然后进入到`ListableBeanFactory`中：
 
-```
+```java
 public interface ListableBeanFactory extends BeanFactory 
 
 
@@ -82,7 +82,7 @@ public interface ListableBeanFactory extends BeanFactory
  下面我们来介绍一下代码实现：  
  1.首先在Spring配置文件中定义`PropertyPlaceholderConfigurer`实例，用来解析占位符。
 
-```
+```xml
 <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
    <property name="location" value="classpath:jdbc.properties"/>
 </bean>
@@ -93,7 +93,7 @@ public interface ListableBeanFactory extends BeanFactory
 上面的配置中，`PropertyPlaceholderConfigurer`实例用于解析`jdbc.properties`文件中的占位符。  
  2.实现一个`BeanFactoryPostProcessor`接口的实现类，用于在应用程序上下文准备就绪之前替换Bean定义中的占位符，例如：
 
-```
+```java
 public class PropertyPlaceholderReplacer implements BeanFactoryPostProcessor {
     
     @Override
@@ -129,7 +129,7 @@ public class PropertyPlaceholderReplacer implements BeanFactoryPostProcessor {
 
 3.最后在Spring配置文件中注册`PropertyPlaceholderReplacer`实例，让它参与应用程序上下文创建过程：
 
-```
+```xml
 <bean class="com.example.PropertyPlaceholderReplacer"/>
 
 
@@ -165,7 +165,7 @@ Spring容器启动时，`PropertyPlaceholderReplacer`实例会被创建并自动
 `BeanDefinitionRegistryPostProcessor`接口主要用于注册和修改`BeanDefinition`。  
  在`postProcessBeanDefinitionRegistry()`方法中，开发人员可以通过`BeanDefinitionRegistry`对象注册新的`BeanDefinition`，例如：
 
-```
+```java
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -219,7 +219,7 @@ public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegi
 
 在应用程序的Spring配置文件中，我们可以通过下面的方式来注册`MyBeanDefinitionRegistryPostProcessor`
 
-```
+```xml
 <bean class="com.example.MyBeanDefinitionRegistryPostProcessor"/>
 
 

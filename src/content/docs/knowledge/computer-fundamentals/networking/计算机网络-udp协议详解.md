@@ -108,7 +108,7 @@ int sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
 在内核中，这个调用最终会调用`udp_create`函数：
 
-```
+```c
 // 简化版的udp_create函数
 static int udp_create(struct net *net, struct socket *sock, int protocol, int kern)
 {
@@ -138,7 +138,7 @@ static int udp_create(struct net *net, struct socket *sock, int protocol, int ke
 
 UDP数据的发送通过`sendto`系统调用实现，指定目的地址和端口：
 
-```
+```c
 // 发送UDP数据
 sendto(sockfd, buf, len, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
 
@@ -147,7 +147,7 @@ sendto(sockfd, buf, len, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
 
 在内核中，这个调用最终会调用`udp_sendmsg`函数：
 
-```
+```c
 // 简化版的udp_sendmsg函数
 int udp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
 {
@@ -185,7 +185,7 @@ out:
 
 UDP数据的接收通过`recvfrom`系统调用实现，可以获取发送方的地址和端口：
 
-```
+```c
 // 接收UDP数据
 recvfrom(sockfd, buf, len, 0, (struct sockaddr *)&src_addr, &addrlen);
 
@@ -194,7 +194,7 @@ recvfrom(sockfd, buf, len, 0, (struct sockaddr *)&src_addr, &addrlen);
 
 在内核中，这个调用最终会调用`udp_recvmsg`函数：
 
-```
+```c
 // 简化版的udp_recvmsg函数
 int udp_recvmsg(struct sock *sk, struct msghdr *msg, size_t len, int noblock,
                int flags, int *addr_len)
@@ -245,7 +245,7 @@ out:
 
 UDP校验和的计算在`udp_csum`函数中实现：
 
-```
+```c
 // 简化版的udp_csum函数
 __wsum udp_csum(struct sk_buff *skb)
 {
@@ -366,7 +366,7 @@ if (sockfd < 0) {
 
 使用`bind`函数将套接字绑定到特定的地址和端口：
 
-```
+```c
 int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
 
@@ -385,7 +385,7 @@ int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
 示例：
 
-```
+```c
 // 绑定UDP套接字到特定地址和端口
 struct sockaddr_in addr;
 memset(&addr, 0, sizeof(addr));
@@ -405,7 +405,7 @@ if (bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
 
 使用`sendto`函数发送UDP数据：
 
-```
+```c
 ssize_t sendto(int sockfd, const void *buf, size_t len, int flags,
               const struct sockaddr *dest_addr, socklen_t addrlen);
 
@@ -428,7 +428,7 @@ ssize_t sendto(int sockfd, const void *buf, size_t len, int flags,
 
 示例：
 
-```
+```c
 // 发送UDP数据
 struct sockaddr_in dest_addr;
 memset(&dest_addr, 0, sizeof(dest_addr));
@@ -451,7 +451,7 @@ if (sent_bytes < 0) {
 
 使用`recvfrom`函数接收UDP数据：
 
-```
+```c
 ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags,
                 struct sockaddr *src_addr, socklen_t *addrlen);
 
@@ -474,7 +474,7 @@ ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags,
 
 示例：
 
-```
+```c
 // 接收UDP数据
 char buffer[1024];
 struct sockaddr_in src_addr;
@@ -534,7 +534,7 @@ if (close(sockfd) < 0) {
 
 ##### UDP服务器
 
-```
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -605,7 +605,7 @@ int main() {
 
 ##### UDP客户端
 
-```
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -681,7 +681,7 @@ UDP数据包的大小受到IP层MTU（最大传输单元）的限制，通常为
 
 示例代码（应用层分片）：
 
-```
+```c
 #define MAX_PACKET_SIZE 1400  // 小于MTU的安全值
 #define MESSAGE_ID_SIZE 8     // 消息ID的大小
 
@@ -733,7 +733,7 @@ UDP不保证数据的可靠传输，数据包可能会丢失。在需要可靠�
 
 示例代码（简单的确认和重传机制）：
 
-```
+```c
 #define TIMEOUT_MS 500  // 超时时间（毫秒）
 #define MAX_RETRIES 3   // 最大重试次数
 
@@ -1013,7 +1013,7 @@ if (setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast)) 
 
 以下是一个简单的UDP广播示例，展示了如何发送和接收广播数据包：
 
-```
+```c
 // 广播发送端
 #include <stdio.h>
 #include <stdlib.h>
@@ -1065,7 +1065,7 @@ int main() {
 
 ```
 
-```
+```c
 // 广播接收端
 #include <stdio.h>
 #include <stdlib.h>
@@ -1198,7 +1198,7 @@ if (setsockopt(sockfd, IPPROTO_IP, IP_MULTICAST_TTL, &ttl, sizeof(ttl)) < 0) {
 
 以下是一个简单的UDP多播示例，展示了如何发送和接收多播数据包：
 
-```
+```c
 // 多播发送端
 #include <stdio.h>
 #include <stdlib.h>
@@ -1250,7 +1250,7 @@ int main() {
 
 ```
 
-```
+```c
 // 多播接收端
 #include <stdio.h>
 #include <stdlib.h>
@@ -1400,7 +1400,7 @@ ToS字段的常用值包括：
 
 以下是一个设置UDP数据包QoS的示例：
 
-```
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1509,7 +1509,7 @@ if (setsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, &recvbuf, sizeof(recvbuf)) < 0) {
 
 批量发送和接收数据包可以减少系统调用次数，提高效率：
 
-```
+```c
 // 批量发送
 for (int i = 0; i < batch_size; i++) {
     sendto(sockfd, data[i], data_len[i], 0, dest_addr, addrlen);
@@ -1575,7 +1575,7 @@ if (received < 0) {
 
 使用多线程可以并行处理UDP数据包，提高吞吐量：
 
-```
+```c
 // 创建接收线程
 pthread_t recv_thread;
 pthread_create(&recv_thread, NULL, recv_worker, (void *)sockfd);

@@ -56,7 +56,7 @@ Java集合主要由两个跟接口Collection和Map派生出来的.
 ![在这里插入图片描述](./assets/125552009/f02a74115f868d47fa9d9f63.png)  
  以下演示部分方法代码
 
-```
+```java
    //add:添加单个元素
         collection.add("自导自演的悲剧");
         collection.add("陶喆");
@@ -121,7 +121,7 @@ Java集合主要由两个跟接口Collection和Map派生出来的.
 
 代码如下：
 
-```
+```java
     Collection col = new ArrayList();
         col.add(new demo("陶喆同名专辑", "陶喆", "1997-12-06"));
         col.add(new demo("心中的日月", "王力宏", "2004-12-31"));
@@ -150,7 +150,7 @@ Java集合主要由两个跟接口Collection和Map派生出来的.
  }  
  代码如下：
 
-```
+```java
    //第二种，增强for循环
         for(Object demo :col){
             System.out.println(demo);
@@ -176,7 +176,7 @@ Java集合主要由两个跟接口Collection和Map派生出来的.
 
 ### 方法示例
 
-```
+```java
         ArrayList<Object> obj = new ArrayList<>();
         //void add(Object eles)
         //void add (int index ,Object eles) :在index位置插入eles
@@ -259,7 +259,7 @@ Java集合主要由两个跟接口Collection和Map派生出来的.
     例子：  
     **没有重写hashCode和equals方法的前提下，set集合可以添加相同内容的对象**，代码如下
 
-```
+```java
 public class HashSetPractice {
     public static void main(String[] args) {
         HashSet hashSet=new HashSet();
@@ -314,7 +314,7 @@ class Employee{
 
 更改hashCode和Equals方法：
 
-```
+```java
 public class HashSetPractice {
     public static void main(String[] args) {
         HashSet hashSet=new HashSet();
@@ -404,7 +404,7 @@ Queue除了有Collection接口的操作外,还定义了一组针对队列的特�
 
 Queue可以被当做一个队列来使用,实现FIFO操作,主要提供下面的操作
 
-```
+```java
 public interface Queue<E> extends Collection<E> {
     //向队列尾部插入一个元素，并返回true
     //如果队列已满，抛出IllegalStateException异常

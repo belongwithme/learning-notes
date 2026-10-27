@@ -158,7 +158,7 @@ sidebar:
    * **特点:** 使用**非公平**的访问策略（这是默认行为）。
    * **示例:**
 
-     ```
+     ```java
      BlockingQueue<String> queue = new ArrayBlockingQueue<>(10); // 容量为10，非公平
 
 
@@ -172,7 +172,7 @@ sidebar:
      + `false`: 访问顺序不确定（**非公平**策略）。
    * **示例:**
 
-     ```
+     ```java
      BlockingQueue<Integer> fairQueue = new ArrayBlockingQueue<>(100, true); // 容量为100，公平
      BlockingQueue<Integer> nonFairQueue = new ArrayBlockingQueue<>(50, false); // 容量为50，非公平
 
@@ -189,7 +189,7 @@ sidebar:
      + 集合 `c` 及其元素不能为 `null`，否则会抛出 `NullPointerException`。
    * **示例:**
 
-     ```
+     ```java
      List<String> initialElements = Arrays.asList("Apple", "Banana", "Cherry");
      // 容量必须 >= 3
      BlockingQueue<String> initializedQueue = new ArrayBlockingQueue<>(10, false, initialElements);
@@ -241,7 +241,7 @@ sidebar:
 
 **示例:**
 
-```
+```java
 import java.util.concurrent.*;
 
 public class ArrayBlockingQueueExample {
@@ -482,7 +482,7 @@ public class ArrayBlockingQueueExample {
 
 在 `ArrayBlockingQueue` 的构造函数中：
 
-```
+```java
 public ArrayBlockingQueue(int capacity, boolean fair) {
     if (capacity <= 0)
         throw new IllegalArgumentException();
@@ -542,7 +542,7 @@ private final Condition notFull;
 
 ### 7.1 `put(E e)` 方法源码分析
 
-```
+```java
 /**
  * 将指定元素插入此队列的尾部，如果队列已满，则等待空间可用。
  *
@@ -639,7 +639,7 @@ private static void checkNotNull(Object v) {
 
 ### 7.2 `take()` 方法源码分析
 
-```
+```java
 /**
  * 检索并移除此队列的头部元素，如果队列为空，则等待元素可用。
  *
@@ -732,7 +732,7 @@ private E dequeue() {
 
 **场景:** 模拟一个简单的任务处理系统。生产者不断地创建任务（简单起见，用字符串表示），放入 `ArrayBlockingQueue`；消费者从队列中取出任务并处理（简单起见，打印出来）。
 
-```
+```java
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 

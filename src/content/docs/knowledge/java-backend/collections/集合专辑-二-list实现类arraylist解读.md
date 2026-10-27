@@ -77,7 +77,7 @@ this
     ![在这里插入图片描述](./assets/125694580/8f5fabb29be710b958945031.png)  
     不慌，我们去看看doc，通过这个我们了解到，这个接口是作为标志接口。
 
-```
+```java
 Marker interface used by <tt>List</tt> implementations to indicate that
  * they support fast (generally constant time) random access. 
 
@@ -102,7 +102,7 @@ Marker interface used by <tt>List</tt> implementations to indicate that
 
 ### javaDoc分析
 
-```
+```java
 /**
  * Resizable-array implementation of the <tt>List</tt> interface.  
  *  可变化的数组 实现了list接口
@@ -271,7 +271,7 @@ ArrayList线程是不安全的。如果多个线程同时进入了同一个Array
 
 ### 成员变量
 
-```
+```java
  /**
      * The array buffer into which the elements of the ArrayList are stored.
      * 存储ArrayList元素的数组缓冲区。
@@ -307,7 +307,7 @@ ArrayList线程是不安全的。如果多个线程同时进入了同一个Array
 
 代码如下：
 
-```
+```java
      *Save the state of the <tt>ArrayList</tt> instance to a stream (that is, serialize it).
      *将ArrayList实例的状态保存到一个流中(即序列化它)。
      * @serialData The length of the array backing the <tt>ArrayList</tt>
@@ -340,7 +340,7 @@ ArrayList线程是不安全的。如果多个线程同时进入了同一个Array
 d.反序列化时调用readObject，从ObjectInputStream获取size和element，再恢复到elementData。  
  代码如下：
 
-```
+```java
      * Reconstitute the <tt>ArrayList</tt> instance from a stream (that is,
      * deserialize it).
      * 从流中重建ArrayList实例(即反序列化它)。
@@ -388,7 +388,7 @@ e:综上ArrayList 实现了 writeObject() 和 readObject() 来只序列化数组
 编译器 
 如何使用合成方法来维持外部类的私有属性在内部类中的可见性。
 
-```
+```java
 // 外部类 OuterClass  
 public class OuterClass {  
     // 外部类的私有成员变量  
@@ -449,7 +449,7 @@ static int access$000(OuterClass outerClassInstance) {
 这里我们注意到了，无参情况下，elementData使用默认空数组。  
  第二种有参（指定初始化大小），源码如下：
 
-```
+```java
  *Constructs an empty list with the specified initial capacity.
  构造一个具有指定初始容量的空列表。
 
@@ -535,7 +535,7 @@ public ArrayList(int initialCapacity) {
 
 ##### ensureCapacity(int minCapacity)方法
 
-```
+```java
  /**
      * Increases the capacity of this <tt>ArrayList</tt> instance, if
      * necessary, to ensure that it can hold at least the number of elements
@@ -580,7 +580,7 @@ int minExpand = (elementData != DEFAULTCAPACITY_EMPTY_ELEMENTDATA)
 
 `ensureExplicitCapacity`方法确保`ArrayList`有足够的容量来存储至少`minCapacity`个元素，如果当前容量不足，则通过调用`grow`方法来扩容数组。这是`ArrayList`动态调整其容量以满足存储需求的重要机制之一。
 
-```
+```java
 private void ensureExplicitCapacity(int minCapacity) {
 /**
 用于快速失败迭代器(fail-fast iterator)的计数器.
@@ -601,7 +601,7 @@ private void ensureExplicitCapacity(int minCapacity) {
 
 ##### grow(int minCapacity)方法 扩容逻辑在这里
 
-```
+```java
      * Increases the capacity to ensure that it can hold at least the
      * number of elements specified by the minimum capacity argument.
      * 增加容量以保证至少可以存储指定参数数量的元素
@@ -629,7 +629,7 @@ private void ensureExplicitCapacity(int minCapacity) {
 
 ##### hugeCapacity(int minCapacity)方法
 
-```
+```java
    private static int hugeCapacity(int minCapacity) {
    //发生了整数溢出(正常容量不为负数)
         if (minCapacity < 0) // overflow         
@@ -650,7 +650,7 @@ private void ensureExplicitCapacity(int minCapacity) {
 
 ##### 扩展一下Arrays.copyOf(elementData, newCapacity)：
 
-```
+```java
  /**
      * Copies the specified array, truncating or padding with nulls (if necessary)       复制指定的数组，截断或填充(如有必要)
      * so the copy has the specified length.  For all indices that are   所以，副本具有指定的长度。
@@ -694,7 +694,7 @@ private void ensureExplicitCapacity(int minCapacity) {
 
 该方法目的计算`ArrayList`所需容量
 
-```
+```java
  private static int calculateCapacity(Object[] elementData, int minCapacity) {
  //如果elementData是默认空数组,该方法会返回默认容量和minCapacity(请求的容量)之间的较大值
         if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {  
@@ -710,7 +710,7 @@ private void ensureExplicitCapacity(int minCapacity) {
 
 辅助方法,用于确保列表的内部数组elementData具有足够的容量来存储至少DEFAULT\_CAPACITY个元素
 
-```
+```java
  private void ensureCapacityInternal(int minCapacity) {
         ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));
     }
@@ -736,7 +736,7 @@ header
 
 #### 源码
 
-```
+```java
  /**
      * Appends the specified element to the end of this list.   //增加指定的元素到list末尾
      *
@@ -754,7 +754,7 @@ header
 
 上面我们已经介绍过ensureCapacityInternal方法，现在我们串一下，首先回顾一下ensureCapacityInternal方法的代码：
 
-```
+```java
 private void ensureCapacityInternal(int minCapacity) {
         ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));
     }
@@ -766,7 +766,7 @@ private void ensureCapacityInternal(int minCapacity) {
  我们先看里面的`calculateCapacity(elementData, minCapacity)`  
  它的代码如下：
 
-```
+```java
  private static int calculateCapacity(Object[] elementData, int minCapacity) {
        if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {  
            return Math.max(DEFAULT_CAPACITY, minCapacity);

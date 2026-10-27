@@ -38,7 +38,7 @@ sidebar:
  举个例子:  
  假设一个事务在 T1 时刻和 T2 时刻分别执行了下面查询语句，途中没有执行其他任何语句
 
-```
+```sql
 SELECT * FROM t_test WHERE id > 100;
 
 

@@ -274,7 +274,7 @@ Java包装类型的大部分都用到了缓存机制来提升性能
 注意: 所有整型包装类对象之间值的比较,全部使用equals方法比较  
  举例:
 
-```
+```java
 Integer A = 40;
 Integer B = new Integer(40);
 System.out.println(A == B)
@@ -447,7 +447,7 @@ equals不能用于判断基本数据类型的变量,只能用于判断两个对�
 * 类没有重写equals()方法  
    通过equals()比较该类的两个对象时,等价于通过 == 比较两个对象,使用的默认是Object类equals方法
 
-```
+```java
 public boolean equals(Object obj){
  return (this == obj)
 }
@@ -467,7 +467,7 @@ String的equals方法是被重写过的,Object的equals比较多对象的内存�
  这个哈希码的作用是确定该**对象在哈希表中的索引位置**  
  hashCode是本地方法,也就是说用c/c++语言实现的,通常是用来将对象的内存地址转换为整数后返回.
 
-```
+```java
 public native int hashCode()
 
 

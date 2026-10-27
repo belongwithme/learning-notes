@@ -261,7 +261,7 @@ try {
 
 ### 使用Redis实现一个分布式锁，包括获取锁和释放锁的逻辑
 
-```
+```java
 public class RedisDistributedLock {
     private StringRedisTemplate redisTemplate;
     private static final long DEFAULT_EXPIRE = 30; // 默认30秒过期

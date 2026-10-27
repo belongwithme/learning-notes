@@ -75,7 +75,7 @@ Java的引用变量有两个类型:编译时类型和运行时类型.
  它有两个子类Dog（狗）和Cat（猫）.  
  我们可以创建一个Animal类型的引用变量，然后根据需要将其指向不同的子类对象。
 
-```
+```java
 Animal myPet; // 编译时类型为Animal
 myPet = new Dog(); // 运行时类型为Dog
 myPet.makeSound(); // 调用的是Dog类的makeSound方法
@@ -116,7 +116,7 @@ Thinking
  因此,我们通常会创建一个具体的对象,把它向上转型成Shape(忽略对象的具体类型),并在后面的程序中使用匿名的Shape引用.  
  代码如下:
 
-```
+```java
 import java.util.Arrays;
 import java.util.List;
 
@@ -192,7 +192,7 @@ RTTI的方便之处在于:
 
 我们创建了Shape及其子类Circle、Square和Triangle。在Main类中，我们创建了一个包含各种形状对象的List。然后，我们使用for循环遍历该List，对每个形状进行检查，使用instanceof运算符来判断每个形状的确切类型，并执行相应的操作。通过使用instanceof和类型转换，我们能够根据对象的实际类型来执行相应的操作，充分利用了RTTI的灵活性。
 
-```
+```java
 import java.util.ArrayList;
 import java.util.List;
 
@@ -276,7 +276,7 @@ public class Main {
  如果是未加载,默认的类加载器就会根据类型查找.class文件(例如,某个附加类加载器可能会在数据库中查找字节码)  
  一旦某个类的Class对象被载入内存,它就被用来创建这个类的所有对象.下面例子可以证明:
 
-```
+```java
 public class SweetShop {
     public static void main(String[] args) {
         System.out.println("inside main");
@@ -320,7 +320,7 @@ class Cookie{
 
 Class也有类,存在于JDK的java.lang包中,部分源码如下:
 
-```
+```java
 public final class Class<T> implements java.io.Serializable,
                               GenericDeclaration,
                               Type,
@@ -373,7 +373,7 @@ Java虚拟机（JVM）中的类加载器子系统负责将Java类加载到JVM中
 ![在这里插入图片描述](./assets/135677619/2aaaa14b6ddf9907a5ca7672.png)  
  当然我们也可以用代码证明，非常简单：
 
-```
+```java
 Class cls = Class.forName("com.zimug.java.reflection.Student");
 Class cls2 = new Student().getClass();
 
@@ -394,7 +394,7 @@ System.out.println(cls == cls2); //比较Class对象的地址，输出结果是t
 
 我们最后再举一个例子贯通一下类的正常加载过程和Class对象的内容:
 
-```
+```java
 import java.util.Date; // 先有类
 
 public class Test {
@@ -417,7 +417,7 @@ OK,那么加载完一个类后,堆内存就产生了一个Class对象,这个对�
 再解释一下,上面提到过,一定是先有类再有对象,我们把这个通常情况称为正.  
  那么反射中的"反",我们就可以理解为根据对象找到对象所属的类(对象的出处)
 
-```
+```java
 Date date = new Date();
 System.out.println(date.getClass()); // "class java.util.Date"
 
@@ -437,7 +437,7 @@ Java的反射机制是指在运行状态中,对于任意一个类都能知道这
  举个例子来说明:  
  我们都知道,使用接口可以提高代码的可维护性和可扩展性,并且降低代码的耦合度
 
-```
+```java
 public class Test {
     
     interface X {
@@ -463,7 +463,7 @@ public class Test {
 
 那么通常情况下,我们需要使用哪个实现类就直接new一下就好了
 
-```
+```java
 public class Test {    
 
     ......
@@ -492,7 +492,7 @@ public class Test {
 你是否已经开出来弊端了,如果有十几个不同的实现类需要创建,那就非常麻烦了.  
  我们使用反射可以很好解决这个问题
 
-```
+```java
 public class Test {
 
     public static void main(String[] args) {
@@ -553,7 +553,7 @@ Class alunbarClass1 = Class.forName("com.xxx.TargetObject");
 
 * 通过对象实例instance.getClass()获取
 
-```
+```java
 Date date = new Date();
 Class alunbarClass2 = date.getClass(); // 获取该对象实例的 Class 类对象
 
@@ -562,7 +562,7 @@ Class alunbarClass2 = date.getClass(); // 获取该对象实例的 Class 类对�
 
 * 通过类加载器xxxClassLoader.loadClass()传入类路径获取
 
-```
+```java
 class clazz = ClassLoader.LoadClass("com.xxx.TargetObject");
 
 
@@ -576,7 +576,7 @@ class clazz = ClassLoader.LoadClass("com.xxx.TargetObject");
 
 * 使用 `Class.newInstance`
 
-```
+```java
 Date date1 = new Date();
 Class alunbarClass2 = date1.getClass();
 Date date2 = alunbarClass2.newInstance(); // 创建一个与 alunbarClass2 具有相同类类型的实例
@@ -601,7 +601,7 @@ Date date2 = alunbarClass2.newInstance(); // 创建一个与 alunbarClass2 具�
 
 * 获取所有"公有的"构造方法
 
-```
+```java
 public Constructor[] getConstructors() { }
 
 
@@ -609,7 +609,7 @@ public Constructor[] getConstructors() { }
 
 * 获取所有的构造方法(包括私有,受保护,默认,公有)
 
-```
+```java
 public Constructor[] getDeclaredConstructors() { }
 
 
@@ -619,7 +619,7 @@ public Constructor[] getDeclaredConstructors() { }
 
 * 获取一个指定参数类型的"公有的"构造方法
 
-```
+```java
 public Constructor getConstructor(Class... parameterTypes) { }
 
 
@@ -627,7 +627,7 @@ public Constructor getConstructor(Class... parameterTypes) { }
 
 * 获取一个指定参数类型的"构造方法"(包括私有,受保护,默认,公有的)
 
-```
+```java
 public Constructor getDeclaredConstructor(Class... parameterTypes) { }
 
 
@@ -636,7 +636,7 @@ public Constructor getDeclaredConstructor(Class... parameterTypes) { }
 举个例子来说:  
  先定义一下基本的内容
 
-```
+```java
 public class Student {
 	//（默认的构造方法）
 	Student(String str){
@@ -669,7 +669,7 @@ public class Student {
 
 执行反射
 
-```
+```java
 public class Constructors {
 	public static void main(String[] args) throws Exception {
 		// 加载Class对象
@@ -707,7 +707,7 @@ public class Constructors {
 * 使用开源库`Objenesis`  
    Objenesis 是一个开源库，和上述第二种方法一样，可以调用任意的构造函数，不过封装的比较简洁
 
-```
+```java
 public class Test {
     // 不存在无参构造函数
     private int i;
@@ -740,7 +740,7 @@ public static void main(String[] args) {
 
 * 获取所有公有的字段
 
-```
+```java
 public Field[] getFields() { }
 
 
@@ -748,7 +748,7 @@ public Field[] getFields() { }
 
 * 获取所有的字段(包括私有,受保护,默认的)
 
-```
+```java
 public Field[] getDeclaredFields() { }
 
 
@@ -758,7 +758,7 @@ public Field[] getDeclaredFields() { }
 
 * 获取一个指定名称的公有字段
 
-```
+```java
 public Field getField(String name) { }
 
 
@@ -766,7 +766,7 @@ public Field getField(String name) { }
 
 * 获取一个指定名称的字段(包括私有,受保护,默认的)
 
-```
+```java
 public Field getDeclaredField(String name) { }
 
 
@@ -782,7 +782,7 @@ public Field getDeclaredField(String name) { }
 举个例子:  
  定义内容如下
 
-```
+```java
 public class Student {
 	public Student(){
         
@@ -805,7 +805,7 @@ public class Student {
 
 用反射来操作
 
-```
+```java
 public class Fields {
     public static void main(String[] args) throws Exception {
         // 获取 Class 对象
@@ -853,7 +853,7 @@ public class Fields {
 
 * 获取所有公共方法(包含父类的方法,也包含Object类)
 
-```
+```java
 public Method[] getMethods() { }
 
 
@@ -861,7 +861,7 @@ public Method[] getMethods() { }
 
 * 获取所有的成员方法,包括私有的(不包括继承的)
 
-```
+```java
 public Method[] getDeclaredMethods() { }
 
 
@@ -871,7 +871,7 @@ public Method[] getDeclaredMethods() { }
 
 * 获取一个指定方法名和参数类型的成员方法
 
-```
+```java
 public Method getMethod(String name, Class<?>... parameterTypes)
 
 
@@ -887,7 +887,7 @@ public Method getMethod(String name, Class<?>... parameterTypes)
 举个例子:  
  定义内容如下
 
-```
+```java
 public class Student {
 	public void show1(String s){
 		System.out.println("调用了：公有的，String参数的show1(): s = " + s);
@@ -909,7 +909,7 @@ public class Student {
 
 用反射来操作
 
-```
+```java
 public class MethodClass {
 	public static void main(String[] args) throws Exception {
 		// 获取 Class对象

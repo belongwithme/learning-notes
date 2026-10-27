@@ -85,7 +85,7 @@ Java企业级开发中，安全管理框架非常少，目前比较常见的是�
  ![请添加图片描述](./assets/131176456/3d59bd1352328e9f34262e60.png)  
  项目代码：
 
-```
+```java
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -110,7 +110,7 @@ public class HelloController {
 
 1. 引入spring security相关依赖
 
-```
+```xml
     <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -222,7 +222,7 @@ DelegatingFilterProxy会从ApplicationContext中查找名为Filter0的Bean，
 
 ```
 
-```
+```java
 public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
     // Lazily get Filter that was registered as a Spring Bean
     // For the example in DelegatingFilterProxy delegate is an instance of Bean Filter0
@@ -269,7 +269,7 @@ DelegatingFilterProxy的出现使得过滤器的集成和管理更加灵活、�
     举个栗子🌰：  
     1.实现一个Filter接口的自定义过滤器类：
 
-```
+```java
 import javax.servlet.*;
 import java.io.IOException;
 
@@ -300,7 +300,7 @@ public class MyFilter implements Filter {
 
 2.在Spring的配置文件（如applicationContext.xml）中配置DelegatingFilterProxy和自定义过滤器的Bean：
 
-```
+```xml
 <bean id="myFilter" class="com.example.MyFilter" />
 
 <bean id="delegatingFilterProxy" class="org.springframework.web.filter.DelegatingFilterProxy">
@@ -312,7 +312,7 @@ public class MyFilter implements Filter {
 
 3.在web.xml中注册DelegatingFilterProxy：
 
-```
+```xml
 <filter>
     <filter-name>delegatingFilterProxy</filter-name>
     <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>

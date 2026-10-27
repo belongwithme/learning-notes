@@ -76,7 +76,7 @@ select ... for update;
 
 update 和 delete 操作都会加行级锁，且锁的类型都是独占锁(X型锁)
 
-```
+```sql
 //对操作的记录加独占锁(X型锁)
 update table .... where id = 1;
 //对操作的记录加独占锁(X型锁)
@@ -111,7 +111,7 @@ delete from table where id = 1;
 
 ### 场景模拟代码
 
-```
+```sql
 -- 创建表
 CREATE TABLE employees (
     id INT PRIMARY KEY,
@@ -151,7 +151,7 @@ CREATE INDEX idx_salary ON employees(salary);
 * 唯一索引查询的性质  
    唯一索引查询能精确地定位到一个具体的行。例如，当你查询某个表的主键或者一个唯一索引列时，MySQL 知道查询的结果只会有一条记录。比如：
 
-```
+```sql
 SELECT * FROM employees WHERE id = 2 FOR UPDATE;
 
 
@@ -172,7 +172,7 @@ SELECT * FROM employees WHERE id = 2 FOR UPDATE;
 我们可以通过`SELECT * FROM performance_schema.data_locks;`语句来查询事务执行SQL过程中加了什么锁.  
  比如上面我们执行的语句:
 
-```
+```sql
 SELECT * FROM employees WHERE id = 2 FOR UPDATE;
 
 
@@ -194,7 +194,7 @@ SELECT * FROM employees WHERE id = 2 FOR UPDATE;
 
 假设事务 执行了这条等值查询语句，查询的记录是「不存在」于表中的.
 
-```
+```sql
 begin;
 SELECT * FROM employees WHERE id = 20 FOR UPDATE;
 
@@ -250,7 +250,7 @@ SELECT * FROM performance_schema.data_locks;
 
 假设事务 执行了这条范围查询语句:
 
-```
+```sql
 SELECT * FROM employees WHERE id > 5 FOR UPDATE;
 
 
@@ -273,7 +273,7 @@ SELECT * FROM employees WHERE id > 5 FOR UPDATE;
 
 假设事务执行了这条范围查询语句：
 
-```
+```sql
 SELECT * FROM employees WHERE id >= 5 FOR UPDATE;
 
 
@@ -296,7 +296,7 @@ SELECT * FROM employees WHERE id >= 5 FOR UPDATE;
 
 我们执行下面sql:
 
-```
+```sql
 SELECT * FROM employees WHERE id < 6 FOR UPDATE;
 
 
@@ -316,7 +316,7 @@ SELECT * FROM employees WHERE id < 6 FOR UPDATE;
 
 执行的sql如下:
 
-```
+```sql
 SELECT * FROM employees WHERE id <=5 FOR UPDATE;
 
 
@@ -333,7 +333,7 @@ SELECT * FROM employees WHERE id <=5 FOR UPDATE;
 
 执行的sql如下:
 
-```
+```sql
 SELECT * FROM employees WHERE id <5 FOR UPDATE;
 
 
@@ -382,7 +382,7 @@ SELECT * FROM employees WHERE id <5 FOR UPDATE;
 
 我们举例来说
 
-```
+```sql
 SELECT * FROM employees WHERE salary  = 7000 FOR UPDATE;
 
 
@@ -435,7 +435,7 @@ SELECT * FROM employees WHERE salary  = 7000 FOR UPDATE;
 
 执行下面sql语句:
 
-```
+```sql
 select * from demo.employees where salary = 7500 for update;
 
 
@@ -480,7 +480,7 @@ select * from demo.employees where salary = 7500 for update;
 
 ### ✅ 示例 1：唯一索引 + 等值查询（记录存在）
 
-```
+```sql
 SELECT * FROM employees WHERE id = 2 FOR UPDATE;
 
 
@@ -508,7 +508,7 @@ InnoDB 确认该条件最多只能返回一条记录，并且定位到了该记�
 
 ### ✅ 示例 2：唯一索引 + 等值查询（记录不存在）
 
-```
+```sql
 SELECT * FROM employees WHERE id = 2 FOR UPDATE;
 
 
@@ -538,7 +538,7 @@ InnoDB 无法对“不存在的记录”加 Record Lock，于是加锁该记录�
 
 ### ✅ 示例 3：唯一索引 + 范围查询（记录存在）
 
-```
+```sql
 SELECT * FROM employees WHERE id >= 5 FOR UPDATE;
 
 
@@ -569,7 +569,7 @@ SELECT * FROM employees WHERE id >= 5 FOR UPDATE;
 
 ### ✅ 示例 4：唯一索引 + 范围查询（终止记录不存在）
 
-```
+```sql
 SELECT * FROM employees WHERE id < 5 FOR UPDATE;
 
 
@@ -600,7 +600,7 @@ SELECT * FROM employees WHERE id < 5 FOR UPDATE;
 
 ### ✅ 示例 5：非唯一索引 + 等值查询
 
-```
+```sql
 SELECT * FROM employees WHERE salary = 6000 FOR UPDATE;
 
 
@@ -633,7 +633,7 @@ SELECT * FROM employees WHERE salary = 6000 FOR UPDATE;
 
 ### ✅ 示例 6：无索引列查询
 
-```
+```sql
 SELECT * FROM employees WHERE name = 'Tom' FOR UPDATE;
 
 

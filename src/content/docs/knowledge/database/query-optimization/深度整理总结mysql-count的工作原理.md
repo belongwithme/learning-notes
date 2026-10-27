@@ -35,7 +35,7 @@ count()是一个聚合函数,函数的参数可以是任意表达式,不限于�
  该函数的作用是: 统计符合查询条件的记录中,函数指定参数不为null的记录有多少个  
  假设 count() 函数的参数是字段名,如下:
 
-```
+```sql
 select count(name) from t_order
 
 
@@ -44,7 +44,7 @@ select count(name) from t_order
 语句是统计「 t\_order 表中，name 字段不为 NULL 的记录」有多少个.也就是说,如果某一条记录中的name为null,则不会被统计进去.  
  假设 count() 函数的参数是数字 1 这个表达式，如下:
 
-```
+```sql
 select count(1) from t_order
 
 
@@ -61,7 +61,7 @@ select count(1) from t_order
  nnoDB 是通过 B+ 树来保存记录的，根据索引的类型又分为聚簇索引和二级索引，它们区别在于,聚簇索引的叶子节点存放的是实际数据，而二级索引的叶子节点存放的是主键值，而不是实际数据.  
  下面举个例子来说:
 
-```
+```sql
 select count(id) from t_order
 
 
@@ -77,7 +77,7 @@ select count(id) from t_order
 
 下面这条语句作为例子:
 
-```
+```sql
 select count(1) from t_order
 
 
@@ -101,7 +101,7 @@ select count(1) from t_order
 执行效率相比前面的 count(1)、 count(\*)、 count(主键字段) 执行效率是最差.  
  下面这条语句作为例子:
 
-```
+```sql
 select count(name) from t_order
 
 

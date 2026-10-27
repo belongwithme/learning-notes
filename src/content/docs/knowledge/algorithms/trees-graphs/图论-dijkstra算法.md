@@ -31,7 +31,7 @@ Dijkstra算法是一种计算图中单源最短路径算法,本质上是一个�
 
 ## BFS基础模版
 
-```
+```java
 // 图结构的 BFS 遍历，从节点 s 开始进行 BFS，且记录路径的权重和
 // 每个节点自行维护 State 类，记录从 s 走来的权重和
 class State {
@@ -87,7 +87,7 @@ int[] dijkstra(int start, Graph graph);
 
 我们也需要一个 State 类来辅助 BFS 算法的运行，清晰起见，我们用 id 变量记录当前节点 ID，用 distFromStart 变量记录从起点到当前节点的距离。
 
-```
+```java
 class State {
     // 图节点的 id
     int id;
@@ -110,7 +110,7 @@ class State {
 
 ### 伪代码模版
 
-```
+```java
 // 输入一幅图和一个起点 start，计算 start 到其他节点的最短距离
 int[] dijkstra(int start, Graph graph) {
     // 图中节点的个数
@@ -172,7 +172,7 @@ int[] dijkstra(int start, Graph graph) {
 
 while 循环每执行一次，都会往外拿一个元素，但想往队列里放元素，可就有很多限制了，必须满足下面这个条件：
 
-```
+```java
 // 看看从 curNode 达到 nextNode 的距离是否会更短
 if (distTo[nextNodeID] > distToNextNode) {
     // 更新 dp table

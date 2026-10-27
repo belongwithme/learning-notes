@@ -71,7 +71,7 @@ DefaultListableBeanFactory (默认实现,最常用)
 
 **BeanDefinition** 是Spring对Bean的描述信息,类似于"菜谱"或"设计图":
 
-```
+```java
 public interface BeanDefinition {
     // Bean的class类型
     String getBeanClassName();
@@ -123,7 +123,7 @@ public interface BeanDefinition {
 
 `FactoryBean` 是一个特殊的Bean,它不是普通的Bean实例,而是**生产Bean的工厂**:
 
-```
+```java
 public interface FactoryBean<T> {
     // 返回此工厂创建的对象实例
     T getObject() throws Exception;
@@ -140,7 +140,7 @@ public interface FactoryBean<T> {
 
 **使用场景示例:**
 
-```
+```java
 @Component
 public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory> {
 
@@ -173,7 +173,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory> {
 
 **BeanPostProcessor** 是Spring的扩展点,可以在Bean初始化前后进行自定义处理:
 
-```
+```java
 public interface BeanPostProcessor {
     // Bean初始化之前调用
     Object postProcessBeforeInitialization(Object bean, String beanName);
@@ -196,7 +196,7 @@ public interface BeanPostProcessor {
 
 ### 1.3 Bean的生命周期概览
 
-```
+```java
 1. 实例化 (Instantiation)
    └─ 通过构造方法创建对象
 
@@ -309,7 +309,7 @@ public interface BeanPostProcessor {
 
 **位置:** `AbstractBeanFactory.java:242-448`
 
-```
+```java
 protected <T> T doGetBean(
     String name,                // Bean名称(可能是别名或带&前缀的FactoryBean名称)
     @Nullable Class<T> requiredType,  // 期望的Bean类型
@@ -467,7 +467,7 @@ String beanName = transformedBeanName(name);
 
 **转换逻辑:**
 
-```
+```java
 protected String transformedBeanName(String name) {
     // 1. 去除FactoryBean前缀(&)
     String beanName = BeanFactoryUtils.transformedBeanName(name);
@@ -498,7 +498,7 @@ Object sharedInstance = getSingleton(beanName);
 
 **getSingleton实现:** `DefaultSingletonBeanRegistry.java`
 
-```
+```java
 @Nullable
 protected Object getSingleton(String beanName, boolean allowEarlyReference) {
     // 1. 从一级缓存获取完整Bean
@@ -549,7 +549,7 @@ protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 
 **源码位置:** `AbstractBeanFactory.java:282-284`
 
-```
+```java
 if (isPrototypeCurrentlyInCreation(beanName)) {
     throw new BeanCurrentlyInCreationException(beanName);
 }
@@ -561,7 +561,7 @@ if (isPrototypeCurrentlyInCreation(beanName)) {
 
 **示例:**
 
-```
+```java
 @Component
 @Scope("prototype")
 class A {
@@ -615,7 +615,7 @@ if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 
 **源码位置:** `AbstractBeanFactory.java:325-352`
 
-```
+```java
 String[] dependsOn = mbd.getDependsOn();
 if (dependsOn != null) {
     for (String dep : dependsOn) {
@@ -644,7 +644,7 @@ if (dependsOn != null) {
 
 **depends-on示例:**
 
-```
+```xml
 <!-- beanB必须在beanA之前初始化 -->
 <bean id="beanA" class="com.example.A" depends-on="beanB"/>
 <bean id="beanB" class="com.example.B"/>
@@ -678,7 +678,7 @@ if (mbd.isSingleton()) {
 
 **getSingleton(beanName, ObjectFactory)实现:**
 
-```
+```java
 public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
     synchronized (this.singletonObjects) {
         // 再次检查缓存(双重检查锁定)
@@ -734,7 +734,7 @@ else if (mbd.isPrototype()) {
 
 **源码位置:** `AbstractBeanFactory.java:393-421`
 
-```
+```java
 else {
     String scopeName = mbd.getScope();
     Scope scope = this.scopes.get(scopeName);
@@ -802,7 +802,7 @@ doGetBean()
 
 **位置:** `AbstractAutowireCapableBeanFactory.java:485-565`
 
-```
+```java
 @Override
 protected Object createBean(String beanName, RootBeanDefinition mbd,
                            @Nullable Object[] args) throws BeanCreationException {
@@ -853,7 +853,7 @@ protected Object createBean(String beanName, RootBeanDefinition mbd,
 
 **位置:** `AbstractAutowireCapableBeanFactory.java:566-750`
 
-```
+```java
 protected Object doCreateBean(String beanName, RootBeanDefinition mbd,
                               @Nullable Object[] args) throws BeanCreationException {
 
@@ -969,7 +969,7 @@ protected Object doCreateBean(String beanName, RootBeanDefinition mbd,
 
 #### 4.3.1 createBeanInstance - 实例化
 
-```
+```java
 protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd,
                                         @Nullable Object[] args) {
     Class<?> beanClass = resolveBeanClass(mbd, beanName);
@@ -1015,7 +1015,7 @@ protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd
 
 #### 4.3.2 populateBean - 属性填充
 
-```
+```java
 protected void populateBean(String beanName, RootBeanDefinition mbd,
                            @Nullable BeanWrapper bw) {
     if (bw == null) {
@@ -1087,7 +1087,7 @@ protected void populateBean(String beanName, RootBeanDefinition mbd,
 
 #### 4.3.3 initializeBean - 初始化
 
-```
+```java
 protected Object initializeBean(String beanName, Object bean,
                                @Nullable RootBeanDefinition mbd) {
     // 1. Aware接口回调
@@ -1221,7 +1221,7 @@ protected void invokeInitMethods(String beanName, Object bean,
 
 **位置:** `DefaultSingletonBeanRegistry.java:77-84`
 
-```
+```java
 public class DefaultSingletonBeanRegistry {
 
     /** 一级缓存: 存放完全初始化好的单例Bean */
@@ -1256,7 +1256,7 @@ public class DefaultSingletonBeanRegistry {
 
 #### 5.3.1 构造方法循环依赖 (❌ 无法解决)
 
-```
+```java
 @Component
 public class A {
     private B b;
@@ -1294,7 +1294,7 @@ Is there an unresolvable circular reference?
 
 #### 5.3.2 Setter方法循环依赖 (✅ 可以解决)
 
-```
+```java
 @Component
 public class A {
     @Autowired
@@ -1312,7 +1312,7 @@ public class B {
 
 **解决过程:**
 
-```
+```java
 1. 创建A
    ├─ 实例化A (new A())
    ├─ 放入三级缓存: singletonFactories.put("a", () -> getEarlyBeanReference(a))
@@ -1346,7 +1346,7 @@ public class B {
 
 #### 5.3.3 Prototype循环依赖 (❌ 无法解决)
 
-```
+```java
 @Component
 @Scope("prototype")
 public class A {
@@ -1435,7 +1435,7 @@ public class B {
 
 **核心代码:** `getEarlyBeanReference`
 
-```
+```java
 protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, Object bean) {
     Object exposedObject = bean;
     if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
@@ -1457,7 +1457,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 ### 5.5 循环依赖解决流程图
 
-```
+```java
                        开始创建Bean A
                             ↓
               ┌─────────────────────────┐
@@ -1591,7 +1591,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 ### 6.2 经典应用场景: Spring MVC
 
-```
+```java
 ┌─────────────────────────────────────┐
 │   Spring MVC容器 (子容器)            │
 │   DispatcherServlet创建             │
@@ -1631,7 +1631,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 #### web.xml
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -1676,7 +1676,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 #### applicationContext.xml (父容器配置)
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -1714,7 +1714,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 #### spring-mvc.xml (子容器配置)
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -1748,7 +1748,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 假设有如下Bean定义:
 
-```
+```java
 // 父容器中
 @Service
 public class UserService {
@@ -1870,7 +1870,7 @@ Web层 (Controller)  →  Spring MVC容器管理
 
 ### 6.6 编程式创建父子容器
 
-```
+```java
 public class ParentChildContainerDemo {
 
     public static void main(String[] args) {
@@ -2005,7 +2005,7 @@ Controller中注入的UserService: com.example.UserService@12345678
 
 ### 7.1 完整的循环依赖示例
 
-```
+```java
 // ========== 1. Bean定义 ==========
 
 @Component
@@ -2071,7 +2071,7 @@ class AppConfig {
 
 ### 7.2 FactoryBean示例
 
-```
+```java
 // ========== 1. 自定义FactoryBean ==========
 
 @Component
@@ -2148,7 +2148,7 @@ public class FactoryBeanTest {
 
 ### 7.3 自定义Scope示例
 
-```
+```java
 // ========== 1. 自定义Scope实现 ==========
 
 public class ThreadScope implements Scope {

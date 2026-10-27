@@ -249,7 +249,7 @@ OrderThresholdHandler
  一个用户在结算时使用一张优惠券，系统需要做什么？  
  通常，后台逻辑会进行一系列的校验，如果你用普通的代码实现，很可能写出下面这样的“地狱代码” (if-else hell).
 
-```
+```java
 // 反面教材：冗长且难以维护的if-else结构
 public Result applyCoupon(Order order, Coupon coupon) {
     // 1. 基础校验
@@ -315,7 +315,7 @@ public Result applyCoupon(Order order, Coupon coupon) {
 
 #### 第1步：定义处理器接口和抽象基类
 
-```
+```java
 /**
  * 优惠券校验处理器的接口
  */
@@ -363,7 +363,7 @@ public abstract class AbstractCouponValidationHandler implements CouponValidatio
 
 每一个if分支，都可以变成一个独立的Handler类。
 
-```
+```java
 // 1. 基础有效性校验处理器
 public class BasicValidationHandler extends AbstractCouponValidationHandler {
     @Override
@@ -408,7 +408,7 @@ public class OrderThresholdHandler extends AbstractCouponValidationHandler {
 
 在你的`Service`层，你可以像搭积木一样，根据业务需要来“组装”这条校验链。
 
-```
+```java
 @Service
 public class CouponService {
 

@@ -27,7 +27,7 @@ sidebar:
 ![在这里插入图片描述](./assets/125993672/ce9f706fb0418d00519d9ad1.png)  
  代码实现：
 
-```
+```java
 public
 class Thread implements Runnable 
 
@@ -38,7 +38,7 @@ Thread类实现了Runnable，我们也在前文提到过，需要启动一个线
 
 ### Doc解读
 
-```
+```java
 /**
  * A <i>thread</i> is a thread of execution in a program. The Java
  * Virtual Machine allows an application to have multiple threads of
@@ -355,7 +355,7 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
  我们来详细的介绍一下最后一个构造方法，因为前面所有的构造方法中的this，最后指向的都是最后一个构造方法  
  我们看看this里面的代码：
 
-```
+```java
    private Thread(ThreadGroup g, Runnable target, String name,
                    long stackSize, AccessControlContext acc,
                    boolean inheritThreadLocals) {
@@ -435,7 +435,7 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 Thread大部分逻辑都是由JVM完成，因此核心的方法都是native方法
 
-```
+```java
 //确保registerNatives是<clinit>做的第一件事,这个代码要放在代码的最前面。
 private static native void registerNatives();
 //返回当前线程
@@ -481,7 +481,7 @@ private native void setNativeName(String name);
 
 ### start
 
-```
+```java
   public synchronized void start() {
    
         if (threadStatus != 0)  //验证线程状态
@@ -508,7 +508,7 @@ private native void setNativeName(String name);
 
 设置守护线程状态：
 
-```
+```java
   public final void setDaemon(boolean on) {
         checkAccess();         
         if (isAlive()) {
@@ -524,7 +524,7 @@ private native void setNativeName(String name);
 
 检查访问状态：
 
-```
+```java
   public final void checkAccess() {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -539,7 +539,7 @@ private native void setNativeName(String name);
 
 join将当前运行的线程阻塞，之后让join的持有线程执行完之后再继续执行。等待时间为传入的参数。
 
-```
+```java
   public final synchronized void join(long millis)
     throws InterruptedException {
     //获得当前时间
@@ -577,7 +577,7 @@ wait(0)会一直阻塞，知道notify才会返回，join方法的底层实际上
 
 sleep通过native方法实现
 
-```
+```java
   public static void sleep(long millis, int nanos)
     throws InterruptedException {
         if (millis < 0) {
@@ -603,7 +603,7 @@ sleep通过native方法实现
 
 ### Interrupt
 
-```
+```java
  public void interrupt() {
  如果调用中断的是线程本身，则不需要进行安全性分析
         if (this != Thread.currentThread()) {
@@ -629,7 +629,7 @@ sleep通过native方法实现
 
 ### stop方法
 
-```
+```java
    public final void stop() {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -657,7 +657,7 @@ sleep通过native方法实现
 
 Cache缓存了子类安全审计的结果。
 
-```
+```java
 private static class Caches {
     //缓存子类安全审计结果
     static final ConcurrentMap<WeakClassKey,Boolean> subclassAudits =
@@ -675,7 +675,7 @@ private static class Caches {
 
 弱引用对象的key
 
-```
+```java
 static class WeakClassKey extends WeakReference<Class<?>> {
 
     private final int hash;
@@ -711,7 +711,7 @@ static class WeakClassKey extends WeakReference<Class<?>> {
 
 线程的状态内部枚举类。这个线程的状态有NEW、RUNNABLE、BLOCKED、WAITING、TIMED\_WAITING、TERMINATED状态。
 
-```
+```java
 public enum State {
 
     NEW,

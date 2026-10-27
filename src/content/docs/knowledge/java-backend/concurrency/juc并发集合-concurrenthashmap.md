@@ -193,7 +193,7 @@ JDK 1.8的ConcurrentHashMap引入了红黑树来优化哈希冲突严重时的�
 
 #### 转换过程：
 
-```
+```java
 private final void treeifyBin(Node<K,V>[] tab, int index) {
     Node<K,V> b; int n, sc;
     if (tab != null) {
@@ -266,7 +266,7 @@ JDK 1.8的ConcurrentHashMap实现了多线程协作扩容，这是其高并发�
 
 #### 关键代码 分析：
 
-```
+```java
 // transfer方法的核心部分
 private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
     int n = tab.length, stride;
@@ -352,7 +352,7 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
 
 ConcurrentHashMap提供了多个构造方法，以适应不同的初始化需求：
 
-```
+```java
 // 默认构造方法
 public ConcurrentHashMap() {
 }
@@ -408,7 +408,7 @@ public ConcurrentHashMap(int initialCapacity,
 
 put方法是ConcurrentHashMap的核心写操作，它实现了并发安全的元素添加：
 
-```
+```java
 public V put(K key, V value) {
     return putVal(key, value, false);
 }
@@ -516,7 +516,7 @@ put方法的实现体现了ConcurrentHashMap的几个关键设计思想：
 
 get方法是ConcurrentHashMap的核心读操作，它不需要加锁，是一个纯读操作：
 
-```
+```java
 public V get(Object key) {
     Node<K,V>[] tab; Node<K,V> e, p; int n, eh; K ek;
     // 计算hash值
@@ -566,7 +566,7 @@ get方法的实现非常简洁，它不需要加锁，因为：
 
 size方法用于获取ConcurrentHashMap中的元素数量，在并发环境下实现准确计数是一个挑战：
 
-```
+```java
 public int size() {
     long n = sumCount();
     return ((n < 0L) ? 0 :
@@ -718,7 +718,7 @@ ConcurrentHashMap的并发性能特点：
 
 1. **线程安全的缓存**：
 
-   ```
+   ```java
    private final ConcurrentHashMap<String, Object> cache = new ConcurrentHashMap<>();
 
    // 获取缓存，不存在则计算并存储
@@ -740,7 +740,7 @@ ConcurrentHashMap的并发性能特点：
    ```
 2. **计数器和统计**：
 
-   ```
+   ```java
    private final ConcurrentHashMap<String, LongAdder> counters = new ConcurrentHashMap<>();
 
    // 增加计数
@@ -765,7 +765,7 @@ ConcurrentHashMap的并发性能特点：
    ```
 3. **并发任务处理**：
 
-   ```
+   ```java
    private final ConcurrentHashMap<String, Task> tasks = new ConcurrentHashMap<>();
    private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
@@ -803,7 +803,7 @@ ConcurrentHashMap的并发性能特点：
    ```
 4. **分段处理大数据**：
 
-   ```
+   ```java
    private final ConcurrentHashMap<Integer, List<Record>> segments = new ConcurrentHashMap<>();
 
    // 分段存储数据

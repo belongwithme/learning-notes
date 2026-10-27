@@ -414,7 +414,7 @@ level 0:            span=1        span=1     span=1    span=1     span=1     spa
 
 **源码片段 (`server.h`, `t_zset.c` 附近，结构定义和关键操作)：**
 
-```
+```c
 /* server.h */
 #define ZSKIPLIST_MAXLEVEL 32 /* 跳跃表最大层数 */
 #define ZSKIPLIST_P 0.25      /* 用于计算随机层数的概率 */
