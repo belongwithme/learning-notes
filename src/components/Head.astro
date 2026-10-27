@@ -2,6 +2,11 @@
 import StarlightHead from '@astrojs/starlight/components/Head.astro';
 import SpeedInsights from '@vercel/speed-insights/astro';
 import Mermaid from './Mermaid.astro';
+
+// The home page title equals the site title; avoid "学习档案 | 学习档案".
+const { head, siteTitle } = Astro.locals.starlightRoute;
+const title = head.find(item => item.tag === 'title');
+if (title?.content === `${siteTitle} | ${siteTitle}`) title.content = siteTitle;
 ---
 
 <StarlightHead />

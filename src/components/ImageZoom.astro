@@ -1,0 +1,50 @@
+<dialog class="image-zoom" aria-label="放大查看图片">
+	<img alt="" />
+</dialog>
+
+<script>
+	const dialog = document.querySelector<HTMLDialogElement>('dialog.image-zoom');
+	const large = dialog?.querySelector('img');
+	if (dialog && large) {
+		for (const img of document.querySelectorAll<HTMLImageElement>('.sl-markdown-content img')) {
+			if (img.closest('a')) continue;
+			img.tabIndex = 0;
+			img.classList.add('zoomable');
+			const open = () => {
+				large.src = img.currentSrc || img.src;
+				large.alt = img.alt;
+				dialog.showModal();
+			};
+			img.addEventListener('click', open);
+			img.addEventListener('keydown', event => {
+				if (event.key === 'Enter') open();
+			});
+		}
+		dialog.addEventListener('click', () => dialog.close());
+	}
+</script>
+
+<style>
+	.image-zoom {
+		max-width: 96vw;
+		max-height: 94vh;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		cursor: zoom-out;
+	}
+	.image-zoom::backdrop {
+		background: rgb(20 20 18 / 0.82);
+	}
+	.image-zoom img {
+		display: block;
+		max-width: 96vw;
+		max-height: 94vh;
+		object-fit: contain;
+		border-radius: 0.375rem;
+		background: #fff;
+	}
+	:global(.sl-markdown-content img.zoomable) {
+		cursor: zoom-in;
+	}
+</style>

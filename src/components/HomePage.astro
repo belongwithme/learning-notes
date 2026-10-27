@@ -1,6 +1,11 @@
 ---
-import { getEntry } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import HomeCardGrid from './HomeCardGrid.astro';
+import { KnowledgeCategories } from '../config/site-routing';
+
+const docs = await getCollection('docs');
+const count = (prefix: string) => docs.filter(doc => doc.id.startsWith(prefix) && doc.id.split('/').length > 3).length;
+const paths = docs.filter(doc => doc.id.startsWith('learning-paths/'));
 
 // The three interactive courses; each course page links its own lessons.
 const courses = await Promise.all(
@@ -13,6 +18,16 @@ const courses = await Promise.all(
 ---
 
 <div class="home-page">
+	<section class="home-section home-areas" aria-labelledby="areas-title">
+		<h2 class="home-kicker" id="areas-title">KNOWLEDGE · 知识专题</h2>
+		<ul class="home-area-list">
+			{KnowledgeCategories.map(area => (
+				<li><a href={`/knowledge/${area.id}/`}><strong>{area.label}<span>{count(`knowledge/${area.id}/`)} 篇</span></strong><span>{area.desc}</span></a></li>
+			))}
+			<li class="home-area-paths"><a href="/learning-paths/"><strong>学习路线<span>{paths.length} 条</span></strong><span>{paths.map(path => path.data.title.replace(/学习路线$/, '')).join('、')}：按阶段读，带自测和进度。</span></a></li>
+		</ul>
+	</section>
+
 	<section class="home-shelf" aria-labelledby="shelf-title">
 		<div class="home-shelf-group" id="continue-reading" hidden>
 			<p class="home-kicker" id="shelf-title">CONTINUE READING · 继续阅读</p>
@@ -77,6 +92,64 @@ const courses = await Promise.all(
 	padding-top: clamp(4rem, 8vw, 6rem);
 }
 
+.home-area-list {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+	gap: 1px;
+	margin: 1.25rem 0 0;
+	padding: 0;
+	list-style: none;
+	background: var(--home-line);
+	border: 1px solid var(--home-line);
+	border-radius: 0.75rem;
+	overflow: hidden;
+}
+
+.home-area-list li {
+	margin: 0;
+	background: var(--home-paper);
+}
+
+.home-area-list a {
+	display: grid;
+	gap: 0.4rem;
+	height: 100%;
+	padding: 1.1rem 1.25rem 1.25rem;
+	color: var(--home-ink);
+	text-decoration: none;
+	transition: background-color 160ms ease;
+}
+
+.home-area-list a:hover {
+	background: color-mix(in srgb, var(--home-green) 6%, var(--home-paper));
+}
+
+.home-area-list strong {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 1rem;
+	font-size: 1.05rem;
+	font-weight: 650;
+}
+
+.home-area-list strong span {
+	font-size: 0.78rem;
+	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+	color: var(--home-green);
+}
+
+.home-area-list a > span {
+	font-size: 0.85rem;
+	line-height: 1.55;
+	color: var(--home-muted);
+}
+
+.home-area-paths a {
+	background: color-mix(in srgb, var(--home-green) 8%, var(--home-paper));
+}
+
 .home-shelf-list {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
@@ -130,6 +203,11 @@ const courses = await Promise.all(
 .home-section {
 	padding-top: clamp(4rem, 8vw, 6rem);
 	padding-bottom: clamp(5rem, 10vw, 8rem);
+}
+
+.home-section.home-areas {
+	padding-top: clamp(2.5rem, 5vw, 3.5rem);
+	padding-bottom: 0;
 }
 
 .home-section .home-kicker {
