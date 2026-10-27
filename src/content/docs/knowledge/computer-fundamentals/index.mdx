@@ -1,11 +1,13 @@
 ---
 title: 计算机基础
 description: 操作系统、计算机网络与 Web 基础协议。
-tableOfContents:
-  minHeadingLevel: 2
-  maxHeadingLevel: 3
+hero:
+  title: 计算机基础
+  tagline: 操作系统、TCP/IP 与 HTTP 等后端开发绕不开的基础知识。
+tableOfContents: false
 ---
 
-## 收录范围
+import CategoryIndex from '../../../../components/CategoryIndex.astro';
+import { KnowledgeSubcategories } from '../../../../config/site-routing';
 
-这里收录操作系统、计算机网络、HTTP/TCP/UDP、Nginx 等基础知识。文章统一以草稿状态导入，后续补充实验条件和版本边界。
+<CategoryIndex base="knowledge/computer-fundamentals" groups={KnowledgeSubcategories['computer-fundamentals']} />

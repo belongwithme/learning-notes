@@ -1,0 +1,72 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+	/** Content directory of the area, e.g. `knowledge/java-backend`. */
+	base: string;
+	groups: { id: string; label: string }[];
+}
+
+const { base, groups } = Astro.props;
+const docs = await getCollection('docs', doc => doc.id.startsWith(`${base}/`));
+
+// Match the sidebar: explicit order first, then title.
+const order = (doc: (typeof docs)[number]) => doc.data.sidebar.order ?? Number.MAX_SAFE_INTEGER;
+const sections = groups
+	.map(group => ({
+		...group,
+		notes: docs
+			.filter(doc => doc.id.startsWith(`${base}/${group.id}/`))
+			.sort((a, b) => order(a) - order(b) || a.data.title.localeCompare(b.data.title, 'zh-CN')),
+	}))
+	.filter(section => section.notes.length > 0);
+---
+
+{sections.map(section => (
+	<section class="category-index" aria-labelledby={section.id}>
+		<h2 id={section.id}>{section.label}<span>{section.notes.length} 篇</span></h2>
+		<div class="not-content">
+			<ol>
+				{section.notes.map(note => (
+					<li><a href={`/${note.id}/`}>{note.data.sidebar.label ?? note.data.title}</a></li>
+				))}
+			</ol>
+		</div>
+	</section>
+))}
+
+<style>
+	.category-index h2 span {
+		margin-inline-start: 0.75rem;
+		font-family: var(--archive-sans, var(--sl-font));
+		font-size: 0.8rem;
+		font-weight: 500;
+		color: var(--archive-muted, var(--sl-color-gray-3));
+	}
+
+	.category-index ol {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+		column-gap: 2rem;
+		margin: 1rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.category-index li {
+		border-bottom: 1px solid var(--archive-line, var(--sl-color-hairline));
+	}
+
+	.category-index a {
+		display: block;
+		padding: 0.7rem 0;
+		font-size: 0.95rem;
+		line-height: 1.5;
+		color: var(--sl-color-text);
+		text-decoration: none;
+	}
+
+	.category-index a:hover {
+		color: var(--sl-color-text-accent);
+	}
+</style>

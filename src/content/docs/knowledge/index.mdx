@@ -1,33 +1,14 @@
 ---
 title: 知识专题
-description: 按稳定的技术领域组织经过整理、验证和持续维护的知识。
+description: 按技术领域整理的全部笔记。
 hero:
   title: 知识专题
-  tagline: 把零散经验整理成可验证、可复用的知识。从问题出发，保留推理过程，也记录结论成立的边界。
-tableOfContents:
-  minHeadingLevel: 2
-  maxHeadingLevel: 2
+  tagline: 按技术领域整理的全部笔记。每个专题页列出它的二级分类和文章。
+tableOfContents: false
 sidebar:
   order: 1
 ---
 
 import ArchiveDirectory from '../../../components/ArchiveDirectory.astro';
-import PrincipleList from '../../../components/PrincipleList.astro';
-import { KnowledgeCategories } from '../../../config/site-routing';
 
-## 专题目录
-
-<ArchiveDirectory 
-	categories={KnowledgeCategories.map(cat => ({ title: cat.label, desc: cat.desc, url: cat.url }))}
-/>
-
-## 建设原则
-
-<PrincipleList 
-	className="archive-principles"
-	principles={[
-		{ number: '01', title: '从问题出发', desc: '先说明要解决什么，再展开原理、方案和适用边界。' },
-		{ number: '02', title: '保留证据', desc: '区分个人理解、资料结论、代码验证与项目实践结果。' },
-		{ number: '03', title: '持续维护', desc: '明确内容状态，让过期知识不再伪装成可靠答案。' }
-	]}
-/>
+<ArchiveDirectory />

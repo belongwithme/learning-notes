@@ -78,75 +78,6 @@ header.header .social-icons::after {
 	border-radius: 0.4rem;
 }
 
-/* Imported business articles use the site typography and keep wide facts readable. */
-.business-logic-catalog :is(th, td):first-child {
-	white-space: nowrap;
-}
-
-.business-logic-catalog :is(th, td):nth-child(2) {
-	min-width: 13rem;
-}
-
-html[data-has-sidebar] .main-pane:has(.business-logic-article) h1:not(.hero h1) {
-	font-size: clamp(2rem, 3.5vw, 3rem);
-	line-height: 1.35;
-}
-
-.business-logic-article {
-	min-width: 0;
-	line-height: 1.85;
-	overflow-wrap: anywhere;
-}
-
-.business-logic-article > .sl-heading-wrapper.level-h2 {
-	margin-top: 3rem;
-	padding-top: 1.5rem;
-	border-top: 1px solid var(--archive-line, var(--sl-color-hairline));
-}
-
-.business-logic-article > div[id] {
-	display: block;
-	scroll-margin-top: calc(var(--sl-nav-height) + 1rem);
-}
-
-.business-logic-article :not(pre) > code {
-	white-space: normal;
-	overflow-wrap: anywhere;
-}
-
-.business-logic-article table {
-	display: block;
-	max-width: 100%;
-	overflow-x: auto;
-	font-size: 0.9rem;
-	line-height: 1.75;
-}
-
-.business-logic-article :is(th, td) {
-	min-width: 9rem;
-	padding: 0.8rem 1rem;
-	vertical-align: top;
-}
-
-.business-logic-article pre {
-	overflow-wrap: normal;
-}
-
-.business-logic-flow img {
-	display: block;
-	width: 100%;
-	height: auto;
-	background: #fff;
-	border: 1px solid var(--sl-color-hairline);
-	border-radius: 0.5rem;
-}
-
-.business-logic-flow figcaption {
-	margin-top: 0.75rem;
-	font-size: 0.85rem;
-	color: var(--sl-color-gray-2);
-}
-
 html:not([data-has-sidebar]) {
 	--sl-content-width: 100%;
 }
@@ -167,7 +98,8 @@ html:not([data-has-sidebar]) main > .content-panel > .sl-container {
 html:not([data-has-sidebar]) .hero {
 	position: relative;
 	isolation: isolate;
-	min-height: calc(100svh - var(--sl-nav-height));
+	overflow: hidden;
+	min-height: calc(72svh - var(--sl-nav-height));
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -175,7 +107,7 @@ html:not([data-has-sidebar]) .hero {
 	text-align: center;
 	background:
 		radial-gradient(circle at 50% 84%, rgba(36, 74, 55, 0.11), transparent 29rem),
-		linear-gradient(180deg, var(--home-paper) 0%, #faf8ec 68%, var(--home-paper-deep) 100%);
+		linear-gradient(180deg, var(--home-paper) 0%, #faf8ec 68%, var(--home-paper) 100%);
 }
 
 html:not([data-has-sidebar]) .hero::before {
@@ -215,20 +147,9 @@ html:not([data-has-sidebar]) .hero h1 {
 	margin: 0;
 	font-size: clamp(3.7rem, 8.8vw, 7.8rem);
 	font-weight: 650;
-	line-height: 0.93;
+	line-height: 1.1;
 	letter-spacing: -0.04em;
 	color: var(--home-ink);
-}
-
-html:not([data-has-sidebar]) .hero h1::before {
-	content: 'LEARNING ARCHIVE';
-	display: block;
-	margin-bottom: 1.6rem;
-	font-size: clamp(0.68rem, 1vw, 0.78rem);
-	font-weight: 700;
-	line-height: 1;
-	letter-spacing: 0.16em;
-	color: var(--home-green);
 }
 
 html:not([data-has-sidebar]) .hero h1 span {
@@ -282,9 +203,9 @@ html:not([data-has-sidebar]) .hero .sl-link-button.minimal {
 
 @media (max-width: 50rem) {
 	html:not([data-has-sidebar]) .hero {
-		min-height: calc(92svh - var(--sl-nav-height));
-		padding-top: 6rem;
-		padding-bottom: 6rem;
+		min-height: 0;
+		padding-top: 4.5rem;
+		padding-bottom: 4.5rem;
 	}
 
 	html:not([data-has-sidebar]) .hero .stack,
@@ -296,7 +217,7 @@ html:not([data-has-sidebar]) .hero .sl-link-button.minimal {
 	html:not([data-has-sidebar]) .hero h1 {
 		max-width: 100%;
 		font-size: clamp(2.25rem, 11.5vw, 4.6rem);
-		line-height: 1;
+		line-height: 1.15;
 		letter-spacing: -0.035em;
 	}
 
@@ -678,18 +599,6 @@ html[data-has-sidebar][data-has-hero] .hero h1 {
 	color: var(--archive-ink);
 }
 
-html[data-has-sidebar][data-has-hero] .hero h1::before {
-	content: 'CURATED KNOWLEDGE · 2026';
-	display: block;
-	margin-bottom: 1.5rem;
-	font-family: var(--archive-sans);
-	font-size: 0.7rem;
-	font-weight: 700;
-	line-height: 1;
-	letter-spacing: 0.2em;
-	color: var(--archive-accent);
-}
-
 html[data-has-sidebar][data-has-hero] .hero .tagline {
 	max-width: 30rem;
 	padding-bottom: 0.3rem;
@@ -831,6 +740,12 @@ html[data-has-sidebar] .right-sidebar-panel a[aria-current='true'] {
 	border-bottom: 1px solid var(--archive-line);
 }
 
+.archive-directory ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
 .archive-directory-head,
 .archive-directory-row {
 	display: grid;
@@ -848,7 +763,7 @@ html[data-has-sidebar] .right-sidebar-panel a[aria-current='true'] {
 
 .archive-directory-row {
 	align-items: center;
-	padding: 1.8rem 0;
+	padding: 1.25rem 0;
 	border-top: 1px solid var(--archive-line);
 	color: var(--archive-ink);
 	text-decoration: none;
@@ -894,86 +809,6 @@ html[data-has-sidebar] .right-sidebar-panel a[aria-current='true'] {
 	justify-self: end;
 	font-size: 0.76rem;
 	color: var(--archive-accent);
-}
-
-.archive-principles,
-.archive-scope-list {
-	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-	border-top: 1px solid var(--archive-line);
-	border-bottom: 1px solid var(--archive-line);
-}
-
-.archive-principles > div,
-.archive-scope-list > div {
-	margin: 0;
-	padding: 1.5rem 1.35rem 1.75rem;
-}
-
-.archive-principles > div:first-child,
-.archive-scope-list > div:first-child {
-	padding-inline-start: 0;
-}
-
-.archive-principles > div + div,
-.archive-scope-list > div + div {
-	border-inline-start: 1px solid var(--archive-line);
-}
-
-.archive-principles span,
-.archive-scope-list span {
-	display: block;
-	margin-bottom: 2.5rem;
-	font-family: Georgia, serif;
-	font-size: 0.68rem;
-	color: var(--archive-muted);
-}
-
-.archive-principles strong,
-.archive-scope-list strong {
-	display: block;
-	font-family: var(--archive-serif);
-	font-size: 1.12rem;
-	font-weight: 600;
-	color: var(--archive-ink);
-}
-
-.archive-principles p,
-.archive-scope-list p {
-	margin: 0.65rem 0 0;
-	font-size: 0.82rem;
-	line-height: 1.6;
-	color: var(--archive-muted);
-}
-
-.archive-empty {
-	display: grid;
-	grid-template-columns: 11rem minmax(0, 1fr);
-	gap: 2rem;
-	align-items: start;
-	padding: 2rem 0;
-	border-top: 1px solid var(--archive-line);
-	border-bottom: 1px solid var(--archive-line);
-}
-
-.archive-empty > span {
-	font-size: 0.68rem;
-	font-weight: 700;
-	letter-spacing: 0.15em;
-	color: var(--archive-accent);
-}
-
-.archive-empty strong {
-	display: block;
-	font-family: var(--archive-serif);
-	font-size: 1.35rem;
-	font-weight: 600;
-	color: var(--archive-ink);
-}
-
-.archive-empty p {
-	margin: 0.65rem 0 0;
-	color: var(--archive-muted);
 }
 
 html[data-has-sidebar] .pagination-links {
@@ -1101,34 +936,6 @@ html[data-has-sidebar] footer .meta {
 
 	.archive-directory-main strong {
 		font-size: 1.55rem;
-	}
-
-	.archive-principles,
-	.archive-scope-list {
-		grid-template-columns: 1fr;
-	}
-
-	.archive-principles > div,
-	.archive-scope-list > div,
-	.archive-principles > div:first-child,
-	.archive-scope-list > div:first-child {
-		padding: 1.35rem 0;
-	}
-
-	.archive-principles > div + div,
-	.archive-scope-list > div + div {
-		border-inline-start: 0;
-		border-top: 1px solid var(--archive-line);
-	}
-
-	.archive-principles span,
-	.archive-scope-list span {
-		margin-bottom: 1rem;
-	}
-
-	.archive-empty {
-		grid-template-columns: 1fr;
-		gap: 1.25rem;
 	}
 
 	html[data-has-sidebar] .pagination-links a + a {

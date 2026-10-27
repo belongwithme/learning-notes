@@ -1,13 +1,9 @@
----
-import { Routes } from '../config/site-routing';
----
-
 <div class="home-card-grid">
-  <a class="home-card home-card--soft home-card--english" href={Routes.English}>
+  <a class="home-card home-card--soft home-card--english" href="/english/">
     <div class="home-card-topline"><span>ENGLISH / DAILY PRACTICE</span><span aria-hidden="true">↗</span></div>
     <div><p class="home-card-label">英语学习</p><h3>读懂一个词，<br />读准一句话。</h3><p>从 Java 技术英语开始，记录每次学习，让复习有迹可循。</p></div>
   </a>
-  <a class="home-card home-card--dark home-card--large" href={Routes.Knowledge}>
+  <a class="home-card home-card--dark home-card--large" href="/knowledge/">
     <div class="home-card-topline">
       <span>01 / KNOWLEDGE</span>
       <span aria-hidden="true">↗</span>
@@ -19,7 +15,7 @@ import { Routes } from '../config/site-routing';
     </div>
   </a>
 
-  <a class="home-card home-card--soft" href={Routes.LearningPaths}>
+  <a class="home-card home-card--soft" href="/learning-paths/">
     <div class="home-card-topline">
       <span>02 / PATHS</span>
       <span aria-hidden="true">↗</span>
@@ -31,7 +27,7 @@ import { Routes } from '../config/site-routing';
     </div>
   </a>
 
-  <a class="home-card home-card--blue" href={Routes.Retrospectives}>
+  <a class="home-card home-card--green" href="/retrospectives/">
     <div class="home-card-topline">
       <span>03 / RETROSPECTIVES</span>
       <span aria-hidden="true">↗</span>
@@ -56,8 +52,8 @@ import { Routes } from '../config/site-routing';
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	min-height: 34rem;
-	padding: clamp(1.7rem, 3vw, 2.6rem);
+	min-height: 20rem;
+	padding: clamp(1.5rem, 2.6vw, 2.2rem);
 	border: 0;
 	border-radius: 2rem;
 	overflow: hidden;
@@ -105,7 +101,7 @@ import { Routes } from '../config/site-routing';
 
 .home-card h3 {
 	max-width: 6em;
-	font-size: clamp(2.5rem, 4.8vw, 4.7rem);
+	font-size: clamp(2rem, 3.4vw, 3.2rem);
 	font-weight: 620;
 	line-height: 1.06;
 	letter-spacing: -0.035em;
@@ -127,7 +123,7 @@ import { Routes } from '../config/site-routing';
 }
 
 .home-card--dark :is(h3, p, span),
-.home-card--blue :is(h3, p, span) {
+.home-card--green :is(h3, p, span) {
 	color: inherit;
 }
 
@@ -138,24 +134,24 @@ import { Routes } from '../config/site-routing';
 
 .home-card--soft h3 {
 	max-width: 7em;
-	font-size: clamp(2.3rem, 3.2vw, 3rem);
+	font-size: clamp(1.9rem, 2.6vw, 2.5rem);
 }
 
 .home-card--english {
 	grid-column: 1 / -1;
-	min-height: 22rem;
+	min-height: 14rem;
 }
 
-.home-card--blue {
+.home-card--green {
 	grid-column: 1 / -1;
-	min-height: 31rem;
+	min-height: 16rem;
 	color: #ffffff;
 	background:
 		radial-gradient(circle at 78% 18%, rgba(255, 254, 242, 0.18), transparent 19rem),
 		linear-gradient(145deg, #315a45 0%, var(--home-green) 100%);
 }
 
-.home-card--blue h3 {
+.home-card--green h3 {
 	max-width: 12em;
 }
 
@@ -165,15 +161,15 @@ import { Routes } from '../config/site-routing';
 	}
 
 	.home-card,
-	.home-card--blue {
+	.home-card--green {
 		grid-column: auto;
-		min-height: 29rem;
+		min-height: 15rem;
 		border-radius: 1.6rem;
 	}
 
 	.home-card h3,
 	.home-card--soft h3 {
-		font-size: clamp(2rem, 10vw, 3.7rem);
+		font-size: clamp(1.8rem, 8vw, 2.6rem);
 	}
 }
 

@@ -8,19 +8,8 @@ export const collections = {
 		loader: docsLoader(),
 		schema: docsSchema({
 			extend: z.object({
-				created: z.coerce.date().optional(),
-				updated: z.coerce.date().optional(),
-				category: z.string().optional(),
-				subcategory: z.string().optional(),
-				tags: z.array(z.string()).default([]),
-				sourceId: z.string().optional(),
-				sourceSeries: z.array(z.string()).default([]),
+				// Shown next to the title for every value except `draft`.
 				status: z.enum(['draft', 'verified', 'evergreen', 'outdated']).optional(),
-				difficulty: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
-				contentType: z
-					.enum(['knowledge', 'practice', 'retrospective', 'source-analysis', 'learning-path'])
-					.optional(),
-				source: z.string().optional(),
 			}),
 		}),
 	}),

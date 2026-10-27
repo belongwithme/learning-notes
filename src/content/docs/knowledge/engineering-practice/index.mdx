@@ -1,28 +1,13 @@
 ---
 title: 工程实践
-description: 测试、交付、可观测性与持续改进方法。
+description: Git 与常用基础设施工具。
 hero:
   title: 工程实践
-  tagline: 把可重复的排查、验证与交付方式沉淀为工程习惯，让质量不依赖偶然的个人发挥。
-tableOfContents:
-  minHeadingLevel: 2
-  maxHeadingLevel: 2
+  tagline: Git 分支与日常用法，以及 MinIO 等基础设施工具的落地。
+tableOfContents: false
 ---
 
-import ArchiveScopeList from '../../../../components/ArchiveScopeList.astro';
-import ArchiveStatus from '../../../../components/ArchiveStatus.astro';
+import CategoryIndex from '../../../../components/CategoryIndex.astro';
+import { KnowledgeSubcategories } from '../../../../config/site-routing';
 
-## 收录范围
-
-<ArchiveScopeList items={[
-	{ number: '01', title: '质量验证', description: '测试策略、验收证据和回归检查。' },
-	{ number: '02', title: '交付流程', description: '版本、自动化构建与发布纪律。' },
-	{ number: '03', title: '问题复盘', description: '现象、排查、根因、修复与预防。' }
-]} />
-
-## 内容状态
-
-<ArchiveStatus 
-	title="历史文章已导入，内容正在逐篇验证。" 
-	description="导入内容统一保留为草稿，后续沉淀可直接复用的检查方法与实践模板。" 
-/>
+<CategoryIndex base="knowledge/engineering-practice" groups={KnowledgeSubcategories['engineering-practice']} />

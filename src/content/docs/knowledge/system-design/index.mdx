@@ -1,28 +1,13 @@
 ---
 title: 系统设计
-description: 从业务约束到技术方案的完整设计与取舍过程。
+description: 幂等、可靠消息等可复用的系统设计基础。
 hero:
   title: 系统设计
-  tagline: 记录需求如何转化为系统边界、关键决策如何取舍，以及方案如何在真实约束中逐步演进。
-tableOfContents:
-  minHeadingLevel: 2
-  maxHeadingLevel: 2
+  tagline: 幂等、可靠消息等反复出现的设计问题，以及每种方案的取舍。
+tableOfContents: false
 ---
 
-import ArchiveScopeList from '../../../../components/ArchiveScopeList.astro';
-import ArchiveStatus from '../../../../components/ArchiveStatus.astro';
+import CategoryIndex from '../../../../components/CategoryIndex.astro';
+import { KnowledgeSubcategories } from '../../../../config/site-routing';
 
-## 收录范围
-
-<ArchiveScopeList items={[
-	{ number: '01', title: '业务建模', description: '对象、状态、规则和流程边界。' },
-	{ number: '02', title: '方案取舍', description: '约束、备选方案、风险与决策依据。' },
-	{ number: '03', title: '演进路径', description: '从最小方案到规模化架构的变化过程。' }
-]} />
-
-## 内容状态
-
-<ArchiveStatus 
-	title="首批方案文章已导入，内容正在逐篇验证。" 
-	description="方案类内容会补充背景、约束、备选方案和验证标准。" 
-/>
+<CategoryIndex base="knowledge/system-design" groups={KnowledgeSubcategories['system-design']} />
