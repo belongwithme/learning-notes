@@ -1,24 +1,13 @@
 ---
-title: "Spring的核心模块：Bean的生命周期（内含依赖循环+业务场景）。"
+title: "Spring的核心模块：Bean的生命周期（内含依赖循环+业务场景）"
 description: "上篇文章我们介绍了Spring的一个核心模块BeanDifinition。"
-sourceId: "129154492"
-source: "https://blog.csdn.net/qq_45852626/article/details/129154492"
-sourceSeries:
-  - "Spring核心模块解析"
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring核心模块解析"
-  - "Spring"
 status: draft
-difficulty: intermediate
-contentType: practice
 sidebar:
   order: 129154492
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129154492)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129154492)
 
 ## 前言
 
@@ -81,7 +70,7 @@ Spring容器根据Bean的定义读取配置文件或者注解信息，找到Bean
 1.Bean的定义：  
  假设有一个名为 “userService” 的 Bean，在配置文件中的定义如下所示：
 
-```
+```xml
 <bean id="userService" class="com.example.UserService">
     <property name="userDao" ref="userDao" />
 </bean>
@@ -128,7 +117,7 @@ Spring 容器在销毁 MyBean 实例之前，会调用其 cleanup() 方法进行
  1.  
  a. 构造函数注入：
 
-```
+```java
 public class Person {
     private String name;
     private int age;
@@ -150,7 +139,7 @@ public class Person {
 
 b.setter方法注入:
 
-```
+```java
 public class Person {
     private String name;
     private int age;
@@ -179,7 +168,7 @@ public class Person {
  spring的自动装配，后面boot的时候我们会详细说。感兴趣可以点个关注哈哈。  
  3.字段注入
 
-```
+```java
 public class Person {
     @Value("John Doe")
     private String name;
@@ -200,7 +189,7 @@ public class Person {
 2.Aware接口注入  
  如果 Bean 实现了 Aware 接口，例如 BeanNameAware 接口，则 Spring 容器会调用相应的方法将容器中的信息注入到该 Bean 中。例如：
 
-```
+```java
 public class MyBean implements BeanNameAware {
 
     private String beanName;
@@ -218,7 +207,7 @@ public class MyBean implements BeanNameAware {
  3.BeanPostProcessor前置处理  
  如果 Bean 实现了 BeanPostProcessor 接口，例如：
 
-```
+```java
 public class MyBeanPostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -234,7 +223,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
  4.初始化方法  
  如果 Bean 实现了 InitializingBean 接口，例如：
 
-```
+```java
 public class MyBean implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -248,7 +237,7 @@ public class MyBean implements InitializingBean {
 
 或者指定了自定义的初始化方法，例如：
 
-```
+```xml
 <bean id="myBean" class="com.example.MyBean" init-method="init">
 </bean>
 
@@ -259,7 +248,7 @@ public class MyBean implements InitializingBean {
  6.BeanPostProcessor后置处理  
  如果 Bean 实现了 BeanPostProcessor 接口，例如：
 
-```
+```java
 public class MyBeanPostProcessor implements BeanPostProcessor {
 
     @Override
@@ -275,7 +264,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
 则 Spring 容器会在 Bean 初始化之后，调用其 postProcessAfterInitialization() 方法进行后置处理。例如可以在该方法中为 Bean 增加一些功能或者修改其属性值等。  
  8.DisposableBean
 
-```
+```java
 public class MyBean implements DisposableBean {
     @Override
     public void destroy() throws Exception {
@@ -290,7 +279,7 @@ public class MyBean implements DisposableBean {
 
 另外，在 XML 配置文件中也可以通过指定 destroy-method 属性来定义 Bean 的销毁方法，例如：
 
-```
+```xml
 <bean id="myBean" class="com.example.MyBean" destroy-method="cleanup">
 
 
@@ -323,7 +312,7 @@ Spring在进行属性填充的时候，会分如下几种情况：
 我们对于上面三种情况分别举出例子来说明：  
  1.注入普通属性的示例：
 
-```
+```java
 public class User {
     private String name;
     private int age;
@@ -350,7 +339,7 @@ public class User {
 
 2.注入单向对象引用属性的示例：
 
-```
+```java
 public class Order {
     private User user;
 
@@ -374,7 +363,7 @@ public class Order {
 
 3.注入双向对象引用属性的示例:
 
-```
+```java
 public class Department {
     private List<Employee> employees;
 
@@ -413,13 +402,13 @@ Department和Employee对象之间形成了双向引用关系，Department持有�
 #### 那么，为什么会出现循环引用问题呢？
 
 循环引用问题通常出现在双向引用关系中，例如A对象持有B对象的引用，B对象持有A对象的引用。在这种情况下，如果不加以限制，可能会导致对象的创建和销毁出现问题。  
- ![请添加图片描述](./assets/129154492/e528d51ff39071e1cc8d60e9.png)
+ ![](./assets/129154492/e528d51ff39071e1cc8d60e9.png)
 
 具体来说，当Spring容器在创建A对象时，需要先创建B对象并将B对象注入到A对象中。而在创建B对象时，又需要先创建A对象并将A对象注入到B对象中。这样就会形成一个循环依赖的情况，导致对象无法创建成功。
 
 为了避免循环引用问题，可以使用一些技巧来限制对象之间的依赖关系。  
  例如，可以使用@Lazy注解来延迟注入，或者使用Setter方法注入来解决循环引用问题，当然spring自带的也有缓存也是解决方案。同时，需要根据实际情况选择合适的注入方式，保证代码的可读性和可维护性。  
- ![请添加图片描述](./assets/129154492/7529bd5ad195d609fef9319e.png)
+ ![](./assets/129154492/7529bd5ad195d609fef9319e.png)
 
 为了更好懂一些，我们举一个订单系统的 业务场景：  
  假设有一个简单的订单系统，包括订单（Order）和用户（User）两个实体类。  
@@ -428,7 +417,7 @@ Department和Employee对象之间形成了双向引用关系，Department持有�
 
 代码如下：
 
-```
+```java
 public class Order {
     private User user;
 
@@ -462,7 +451,7 @@ public class User {
  Spring提供了**三级缓存**存储**完整Bean实例**和**半程品Bean实例**，用于解决循环引用问题。  
  在`DefaultListableBeanFactory`的上四级父类`DefaultSingletonBeanRegistry`中提供了如下三个Map：
 
-```
+```java
 /** Cache of singleton objects: bean name to bean instance. */
 //1.存储单例Bean成品的容器，即实例化和初始化都完成的Bean，称之为“一级缓存”
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
@@ -479,11 +468,11 @@ public class User {
 ```
 
 我们首先给一个图来看：  
- ![在这里插入图片描述](./assets/129154492/52e3b564481f3ae0406ac786.png)  
+ ![](./assets/129154492/52e3b564481f3ae0406ac786.png)  
  这里简单聊一下大概的过程：  
  1.首先一个`userService`实例化创建完毕之后，并不是直接存到`singletonFactories`三级缓存里面，这个`userService`会用`ObjectFactory`进行一个包装，换句话说就是为它创建一个`ObjectFactory`,然后添加到三级缓存中，我们来看一下这个类：
 
-```
+```java
 @FunctionalInterface
 public interface ObjectFactory<T> {
 
@@ -522,7 +511,7 @@ public interface ObjectFactory<T> {
 
 一张图，无需多言，这个老师真的非常牛！！！！非常清晰。  
  如果觉得哪里看不明白，欢迎留言。  
- ![请添加图片描述](./assets/129154492/1a0be5bc67a74e64b5cc8f4b.png)
+ ![](./assets/129154492/1a0be5bc67a74e64b5cc8f4b.png)
 
 ## 总结
 

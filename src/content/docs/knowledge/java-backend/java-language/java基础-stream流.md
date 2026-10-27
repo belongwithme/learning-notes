@@ -1,24 +1,13 @@
 ---
 title: "Java基础--Stream流"
 description: "Stream流是Java8及之后版本引入的新特性,主要用于简化集合和数组操作."
-sourceId: "136862710"
-source: "https://blog.csdn.net/qq_45852626/article/details/136862710"
-sourceSeries:
-  - "Java基础"
-category: java-backend
-subcategory: java-language
-tags:
-  - "Java基础"
-  - "Java"
 status: draft
-difficulty: beginner
-contentType: knowledge
 sidebar:
   order: 136862710
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136862710)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136862710)
 
 ## 前言
 
@@ -38,7 +27,7 @@ Java8新增的接口,允许以声明性方式处理
  **什么是声明式编程**  
  声明式的理解都是相对于命令式(imperativ)而言的,是对于命令式编程不同的编程泛型的一种合称.  
  声明式编程中我们描述的是目标状态,命令式编程中我们描述的是一系列动作.  
- ![在这里插入图片描述](./assets/136862710/2ca57445fc4e72538c85109b.png)
+ ![](./assets/136862710/2ca57445fc4e72538c85109b.png)
 
 ## Stream特点
 
@@ -52,7 +41,7 @@ Java8新增的接口,允许以声明性方式处理
 
 * 创建Stream
 * Stream中间处理
-* 终止Stream![在这里插入图片描述](./assets/136862710/057f81acbfe5ac3f5898db54.png)  
+* 终止Stream![](./assets/136862710/057f81acbfe5ac3f5898db54.png)  
    每个Stream管道操作类型都包含N个API方法,先列举下各API方法的功能介绍.
 
 ### 开始管道
@@ -67,7 +56,7 @@ Java8新增的接口,允许以声明性方式处理
 
 * 使用集合创建Stream实例(常用方式)
 
-```
+```java
 List<String> list = Arrays.asList("a", "b", "c");
 Stream<String> stream = list.stream();
 再来一个例子
@@ -86,7 +75,7 @@ Stream<Long> parallelStream = aList.parallelStream();
 
 * 使用数组创建Stream实例
 
-```
+```java
 1. 使用Arrays.stream()
 int[] array={1,3,5,6,8};
 Stream<String> stream = Arrays.stream(array)
@@ -123,11 +112,11 @@ map与flatMap都是用于已有的元素转换为其他元素.
 
 * map必须是一对一的,即每个元素都只能转换为一个新元素
 * flatmapkey是一对多的,即每个元素都可以转换为一个或者多个新的元素.  
-   ![在这里插入图片描述](./assets/136862710/fc8d4dedddfb79e9f696b215.png)  
+   ![](./assets/136862710/fc8d4dedddfb79e9f696b215.png)  
    举个例子:有一个字符串ID列表，现在需要将其转为User对象列表。
 * 用map来实现
 
-```
+```java
 /**
  * 演示map的用途：一对一转换
  */
@@ -159,7 +148,7 @@ public void stringToIntMap() {
 
 * 用flatMap来实现
 
-```
+```java
 public void stringToIntFlatmap() {
     List<String> sentences = Arrays.asList("hello world","Jia Gou Wu Dao");
     // 使用流操作
@@ -177,14 +166,14 @@ public void stringToIntFlatmap() {
 补充一句: flatMap操作的时候其实是先对每个元素处理后返回一个stream,然后将多个stream展开
 合并 
 为一个新的完整的stream,如下图所示:  
- ![在这里插入图片描述](./assets/136862710/02aadfa256259d346d0b1575.png)
+ ![](./assets/136862710/02aadfa256259d346d0b1575.png)
 
 #### peek和foreach方法
 
 它们都可以对元素进行遍历然后逐个进行处理  
  但是注意,peek属于中间方法,而foreach属于终止方法,也就是说peek只能作为管道中途的一个处理步骤,而没办法直接执行得到结果,其后面必须还要有其他终止操作的时候才会被执行.
 
-```
+```java
 public void testPeekAndforeach() {
     List<String> sentences = Arrays.asList("hello world","Jia Gou Wu Dao");
     // 演示点1： 仅peek操作，最终不会执行
@@ -220,7 +209,7 @@ Jia Gou Wu Dao
 这几个都是常用的stream的中间操作方法,具体的方法的含义在上面的表格里面有说明.  
  具体使用的时候,key根据需要选择一个或者多个进行组合使用,或者同时使用多个相同方法的组合:
 
-```
+```java
 public void testGetTargetUsers() {
     List<String> ids = Arrays.asList("205","10","308","49","627","193","111", "193");
     // 使用流操作
@@ -275,7 +264,7 @@ Optional
 对象值等.  
  我们可以使用`count,max,min,findAny,findFirst,anyMatch,allMatch,noneMatch`等方法来处理终止.
 
-```
+```java
 public void testSimpleStopOptions() {
     List<String> ids = Arrays.asList("205", "10", "308", "49", "627", "193", "111", "193");
     // 统计stream操作后剩余的元素个数
@@ -307,7 +296,7 @@ findFirst:205
 * 记录个数或者计算总和的对象(**数据批量运算统计**)
 * 生成集合
 
-```
+```java
 public void testCollectStopOptions() {
     List<Dept> ids = Arrays.asList(new Dept(17), new Dept(22), new Dept(23));
     // collect成list
@@ -334,7 +323,7 @@ collectMap:{22=Dept{id=22}, 23=Dept{id=23}}
 
 * 生成拼接字符串
 
-```
+```java
 原始做法:
 public void testForJoinStrings() {
     List<String> ids = Arrays.asList("205", "10", "308", "49", "627", "193", "111", "193");
@@ -361,7 +350,7 @@ public void testCollectJoinStrings() {
 
 * 批量数学运算
 
-```
+```java
 public void testNumberCalculate() {
     List<Integer> ids = Arrays.asList(10, 20, 30, 40, 50);
     // 计算平均值
@@ -400,7 +389,7 @@ public void testNumberCalculate() {
    举例来说:  
    需求:从一组单词中找出最长的单词。
 
-```
+```java
 Stream<String> stream = Stream.of("I", "love", "you", "too");
 stream.reduce((s1,s2)->s1.length()>=s2.length() ? s1: s2);
 System.out.println(longest.get());
@@ -414,7 +403,7 @@ System.out.println(longest.get());
  当然你如果使用`Stream.max(Comparator<? super T> comparator)`方法来达到相同效果,但reduce有它存在的理由  
  需求:求出一组单词的长度之和。
 
-```
+```java
 // 求单词长度之和
 Stream<String> stream = Stream.of("I", "love", "you", "too");
 stream.reduce(0, //初始值
@@ -430,7 +419,7 @@ System.out.println(lengthSum);
 如果你发现某个功能在stream接口中没找到,那么大概就在collect方法中可以找到其方法实现.  
  collect()是stream接口方法最灵活的一个,我们先看几个热身小例子:
 
-```
+```java
 // 将Stream转换成容器或Map
 Stream<String> stream = Stream.of("I", "love", "you", "too");
 List<String> list = stream.collect(Collectors.toList()); // (1)
@@ -482,7 +471,7 @@ Function是一个接口,那么Function.identiry是什么意思呢?可以从两�
  Collectors工具类可以通过静态方法生成各种常用的Collector.  
  举例如下:
 
-```
+```java
 //　将Stream规约成List
 Stream<String> stream = Stream.of("I", "love", "you", "too");
 List<String> list = stream.collect(ArrayList::new, ArrayList::add, ArrayList::addAll);// 方式１
@@ -499,7 +488,7 @@ System.out.println(list);
 前面提到通过collect方法将Stream转换为容器的方法,这里再汇总一下.  
  将Stream转换成List或Set是比较常见的操作,所以这里Collectors工具已经为我们提供了对应的收集器,通过如下代码即可完成:
 
-```
+```java
 // 将Stream转换成List或Set
 Stream<String> stream = Stream.of("I", "love", "you", "too");
 List<String> list = stream.collect(Collectors.toList()); // (1)
@@ -510,7 +499,7 @@ Set<String> set = stream.collect(Collectors.toSet()); // (2)
 
 上述代码可以满足大部分需求,但是返回结果是接口类型,我们并不知道类库实际选择的容器类型是什么,有时候我们想要认为指定容器的实际类型,这个需求可以通过`Collecors.toCollection(Supplier<C> collectionFactory)`方法完成
 
-```
+```java
 // 使用toCollection()指定规约容器的类型
 ArrayList<String> arrayList = stream.collect(Collectors.toCollection(ArrayList::new));// (3)
 HashSet<String> hashSet = stream.collect(Collectors.toCollection(HashSet::new));// (4)
@@ -525,7 +514,7 @@ stream背后依赖的数据库可以是数组,容器,但不能是Map.
 
 * 使用Collectors.toMap()生成的收集器,用户需要指定如何生成Map 的可以和value.
 
-```
+```java
 // 使用toMap()统计学生GPA
 Map<Student, Double> studentToGPA =
      students.stream().collect(Collectors.toMap(Function.identity(),// 如何生成key
@@ -537,7 +526,7 @@ Map<Student, Double> studentToGPA =
 * 使用Collectors.partitioningBy()生成的收集器,对元素进行二分区操作时可以用到.  
    这种情况适用将stream中的元素根据某个二值逻辑(满足条件,或不满足)分成互补相交的两部分,比如男女性别,成绩及格与否等.
 
-```
+```java
 // Partition students into passing and failing
 Map<Boolean, List<Student>> passingFailing = students.stream()
          .collect(Collectors.partitioningBy(s -> s.getGrade() >= PASS_THRESHOLD));
@@ -549,7 +538,7 @@ Map<Boolean, List<Student>> passingFailing = students.stream()
    跟sql中的groupby语句类似,这里的groupingBy也是按照某个属性对数据进行分组,属性相同的元素会被对应到Map的同一个key上.  
    下面代码展示员工按照部分进行分组:
 
-```
+```java
 // Group employees by department
 Map<Department, List<Employee>> byDept = employees.stream()
             .collect(Collectors.groupingBy(Employee::getDepartment));
@@ -565,7 +554,7 @@ sql
  这种将元素分组的收集器叫做**上游收集器**  
  之后执行其他运算的收集器叫做**下游收集器**
 
-```
+```java
 // 使用下游收集器统计每个部门的人数
 Map<Department, Integer> totalByDept = employees.stream()
                     .collect(Collectors.groupingBy(Employee::getDepartment,
@@ -578,7 +567,7 @@ Map<Department, Integer> totalByDept = employees.stream()
  但还有更复杂一些的,下游收集器还可以包含更下游的收集器,不是为了炫技而设计,确实是有实际场景需要.  
  考虑将员工按照部门分组的场景,如果我们想得到每个员工的名字(字符串),而不是一个个Employee对象,可通过如下方式做到:
 
-```
+```java
 // 按照部门对员工分布组，并只保留员工的名字
 Map<Department, List<String>> byDept = employees.stream()
                 .collect(Collectors.groupingBy(Employee::getDepartment,

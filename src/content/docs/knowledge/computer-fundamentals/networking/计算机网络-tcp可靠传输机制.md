@@ -1,24 +1,13 @@
 ---
 title: "计算机网络-TCP可靠传输机制"
 description: "TCP（传输控制协议）的核心特性是提供可靠的数据传输服务，即确保数据能够无错、完整、按序地从发送方传输到接收方。这种可靠性是通过一系列精心设计的机制实现的，包括序列号与确认号机制、超时重传机制、滑动窗口机制和差错控制机制等。本章将深入探讨这些机制的原理和实现。"
-sourceId: "147141877"
-source: "https://blog.csdn.net/qq_45852626/article/details/147141877"
-sourceSeries:
-  - "计算机网络"
-category: computer-fundamentals
-subcategory: networking
-tags:
-  - "计算机网络"
-  - "TCP/IP"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 147141877
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141877)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141877)
 
 ## 3. TCP可靠传输机制
 
@@ -128,7 +117,7 @@ __u32 secure_tcp_seq(__be32 saddr, __be32 daddr, __be16 sport, __be16 dport)
 
 当发送数据时，TCP需要为数据段分配序列号。这通常在`tcp_transmit_skb`函数中完成：
 
-```
+```c
 // 简化版的tcp_transmit_skb函数
 static int tcp_transmit_skb(struct sock *sk, struct sk_buff *skb, int clone_it,
                            gfp_t gfp_mask)
@@ -163,7 +152,7 @@ static int tcp_transmit_skb(struct sock *sk, struct sk_buff *skb, int clone_it,
 
 当接收数据时，TCP需要处理序列号和生成确认号。这通常在`tcp_rcv_established`函数中完成：
 
-```
+```c
 // 简化版的tcp_rcv_established函数
 void tcp_rcv_established(struct sock *sk, struct sk_buff *skb,
                         const struct tcphdr *th, unsigned int len)
@@ -194,7 +183,7 @@ void tcp_rcv_established(struct sock *sk, struct sk_buff *skb,
 
 在`tcp_send_ack`函数中，会构建并发送ACK包，确认号设置为`tp->rcv_nxt`：
 
-```
+```c
 // 简化版的tcp_send_ack函数
 void tcp_send_ack(struct sock *sk)
 {
@@ -276,7 +265,7 @@ TCP通过时间戳选项解决了这个问题。时间戳选项为每个数据�
 
 这个机制在Linux内核中的实现如下：
 
-```
+```c
 // 简化版的tcp_fastretrans_alert函数
 void tcp_fastretrans_alert(struct sock *sk, int pkts_acked, int flag)
 {
@@ -382,7 +371,7 @@ RTO的计算是TCP超时重传机制的核心部分。TCP使用往返时间（Ro
 
 Linux内核使用类似于RFC 6298的算法计算RTO，但有一些优化和调整：
 
-```
+```c
 // 简化版的tcp_rtt_estimator函数
 void tcp_rtt_estimator(struct sock *sk, long mrtt_us)
 {
@@ -448,7 +437,7 @@ void tcp_rtt_estimator(struct sock *sk, long mrtt_us)
 
 TCP使用定时器来触发超时重传。在Linux内核中，这通过`tcp_write_timer`函数实现：
 
-```
+```c
 // 简化版的tcp_write_timer函数
 void tcp_write_timer(struct timer_list *t)
 {
@@ -472,7 +461,7 @@ void tcp_write_timer(struct timer_list *t)
 
 当重传定时器超时时，会调用`tcp_retransmit_timer`函数处理：
 
-```
+```c
 // 简化版的tcp_retransmit_timer函数
 void tcp_retransmit_timer(struct sock *sk)
 {
@@ -509,7 +498,7 @@ out:
 
 当需要重传数据段时，会调用`tcp_retransmit_skb`函数：
 
-```
+```c
 // 简化版的tcp_retransmit_skb函数
 int tcp_retransmit_skb(struct sock *sk, struct sk_buff *skb)
 {
@@ -696,7 +685,7 @@ struct tcp_sock {
 
 发送窗口的大小由接收方通告的窗口大小和拥塞窗口大小共同决定：
 
-```
+```c
 // 简化版的tcp_current_mss函数
 u32 tcp_wnd_end(const struct tcp_sock *tp)
 {
@@ -708,7 +697,7 @@ u32 tcp_wnd_end(const struct tcp_sock *tp)
 
 当发送数据时，TCP会检查数据是否在发送窗口内：
 
-```
+```c
 // 简化版的tcp_write_xmit函数
 static bool tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
                           int push_one, gfp_t gfp)
@@ -739,7 +728,7 @@ static bool tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
 
 接收窗口的大小取决于接收缓冲区的大小和当前已使用的空间：
 
-```
+```c
 // 简化版的tcp_select_window函数
 u16 tcp_select_window(struct sock *sk)
 {
@@ -764,7 +753,7 @@ u16 tcp_select_window(struct sock *sk)
 
 当接收数据时，TCP会检查数据是否在接收窗口内：
 
-```
+```c
 // 简化版的tcp_rcv_established函数
 void tcp_rcv_established(struct sock *sk, struct sk_buff *skb,
                         const struct tcphdr *th, unsigned int len)
@@ -797,7 +786,7 @@ void tcp_rcv_established(struct sock *sk, struct sk_buff *skb,
 
 当接收方的窗口大小发生变化时，需要通知发送方。这通常通过发送ACK包实现：
 
-```
+```c
 // 简化版的tcp_send_ack函数
 void tcp_send_ack(struct sock *sk)
 {
@@ -830,7 +819,7 @@ void tcp_send_ack(struct sock *sk)
 
 当发送方收到窗口更新时，会更新自己的发送窗口：
 
-```
+```c
 // 简化版的tcp_ack函数
 static bool tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 {
@@ -880,7 +869,7 @@ TCP头部中的窗口大小字段是16位的，最大值为65535字节。这在�
 
 在Linux内核中，窗口缩放的实现如下：
 
-```
+```c
 // 简化版的tcp_select_window函数
 u16 tcp_select_window(struct sock *sk)
 {
@@ -905,7 +894,7 @@ u16 tcp_select_window(struct sock *sk)
 
 在Linux内核中，零窗口探测的实现如下：
 
-```
+```c
 // 简化版的tcp_send_probe0函数
 void tcp_send_probe0(struct sock *sk)
 {
@@ -946,7 +935,7 @@ void tcp_send_probe0(struct sock *sk)
 
 在Linux内核中，这些优化的实现如下：
 
-```
+```c
 // 简化版的tcp_nagle_test函数
 static bool tcp_nagle_test(const struct tcp_sock *tp, const struct sk_buff *skb,
                           unsigned int mss_now, int nonagle)
@@ -972,7 +961,7 @@ static bool tcp_nagle_test(const struct tcp_sock *tp, const struct sk_buff *skb,
 
 为了适应不同的网络环境和应用需求，现代TCP实现通常会自动调整接收窗口的大小。Linux内核实现了接收窗口自动调整机制，根据应用程序的读取速率和网络状况动态调整接收窗口的大小。
 
-```
+```c
 // 简化版的tcp_rcv_space_adjust函数
 void tcp_rcv_space_adjust(struct sock *sk)
 {
@@ -1051,7 +1040,7 @@ TCP使用超时机制来处理确认丢失的情况。当发送方在一定时�
 
 TCP校验和的计算在`tcp_v4_send_check`函数中实现：
 
-```
+```c
 // 简化版的tcp_v4_send_check函数
 void tcp_v4_send_check(struct sock *sk, struct sk_buff *skb)
 {
@@ -1069,7 +1058,7 @@ void tcp_v4_send_check(struct sock *sk, struct sk_buff *skb)
 
 校验和的验证在`tcp_v4_do_rcv`函数中实现：
 
-```
+```c
 // 简化版的tcp_v4_do_rcv函数
 int tcp_v4_do_rcv(struct sock *sk, struct sk_buff *skb)
 {
@@ -1091,7 +1080,7 @@ int tcp_v4_do_rcv(struct sock *sk, struct sk_buff *skb)
 
 TCP的确认机制在`tcp_send_ack`函数中实现：
 
-```
+```c
 // 简化版的tcp_send_ack函数
 void tcp_send_ack(struct sock *sk)
 {
@@ -1121,7 +1110,7 @@ void tcp_send_ack(struct sock *sk)
 
 重传机制在`tcp_retransmit_timer`函数中实现：
 
-```
+```c
 // 简化版的tcp_retransmit_timer函数
 void tcp_retransmit_timer(struct sock *sk)
 {
@@ -1158,7 +1147,7 @@ out:
 
 TCP的选择性确认机制在`tcp_sacktag_write_queue`函数中实现：
 
-```
+```c
 // 简化版的tcp_sacktag_write_queue函数
 int tcp_sacktag_write_queue(struct sock *sk, const struct sk_buff *ack_skb,
                            u32 prior_snd_una)

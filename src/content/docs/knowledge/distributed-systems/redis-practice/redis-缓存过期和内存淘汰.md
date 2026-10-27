@@ -1,23 +1,13 @@
 ---
 title: "Redis-缓存过期和内存淘汰"
 description: "Redis 是可以对 key 设置过期时间的，因此需要有相应的机制将已过期的键值对删除,而做这个工作的就是过期键值删除策略。"
-sourceId: "145756115"
-source: "https://blog.csdn.net/qq_45852626/article/details/145756115"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-practice
-tags:
-  - "Redis"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145756115
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145756115)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145756115)
 
 ## 缓存过期&&内存淘汰
 ## 过期删除
@@ -78,13 +68,13 @@ typedef struct redisDb {
 * 过期字典的 key 是一个指针，指向某个键对象；
 * 过期字典的 value 是一个 long long 类型的整数，这个整数保存了 key 的过期时间；  
    过期字典的数据结构如下图所示：  
-   ![在这里插入图片描述](./assets/145756115/dfc396a1339d4ee525cd4101.png)  
+   ![](./assets/145756115/dfc396a1339d4ee525cd4101.png)  
    字典实际上是哈希表，哈希表的最大好处就是让我们可以用 O(1) 的时间复杂度来快速查找。  
    当我们查询一个 key 时，Redis 首先检查该 key 是否存在于过期字典中：
 * 如果不在，则正常读取键值；
 * 如果存在，则会获取该 key 的过期时间，然后与当前系统时间进行比对，如果比系统时间大，那就没有过期，否则判定该 key 已过期。  
    过期判断如下图:  
-   ![加粗样式](./assets/145756115/6403fd9a0f5171b267a530d9.png)
+   ![](./assets/145756115/6403fd9a0f5171b267a530d9.png)
 
 ### 过期删除策略有哪些
 
@@ -135,7 +125,7 @@ int expireIfNeeded(redisDb *db, robj *key) {
  **注意：并不是一次运行就检查所有的库，所有的键，而是随机检查一定数量的键。**
 
 定期删除函数的运行频率，在Redis中，规定每秒运行10次,在Redis2.8版本后，可以通过修改配置文件redis.conf 的 hz 选项来调整这个次数。  
- ![在这里插入图片描述](./assets/145756115/021de1f0510f0be9b97ac173.png)  
+ ![](./assets/145756115/021de1f0510f0be9b97ac173.png)  
  看上面对这个参数的解释，建议不要将这个值设置超过 100，否则会对CPU造成比较大的压力。
 
 我们看到，通过过期删除策略，对于某些永远使用不到的键，并且多次定期删除也没选定到并删除，那么这些键同样会一直驻留在内存中，又或者在Redis中存入了大量的键，这些操作可能会导致Redis内存不够用，这时候就需要Redis的内存淘汰策略了。
@@ -148,7 +138,7 @@ int expireIfNeeded(redisDb *db, robj *key) {
 
 在配置文件redis.conf 中，可以通过参数 maxmemory 来设定最大内  
  存：  
- ![在这里插入图片描述](./assets/145756115/4109f2d04d29d4dfa330a966.png)  
+ ![](./assets/145756115/4109f2d04d29d4dfa330a966.png)  
  **只有在 Redis 的运行内存达到了我们设置的最大运行内存，才会触发内存淘汰策略。**  
  不同位数的操作系统，maxmemory 的默认值是不同的：
 
@@ -260,7 +250,7 @@ Redis 对象头的 24 bits 的 lru 字段是用来记录 key 的访问时间戳�
 ##### LFU中
 
 Redis对象头的 24 bits 的 lru 字段被分成两段来存储，高 16bit 存储 ldt(Last Decrement Time)，低 8bit 存储 logc(Logistic Counter)。  
- ![在这里插入图片描述](./assets/145756115/7aed75999a010ecd2b9a7910.png)
+ ![](./assets/145756115/7aed75999a010ecd2b9a7910.png)
 
 * ldt 是用来记录 key 的访问时间戳；
 * logc 是用来记录 key 的访问频次，它的值越小表示使用频率越低，越容易淘汰，每个新加入的 key 的logc 初始值为 5。  
@@ -274,7 +264,7 @@ Redis对象头的 24 bits 的 lru 字段被分成两段来存储，高 16bit 存
 
 Redis 使用的过期删除策略是「惰性删除+定期删除」，删除的对象是已过期的 key。
 
-![在这里插入图片描述](./assets/145756115/dae4061c641b1243e733a0bc.png)
+![](./assets/145756115/dae4061c641b1243e733a0bc.png)
 
 内存淘汰策略是解决内存过大的问题，当 Redis 的运行内存超过最大运行内存时，就会触发内存淘汰策略，Redis 4.0 之后共实现了 8 种内存淘汰策略，如下：  
- ![在这里插入图片描述](./assets/145756115/a79b383838eedb87853d4a43.png)
+ ![](./assets/145756115/a79b383838eedb87853d4a43.png)

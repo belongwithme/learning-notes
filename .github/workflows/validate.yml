@@ -19,5 +19,13 @@ jobs:
           cache: npm
 
       - run: npm ci
+      - name: Unit tests
+        run: |
+          npm run test:good-pairs
+          npm run test:prefix-sum
+          npm run test:difference
+          npm run test:english-schedule
+          npm run test:english-analysis
+          npm run test:english-journey
       - run: npm run check
       - run: npm run build

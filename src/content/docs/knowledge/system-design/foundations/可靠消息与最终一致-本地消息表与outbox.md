@@ -1,19 +1,7 @@
 ---
 title: 可靠消息与最终一致：本地消息表与 Outbox
 description: 解释“写数据库 + 发消息”这一双写问题为什么无法靠调整顺序解决，以及本地消息表、Outbox + CDC、RocketMQ 事务消息三种方案的原理、取舍和落地细节。
-created: 2026-10-27
-updated: 2026-10-27
-category: system-design
-subcategory: foundations
-tags:
-  - 系统设计
-  - 最终一致性
-  - 分布式事务
-  - 消息队列
-  - Outbox
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   label: 可靠消息与最终一致
   order: 2

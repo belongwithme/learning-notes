@@ -1,24 +1,13 @@
 ---
 title: "计算机网络- TCP与UDP对比与选择"
 description: "传输层的两个主要协议TCP和UDP各有特点，适用于不同的应用场景。本章将深入比较TCP和UDP的特性，分析它们的优缺点，并提供在不同应用场景中选择合适协议的指导。"
-sourceId: "147141942"
-source: "https://blog.csdn.net/qq_45852626/article/details/147141942"
-sourceSeries:
-  - "计算机网络"
-category: computer-fundamentals
-subcategory: networking
-tags:
-  - "计算机网络"
-  - "TCP/IP"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147141942
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141942)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141942)
 
 ## 6. TCP与UDP对比与选择
 
@@ -229,7 +218,7 @@ recvfrom(sockfd, buffer, size, 0, &server_addr, &addr_len);
 * 需要应用层定义消息边界（如长度前缀、分隔符）
 * 可以使用缓冲区管理库简化处理
 
-```
+```c
 // TCP消息边界处理（长度前缀）
 uint32_t msg_len;
 recv(sockfd, &msg_len, sizeof(msg_len), 0);
@@ -249,7 +238,7 @@ free(msg);
 * 消息大小受MTU限制，通常需要考虑分片
 * 可能需要处理消息丢失、重复和乱序
 
-```
+```c
 // UDP消息处理
 char buffer[MAX_MSG_SIZE];
 struct sockaddr_in client_addr;
@@ -340,7 +329,7 @@ if (recv_len < 0) {
 * 每个连接是独立的文件描述符
 * 适合需要同时处理多个客户端的服务器
 
-```
+```c
 // TCP多路复用（使用select）
 fd_set readfds;
 FD_ZERO(&readfds);
@@ -378,7 +367,7 @@ for (int i = 0; i < client_count; i++) {
 * 通常只有一个套接字，通过源地址区分不同客户端
 * 适合需要同时处理多个客户端的简单服务器
 
-```
+```c
 // UDP多路复用（使用select）
 fd_set readfds;
 FD_ZERO(&readfds);
@@ -807,7 +796,7 @@ TCP作为一个通用协议，在某些特定场景下可能需要优化以提�
   ```
 * **TCP Fast Open**：在三次握手期间发送数据，减少连接建立的延迟
 
-  ```
+  ```c
   // 服务器端启用TFO
   int qlen = 5;  // 队列长度
   setsockopt(sockfd, IPPROTO_TCP, TCP_FASTOPEN, &qlen, sizeof(qlen));
@@ -947,7 +936,7 @@ TCP作为一个通用协议，在某些特定场景下可能需要优化以提�
   ```
 * **心跳检测**：定期发送心跳包，及时检测连接状态
 
-  ```
+  ```c
   // 心跳检测示例
   void *heartbeat_thread(void *arg) {
       int sockfd = *(int *)arg;
@@ -1022,7 +1011,7 @@ UDP的简单性使其在某些场景下需要额外的优化，以提高可靠�
 
 * **确认和重传**：实现简单的确认和重传机制，确保数据可靠交付
 
-  ```
+  ```c
   // 简化的可靠UDP发送示例
   int reliable_send(int sockfd, const void *data, size_t len, struct sockaddr *addr, socklen_t addr_len) {
       // 生成序列号
@@ -1289,7 +1278,7 @@ UDP的简单性使其在某些场景下需要额外的优化，以提高可靠�
   ```
 * **速率限制**：使用令牌桶或漏桶算法限制发送速率
 
-  ```
+  ```c
   // 令牌桶速率限制示例
   struct TokenBucket {
       uint64_t tokens;  // 当前令牌数
@@ -1364,7 +1353,7 @@ UDP的简单性使其在某些场景下需要额外的优化，以提高可靠�
 
 * **应用层分片**：将大数据分成多个小数据包发送，避免IP层分片
 
-  ```
+  ```c
   // 应用层分片示例
   #define MAX_PAYLOAD_SIZE 1400  // 小于MTU的安全值
 
@@ -1446,7 +1435,7 @@ UDP的简单性使其在某些场景下需要额外的优化，以提高可靠�
   ```
 * **重组缓冲区**：在接收方维护缓冲区，重组分片数据
 
-  ```
+  ```c
   // 分片重组示例
   struct Message {
       uint32_t msg_id;
@@ -1543,7 +1532,7 @@ UDP的简单性使其在某些场景下需要额外的优化，以提高可靠�
 
 * **连接ID**：为每个逻辑连接分配唯一ID，在数据包中包含此ID
 
-  ```
+  ```c
   // UDP多路复用示例
   struct PacketHeader {
       uint32_t connection_id;
@@ -1649,7 +1638,7 @@ UDP的简单性使其在某些场景下需要额外的优化，以提高可靠�
   ```
 * **会话管理**：维护会话状态，包括超时和清理机制
 
-  ```
+  ```c
   // UDP会话管理示例
   struct Session {
       uint32_t session_id;
@@ -1726,7 +1715,7 @@ UDP的简单性使其在某些场景下需要额外的优化，以提高可靠�
 
 设计一个基于UDP的可靠传输协议，结合UDP的低延迟和TCP的可靠性：
 
-```
+```c
 // 自定义可靠UDP协议示例（概念代码）
 
 // 数据包类型
@@ -1864,7 +1853,7 @@ int rudp_recv(int sockfd, void *buffer, size_t max_len, struct sockaddr *addr, s
 
 设计一个针对实时数据的传输协议，优化延迟和抖动：
 
-```
+```c
 // 实时传输协议示例（概念代码）
 
 // 数据包头部
@@ -2004,7 +1993,7 @@ int jitter_buffer_get(struct JitterBuffer *jb, void *buffer, size_t max_len, uin
 
 设计一个同时使用TCP和UDP的混合协议，结合两者的优势：
 
-```
+```c
 // 混合传输协议示例（概念代码）
 
 // 数据类型

@@ -1,25 +1,13 @@
 ---
 title: "JUC并发集合-ConcurrentLinkedQueue"
 description: "ConcurrentLinkedQueue是Java并发包(java.util.concurrent)中提供的一个线程安全的无界非阻塞队列，基于链表数据结构实现。它实现了Queue接口，遵循"
-sourceId: "146808729"
-source: "https://blog.csdn.net/qq_45852626/article/details/146808729"
-sourceSeries:
-  - "集合"
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "集合"
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
-  order: 146808729
+  order: 28
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146808729)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146808729)
 
 ## 1. 基础概念
 
@@ -96,7 +84,7 @@ ConcurrentLinkedQueue内部基于单向链表实现，其核心数据结构包�
 
 1. **Node类**：表示链表节点，包含两个主要字段：
 
-   ```
+   ```java
    private static class Node<E> {
        volatile E item;           // 存储的元素，使用volatile保证可见性
        volatile Node<E> next;     // 指向下一个节点的引用，使用volatile保证可见性
@@ -259,7 +247,7 @@ ConcurrentLinkedQueue的松弛不变量设计是其高性能的关键因素之�
 
 ConcurrentLinkedQueue提供了两个构造方法：
 
-```
+```java
 // 默认构造方法
 public ConcurrentLinkedQueue() {
     head = tail = new Node<E>(null);
@@ -302,7 +290,7 @@ public ConcurrentLinkedQueue(Collection<? extends E> c) {
 
 offer方法用于将元素添加到队列尾部，是ConcurrentLinkedQueue的核心入队操作：
 
-```
+```java
 public boolean offer(E e) {
     checkNotNull(e);
     final Node<E> newNode = new Node<E>(e);
@@ -358,7 +346,7 @@ offer方法的实现体现了ConcurrentLinkedQueue的几个关键设计思想：
 
 poll方法用于从队列头部移除并返回一个元素，是ConcurrentLinkedQueue的核心出队操作：
 
-```
+```java
 public E poll() {
     restartFromHead:
     for (;;) {
@@ -423,7 +411,7 @@ poll方法的实现同样体现了ConcurrentLinkedQueue的关键设计思想：
 
 peek方法用于返回队列头部的元素但不移除它，是一个只读操作：
 
-```
+```java
 public E peek() {
     restartFromHead:
     for (;;) {
@@ -463,7 +451,7 @@ peek方法虽然是只读操作，但它仍然可能更新head引用，这是一
 
 size方法用于计算队列中的元素数量，在ConcurrentLinkedQueue中是一个O(n)操作：
 
-```
+```java
 public int size() {
     int count = 0;
     for (Node<E> p = first(); p != null; p = succ(p))
@@ -585,7 +573,7 @@ ConcurrentLinkedQueue的并发性能特点：
 
 1. **简单的生产者-消费者模式**：
 
-   ```
+   ```java
    private final ConcurrentLinkedQueue<Task> taskQueue = new ConcurrentLinkedQueue<>();
 
    // 生产者线程
@@ -610,7 +598,7 @@ ConcurrentLinkedQueue的并发性能特点：
    ```
 2. **事件分发系统**：
 
-   ```
+   ```java
    private final ConcurrentLinkedQueue<Event> eventQueue = new ConcurrentLinkedQueue<>();
    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
@@ -639,7 +627,7 @@ ConcurrentLinkedQueue的并发性能特点：
    ```
 3. **工作窃取模式**：
 
-   ```
+   ```java
    class WorkStealingPool {
        private final int nThreads;
        private final ConcurrentLinkedQueue<Task>[] queues;
@@ -691,7 +679,7 @@ ConcurrentLinkedQueue的并发性能特点：
    ```
 4. **批处理模式**：
 
-   ```
+   ```java
    private final ConcurrentLinkedQueue<Request> requestQueue = new ConcurrentLinkedQueue<>();
 
    // 提交请求

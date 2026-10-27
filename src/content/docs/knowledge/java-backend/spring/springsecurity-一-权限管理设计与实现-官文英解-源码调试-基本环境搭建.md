@@ -1,22 +1,13 @@
 ---
 title: "SpringSecurity(一):权限管理设计与实现(官文英解+源码调试+基本环境搭建）"
 description: "内容是根据b站视频黑马作为一个引子，期间不断的翻阅书和查官网的英语文档一句句翻译过来的，相信能做到相对来说全一些，当时学完收获还是很大的，目前整理的时候又回头翻看，收获还是有的，希望也可以帮助到你，目前不断更新，有时间就来补充了，内容整理比较辛苦，码字不易，希望点个关注一起进步。"
-sourceId: "131176456"
-source: "https://blog.csdn.net/qq_45852626/article/details/131176456"
-sourceSeries: []
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 131176456
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131176456)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131176456)
 
 ## 前言
 
@@ -48,7 +39,7 @@ Java企业级开发中，安全管理框架非常少，目前比较常见的是�
 ## 整体架构
 
 在架构设计中，**认证**和**授权**是分开的，两个是独立的存在，好处在于可以非常方便的整合一些外部的解决方案。  
- ![在这里插入图片描述](./assets/131176456/33429b6c31464364f9642ce4.png)  
+ ![](./assets/131176456/33429b6c31464364f9642ce4.png)  
  下面我们对于里面的细节做一些基本的了解。
 
 ### 认证
@@ -79,13 +70,13 @@ Java企业级开发中，安全管理框架非常少，目前比较常见的是�
 ### 创建项目
 
 1.创建springboot单体项目  
- ![请添加图片描述](./assets/131176456/9409004ed809c32b8b494ea1.png)  
+ ![](./assets/131176456/9409004ed809c32b8b494ea1.png)  
  2. 创建controller  
  项目结构：  
- ![请添加图片描述](./assets/131176456/3d59bd1352328e9f34262e60.png)  
+ ![](./assets/131176456/3d59bd1352328e9f34262e60.png)  
  项目代码：
 
-```
+```java
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -104,13 +95,13 @@ public class HelloController {
 
 3.启动项目测试  
  如果和我的配置是一样的，默认端口是8080，那么就行下面这个地址:`http://localhost:8080/hello`  
- ![在这里插入图片描述](./assets/131176456/40bbb8c497fdc78573316719.png)
+ ![](./assets/131176456/40bbb8c497fdc78573316719.png)
 
 ### 整合Spring Security
 
 1. 引入spring security相关依赖
 
-```
+```xml
     <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -123,12 +114,12 @@ public class HelloController {
 
 * 启动后控制台生成一个密码
 * 访问hello发现直接跳转到登陆页面  
-   ![请添加图片描述](./assets/131176456/ae84320f5150090025ab7be9.png)  
-   ![在这里插入图片描述](./assets/131176456/f323c0724c015fa862255bdf.png)  
+   ![](./assets/131176456/ae84320f5150090025ab7be9.png)  
+   ![](./assets/131176456/f323c0724c015fa862255bdf.png)  
    3.登陆系统
 * 默认用户名：user
 * 默认密码：控制台打印的uuid  
-   ![请添加图片描述](./assets/131176456/3568c364b6f39794fa40ab1c.png)
+   ![](./assets/131176456/3568c364b6f39794fa40ab1c.png)
 
 看到这相信你能体会到它的强大，只需引入一个依赖，所有的接口都会自动保护起来！  
  思考一下：
@@ -144,7 +135,7 @@ public class HelloController {
 
 假设我们现在不用Spring Security，自己去开发一个权限管理，我们应该如何做权限管理？  
  需求：我们希望在访问一个资源的时候，先认证再访问，如果没有认证，则先要去做认证。  
- 那么我们的设计思路应该如下图所示：![请添加图片描述](./assets/131176456/ea0172a1bcf3e56a5d33ab4f.png)提供一个官方的网址来参考：`https://docs.spring.io/spring-security/site/docs/5.5.x-SNAPSHOT/reference/html5/#servlet-architecture`
+ 那么我们的设计思路应该如下图所示：![](./assets/131176456/ea0172a1bcf3e56a5d33ab4f.png)提供一个官方的网址来参考：`https://docs.spring.io/spring-security/site/docs/5.5.x-SNAPSHOT/reference/html5/#servlet-architecture`
 
 ### 官方文档解读
 
@@ -209,7 +200,7 @@ DelegatingFilterProxy可以通过标准的Servlet容器机制进行注册，但�
 ```
 
 这是DelegatingFilterProxy如何与过滤器和FilterChain相结合的示意图，如下图：  
- ![在这里插入图片描述](./assets/131176456/79096e77910586ad155d483c.png)
+ ![](./assets/131176456/79096e77910586ad155d483c.png)
 
 ```
 DelegatingFilterProxy looks up Bean Filter0 from the ApplicationContext and then invokes Bean Filter0.
@@ -222,7 +213,7 @@ DelegatingFilterProxy会从ApplicationContext中查找名为Filter0的Bean，
 
 ```
 
-```
+```java
 public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
     // Lazily get Filter that was registered as a Spring Bean
     // For the example in DelegatingFilterProxy delegate is an instance of Bean Filter0
@@ -269,7 +260,7 @@ DelegatingFilterProxy的出现使得过滤器的集成和管理更加灵活、�
     举个栗子🌰：  
     1.实现一个Filter接口的自定义过滤器类：
 
-```
+```java
 import javax.servlet.*;
 import java.io.IOException;
 
@@ -300,7 +291,7 @@ public class MyFilter implements Filter {
 
 2.在Spring的配置文件（如applicationContext.xml）中配置DelegatingFilterProxy和自定义过滤器的Bean：
 
-```
+```xml
 <bean id="myFilter" class="com.example.MyFilter" />
 
 <bean id="delegatingFilterProxy" class="org.springframework.web.filter.DelegatingFilterProxy">
@@ -312,7 +303,7 @@ public class MyFilter implements Filter {
 
 3.在web.xml中注册DelegatingFilterProxy：
 
-```
+```xml
 <filter>
     <filter-name>delegatingFilterProxy</filter-name>
     <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -352,7 +343,7 @@ FilterChainProxy是由Spring Security提供的特殊过滤器，通过SecurityFi
 ```
 
 下图展示了FilterChainProxy的信息：  
- ![在这里插入图片描述](./assets/131176456/922b1f5afd41abc084d41546.png)
+ ![](./assets/131176456/922b1f5afd41abc084d41546.png)
 
 ##### 为什么会有FilterChainProxy的出现
 
@@ -375,7 +366,7 @@ FilterChainProxy使用SecurityFilterChain来确定在该请求中应该调用哪
 ```
 
 如下图所示：  
- ![在这里插入图片描述](./assets/131176456/ced02f8fcac186f666c40c21.png)
+ ![](./assets/131176456/ced02f8fcac186f666c40c21.png)
 
 ```
 The Security Filters in SecurityFilterChain are typically Beans, but they are registered with FilterChainProxy instead of DelegatingFilterProxy. 
@@ -419,7 +410,7 @@ This allows providing a totally separate configuration for different slices of y
 
 ```
 
-![在这里插入图片描述](./assets/131176456/7a5b1823f5244cdaf7a66b7e.png)
+![](./assets/131176456/7a5b1823f5244cdaf7a66b7e.png)
 
 ```
 In the Multiple SecurityFilterChain Figure FilterChainProxy decides which SecurityFilterChain should be used. 
@@ -477,7 +468,7 @@ Below is a comprehensive list of Spring Security Filter ordering:
 
 ```
 
-![请添加图片描述](./assets/131176456/da4ec064ce665872830b1e66.png)
+![](./assets/131176456/da4ec064ce665872830b1e66.png)
 
 ## 结尾
 

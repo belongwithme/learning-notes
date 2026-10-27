@@ -1,23 +1,13 @@
 ---
 title: "深入JVM内存分配-本地分配缓冲（LAB）与TLAB详解"
 description: "在 Java 程序中，对象的创建是一个极其频繁的操作。每一次 new 关键字的背后，都是 JVM 在堆内存中寻找合适空间并完成对象初始化的过程。在并发环境下，多个应用程序线程同时请求分配内存，这会带来一个显而易见的挑战：内存分配的线程安全问题。"
-sourceId: "147445092"
-source: "https://blog.csdn.net/qq_45852626/article/details/147445092"
-sourceSeries:
-  - "JVM"
-category: java-backend
-subcategory: jvm-runtime
-tags:
-  - "JVM"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147445092
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147445092)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147445092)
 
 ## 一、 引言：为何需要本地分配缓冲？
 
@@ -206,7 +196,7 @@ JVM 提供了一些参数来控制 TLAB 的行为，了解它们有助于进行�
 
 这部分逻辑通常发生在 `CollectedHeap::allocate_new_tlab` 之后获取到 TLAB，或者在尝试分配小对象的核心路径上。线程对象 (`Thread`) 中通常会持有 `ThreadLocalAllocBuffer` 的实例。
 
-```
+```c
 // 位于某个分配函数内部，尝试在当前线程的 TLAB 中分配
 // size: 需要分配的对象大小（通常已经过对齐处理）
 // thread: 当前线程对象
@@ -265,7 +255,7 @@ inline HeapWord* ThreadLocalAllocBuffer::allocate(size_t size) {
 
 当 `tlab.allocate(size)` 返回 `NULL` 时，表示 TLAB 空间不足，需要进入慢速路径。慢速路径会尝试分配一个新的 TLAB（Refill），如果 Refill 成功，则在新 TLAB 上再次尝试分配；如果 Refill 失败或对象太大，则尝试直接在 Eden 区分配。
 
-```
+```c
 // 伪代码示意 TLAB 分配失败后的处理流程
 HeapWord* allocate_slow_path(Thread* thread, size_t size) {
   HeapWord* result = NULL;

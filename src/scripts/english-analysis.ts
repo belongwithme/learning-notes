@@ -286,8 +286,9 @@ export function initAnalysis(
         ),
       );
     if (!authenticated) {
+      status("");
       body.innerHTML =
-        '<div class="empty"><h3>解锁后继续你的学习</h3><p>输入个人口令后读取课程、保存进度与复习安排；公开词库仍可浏览。</p><button type="button" class="primary" data-login>解锁并继续</button><button type="button" data-view="library">浏览词库</button></div>';
+        '<div class="empty"><h3>解锁后继续你的学习</h3><p>在上方输入个人口令后读取课程、保存进度与复习安排；公开词库仍可浏览。</p><button type="button" data-view="library">浏览词库</button></div>';
       return;
     }
     if (!data) return;
@@ -393,7 +394,7 @@ export function initAnalysis(
       return true;
     } catch (error) {
       body.innerHTML =
-        '<div class="empty"><h3>暂时无法读取</h3><p>没有把读取失败计为零记录。请稍后点击“刷新学习内容”。</p></div>';
+        '<div class="empty"><h3>暂时无法读取</h3><p>没有把读取失败计为零记录。请稍后点击“刷新记录”。</p></div>';
       status(error instanceof Error ? error.message : "暂时无法读取", true);
       if ((error as { status?: number }).status === 401) authFailure(error);
       return false;
@@ -806,9 +807,6 @@ export function initAnalysis(
     url();
     render();
     void refresh(false);
-  });
-  el("analysis-refresh").addEventListener("click", () => {
-    if (needsReadback || canNavigate()) void refresh();
   });
   el("analysis-retry").addEventListener("click", () => void save());
   el("analysis-reconcile").addEventListener("click", async () => {

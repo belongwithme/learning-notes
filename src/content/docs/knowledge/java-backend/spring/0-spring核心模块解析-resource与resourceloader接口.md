@@ -1,24 +1,13 @@
 ---
 title: "0-Spring核心模块解析—Resource与ResourceLoader接口"
 description: "我们为什么要学习Spring下面的Resource模块？"
-sourceId: "127583745"
-source: "https://blog.csdn.net/qq_45852626/article/details/127583745"
-sourceSeries:
-  - "Spring核心模块解析"
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring核心模块解析"
-  - "Spring"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 127583745
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/127583745)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/127583745)
 
 ## Resource你不得不知的事情
 ## 前言
@@ -34,10 +23,10 @@ sidebar:
 
 ### 继承结构
 
-![在这里插入图片描述](./assets/127583745/0090a2cf4a36d1f9a38a874f.png)  
+![](./assets/127583745/0090a2cf4a36d1f9a38a874f.png)  
  代码如下：
 
-```
+```java
 public interface Resource extends InputStreamSource
 
 
@@ -45,7 +34,7 @@ public interface Resource extends InputStreamSource
 
 InputStreamSource接口：spring核心工具包输入流接口，该接口只有一个抽象方法，每次调用这个方法都会得到一个新的流。
 
-```
+```java
 public interface InputStreamSource {
     InputStream getInputStream() throws IOException;
 }
@@ -55,7 +44,7 @@ public interface InputStreamSource {
 
 ### DOC解释
 
-```
+```java
  * Interface for a resource descriptor that abstracts from the actual
  * type of underlying resource, such as a file or class path resource.
  *从实际类型的底层资源（例如文件或类路径资源）中抽象出来的资源描述符的接口
@@ -101,7 +90,7 @@ default boolean isOpen() {
 ### 重要的内置Resource实现
 
 先看一下Resource接口的子类都有什么：  
- ![在这里插入图片描述](./assets/127583745/6e08c1fc53b8993ca29f0fb8.png)  
+ ![](./assets/127583745/6e08c1fc53b8993ca29f0fb8.png)  
  我们简单看一看Spring内提供的比较重要常用的Resource实现：
 
 * UrlResource
@@ -164,7 +153,7 @@ default boolean isOpen() {
 
 ### 结构体系
 
-![在这里插入图片描述](./assets/127583745/70322e1fd68a75a0b6ac33a7.png)  
+![](./assets/127583745/70322e1fd68a75a0b6ac33a7.png)  
  我们可以看见比较熟悉的内容：  
  1.ApplicationContext–上下文容器，这里说明高级容器（应用上下文容器）也是实现了ResourceLoader接口的，其本身就是一个ResourceLoader，所以说高级容器都可以根据资源地址类型快速获取对应的Resource实例。  
  2.资源获取策略的顶级接口–ResourceLoader接口  
@@ -172,7 +161,7 @@ default boolean isOpen() {
 
 ### 源码分析
 
-```
+```java
 public interface ResourceLoader {
 
     //支持ClassPath：类型的路径匹配
@@ -193,7 +182,7 @@ public interface ResourceLoader {
 我们可以看到，ResourceLoader接口有默认实现类——DefaultResourceLoader类  
  DefaultResourceLoader类实现了ResourceLoader接口加载资源的方法，同时也扩展了一些通用的基本操作方法，其中最重要的就是实现了getResource（String location）方法，我们看一下里面重要的实现方法的源码，其他不是重点，有兴趣额外了解吧：
 
-```
+```java
 @Override
 	public Resource getResource(String location) {
 		Assert.notNull(location, "Location must not be null");
@@ -252,7 +241,7 @@ public interface ResourceLoader {
 
 对于ResourcePatternResolver接口来说，除了继承自Resource方法外，ResourcePatternResolver额外扩充了一个方法，就来批量加载Resource资源对象，源码如下：
 
-```
+```java
 public interface ResourcePatternResolver extends ResourceLoader {
 
 	//支持classpath*:形式路径匹配，即Ant风格
@@ -271,7 +260,7 @@ ResourcePatternResolver接口的默认实现类——PathMatchingResourcePattern
  对于PathMatchingResourcePatternResolver只负责实现处理ResourcePatternResolver中的方法，这里主要是实现getResources(String locationPattern)方法。  
  源码如下：
 
-```
+```java
 public class PathMatchingResourcePatternResolver implements ResourcePatternResolver {
 
 private final ResourceLoader resourceLoader;
@@ -292,16 +281,16 @@ public Resource[] getResources(String locationPattern) throws IOException //有�
 ### 容器与Resolver关系
 
 我们从Application源码中可以看到，接口继承了ResourcePatternResolver接口，也就是说，ApplicationContext本身也是一个模板解释器和资源加载器，是模板解释器的具体实现，是支持Ant风格路径匹配和批量加载资源的一个资源加载器。  
- ![在这里插入图片描述](./assets/127583745/108121872866e16b94e5d274.png)  
+ ![](./assets/127583745/108121872866e16b94e5d274.png)  
  我们来好好分析一波里面的继承关系：  
  ApplicationContext的抽象实现类AbstractApplicationContext在实现了ConfigurableApplicationContext的基础上，同时继承了ResourceLoader的实现类DefaultResourceLoader，如下图：  
- ![在这里插入图片描述](./assets/127583745/73405b7e67addba929ed5bea.png)  
- ![在这里插入图片描述](./assets/127583745/5b57f3a88cb873ef30eacedd.png)  
+ ![](./assets/127583745/73405b7e67addba929ed5bea.png)  
+ ![](./assets/127583745/5b57f3a88cb873ef30eacedd.png)  
  我们看上图可以发现，实现ConfigurableApplicationContext也意味着实现了ResourcePatternResolver，但是为什么要继承一个DefaultResourceLoader？显然spring设计人员不想将资源解释的逻辑直接暴露在容器中，这里将解析逻辑与容器的实现进行了解耦。  
  **在AbstractApplicationContext的构造函数源码中可以看到，在这里将ResourcePatternResolver接口的实例——PathMatchingResourcePatternResolver实例进行了初始化，并且传入的resourceLoader实例，就是容器本身（容器继承了DefaultResourceLoader），也就是容器进行了献祭，来实现资源解释器**。  
  我们看一下源码里面内容：
 
-```
+```java
 public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		implements ConfigurableApplicationContext {
 	/** ResourcePatternResolver used by this context. */
@@ -324,7 +313,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 ```
 
 最后一张图总结一下：  
- ![在这里插入图片描述](./assets/127583745/757847fa6a82f66120702e38.png)  
+ ![](./assets/127583745/757847fa6a82f66120702e38.png)  
  对于AbstractApplicationContext我们需要注意几点：  
  1.AbstractApplicationContext因为继承了DefaultResourceLoader，所以AbstractApplicationContext本身就是resourceLoader。  
  2.AbstractApplicationContext实现了ResourcePatternResolver接口：实现逻辑使用PathMatchingResourcePatternResolver进行委派，PathMatchingResourcePatternResolver实例化时需要传入resourceLoader实例，就将容器本身传进去了  

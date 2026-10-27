@@ -1,29 +1,17 @@
 ---
 title: "6 - Java SPI,Spring SPI 新旧版本流程图对比学习"
 description: "✗ 配置文件路径固定(METAINF/services/)"
-sourceId: "153680172"
-source: "https://blog.csdn.net/qq_45852626/article/details/153680172"
-sourceSeries:
-  - "Spring核心模块解析"
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring核心模块解析"
-  - "Java"
-  - "Spring"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 153680172
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153680172)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153680172)
 
 ## 一、Java 标准 SPI 机制流程图
 
-```
+```java
   ┌─────────────────────────────────────────────────────────────────┐
   │                    Java 标准 SPI 加载流程                          │
   └─────────────────────────────────────────────────────────────────┘
@@ -107,7 +95,7 @@ sidebar:
 
 ## 二、Spring Boot 2.7 之前 SPI 机制(SpringFactoriesLoader)
 
-```
+```java
   ┌─────────────────────────────────────────────────────────────────┐
   │           Spring Boot 2.7 之前的 SPI 加载流程                      │
   │                  (SpringFactoriesLoader)                        │
@@ -230,7 +218,7 @@ sidebar:
 
 ## 三、Spring Boot 2.7+ SPI 机制(ImportCandidates)
 
-```
+```java
   ┌─────────────────────────────────────────────────────────────────┐
   │           Spring Boot 2.7+ 新型 SPI 加载流程                       │
   │                    (ImportCandidates)                           │

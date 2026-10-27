@@ -1,31 +1,15 @@
 ---
 title: Java 后端
-description: Java 语言、运行时、框架机制与后端工程实践。
+description: Java 语言基础、集合、并发、JVM、Spring 与设计模式。
 hero:
   title: Java 后端
-  tagline: 从运行机制、数据一致性到真实故障复盘，沉淀能够指导工程判断的 Java 后端知识。
-tableOfContents:
-  minHeadingLevel: 2
-  maxHeadingLevel: 2
+  tagline: 从语言机制、并发与 JVM 运行时，到 Spring 容器和设计模式。
+tableOfContents: false
 ---
 
-import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
-import ArchiveScopeList from '../../../../components/ArchiveScopeList.astro';
-import ArchiveStatus from '../../../../components/ArchiveStatus.astro';
+import CategoryIndex from '../../../../components/CategoryIndex.astro';
+import { KnowledgeSubcategories } from '../../../../config/site-routing';
 
-<ArchiveKicker title="COLLECTION 01 · JAVA BACKEND" />
+并发编程的笔记按[Java 并发编程学习路线](/learning-paths/java-concurrency/)排序，侧栏和“下一页”都沿着路线往下走。
 
-## 收录范围
-
-<ArchiveScopeList items={[
-	{ number: '01', title: '语言与运行时', description: 'JVM、并发、内存模型与语言机制。' },
-	{ number: '02', title: '框架机制', description: 'Spring、事务、拦截器与框架边界。' },
-	{ number: '03', title: '工程问题', description: '从真实现象到根因、修复与验证。' }
-]} />
-
-## 内容状态
-
-<ArchiveStatus 
-	title="历史文章已导入，内容正在逐篇验证。" 
-	description="导入内容统一保留为草稿，后续补充版本边界、实验条件和验证证据。" 
-/>
+<CategoryIndex base="knowledge/java-backend" groups={KnowledgeSubcategories['java-backend']} />

@@ -1,23 +1,13 @@
 ---
 title: "Jackson核心内容: 架构说明"
 description: "一句话形容: Jackson是用来序列化和反序列化 json 的 Java 的开源框架."
-sourceId: "156465708"
-source: "https://blog.csdn.net/qq_45852626/article/details/156465708"
-sourceSeries:
-  - "Jackson"
-category: java-backend
-subcategory: java-ecosystem
-tags:
-  - "Jackson"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 156465708
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156465708)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156465708)
 
 ## Jackson核心内容-入门到实战
 ## 简介
@@ -37,12 +27,12 @@ github仓库: https://github.com/FasterXML/jackson
 
 ### 核心架构(简述)
 
-![在这里插入图片描述](./assets/156465708/196d30d0659741c881e20b94.png)
+![](./assets/156465708/196d30d0659741c881e20b94.png)
 
 从这个图中我们可以看到有三个核心模块: jackson-core,jackson-annotations,jackson-databind
 
 简单一些可以这样列举  
- ![在这里插入图片描述](./assets/156465708/9faa207327fae2d2f6cb75be.png)
+ ![](./assets/156465708/9faa207327fae2d2f6cb75be.png)
 
 #### jackson-core
 
@@ -129,7 +119,7 @@ Jackson 的格式扩展到 JSON 以外的其他格式,包括但不限于XML、CS
 
 ### 序列化流程（Java → JSON）
 
-![在这里插入图片描述](./assets/156465708/b504cfd4cd13921fc1343c6d.png)  
+![](./assets/156465708/b504cfd4cd13921fc1343c6d.png)  
  序列化步骤
 
 1. 应用程序将一个 Java 对象 交给 ObjectMapper
@@ -141,7 +131,7 @@ JsonGenerator 将这些 Token 写入输出目标（字符串、文件、流等�
 
 ### 反序列化流程（JSON → Java）
 
-![在这里插入图片描述](./assets/156465708/7af82283049e982fb26d8a1f.png)  
+![](./assets/156465708/7af82283049e982fb26d8a1f.png)  
  反序列化步骤
 
 1. JsonParser 读取 JSON 输入并将其解析为 Token 流
@@ -152,7 +142,7 @@ JsonGenerator 将这些 Token 写入输出目标（字符串、文件、流等�
 ### 核心组件交互关系
 
 下面的时序图（示意）展示了 Jackson 核心组件在典型操作中的协作方式。  
- ![在这里插入图片描述](./assets/156465708/49848164ccaa1d8a70b174cd.png)  
+ ![](./assets/156465708/49848164ccaa1d8a70b174cd.png)  
  **组件职责划分:**
 
 一: ObjectMapper  

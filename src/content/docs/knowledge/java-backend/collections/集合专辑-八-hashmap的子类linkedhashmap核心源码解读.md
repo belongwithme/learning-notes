@@ -1,23 +1,13 @@
 ---
 title: "集合专辑(八)：HashMap的子类LinkedHashMap核心源码解读"
 description: "在我们刚学习LInkedList的时候我们知道，LinkedList实际上性能不会比ArrayList高很多，因为LinkedList只有在前向插入的时候性能才会比ArrayList高。"
-sourceId: "125979672"
-source: "https://blog.csdn.net/qq_45852626/article/details/125979672"
-sourceSeries:
-  - "集合"
-category: java-backend
-subcategory: collections
-tags:
-  - "集合"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 125979672
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125979672)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125979672)
 
 ## 前言
 
@@ -28,10 +18,10 @@ LInkedHashMap就是这样的一种数据结构，综合了HashMap和链表的有
 
 ### 继承结构关系
 
-![在这里插入图片描述](./assets/125979672/8af7884a29dee650bd9f304a.png)  
+![](./assets/125979672/8af7884a29dee650bd9f304a.png)  
 代码实现：
 
-```
+```java
 public class LinkedHashMap<K,V>
     extends HashMap<K,V>
     implements Map<K,V>
@@ -43,7 +33,7 @@ public class LinkedHashMap<K,V>
 
 ### Doc解析
 
-```
+```java
 /**
  * <p>Hash table and linked list implementation of the <tt>Map</tt> interface,
  * with predictable iteration order.  
@@ -168,16 +158,16 @@ The {@code replace} methods only result in an access of the entry if the value i
 
 ### 数据结构
 
-![在这里插入图片描述](./assets/125979672/a03c2eb28afb13701b11df85.png)  
+![](./assets/125979672/a03c2eb28afb13701b11df85.png)  
 我们需要注意，LinkedHashMap实际上是一个Entry节点链入双向链表的HashMap,通过维护一个Entry的双向链表，保证了插入Entry中顺序
 
 ### Entry内部类
 
 (1)：Entry的继承结构  
-![在这里插入图片描述](./assets/125979672/7f5451df5c2badf7c3485c1b.png)  
+![](./assets/125979672/7f5451df5c2badf7c3485c1b.png)  
 代码实现：
 
-```
+```java
  /**
      * HashMap.Node subclass for normal LinkedHashMap entries.
      */
@@ -279,7 +269,7 @@ public LinkedHashMap(int initialCapacity) {
 
 3：有参构造(参数为初始容量和负载因子)
 
-```
+```java
   public LinkedHashMap(int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
         accessOrder = false;
@@ -335,7 +325,7 @@ public LinkedHashMap(int initialCapacity) {
 你在LinkedHashMap的源码中找不到put方法，因为它完美继承了HashMap的put(Key,Value)的方法  
 其源码：
 
-```
+```java
  public V put(K key, V value) {
         return putVal(hash(key), key, value, false, true);
     }
@@ -431,7 +421,7 @@ public LinkedHashMap(int initialCapacity) {
 我们可以称他们为维护链表的操作，接下来我们一个个进行分析：  
 1：afterNodeAccess：
 
-```
+```java
 //在节点被访问后根据accessOrder判断是否需要调整链表顺序，如果accessOrder为true，那么被access的节点就要移动到tail(尾部，也就是最新的节点) 
   void afterNodeAccess(Node<K,V> e) { /  / move node to last
         LinkedHashMap.Entry<K,V> last;    //链表尾节点
@@ -467,7 +457,7 @@ public LinkedHashMap(int initialCapacity) {
 
 2：afterNodeInsertion
 
-```
+```java
   void afterNodeInsertion(boolean evict) { // possibly remove eldest
         LinkedHashMap.Entry<K,V> first;
         if (evict && (first = head) != null && removeEldestEntry(first)) {
@@ -485,7 +475,7 @@ public LinkedHashMap(int initialCapacity) {
 这个方法目的是删除最老的节点（head节点），但是这个方法默认是不执行的，留给我们自己扩展，因为removeEldestEntry默认为false。  
 3：afterNodeRemoval
 
-```
+```java
  void afterNodeRemoval(Node<K,V> e) { // unlink
         LinkedHashMap.Entry<K,V> p =
             (LinkedHashMap.Entry<K,V>)e, b = p.before, a = p.after;
@@ -507,7 +497,7 @@ public LinkedHashMap(int initialCapacity) {
 
 现在我们来看读取方法get：
 
-```
+```java
   public V get(Object key) {
         Node<K,V> e;
         if ((e = getNode(hash(key), key)) == null)

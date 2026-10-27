@@ -1,24 +1,14 @@
 ---
 title: "深度整理总结MySQL——索引正确使用姿势"
 description: "这篇文章是补充一些基本概念和实战的一些使用建议."
-sourceId: "145496486"
-source: "https://blog.csdn.net/qq_45852626/article/details/145496486"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: indexes
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: beginner
-contentType: practice
 sidebar:
+  label: "索引正确使用姿势"
   order: 145496486
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145496486)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145496486)
 
 ## 前言
 
@@ -97,7 +87,7 @@ INSERT
 
 🚨 回表查询
 
-```
+```sql
 SELECT * FROM hotel_rooms WHERE room_type = '豪华大床房';
 
 
@@ -107,7 +97,7 @@ SELECT * FROM hotel_rooms WHERE room_type = '豪华大床房';
 
 ✅ 使用索引覆盖
 
-```
+```sql
 SELECT room_id, room_type FROM hotel_rooms WHERE room_type = '豪华大床房';
 
 
@@ -140,7 +130,7 @@ SELECT room_id, room_type FROM hotel_rooms WHERE room_type = '豪华大床房';
 
 **🛠 结合 SQL 代码**
 
-```
+```sql
 SELECT guest_name FROM hotel_rooms 
 WHERE room_type = '标准双床房' AND price < 400;
 
@@ -192,7 +182,7 @@ WHERE room_type = '标准双床房' AND price < 400;
 **🔍 代码示例**  
  假设数据库表 t\_books:
 
-```
+```sql
 CREATE TABLE t_books (
     category VARCHAR(50),   -- 书籍类别
     title VARCHAR(100),     -- 书名
@@ -204,7 +194,7 @@ CREATE TABLE t_books (
 
 你想查所有书名是 “历史” 的书:
 
-```
+```sql
 SELECT title FROM t_books WHERE title LIKE '%历史%';
 
 

@@ -1,24 +1,13 @@
 ---
 title: "计算机网络-TCP协议详解"
 description: "传输控制协议（Transmission Control Protocol，TCP）是互联网协议族中最核心的协议之一，由Vint Cerf和Bob Kahn在1974年设计并于1981年在RFC 793中正式定义。TCP是一种面向连接的、可靠的、基于字节流的传输层通信协议，为应用程序提供了可靠的..."
-sourceId: "147141866"
-source: "https://blog.csdn.net/qq_45852626/article/details/147141866"
-sourceSeries:
-  - "计算机网络"
-category: computer-fundamentals
-subcategory: networking
-tags:
-  - "计算机网络"
-  - "TCP/IP"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147141866
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141866)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141866)
 
 ## 2. TCP协议详解
 
@@ -252,7 +241,7 @@ TCP头部可以包含多种选项，用于扩展TCP的功能。常见的选项�
 
 当发送TCP段时，内核需要构建TCP头部。这通常在`tcp_transmit_skb`函数中完成：
 
-```
+```c
 // 简化版的TCP头部构建过程
 static int tcp_transmit_skb(struct sock *sk, struct sk_buff *skb, int clone_it,
                            gfp_t gfp_mask)
@@ -292,7 +281,7 @@ static int tcp_transmit_skb(struct sock *sk, struct sk_buff *skb, int clone_it,
 
 当接收TCP段时，内核需要解析TCP头部。这通常在`tcp_v4_rcv`或类似函数中完成：
 
-```
+```c
 // 简化版的TCP头部解析过程
 int tcp_v4_rcv(struct sk_buff *skb)
 {
@@ -323,7 +312,7 @@ int tcp_v4_rcv(struct sk_buff *skb)
 
 TCP选项的处理相对复杂，通常在`tcp_parse_options`函数中完成：
 
-```
+```c
 // 简化版的TCP选项解析过程
 void tcp_parse_options(struct sk_buff *skb, struct tcp_options_received *opt_rx,
                       int estab, struct tcp_fastopen_cookie *foc)
@@ -479,7 +468,7 @@ TCP三次握手的基本过程如下：
 
 当应用程序调用`connect()`函数时，最终会调用到`tcp_v4_connect()`函数，该函数负责发送SYN包：
 
-```
+```c
 // 简化版的tcp_v4_connect函数
 int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 {
@@ -514,7 +503,7 @@ int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 
 在`tcp_transmit_skb`函数中，会构建TCP头部并设置SYN标志位：
 
-```
+```c
 // 简化版的TCP头部构建过程
 static int tcp_transmit_skb(struct sock *sk, struct sk_buff *skb, int clone_it,
                            gfp_t gfp_mask)
@@ -551,7 +540,7 @@ static int tcp_transmit_skb(struct sock *sk, struct sk_buff *skb, int clone_it,
 
 服务器通过`listen()`函数进入监听状态，当收到SYN包时，会调用`tcp_v4_do_rcv()`函数处理：
 
-```
+```c
 // 简化版的tcp_v4_do_rcv函数
 int tcp_v4_do_rcv(struct sock *sk, struct sk_buff *skb)
 {
@@ -585,7 +574,7 @@ int tcp_v4_do_rcv(struct sock *sk, struct sk_buff *skb)
 
 在`tcp_v4_hnd_req`函数中，会检查是否有匹配的请求套接字，如果没有，则创建一个新的请求套接字：
 
-```
+```c
 // 简化版的tcp_v4_hnd_req函数
 static struct sock *tcp_v4_hnd_req(struct sock *sk, struct sk_buff *skb)
 {
@@ -611,7 +600,7 @@ static struct sock *tcp_v4_hnd_req(struct sock *sk, struct sk_buff *skb)
 
 当收到SYN包并创建新的请求套接字后，会调用`tcp_v4_send_synack`函数发送SYN+ACK包：
 
-```
+```c
 // 简化版的tcp_v4_send_synack函数
 static int tcp_v4_send_synack(struct sock *sk, struct dst_entry *dst,
                              struct request_sock *req,
@@ -638,7 +627,7 @@ static int tcp_v4_send_synack(struct sock *sk, struct dst_entry *dst,
 
 在`tcp_make_synack`函数中，会构建SYN+ACK包的TCP头部：
 
-```
+```c
 // 简化版的tcp_make_synack函数
 struct sk_buff *tcp_make_synack(struct sock *sk, struct dst_entry *dst,
                                struct request_sock *req,
@@ -669,7 +658,7 @@ struct sk_buff *tcp_make_synack(struct sock *sk, struct dst_entry *dst,
 
 客户端收到服务器的SYN+ACK包后，会调用`tcp_rcv_state_process`函数处理：
 
-```
+```c
 // 简化版的tcp_rcv_state_process函数
 int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
                          const struct tcphdr *th, unsigned int len)
@@ -695,7 +684,7 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 
 在`tcp_rcv_synsent_state_process`函数中，会验证SYN+ACK包并发送ACK包：
 
-```
+```c
 // 简化版的tcp_rcv_synsent_state_process函数
 static int tcp_rcv_synsent_state_process(struct sock *sk, struct sk_buff *skb,
                                         const struct tcphdr *th, unsigned int len)
@@ -731,7 +720,7 @@ static int tcp_rcv_synsent_state_process(struct sock *sk, struct sk_buff *skb,
 
 在`tcp_send_ack`函数中，会构建并发送ACK包：
 
-```
+```c
 // 简化版的tcp_send_ack函数
 void tcp_send_ack(struct sock *sk)
 {
@@ -939,7 +928,7 @@ CLOSED |                                      |
 
 当应用程序调用`close()`函数时，最终会调用到`tcp_close()`函数，该函数负责发送FIN包：
 
-```
+```c
 // 简化版的tcp_close函数
 void tcp_close(struct sock *sk, long timeout)
 {
@@ -970,7 +959,7 @@ void tcp_close(struct sock *sk, long timeout)
 
 在`tcp_send_fin`函数中，会构建并发送FIN包：
 
-```
+```c
 // 简化版的tcp_send_fin函数
 void tcp_send_fin(struct sock *sk)
 {
@@ -1007,7 +996,7 @@ void tcp_send_fin(struct sock *sk)
 
 被动关闭方收到FIN包后，会调用`tcp_rcv_state_process`函数处理：
 
-```
+```c
 // 简化版的tcp_rcv_state_process函数
 int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
                          const struct tcphdr *th, unsigned int len)
@@ -1050,7 +1039,7 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 
 被动关闭方在应用程序调用`close()`函数后，会发送FIN包，过程与主动关闭方类似：
 
-```
+```c
 // 简化版的tcp_close函数
 void tcp_close(struct sock *sk, long timeout)
 {
@@ -1081,7 +1070,7 @@ void tcp_close(struct sock *sk, long timeout)
 
 不同的是，此时套接字的状态是CLOSE\_WAIT，调用`tcp_close_state`会将状态设置为LAST\_ACK：
 
-```
+```c
 // 简化版的tcp_close_state函数
 int tcp_close_state(struct sock *sk)
 {
@@ -1107,7 +1096,7 @@ int tcp_close_state(struct sock *sk)
 
 主动关闭方收到FIN包后，会调用`tcp_rcv_state_process`函数处理：
 
-```
+```c
 // 简化版的tcp_rcv_state_process函数
 int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
                          const struct tcphdr *th, unsigned int len)
@@ -1144,7 +1133,7 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 
 在`tcp_time_wait`函数中，会将套接字状态设置为TIME\_WAIT，并启动2MSL定时器：
 
-```
+```c
 // 简化版的tcp_time_wait函数
 void tcp_time_wait(struct sock *sk, int state, int timeo)
 {
@@ -1365,7 +1354,7 @@ enum {
 
 TCP状态的转换是通过`tcp_set_state`函数实现的：
 
-```
+```c
 // 简化版的tcp_set_state函数
 void tcp_set_state(struct sock *sk, int state)
 {
@@ -1401,7 +1390,7 @@ TCP状态的转换是由各种事件触发的，如收到特定类型的TCP段�
 
 ##### 连接建立阶段的状态转换
 
-```
+```c
 // 客户端调用connect()函数，进入SYN_SENT状态
 int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 {
@@ -1449,7 +1438,7 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 
 ##### 连接关闭阶段的状态转换
 
-```
+```c
 // 主动关闭方调用close()函数，进入FIN_WAIT_1状态
 int tcp_close_state(struct sock *sk)
 {

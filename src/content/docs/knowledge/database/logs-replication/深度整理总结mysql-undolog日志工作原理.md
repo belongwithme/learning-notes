@@ -1,24 +1,14 @@
 ---
 title: "深度整理总结MySQL——undoLog日志工作原理"
 description: "一个事务在执行过程中，在还没有提交事务之前，如果 MySQL 发生了崩溃，要怎么回滚到事务之前的数据呢？这时候就要依靠我们下面聊的undo log了."
-sourceId: "145584538"
-source: "https://blog.csdn.net/qq_45852626/article/details/145584538"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: logs-replication
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
+  label: "undoLog日志工作原理"
   order: 145584538
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145584538)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145584538)
 
 ## 前言
 
@@ -33,7 +23,7 @@ undo log是一种用于撤销回退的日志，在事务没提交之前，MySQL�
 ### 提供回滚操作
 
 undo log是一种用于撤销回退的日志，在事务没提交之前，MySQL会先记录更新前的数据到 undo log日志文件里面，当事务回滚时或者数据库崩溃时，可以利用 undo log来进行回退。如下图：  
- ![请添加图片描述](./assets/145584538/55b5c991a4e98da7a3cdba82.png)
+ ![](./assets/145584538/55b5c991a4e98da7a3cdba82.png)
 
 每当 InnoDB 引擎对一条记录进行操作（修改、删除、新增）时，要把回滚时需要的信息都记录到 undo log 里，比如：
 
@@ -55,7 +45,7 @@ undo log是一种用于撤销回退的日志，在事务没提交之前，MySQL�
 * 通过 trx\_id 可以知道该记录是被哪个事务修改的；
 * 通过 roll\_pointer 指针可以将这些 undo log 串成一个链表，这个链表就被称为版本链；  
    如下图:  
-   ![在这里插入图片描述](./assets/145584538/8b551fd626c6c9794cbf7c79.png)那么通过ReadView 和undo log 可以实现MVCC(多版本并发控制).
+   ![](./assets/145584538/8b551fd626c6c9794cbf7c79.png)那么通过ReadView 和undo log 可以实现MVCC(多版本并发控制).
 
 ### 总结
 

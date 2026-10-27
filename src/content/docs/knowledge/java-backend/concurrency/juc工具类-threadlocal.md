@@ -1,23 +1,13 @@
 ---
 title: "JUC工具类-ThreadLocal"
 description: "多线程的世界里，线程安全是一个永恒的主题。"
-sourceId: "147243211"
-source: "https://blog.csdn.net/qq_45852626/article/details/147243211"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
-  order: 147243211
+  order: 23
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147243211)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147243211)
 
 ## 引言：为何需要 ThreadLocal？
 
@@ -77,7 +67,7 @@ sidebar:
 
 1. **创建 `ThreadLocal` 对象**：定义一个 `ThreadLocal` 变量，通常使用 `private static` 修饰，表示它是类级别的，并且是线程本地的。
 
-   ```
+   ```java
    // 创建一个存储 String 类型数据的 ThreadLocal
    private static ThreadLocal<String> userContext = new ThreadLocal<>();
 
@@ -118,7 +108,7 @@ sidebar:
 
 假设在一个 Web 应用中，我们需要在处理请求的不同阶段（如 Controller, Service, DAO）获取当前登录用户的 ID。如果层层传递参数会很繁琐，使用 `ThreadLocal` 就非常方便：
 
-```
+```java
 public class UserContextHolder {
     // 1. 创建 ThreadLocal 对象
     private static ThreadLocal<String> userIdThreadLocal = new ThreadLocal<>();
@@ -234,7 +224,7 @@ Main thread finished.
 
 `ThreadLocal` 的实现巧妙地利用了 `Thread` 类自身。每个 `Thread` 对象内部都有一个成员变量 `threadLocals`，它的类型是 `ThreadLocal.ThreadLocalMap`。
 
-```
+```java
 // java.lang.Thread 类中的部分源码
 public class Thread implements Runnable {
     // ... 其他成员变量
@@ -309,7 +299,7 @@ public class Thread implements Runnable {
 
 `ThreadLocalMap` 内部维护一个 `Entry` 数组 `table` 来存储数据。这个 `Entry` 类是 `ThreadLocalMap` 的静态内部类，值得特别关注的是，它继承了 `WeakReference<ThreadLocal<?>>`。
 
-```
+```java
 // java.lang.ThreadLocal.ThreadLocalMap.Entry 的部分源码
 static class Entry extends WeakReference<ThreadLocal<?>> {
     /** The value associated with this ThreadLocal. */
@@ -359,7 +349,7 @@ static class Entry extends WeakReference<ThreadLocal<?>> {
 
 `ThreadLocalMap` 使用 `ThreadLocal` 实例的 `threadLocalHashCode` 作为哈希码来计算其在 `table` 数组中的索引位置。
 
-```
+```java
 // java.lang.ThreadLocal 中的部分源码
 public class ThreadLocal<T> {
     // ...
@@ -401,7 +391,7 @@ private void set(ThreadLocal<?> key, Object value) {
 
 当计算出的索引位置 `i` 已经被占用时，它会简单地检查下一个位置 `i+1`，如果 `i+1` 也被占用，则检查 `i+2`，以此类推，直到找到一个空闲的槽位或者找到 `key` 相同的 `Entry`（用于更新值）。查找 (`getEntry`) 过程也是类似的。
 
-```
+```java
 // java.lang.ThreadLocal.ThreadLocalMap.getEntry 方法的部分逻辑 (简化示意)
 private Entry getEntry(ThreadLocal<?> key) {
     int i = key.threadLocalHashCode & (table.length - 1);
@@ -469,7 +459,7 @@ private static int nextIndex(int i, int len) {
 
 ### 3.1 `set(T value)` 方法
 
-```
+```java
 // java.lang.ThreadLocal
 public void set(T value) {
     // 1. 获取当前线程
@@ -511,7 +501,7 @@ void createMap(Thread t, T firstValue) {
 
 **深入 `ThreadLocalMap.set(ThreadLocal<?> key, Object value)`：**
 
-```
+```java
 // java.lang.ThreadLocal.ThreadLocalMap
 private void set(ThreadLocal<?> key, Object value) {
     Entry[] tab = table; // 获取内部的 Entry 数组
@@ -567,7 +557,7 @@ private void set(ThreadLocal<?> key, Object value) {
 
 ### 3.2 `get()` 方法
 
-```
+```java
 // java.lang.ThreadLocal
 public T get() {
     // 1. 获取当前线程
@@ -630,7 +620,7 @@ protected T initialValue() {
 
 ### 3.3 `remove()` 方法
 
-```
+```java
 // java.lang.ThreadLocal
 public void remove() {
     // 1. 获取当前线程的 ThreadLocalMap
@@ -728,7 +718,7 @@ private void remove(ThreadLocal<?> key) {
 
 为了确保无论代码是正常执行还是异常退出，`ThreadLocal` 的值都能被清理，推荐将 `remove()` 调用放在 `finally` 块中。
 
-```
+```java
 public class GoodThreadLocalUsage {
 
     private static ThreadLocal<ExpensiveResource> resourceThreadLocal = new ThreadLocal<>();
@@ -820,7 +810,7 @@ public class GoodThreadLocalUsage {
 
 **示例：**
 
-```
+```java
 public class ThreadPoolPollution {
 
     private static ThreadLocal<Integer> contaminatedValue = new ThreadLocal<>();
@@ -907,7 +897,7 @@ executor.submit(() -> {
 
 可以创建一个 `Runnable` 或 `Callable` 的装饰器 (Wrapper)，在任务执行前后进行统一的清理操作。
 
-```
+```java
 import java.util.Arrays;
 import java.util.List;
 
@@ -978,7 +968,7 @@ public class ThreadLocalCleaner implements Runnable {
 * `beforeExecute(Thread t, Runnable r)`: 在任务 `r` 即将被线程 `t` 执行之前调用。
 * `afterExecute(Runnable r, Throwable t)`: 在任务 `r` 执行完毕后调用（无论正常结束还是异常退出）。
 
-```
+```java
 import java.util.concurrent.*;
 
 public class CleaningThreadPoolExecutor extends ThreadPoolExecutor {
@@ -1062,7 +1052,7 @@ public class CleaningThreadPoolExecutor extends ThreadPoolExecutor {
 
 `InheritableThreadLocal` 继承自 `ThreadLocal`，其使用方式与 `ThreadLocal` 基本相同（`set`, `get`, `remove`）。
 
-```
+```java
 // 创建一个 InheritableThreadLocal
 private static InheritableThreadLocal<String> inheritableUserContext = new InheritableThreadLocal<>();
 
@@ -1124,7 +1114,7 @@ public static void main(String[] args) {
    ```
 2. 当你使用 `InheritableThreadLocal` 的 `set` 或 `get` 方法时，它操作的是当前线程的 `inheritableThreadLocals` 这个 `Map`，而不是 `threadLocals`。
 
-   ```
+   ```java
    // java.lang.InheritableThreadLocal
    ThreadLocalMap getMap(Thread t) {
       return t.inheritableThreadLocals; // 操作 inheritableThreadLocals
@@ -1137,7 +1127,7 @@ public static void main(String[] args) {
    ```
 3. **关键在于 `Thread` 的初始化**：当创建一个新的 `Thread` 时（`new Thread(...)`），在其构造函数或 `init` 方法中，会检查\*\*当前线程（即父线程）\*\*的 `inheritableThreadLocals` 是否存在。
 
-   ```
+   ```java
    // java.lang.Thread#init (简化逻辑)
    private void init(...) {
        Thread parent = currentThread(); // 获取创建新线程的那个线程 (父线程)
@@ -1194,7 +1184,7 @@ JDK 8 引入了一个静态工厂方法 `ThreadLocal.withInitial(Supplier<? exte
 
 **JDK 8 之前：**
 
-```
+```java
 // 需要继承并覆盖 initialValue()
 ThreadLocal<SimpleDateFormat> dateFormatThreadLocal = new ThreadLocal<SimpleDateFormat>() {
     @Override
@@ -1210,7 +1200,7 @@ ThreadLocal<SimpleDateFormat> dateFormatThreadLocal = new ThreadLocal<SimpleDate
 
 **JDK 8 及之后：**
 
-```
+```java
 // 使用 Lambda 表达式提供 Supplier
 ThreadLocal<SimpleDateFormat> dateFormatThreadLocal = ThreadLocal.withInitial(() -> {
     System.out.println("Initializing SimpleDateFormat for thread: " + Thread.currentThread().getName());

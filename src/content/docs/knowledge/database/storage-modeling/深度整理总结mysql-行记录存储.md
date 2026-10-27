@@ -1,24 +1,14 @@
 ---
 title: "深度整理总结MySQL——行记录存储"
 description: "使用MySQL的时候,MySQL对于我们来说还是一个黑盒，我们只负责使用客户端发送请求并等待服务器返回结果，表中的数据到底存到了哪里？以什么格式存放的？MySQL是以什么方式来访问的这些数据？这些问题我们统统不知道."
-sourceId: "145475832"
-source: "https://blog.csdn.net/qq_45852626/article/details/145475832"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: storage-modeling
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
+  label: "行记录存储"
   order: 145475832
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145475832)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145475832)
 
 ## 前言
 
@@ -39,7 +29,7 @@ InnoDB是一个将**表中的数据存储到磁盘上的存储引擎**，所以�
 ### 表空间的结构是怎么样的
 
 表空间由段（segment）、区（extent）、页（page）、行（row）组成  
- ![在这里插入图片描述](./assets/145475832/d6cda84fbfbd02c024d956be.png)
+ ![](./assets/145475832/d6cda84fbfbd02c024d956be.png)
 
 #### 行(row)
 
@@ -83,7 +73,7 @@ InnoDB是用B+数来组织数据的.
 ## COMPACT行格式
 
 它长这样:  
- ![在这里插入图片描述](./assets/145475832/4fcfab637f4c6dcd03649e96.png)  
+ ![](./assets/145475832/4fcfab637f4c6dcd03649e96.png)  
  一条完整的记录分为「记录的额外信息」和「记录的真实数据」两个部分.
 
 ### 记录的额外信息
@@ -95,11 +85,11 @@ InnoDB是用B+数来组织数据的.
 varchar(n) 和 char(n) 的区别是什么,在于char 是定长的，varchar 是变长的,变长字段实际存储的数据的长度（大小）不固定的.  
  所以,在存储数据的时候，也要把数据占用的大小存起来,就存在这个[变长字段长度列表]里面,读取数据的时候才能根据这个「变长字段长度列表」去读取对应长度的数据.  
  举个例子来说  
- ![在这里插入图片描述](./assets/145475832/3763058faa79c4d01a9560b8.png)  
- 里面有三条记录![在这里插入图片描述](./assets/145475832/3b61b50ca5d520ef4a034472.png)  
+ ![](./assets/145475832/3763058faa79c4d01a9560b8.png)  
+ 里面有三条记录![](./assets/145475832/3b61b50ca5d520ef4a034472.png)  
  这些变长字段的真实数据占用的字节数会按照列的顺序逆序存放.  
  所以「变长字段长度列表」里的内容是「 03 01」,而不是 「01 03」.  
- ![在这里插入图片描述](./assets/145475832/73d8a3ea34ddc2034eb24d2e.png)
+ ![](./assets/145475832/73d8a3ea34ddc2034eb24d2e.png)
 
 ##### 为什么变长字段长度列表按逆序存放
 
@@ -128,21 +118,21 @@ varchar(n) 和 char(n) 的区别是什么,在于char 是定长的，varchar 是�
  每个列对应一个二进制位（bit）,二进制位按照列的顺序逆序排列.  
  二进制位的值为1时，代表该列的值为NULL,否则不为NULL.  
  举个例子:  
- ![在这里插入图片描述](./assets/145475832/14fec7f2d2a066514daf1153.png)  
+ ![](./assets/145475832/14fec7f2d2a066514daf1153.png)  
  第一条记录:  
- ![在这里插入图片描述](./assets/145475832/dbd65cf21620810dea9c617c.png)  
+ ![](./assets/145475832/dbd65cf21620810dea9c617c.png)  
  第二条记录:
 
-![在这里插入图片描述](./assets/145475832/ddbac2cc4117faf17f037826.png)  
+![](./assets/145475832/ddbac2cc4117faf17f037826.png)  
  第三条记录:  
- ![在这里插入图片描述](./assets/145475832/9d53a6ab12181d80ea12afa6.png)
+ ![](./assets/145475832/9d53a6ab12181d80ea12afa6.png)
 
 ---
 
 目前三条记录的行格式如下:  
- ![在这里插入图片描述](./assets/145475832/e6caf19e01a753175346bccd.png)  
- ![在这里插入图片描述](./assets/145475832/3a175d7c34392010da577acc.png)  
- ![在这里插入图片描述](./assets/145475832/8520e1bd4236b9cae5baee81.png)
+ ![](./assets/145475832/e6caf19e01a753175346bccd.png)  
+ ![](./assets/145475832/3a175d7c34392010da577acc.png)  
+ ![](./assets/145475832/8520e1bd4236b9cae5baee81.png)
 
 ##### 每个数据库表的行格式都有「NULL 值列表」吗？
 
@@ -171,7 +161,7 @@ varchar(n) 和 char(n) 的区别是什么,在于char 是定长的，varchar 是�
 ### 记录的真实数据
 
 记录真实数据部分除了我们定义的字段，还有三个隐藏字段,分别为：row\_id、trx\_id、roll\_pointer.  
- ![在这里插入图片描述](./assets/145475832/5897edfcf7e1313a6368d419.png)
+ ![](./assets/145475832/5897edfcf7e1313a6368d419.png)
 
 #### row\_id
 
@@ -190,7 +180,7 @@ varchar(n) 和 char(n) 的区别是什么,在于char 是定长的，varchar 是�
 
 如果一个数据页存不了一条记录，InnoDB 存储引擎会自动将溢出的数据存放到「溢出页」中.  
  当发生行溢出时，在记录的真实数据处只会保存该列的一部分数据，而把剩余的数据放在「溢出页」中,然后真实数据处用 20 字节存储指向溢出页的地址，从而可以找到剩余数据所在的页。如下图:  
- ![在这里插入图片描述](./assets/145475832/f3d9cbf4ab01a432b1e7381a.png)
+ ![](./assets/145475832/f3d9cbf4ab01a432b1e7381a.png)
 
 ### varchar(n)中的n最大取值为多少
 

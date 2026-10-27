@@ -1,23 +1,13 @@
 ---
 title: "Java 线程中断机制详解"
 description: "在并发编程中，我们经常需要协调不同线程的执行。"
-sourceId: "147280008"
-source: "https://blog.csdn.net/qq_45852626/article/details/147280008"
-sourceSeries: []
-category: java-backend
-subcategory: concurrency
-tags:
-  - "Java"
-  - "JUC"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
-  order: 147280008
+  order: 4
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147280008)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147280008)
 
 ## 1. 引言：为什么需要线程中断？
 
@@ -58,7 +48,7 @@ sidebar:
   5. **对 `Lock.lock()` 阻塞的影响**: 如果线程因为调用 `Lock.lock()` 而阻塞，调用 `interrupt()` **不会**唤醒线程，但中断状态会被设置。如果希望锁的获取可以被中断，应该使用 `Lock.lockInterruptibly()`。
 * **源码]**:
 
-  ```
+  ```java
   // java.lang.Thread
   public void interrupt() {
       if (this != Thread.currentThread()) // 检查权限
@@ -122,7 +112,7 @@ sidebar:
 * **使用场景**: 这是在线程内部检查自己是否被中断的最常用方式，特别是在循环任务中。
 * **源码浅析 (基于 OpenJDK)**:
 
-  ```
+  ```java
   // java.lang.Thread
   public boolean isInterrupted() {
       // isInterrupted(false) 表示不清除中断状态
@@ -157,7 +147,7 @@ sidebar:
 * **使用场景**: 通常在捕获 `InterruptedException` 后，如果想在处理异常的同时再次检查中断状态（虽然不常见，因为 `InterruptedException` 本身就表明了中断），或者在某些特定的中断处理逻辑中需要清除状态时使用。但大多数情况下，推荐使用 `isInterrupted()`。
 * **源码**:
 
-  ```
+  ```java
   // java.lang.Thread
   public static boolean interrupted() {
       // isInterrupted(true) 表示检查后清除中断状态
@@ -215,7 +205,7 @@ sidebar:
 
 如果你的线程执行的是一个循环任务或者包含多个步骤的计算，你应该在合适的时机（例如循环的开始处或耗时操作之前）检查中断状态。
 
-```
+```java
 class MyTask implements Runnable {
     @Override
     public void run() {
@@ -295,7 +285,7 @@ public class InterruptCheckExample {
 
 这是**最推荐**的做法，特别是当你的代码是一个库或框架的一部分，或者当前方法不是线程任务的顶层时。因为捕获 `InterruptedException` 时中断状态已被清除，如果不恢复它，上层调用栈就无法得知中断的发生。
 
-```
+```java
 public void someMethod() {
     try {
         while (!Thread.currentThread().isInterrupted()) {
@@ -338,7 +328,7 @@ private void cleanupResources() {
 
 如果当前方法不适合处理中断（例如，它只是一个工具方法或中间层），可以将异常直接向上抛给调用者处理。这需要你的方法签名包含 `throws InterruptedException`。
 
-```
+```java
 // 当前方法不知道如何处理中断，将责任交给上层
 public void processData() throws InterruptedException {
     // ... 一些准备工作 ...
@@ -378,7 +368,7 @@ public void run() {
 
 如果捕获 `InterruptedException` 的地方就是线程任务的最高层逻辑（例如 `Runnable` 的 `run()` 方法），并且你知道中断意味着整个任务应该结束，那么可以直接进行清理并终止。
 
-```
+```java
 @Override
 public void run() {
     try {
@@ -437,7 +427,7 @@ try {
 
 这是最基本、最直接的方式，适用于你持有目标线程 `Thread` 对象引用的情况。
 
-```
+```java
 Thread worker = new Thread(() -> {
     while (!Thread.currentThread().isInterrupted()) {
         System.out.println("工作...");
@@ -471,7 +461,7 @@ worker.interrupt();
 * **`ExecutorService.shutdown()`**: 启动有序关闭。不再接受新任务，但会等待已经提交的任务（包括正在运行和在队列中等待的）执行完成。**不会**主动中断正在运行的任务。
 * **`ExecutorService.shutdownNow()`**: 尝试立即停止所有活动执行的任务，暂停处理等待的任务，并返回等待执行的任务列表。为了停止活动任务，`shutdownNow()` 会**遍历线程池中的工作线程并调用每个线程的 `interrupt()` 方法**。因此，你的任务代码必须能正确响应中断才能被 `shutdownNow()` 有效停止。
 
-```
+```java
 import java.util.concurrent.*;
 
 public class FutureCancelExample {
@@ -523,7 +513,7 @@ public class FutureCancelExample {
 
 * **`thread.join(long millis)`**: 等待目标线程 `thread` 终止，但最多等待 `millis` 毫秒。如果超时，`join` 方法会返回，此时可以检查线程是否还在活动 (`isAlive()`)，如果是，则手动调用 `interrupt()`。
 
-  ```
+  ```java
   Thread longRunning = new Thread(() -> { /* ... 长时间任务 ... */ });
   longRunning.start();
   try {
@@ -627,7 +617,7 @@ public class FutureCancelExample {
 
 下面是一个简化的生产者-消费者示例，展示如何使用中断来请求生产者和消费者线程停止。
 
-```
+```java
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -738,3 +728,194 @@ Java 线程中断是一种强大而优雅的线程协作机制，用于请求线
 * 任务代码需要**主动检查中断状态** (`isInterrupted()`) 或处理 `InterruptedException` 来响应中断。
 * 注意**不可中断的阻塞** (`synchronized`, 传统 I/O)，并使用替代策略来停止相关线程。
 * 优先使用中断机制实现线程的**优雅关闭**和**取消操作**。
+
+## 线程中断如何理解
+
+> 本节合并自同主题的另一篇笔记，原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146237586)。
+
+### 什么是线程中断？
+
+线程中断是一种协作机制，不是强制终止线程的方式。它是一种线程间的通信方式，用于告诉目标线程"你需要停止当前工作了"。
+
+### 为什么会发生中断
+
+1. 礼貌地停止线程
+
+   * 不是强制关闭（不礼貌）
+   * 而是通知它"该停下来了"（礼貌）
+2. 可以做清理工作
+
+   * 比如保存文件
+   * 关闭连接
+   * 释放资源
+3. 线程中断通常发生在以下几种场景:
+
+   * 人为调用中断
+   * 超时中断
+   * 取消操作
+
+* 关闭线程池
+
+### 中断的处理方式
+
+* 显式处理中断
+
+```
+try {
+    Thread.sleep(1000);  // 可中断方法
+} catch (InterruptedException e) {
+    // 1. 恢复中断状态
+    Thread.currentThread().interrupt();
+    // 2. 处理中断逻辑
+    return;  // 或其他处理
+}
+
+
+```
+
+* 传播中断
+
+```java
+public void myMethod() throws InterruptedException {
+    // 直接抛出中断异常，让调用者处理
+    Thread.sleep(1000);
+}
+
+
+```
+
+* 忽略中断
+
+### 哪些方式可以让线程中断
+
+1. 使用interrupt()方法（最常用）
+
+```java
+public class InterruptExample {
+    public static void main(String[] args) {
+        Thread thread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                System.out.println("线程运行中...");
+            }
+        });
+        
+        thread.start();
+        // 调用interrupt()中断线程
+        thread.interrupt();
+    }
+}
+
+
+```
+
+2. 使用超时机制
+
+```java
+public class TimeoutExample {
+    public static void main(String[] args) {
+        // 1. 使用Thread.join()的超时版本
+        Thread thread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                // 执行任务
+            }
+        });
+        thread.start();
+        try {
+            // 等待线程最多2秒
+            thread.join(2000);
+            if (thread.isAlive()) {
+                thread.interrupt();
+            }
+        } catch (InterruptedException e) {
+            thread.interrupt();
+        }
+
+        // 2. 使用Lock的超时等待
+        Lock lock = new ReentrantLock();
+        try {
+            // 尝试在2秒内获取锁，如果超时则中断
+            if (!lock.tryLock(2, TimeUnit.SECONDS)) {
+                Thread.currentThread().interrupt();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}
+
+
+```
+
+3. 使用Future的取消任务
+
+```java
+import java.util.concurrent.*;
+
+public class FutureExample {
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        
+        Future<?> future = executor.submit(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                System.out.println("任务执行中...");
+            }
+        });
+        
+        // 取消任务，参数true表示允许中断正在运行的任务
+        future.cancel(true);
+        
+        executor.shutdown();
+    }
+}
+
+
+```
+
+### 生活中 类 比
+
+想象你正在看电影，这时候发生了以下情况：
+
+1. 朋友拍你肩膀（中断信号）
+
+* 你可以选择：
+  + 暂停电影去理会朋友（响应中断）
+  + 继续看电影（忽略中断）
+  + 告诉朋友"等这部分看完"（延迟处理中断）
+
+2. 手机闹钟响了（中断异常）
+
+* 你必须做出选择：
+  + 关掉闹钟继续看（处理中断后继续）
+  + 停止看电影去做其他事（处理中断并退出）
+
+#### 最简单的理解
+
+```java
+// 想象一个正在工作的员工
+class Worker implements Runnable {
+    public void run() {
+        while (!Thread.currentThread().isInterrupted()) {  // 检查有没有人叫我
+            System.out.println("我正在工作...");
+            try {
+                Thread.sleep(1000);  // 工作中
+            } catch (InterruptedException e) {
+                System.out.println("有人让我停下来休息！");
+                break;  // 好吧，我去休息
+            }
+        }
+    }
+}
+
+// 老板
+public class Boss {
+    public static void main(String[] args) throws InterruptedException {
+        Thread worker = new Thread(new Worker());
+        worker.start();  // 员工开始工作
+        
+        Thread.sleep(5000);  // 5秒后
+        worker.interrupt();   // 老板：该休息了！
+    }
+}
+
+
+```

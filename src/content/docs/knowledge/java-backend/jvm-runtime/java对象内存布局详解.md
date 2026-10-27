@@ -1,22 +1,13 @@
 ---
 title: "Java对象内存布局详解"
 description: "Java对象在内存中的布局由以下三部分组成："
-sourceId: "147057384"
-source: "https://blog.csdn.net/qq_45852626/article/details/147057384"
-sourceSeries: []
-category: java-backend
-subcategory: jvm-runtime
-tags:
-  - "Java"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147057384
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147057384)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147057384)
 
 ## 一、概述
 
@@ -98,7 +89,7 @@ JVM要求对象的起始地址必须是8字节的整数倍（64位系统）。�
 
 以下是一个简单类对象在内存中的布局示例：
 
-```
+```java
 class Example {
     int a;
     boolean b;
@@ -136,7 +127,7 @@ Java的synchronized锁机制与对象头中的Mark Word密切相关。从JDK 6�
 
 可以使用JOL（Java Object Layout）工具查看对象在内存中的实际布局：
 
-```
+```java
 import org.openjdk.jol.info.ClassLayout;
 
 public class ObjectLayoutExample {

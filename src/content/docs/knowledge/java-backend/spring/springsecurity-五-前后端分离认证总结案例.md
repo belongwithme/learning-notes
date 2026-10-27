@@ -1,22 +1,13 @@
 ---
-title: "SpringSecurity(五):前后端分离认证总结案例。"
+title: "SpringSecurity(五):前后端分离认证总结案例"
 description: "和上一篇一样，从上倒下复制粘贴，所有代码贴完再运行，代码没有问题，只要贴对，都可以顺利跑出来的。"
-sourceId: "131454099"
-source: "https://blog.csdn.net/qq_45852626/article/details/131454099"
-sourceSeries: []
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring"
 status: draft
-difficulty: intermediate
-contentType: practice
 sidebar:
   order: 131454099
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131454099)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131454099)
 
 ## 前言
 
@@ -28,7 +19,7 @@ sidebar:
  所以我们要将请求中json格式转换为对象，提取用户数据，然后进行认证。  
  在web传统项目进行认证请求时，底层调用的是`FormLoginConfigurer`，里面用`UsernamePasswordAuthenticationFilter`过滤器中的`attempAuthentication`试图认证的方法进行处理。下面看一下关键代码：
 
-```
+```java
 	if (this.postOnly && !request.getMethod().equals("POST")) {
 			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 		}
@@ -52,13 +43,13 @@ sidebar:
 
 我们确定了`UsernamePasswordAuthenticationFilter`不适合作为我们要用的过滤器，所以我们自己创建一个名为`LoginFilter`的过滤器。  
  但是security里面是有一系列的过滤器的，我们要确保`LoginFilter`替换`UsernamePasswordAuthenticationFilter`后位置不变。  
- ![请添加图片描述](./assets/131454099/dec6c5f88449b7ed241922ed.png)
+ ![](./assets/131454099/dec6c5f88449b7ed241922ed.png)
 
 ## Controller层
 
 `TestController`方法：
 
-```
+```java
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -79,7 +70,7 @@ public class test {
 
 ### Role
 
-```
+```java
 public class Role {
     private Integer id;
     private String name;
@@ -116,7 +107,7 @@ public class Role {
 
 ### User
 
-```
+```java
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -226,7 +217,7 @@ public class User implements UserDetails {
 
 ## dao层
 
-```
+```java
 import com.wang.entity.Role;
 import com.wang.entity.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -247,7 +238,7 @@ public interface UserDao {
 
 ## service层
 
-```
+```java
 import com.wang.dao.UserDao;
 import com.wang.entity.Role;
 import com.wang.entity.User;
@@ -290,7 +281,7 @@ public class MyUserDetailService implements UserDetailsService {
 
 ### LoginFilter
 
-```
+```java
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -338,7 +329,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 ### SecurityConfig
 
-```
+```java
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wang.service.MyUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -469,7 +460,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 ### mapper
 
-```
+```sql
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -505,7 +496,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 ## properties
 
-```
+```properties
 server.port= 9092
 # 关闭thymeleaf 缓存
 spring.thymeleaf.cache= false
@@ -531,7 +522,7 @@ logging.level.com.example = debug
 
 ## pom.xml
 
-```
+```xml
     <dependencies>
         <dependency>
             <groupId>com.alibaba</groupId>

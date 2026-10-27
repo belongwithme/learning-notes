@@ -1,24 +1,14 @@
 ---
 title: "深度整理总结MySQL——CBO工作原理"
 description: "有时候可能你会遇到MySQL 并没有按照自己的预想来选择索引，比如创建了索引但是选择了全表扫描，那这是 MySQL 数据库的 Bug或者是索引出错了?"
-sourceId: "145495027"
-source: "https://blog.csdn.net/qq_45852626/article/details/145495027"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: query-optimization
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
+  label: "CBO工作原理"
   order: 145495027
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145495027)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145495027)
 
 ## 前言
 
@@ -31,7 +21,7 @@ sidebar:
 
 还是那张表orders :
 
-```
+```sql
 CREATE TABLE `orders` (
 
   `O_ORDERKEY` int NOT NULL,
@@ -70,7 +60,7 @@ CREATE TABLE `orders` (
 在查询字段 o\_custkey 时，理论上可以使用三个相关的索引：`1. ORDERS_FK1,2. idx_custkey_orderdate ,3. idx_custkey_orderdate_totalprice`。那 MySQL 优化器是怎么从这三个索引中进行选择的呢？  
  B+ 树索引只是存储的一种数据结构，具体怎么使用，还要依赖数据库的优化器，优化器决定了具体某一索引的选择，也就是常说的执行计划。  
  **而优化器的选择是基于成本（cost），哪个索引的成本越低，优先使用哪个索引。**  
- ![在这里插入图片描述](./assets/145495027/3fb9cc955f25e2ef4bb6cc61.png)  
+ ![](./assets/145495027/3fb9cc955f25e2ef4bb6cc61.png)  
  上图是MySQL执行过程,我们不难看出,MySQL 数据库由 Server 层和 Engine 层组成：
 
 * Server 层有 SQL 分析器、SQL优化器、SQL 执行器，用于负责 SQL 语句的具体执行过程；
@@ -92,7 +82,7 @@ Cost  = Server Cost + Engine Cost
 * CPU Cost 表示计算的开销，比如索引键值的比较、记录值的比较、结果集的排序……这些操作都在 Server 层完成；
 * IO Cost 表示引擎层 IO 的开销，MySQL 8.0 可以通过区分一张表的数据是否在内存中，分别计算读取内存 IO 开销以及读取磁盘 IO 的开销。  
    数据库 mysql 下的表 server\_cost、engine\_cost 则记录了对于各种成本的计算，如  
-   ![在这里插入图片描述](./assets/145495027/cffe88bd71479a7a92cfd9d1.png)  
+   ![](./assets/145495027/cffe88bd71479a7a92cfd9d1.png)  
    表 server\_cost 记录了 Server 层优化器各种操作的成本，这里面包括了所有 CPU Cost，其具体含义如下:
 * disk\_temptable\_create\_cost：创建磁盘临时表的成本，默认为20。
 * disk\_temptable\_row\_cost：磁盘临时表中每条记录的成本，默认为0.5。
@@ -110,7 +100,7 @@ Cost  = Server Cost + Engine Cost
 
 我们再来看一下 10 讲的 GROUP BY SQL 语句，这时我们通过命令 EXPLAIN的FORMAT=json 来查看各成本的值，为的是让你进一步了解优化的工作原理。
 
-```
+```sql
 EXPLAIN FORMAT=json 
 
 SELECT o_custkey,SUM(o_totalprice) 
@@ -162,7 +152,7 @@ FROM orders GROUP BY o_custkey
 MySQL 优化器永远是根据成本，选择出最优的执行计划。哪怕是同一条 SQL 语句，只要范围不同，优化器的选择也可能不同。  
  如下面这两条 SQL：
 
-```
+```sql
 SELECT * FROM orders
 WHERE o_orderdate > '1994-01-01' and o_orderdate < '1994-12-31';
 
@@ -174,7 +164,7 @@ WHERE o_orderdate > '1994-02-01' and o_orderdate < '1994-12-31';
 
 上面这两条 SQL 都是通过索引字段 o\_orderdate 进行查询，然而第一条 SQL 语句的执行计划并未使用索引 idx\_orderdate，而是使用了如下的执行计划：
 
-```
+```sql
 EXPLAIN SELECT * FROM orders 
 
 WHERE o_orderdate > '1994-01-01' 
@@ -212,7 +202,7 @@ possible_keys: idx_orderdate
 
 从上述执行计划中可以发现，**优化器已经通过 possible\_keys 识别出可以使用索引 idx\_orderdate**，但最终却使用全表扫描的方式取出结果。 最为根本的原因在于：**优化器认为使用通过主键进行全表扫描的成本比通过二级索引 idx\_orderdate 的成本要低**，可以通过 FORMAT=tree 观察得到：
 
-```
+```sql
 EXPLAIN FORMAT=tree 
 
 SELECT * FROM orders 
@@ -249,7 +239,7 @@ EXPLAIN: -> Index range scan on orders using idx_orderdate, with index condition
 
 所以，第二条 SQL 语句，只是时间范围发生了变化，但是 MySQL 优化器就会自动使用二级索引 idx\_orderdate了，这时我们再观察执行计划：
 
-```
+```sql
 EXPLAIN SELECT * FROM orders 
 
 WHERE o_orderdate > '1994-02-01' 
@@ -299,7 +289,7 @@ B+ 树索引通常要建立在高选择性的字段或字段组合上，如性�
 通常订单状态绝大部分都是已完成，只有绝少部分因为系统故障原因，会在 15 分钟后还没有完成订单，**因此订单状态是存在数据倾斜的**。  
  这时，虽然订单状态是低选择性的，但是由于其有数据倾斜，且我们只是从索引查询少量数据，因此可以对订单状态创建索引：
 
-```
+```sql
 ALTER TABLE orders 
 ADD INDEX idx_orderstatus(o_orderstatus)
 
@@ -308,7 +298,7 @@ ADD INDEX idx_orderstatus(o_orderstatus)
 
 但这时根据下面的这条 SQL，优化器的选择可能如下：
 
-```
+```sql
 EXPLAIN SELECT * FROM orders 
 
 WHERE o_orderstatus = 'P'\G
@@ -344,7 +334,7 @@ possible_keys: NULL
 
 由于字段 o\_orderstatus 仅有三个值，分别为 ‘O’、’P’、’F’。但 MySQL 并不知道这三个列的分布情况，认为这三个值是平均分布的，但其实是这三个值存在严重倾斜：
 
-```
+```sql
 SELECT o_orderstatus,count(1) 
 
 FROM orders GROUP BY o_orderstatus;
@@ -379,7 +369,7 @@ UPDATE HISTOGRAM ON o_orderstatus;
 
 在创建完直方图后，MySQL会收集到字段 o\_orderstatus 的数值分布，可以通过下面的命令查询得到：
 
-```
+```sql
 SELECT 
 
 v value, 
@@ -411,7 +401,7 @@ WHERE column_name = 'o_orderstatus';
 
 可以看到，现在 MySQL 知道状态为 P 的订单只占 2.5%，因此再去查询状态为 P 的订单时，就会使用到索引 idx\_orderstatus了，如：
 
-```
+```sql
 EXPLAIN SELECT * FROM orders 
 
 WHERE o_orderstatus = 'P'\G

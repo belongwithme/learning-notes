@@ -1,31 +1,13 @@
 ---
 title: 数据库
-description: 数据建模、查询机制、事务语义与性能诊断。
+description: MySQL 存储、索引、SQL 执行、事务与锁、日志与复制。
 hero:
   title: 数据库
-  tagline: 不只记录 SQL 怎么写，也解释数据如何组织、查询为何变慢，以及一致性承诺在什么条件下成立。
-tableOfContents:
-  minHeadingLevel: 2
-  maxHeadingLevel: 2
+  tagline: 以 MySQL 为主：数据如何存储，查询如何执行，事务与锁如何保证一致性。
+tableOfContents: false
 ---
 
-import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
-import ArchiveScopeList from '../../../../components/ArchiveScopeList.astro';
-import ArchiveStatus from '../../../../components/ArchiveStatus.astro';
+import CategoryIndex from '../../../../components/CategoryIndex.astro';
+import { KnowledgeSubcategories } from '../../../../config/site-routing';
 
-<ArchiveKicker title="COLLECTION 02 · DATABASE" />
-
-## 收录范围
-
-<ArchiveScopeList items={[
-	{ number: '01', title: '数据建模', description: '表结构、约束、生命周期和业务语义。' },
-	{ number: '02', title: '查询机制', description: '索引、执行计划与性能诊断。' },
-	{ number: '03', title: '事务一致性', description: '隔离级别、锁和并发修改边界。' }
-]} />
-
-## 内容状态
-
-<ArchiveStatus 
-	title="历史文章已导入，内容正在逐篇验证。" 
-	description="导入内容统一保留为草稿，后续补充数据版本、执行计划和验证方法。" 
-/>
+<CategoryIndex base="knowledge/database" groups={KnowledgeSubcategories['database']} />

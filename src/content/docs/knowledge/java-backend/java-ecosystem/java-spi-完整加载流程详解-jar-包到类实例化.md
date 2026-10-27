@@ -1,24 +1,13 @@
 ---
 title: "Java SPI 完整加载流程详解-JAR 包到类实例化"
 description: "SPI还是Spring SPI或者xxx SPI都有很大的帮助,最近想深究了一下,看了看源码的部分,觉得挺有帮助."
-sourceId: "153398956"
-source: "https://blog.csdn.net/qq_45852626/article/details/153398956"
-sourceSeries:
-  - "Java源码"
-category: java-backend
-subcategory: java-ecosystem
-tags:
-  - "Java源码"
-  - "Java"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 153398956
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153398956)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153398956)
 
 ## 前言
 
@@ -59,7 +48,7 @@ my-app/
 
 #### 1. 服务接口 (service-api.jar)
 
-```
+```java
 package com.example.spi;
 
 public interface MyService {
@@ -71,7 +60,7 @@ public interface MyService {
 
 #### 2. 服务提供者1 (provider1.jar)
 
-```
+```java
 package com.example.spi.impl;
 
 public class Provider1 implements MyService {
@@ -96,7 +85,7 @@ com.example.spi.impl.Provider1
 
 #### 3. 服务提供者2 (provider2.jar)
 
-```
+```java
 package com.example.spi.impl;
 
 public class Provider2 implements MyService {
@@ -121,7 +110,7 @@ com.example.spi.impl.Provider2
 
 #### 4. 应用程序 (app.jar)
 
-```
+```java
 package com.example;
 
 import com.example.spi.MyService;
@@ -147,7 +136,7 @@ public class App {
 
 ### 第1步：调用 ServiceLoader.load()
 
-```
+```java
 // 应用程序代码
 ServiceLoader<MyService> loader = ServiceLoader.load(MyService.class);
 
@@ -156,7 +145,7 @@ ServiceLoader<MyService> loader = ServiceLoader.load(MyService.class);
 
 **内部执行**：
 
-```
+```java
 // ServiceLoader.java:211-214
 public static <S> ServiceLoader<S> load(Class<S> service) {
     // 获取线程上下文类加载器（通常是 AppClassLoader）
@@ -174,7 +163,7 @@ public static <S> ServiceLoader<S> load(Class<S> service, ClassLoader loader) {
 
 ### 第2步：ServiceLoader 构造方法
 
-```
+```java
 // ServiceLoader.java:122-180
 private ServiceLoader(Class<S> svc, ClassLoader cl) {
     service = Objects.requireNonNull(svc, "Service interface cannot be null");
@@ -219,7 +208,7 @@ for (MyService service : loader) {
 
 这会调用：
 
-```
+```java
 // ServiceLoader.java:177-200 (iterator方法)
 public Iterator<S> iterator() {
     return new Iterator<S>() {
@@ -248,7 +237,7 @@ public Iterator<S> iterator() {
 
 **这是关键！** 这里是从 JAR 包中查找配置文件的地方：
 
-```
+```java
 // ServiceLoader.java:271-294 (LazyIterator.hasNextService)
 private boolean hasNextService() {
     if (nextName != null) {
@@ -315,7 +304,7 @@ configs = loader.getResources("META-INF/services/com.example.spi.MyService");
 
 #### ClassLoader.getResources() 的工作原理：
 
-```
+```java
 // ClassLoader.java:1017-1028
 public Enumeration<URL> getResources(String name) throws IOException {
     @SuppressWarnings("unchecked")
@@ -348,7 +337,7 @@ AppClassLoader 继承自 URLClassLoader，它的 `findResources()` 方法会：
 
 **伪代码说明**：
 
-```
+```java
 // URLClassLoader 的内部逻辑（简化版）
 protected Enumeration<URL> findResources(String name) {
     List<URL> results = new ArrayList<>();
@@ -389,7 +378,7 @@ URL 2: jar:file:/path/to/provider2.jar!/META-INF/services/com.example.spi.MyServ
 
 ### 第6步：parse() - 读取配置文件内容
 
-```
+```java
 // ServiceLoader.java:231-253
 private Iterator<String> parse(Class<?> service, URL u) {
     InputStream in = null;
@@ -442,7 +431,7 @@ InputStream in = url.openStream();
 
 ### 第7步：parseLine() - 解析每一行
 
-```
+```java
 // ServiceLoader.java:202-229
 private int parseLine(Class<?> service, URL u, BufferedReader r, int lc,
                       List<String> names) {
@@ -491,7 +480,7 @@ private int parseLine(Class<?> service, URL u, BufferedReader r, int lc,
 
 ### 第8步：LazyIterator.next() - 加载并实例化 类
 
-```
+```java
 // ServiceLoader.java:296-321 (LazyIterator.nextService)
 private S nextService() {
     if (!hasNextService())
@@ -549,7 +538,7 @@ private S nextService() {
 
 ## 三、完整的调用链可视化
 
-```
+```java
 应用程序
   └─> ServiceLoader.load(MyService.class)
        └─> new ServiceLoader(MyService.class, AppClassLoader)
@@ -629,7 +618,7 @@ configs = loader.getResources("META-INF/services/com.example.spi.MyService");
 
 ### 2. URL.openStream() 如何读取 JAR 包内的文件
 
-```
+```java
 URL url = new URL("jar:file:/path/to/provider1.jar!/META-INF/services/com.example.spi.MyService");
 InputStream in = url.openStream();
 
@@ -646,7 +635,7 @@ InputStream in = url.openStream();
 
 ### 3. Class.forName() 如何从 JAR 包加载类
 
-```
+```java
 Class<?> c = Class.forName("com.example.spi.impl.Provider1", false, loader);
 
 // 内部流程:
@@ -673,7 +662,7 @@ Class<?> c = Class.forName("com.example.spi.impl.Provider1", false, loader);
 
 ### 启动命令
 
-```
+```bash
 java -cp app.jar:service-api.jar:provider1.jar:provider2.jar com.example.App
 
 
@@ -686,7 +675,7 @@ java -cp app.jar:service-api.jar:provider1.jar:provider2.jar com.example.App
    * classpath = [app.jar, service-api.jar, provider1.jar, provider2.jar]
 2. **加载并执行 App.main()**
 
-   ```
+   ```java
    ServiceLoader<MyService> loader = ServiceLoader.load(MyService.class);
 
 

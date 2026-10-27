@@ -1,22 +1,13 @@
 ---
 title: "图论- Dijkstra算法"
 description: "学习这个算法之间,必须要对BFS遍历比较熟悉,它的本质就是一个特殊改造过的BFS算法."
-sourceId: "145656720"
-source: "https://blog.csdn.net/qq_45852626/article/details/145656720"
-sourceSeries: []
-category: algorithms
-subcategory: trees-graphs
-tags:
-  - "算法"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145656720
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145656720)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145656720)
 
 ## 前言
 
@@ -31,7 +22,7 @@ Dijkstra算法是一种计算图中单源最短路径算法,本质上是一个�
 
 ## BFS基础模版
 
-```
+```java
 // 图结构的 BFS 遍历，从节点 s 开始进行 BFS，且记录路径的权重和
 // 每个节点自行维护 State 类，记录从 s 走来的权重和
 class State {
@@ -87,7 +78,7 @@ int[] dijkstra(int start, Graph graph);
 
 我们也需要一个 State 类来辅助 BFS 算法的运行，清晰起见，我们用 id 变量记录当前节点 ID，用 distFromStart 变量记录从起点到当前节点的距离。
 
-```
+```java
 class State {
     // 图节点的 id
     int id;
@@ -105,12 +96,12 @@ class State {
 ### distTo 记录最短路径
 
 加权图中的 Dijkstra 算法和无权图中的普通 BFS 算法不同，在 Dijkstra 算法中，你第一次经过某个节点时的路径权重，不见得就是最小的，所以对于同一个节点，我们可能会经过多次，而且每次的 distFromStart 可能都不一样，比如下图：  
- ![在这里插入图片描述](./assets/145656720/f812ddac5934413b3b74b190.png)  
+ ![](./assets/145656720/f812ddac5934413b3b74b190.png)  
  当重复遍历到同一个节点时，我们可以比较一下当前的 distFromStart 和 distTo 中的值，如果当前的更小，就更新 distTo，反之，就不用再往后继续遍历了。
 
 ### 伪代码模版
 
-```
+```java
 // 输入一幅图和一个起点 start，计算 start 到其他节点的最短距离
 int[] dijkstra(int start, Graph graph) {
     // 图中节点的个数
@@ -172,7 +163,7 @@ int[] dijkstra(int start, Graph graph) {
 
 while 循环每执行一次，都会往外拿一个元素，但想往队列里放元素，可就有很多限制了，必须满足下面这个条件：
 
-```
+```java
 // 看看从 curNode 达到 nextNode 的距离是否会更短
 if (distTo[nextNodeID] > distToNextNode) {
     // 更新 dp table
@@ -194,7 +185,7 @@ if (distTo[nextNodeID] > distToNextNode) {
 Dijkstra 算法使用优先级队列，主要是为了效率上的优化，类似一种贪心算法的思路。
 
 为什么说是一种贪心思路呢，比如说下面这种情况，你想计算从起点 start 到终点 end 的最短路径权重：  
- ![在这里插入图片描述](./assets/145656720/b49a2c487f74ef4b0ec951f8.png)  
+ ![](./assets/145656720/b49a2c487f74ef4b0ec951f8.png)  
  假设你当前只遍历了图中的这几个节点，那么你下一步准备遍历那个节点？这三条路径都可能成为最短路径的一部分，但你觉得哪条路径更有「潜力」成为最短路径中的一部分？
 
 从目前的情况来看，显然橙色路径的可能性更大嘛，所以我们希望节点 2 排在队列靠前的位置，优先被拿出来向后遍历。

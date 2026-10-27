@@ -1,23 +1,13 @@
 ---
 title: "JUC线程池-ScheduledThreadPoolExecutor"
 description: "在 Java 开发中，我们经常会遇到需要延迟执行或周期性执行任务的场景。比如："
-sourceId: "147246468"
-source: "https://blog.csdn.net/qq_45852626/article/details/147246468"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
-  order: 147246468
+  order: 33
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147246468)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147246468)
 
 ## 1. 引言：为什么需要 ScheduledThreadPoolExecutor？
 
@@ -57,7 +47,7 @@ sidebar:
 
 `ScheduledThreadPoolExecutor` 继承自 `ThreadPoolExecutor`，并实现了 `ScheduledExecutorService` 接口。
 
-```
+```java
 public class ScheduledThreadPoolExecutor
         extends ThreadPoolExecutor
         implements ScheduledExecutorService {
@@ -196,7 +186,7 @@ FixedDelay (delay=3s):
 
 ### 2.4. 基本用法示例
 
-```
+```java
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -297,7 +287,7 @@ public class ScheduledThreadPoolDemo {
   1. **在任务内部 `try-catch`**：最直接的方式是在你的 `Runnable` 或 `Callable` 的 `run/call` 方法内部添加 `try-catch` 块，自行处理异常（如记录日志）。这是推荐的做法。
   2. **重写 `afterExecute` 方法**：可以继承 `ScheduledThreadPoolExecutor` 并重写 `protected void afterExecute(Runnable r, Throwable t)` 方法。这个方法在每个任务执行完毕后被调用。如果任务正常完成，`t` 为 `null`；如果任务抛出异常，`t` 就是那个异常对象。你可以在这里统一处理异常，比如记录日志。注意，需要检查 `r` 是否是 `Future<?>` 类型，并调用其 `get()` 方法来触发潜在的 `ExecutionException`，然后处理 `t` 或捕获的 `ExecutionException`。
 
-     ```
+     ```java
      ScheduledThreadPoolExecutor customScheduler = new ScheduledThreadPoolExecutor(1) {
          @Override
          protected void afterExecute(Runnable r, Throwable t) {
@@ -369,7 +359,7 @@ public class ScheduledThreadPoolDemo {
 
 `ScheduledThreadPoolExecutor` 提供了多个构造函数，最常用的是：
 
-```
+```java
 public ScheduledThreadPoolExecutor(int corePoolSize) {
     super(corePoolSize, Integer.MAX_VALUE, 0, NANOSECONDS,
           new DelayedWorkQueue());
@@ -412,7 +402,7 @@ Doug Lea 在设计时可能考虑到，定时任务的执行时机是由任务�
 
 我们来看 `schedule(Callable<V> callable, long delay, TimeUnit unit)` 的实现：
 
-```
+```java
 // ScheduledThreadPoolExecutor.java
 public <V> ScheduledFuture<V> schedule(Callable<V> callable,
                                        long delay,
@@ -493,7 +483,7 @@ private void delayedExecute(RunnableScheduledFuture<?> task) {
 
 ### 3.3. `scheduleAtFixedRate` 方法源码解析
 
-```
+```java
 // ScheduledThreadPoolExecutor.java
 public ScheduledFuture<?> scheduleAtFixedRate(Runnable command,
                                               long initialDelay,
@@ -551,7 +541,7 @@ ScheduledFutureTask(Runnable r, V result, long ns, long period) {
 
 ### 3.4. `scheduleWithFixedDelay` 方法源码解析
 
-```
+```java
 // ScheduledThreadPoolExecutor.java
 public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command,
                                                long initialDelay,
@@ -603,7 +593,7 @@ public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command,
 
 `ScheduledFutureTask` 的 `run()` 方法是实现周期性调度的关键所在。当工作线程从 `DelayedWorkQueue` 取出一个到期的 `ScheduledFutureTask` 并执行其 `run()` 方法时，会发生以下情况：
 
-```
+```java
 // ScheduledFutureTask.java
 public void run() {
     // 1. 判断是否是周期性任务
@@ -713,7 +703,7 @@ protected boolean runAndReset() {
 
 `DelayedWorkQueue` 是 `ScheduledThreadPoolExecutor` 的心脏。它是一个基于**最小堆**实现的优先级队列，专门用于存储和管理 `Delayed` 对象（如 `ScheduledFutureTask`）。
 
-```
+```java
 // DelayedWorkQueue.java (内部结构简化)
 static class DelayedWorkQueue extends AbstractQueue<Runnable>
     implements BlockingQueue<Runnable> {
@@ -970,7 +960,7 @@ static class DelayedWorkQueue extends AbstractQueue<Runnable>
 
 **优雅关闭的最佳实践：**
 
-```
+```java
 public static void shutdownGracefully(ExecutorService executor, long timeout, TimeUnit unit) {
     // 1. 发起 shutdown，不再接受新任务
     executor.shutdown();
@@ -1016,7 +1006,7 @@ public static void shutdownGracefully(ExecutorService executor, long timeout, Ti
 
 **示例 (使用 Guava 的 `ThreadFactoryBuilder`)：**
 
-```
+```java
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.concurrent.*;
 
@@ -1042,7 +1032,7 @@ ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(
 
 如果你不想引入 Guava，也可以自己实现 `ThreadFactory` 接口：
 
-```
+```java
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 

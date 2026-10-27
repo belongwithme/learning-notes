@@ -1,24 +1,13 @@
 ---
 title: "阻塞队列-BlockingQueue"
 description: "想象一下现实生活中的流水线：上游工序不断生产零件（生产者），下游工序不断取用零件进行组装（消费者）。为了保证流水线顺畅运行，通常会在上下游之间设置一个传送带或缓冲区。这个缓冲区有几个关键作用："
-sourceId: "147334606"
-source: "https://blog.csdn.net/qq_45852626/article/details/147334606"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
-  - "算法"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
-  order: 147334606
+  order: 29
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147334606)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147334606)
 
 ## Java BlockingQueue 深度教程
 ## 0. 前言：为什么需要 BlockingQueue？
@@ -147,7 +136,7 @@ Java 并发包提供了多种 `BlockingQueue` 的实现，它们在内部
 
 **源码浅析 (基于 JDK 8 / OpenJDK 简化示意)：**
 
-```
+```java
 public class ArrayBlockingQueue<E> extends AbstractQueue<E>
         implements BlockingQueue<E>, java.io.Serializable {
 
@@ -362,7 +351,7 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
 
 **源码浅析 (基于 JDK 8 / OpenJDK 简化示意)：**
 
-```
+```java
 public class LinkedBlockingQueue<E> extends AbstractQueue<E>
         implements BlockingQueue<E>, java.io.Serializable {
 
@@ -628,7 +617,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
 
 **源码浅析 (基于 JDK 8 / OpenJDK 简化示意)：**
 
-```
+```java
 public class PriorityBlockingQueue<E> extends AbstractQueue<E>
     implements BlockingQueue<E>, java.io.Serializable {
 
@@ -839,7 +828,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
 
 **`Delayed` 接口：**
 
-```
+```java
 package java.util.concurrent;
 
 public interface Delayed extends Comparable<Delayed> {
@@ -861,7 +850,7 @@ public interface Delayed extends Comparable<Delayed> {
 
 **源码浅析 (基于 JDK 8 / OpenJDK 简化示意)：**
 
-```
+```java
 public class DelayQueue<E extends Delayed> extends AbstractQueue<E>
     implements BlockingQueue<E> {
 
@@ -1081,7 +1070,7 @@ public class DelayQueue<E extends Delayed> extends AbstractQueue<E>
 
 **公平模式 (TransferQueue)** 使用类似的思想，但等待节点组织成 FIFO 队列，确保先来的线程先被匹配。
 
-```
+```java
 // 这是一个高度简化的概念性代码，并非实际源码
 public class SynchronousQueue<E> extends AbstractQueue<E>
     implements BlockingQueue<E>, java.io.Serializable {
@@ -1410,7 +1399,7 @@ graph TD
 4. 提供一个 `addRequest` 方法供外部调用，将请求放入队列（可以使用带超时的 `offer` 防止队列过载时无限阻塞）。
 5. 提供 `start` 和 `shutdown` 方法来控制处理线程的生命周期。`shutdown` 时需要处理队列中剩余的请求。
 
-```
+```java
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -1665,7 +1654,7 @@ public class BatchRequestProcessor<T> {
 4. 在主线程中创建并启动生产者和消费者线程。
 5. 等待所有线程结束（使用 `join()`）。
 
-```
+```java
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -1806,7 +1795,7 @@ public class ProducerConsumerWithBlockingQueue {
 
 `ConcurrentLinkedQueue` 是一个线程安全的、基于链表的**无界**非阻塞队列。它的 `offer()` 和 `poll()` 操作是非阻塞的。我们需要手动添加阻塞逻辑。
 
-```
+```java
 import java.util.LinkedList; // 使用 LinkedList 作为底层队列 (非线程安全)
 import java.util.Queue;
 import java.util.concurrent.*;
@@ -1979,7 +1968,7 @@ public class ProducerConsumerWithNonBlockingQueue {
   2. **重新设置中断状态**：调用 `Thread.currentThread().interrupt()`。这很重要，因为捕获异常会清除中断状态，重新设置可以让更高层的调用者知道发生了中断。
   3. 可以选择向上抛出异常，或者根据业务逻辑结束当前任务/线程。
 
-  ```
+  ```java
   try {
       queue.put(data);
   } catch (InterruptedException e) {

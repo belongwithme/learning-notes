@@ -1,23 +1,13 @@
 ---
 title: "JUC工具类-CountDownLatch"
 description: "则是并发控制的重要武器。CountDownLatch 是 java.util.concurrent 包中最经典的同步器之一，它通过一个计数器让线程间实现灵活的协作机制。"
-sourceId: "147238294"
-source: "https://blog.csdn.net/qq_45852626/article/details/147238294"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
-  order: 147238294
+  order: 17
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147238294)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147238294)
 
 ## 一、引言
 
@@ -43,7 +33,7 @@ sidebar:
 
 ### 2.3 核心方法详解
 
-```
+```java
 public class CountDownLatchDemo {
     public static void main(String[] args) throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(3); // 初始化计数器为3
@@ -96,7 +86,7 @@ public class CountDownLatchDemo {
 
 CountDownLatch 的核心实现依赖 AQS（AbstractQueuedSynchronizer）框架，是一种基于状态位的同步器。
 
-```
+```java
 private static final class Sync extends AbstractQueuedSynchronizer {
     Sync(int count) {
         setState(count);
@@ -129,7 +119,7 @@ private static final class Sync extends AbstractQueuedSynchronizer {
 
 #### `await()` 实现逻辑
 
-```
+```java
 public void await() throws InterruptedException {
     sync.acquireSharedInterruptibly(1);
 }
@@ -142,7 +132,7 @@ public void await() throws InterruptedException {
 
 #### `countDown()` 实现逻辑
 
-```
+```java
 public void countDown() {
     sync.releaseShared(1);
 }
@@ -185,7 +175,7 @@ CountDownLatch 内部调用 LockSupport 的 `park()` / `unpark()` 实现挂起�
 
 ### 6.1 启动多个线程并等待全部完成
 
-```
+```java
 CountDownLatch latch = new CountDownLatch(5);
 for (int i = 0; i < 5; i++) {
     new Thread(() -> {
@@ -200,7 +190,7 @@ latch.await();
 
 ### 6.2 多线程同时开始执行
 
-```
+```java
 CountDownLatch startSignal = new CountDownLatch(1);
 for (int i = 0; i < 10; i++) {
     new Thread(() -> {
@@ -216,7 +206,7 @@ startSignal.countDown();
 
 ### 6.3 阶段性任务协同
 
-```
+```java
 // 第一阶段完成后开启第二阶段
 CountDownLatch phase1 = new CountDownLatch(3);
 CountDownLatch phase2 = new CountDownLatch(3);
@@ -242,7 +232,7 @@ phase2.await();
 
 ### 6.4 并行数据加载
 
-```
+```java
 CountDownLatch latch = new CountDownLatch(3);
 ExecutorService executor = Executors.newFixedThreadPool(3);
 Map<String, Object> resultMap = new ConcurrentHashMap<>();

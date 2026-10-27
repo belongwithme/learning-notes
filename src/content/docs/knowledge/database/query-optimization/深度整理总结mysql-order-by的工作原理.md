@@ -1,24 +1,14 @@
 ---
 title: "深度整理总结MySQL——Order By的工作原理"
 description: "这篇文章是对知识内容进行整合加上自己的理解,文章内容来自于各种文章,书籍,工作号内容."
-sourceId: "145448311"
-source: "https://blog.csdn.net/qq_45852626/article/details/145448311"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: query-optimization
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
+  label: "Order By的工作原理"
   order: 145448311
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145448311)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145448311)
 
 ## 前言
 
@@ -66,7 +56,7 @@ order by可以让指定的字段排序来显示结果.
  假设你要查询城市是“杭州”的所有人名字，并且按照姓名排序返回前 1000 个人的姓名、年龄。  
  这个表的部分定义是这样的:
 
-```
+```sql
 CREATE TABLE `t` (
   `id` int(11) NOT NULL,
   `city` varchar(16) NOT NULL,
@@ -94,7 +84,7 @@ rowid 排序 (Sort by RowID / Tag Sort)：MySQL 先只读取排序依据的列�
 
 MySQL 会根据 max\_length\_for\_sort\_data 参数来决定使用哪种排序算法:
 
-```
+```sql
 -- 查看参数值(默认 1024 字节)
 SHOW VARIABLES LIKE 'max_length_for_sort_data';
 
@@ -110,10 +100,10 @@ SHOW VARIABLES LIKE 'max_length_for_sort_data';
 
 首先你可以看到,为了避免全表扫描,我们在city字段上加了索引.  
  那么用explain执行一下就可以发现:  
- ![在这里插入图片描述](./assets/145448311/768d15aea8a71debd0befc96.png)  
+ ![](./assets/145448311/768d15aea8a71debd0befc96.png)  
  Extra 这个字段中的“Using filesort”表示的就是需要排序，MySQL 会给每个线程分配一块内存用于排序，称为 sort\_buffer。  
  为了说明这个 SQL 查询语句的执行过程，我们先来看一下 city 这个索引的示意图。  
- ![在这里插入图片描述](./assets/145448311/25ddd836bd7b3453736794b7.png)  
+ ![](./assets/145448311/25ddd836bd7b3453736794b7.png)  
  满足 city=‘杭州’条件的行，是从 IDX 到 ID(X+N) 的这些记录。  
  这个语句执行流程如下:
 
@@ -125,7 +115,7 @@ SHOW VARIABLES LIKE 'max_length_for_sort_data';
 6. 对 sort\_buffer 中的数据按照字段 name 做快速排序；
 7. 按照排序结果取前 1000 行返回给客户端。  
     用示意图来表示如下:  
-    ![在这里插入图片描述](./assets/145448311/6eb2be25dc9ce9192a16183b.png)  
+    ![](./assets/145448311/6eb2be25dc9ce9192a16183b.png)  
     从上面我们可以看到,全字段排序是mysql需要将**查询涉及的**(sql要查的)所有列数据都加载到排序缓冲区,然后在内存或者磁盘上进行排序,是一种在缺乏有效索引支持时MySQL用来对查询结果进行排序的机制.
 
 #### 内存排序OR磁盘排序
@@ -133,7 +123,7 @@ SHOW VARIABLES LIKE 'max_length_for_sort_data';
 图中“按 name 排序”这个动作，可能在内存中完成，也可能需要使用外部排序，这取决于排序所需的内存和参数 sort\_buffer\_size。  
  你可以用下面介绍的方法，来确定一个排序语句是否使用了临时文件。
 
-```
+```sql
 /* 打开 optimizer_trace，只对本线程有效 */
 SET optimizer_trace='enabled=on'; 
  
@@ -156,7 +146,7 @@ select @b-@a;
 ```
 
 这个方法是通过查看 OPTIMIZER\_TRACE 的结果来确认的，你可以从 number\_of\_tmp\_files 中看到是否使用了临时文件。  
- ![在这里插入图片描述](./assets/145448311/ef18fa94c7ad22da92b6912f.png)  
+ ![](./assets/145448311/ef18fa94c7ad22da92b6912f.png)  
  number\_of\_tmp\_files 表示的是，排序过程中使用的临时文件数。你一定奇怪，为什么需要 12 个文件？内存放不下时，就需要使用外部排序，外部排序一般使用归并排序算法。可以这么简单理解，MySQL 将需要排序的数据分成 12 份，每一份单独排序后存在这些临时文件中。然后把这 12 个有序文件再合并成一个有序的大文件。
 
 如果 sort\_buffer\_size 超过了需要排序的数据量的大小，number\_of\_tmp\_files 就是 0，表示排序可以直接在内存中完成。
@@ -199,7 +189,7 @@ max\_length\_for\_sort\_data，是 MySQL 中专门控制用于排序的行数据
 5. 重复步骤 3、4 直到不满足 city=‘杭州’条件为止，也就是图中的 ID\_Y；
 6. 对 sort\_buffer 中的数据按照字段 name 进行排序；
 7. 遍历排序结果，取前 1000 行，并按照 id 的值回到原表中取出 city、name 和 age 三个字段返回给客户端。  
-    ![在这里插入图片描述](./assets/145448311/d5dac1a1103d5404f833d160.png)  
+    ![](./assets/145448311/d5dac1a1103d5404f833d160.png)  
     rowId排序多访问了一次表t的主键索引,就是步骤7.  
     最后的“结果集”是一个逻辑概念，实际上 MySQL 服务端从排序后的 sort\_buffer 中依次取出 id，然后到原表查到 city、name 和 age 这三个字段的结果，不需要在服务端再耗费内存存储结果，是直接返回给客户端的。
 
@@ -222,22 +212,22 @@ max\_length\_for\_sort\_data，是 MySQL 中专门控制用于排序的行数据
 
 所以，我们可以在这个市民表上创建一个 city 和 name 的联合索引，对应的 SQL 语句是：
 
-```
+```sql
 alter table t add index city_user(city, name);
 
 
 ```
 
-![在这里插入图片描述](./assets/145448311/1d149ade0d523328eea292e6.png)  
+![](./assets/145448311/1d149ade0d523328eea292e6.png)  
  这样整个查询过程的流程就变成了：
 
 1. 从索引 (city,name) 找到第一个满足 city=‘杭州’条件的主键 id；
 2. 到主键 id 索引取出整行，取 name、city、age 三个字段的值，作为结果集的一部分直接返回；
 3. 从索引 (city,name) 取下一个记录主键 id；
 4. 重复步骤 2、3，直到查到第 1000 条记录，或者是不满足 city=‘杭州’条件时循环结束。  
-    ![在这里插入图片描述](./assets/145448311/b87495dabff8e58864812ba8.png)  
+    ![](./assets/145448311/b87495dabff8e58864812ba8.png)  
     最后用explain来印证一下:  
-    ![在这里插入图片描述](./assets/145448311/963ed8a4b2db157d45f3b2a9.png)  
+    ![](./assets/145448311/963ed8a4b2db157d45f3b2a9.png)  
     可以看到,Extra里面是Using Index,表示的使用了覆盖索引,性能上会快很多很多.  
     当然，这里并不是说要为了每个查询能用上覆盖索引，就要把语句中涉及的字段都建上联合索引，毕竟索引还是有维护代价的。这是一个需要权衡的决定。
 
@@ -245,7 +235,7 @@ alter table t add index city_user(city, name);
 
 存在的优化场景
 
-```
+```sql
   SELECT category, COUNT(*) as cnt
   FROM products
   GROUP BY category
@@ -282,7 +272,7 @@ alter table t add index city_user(city, name);
 
 假设你的表里面已经有了 city\_name(city, name) 这个联合索引，然后你要查杭州和苏州两个城市中所有的市民的姓名，并且按名字排序，显示前 100 条记录。如果 SQL 查询语句是这么写的 ：
 
-```
+```sql
 select * from t where city in ('杭州'," 苏州 ") order by name limit 100;
 
 
@@ -309,7 +299,7 @@ select * from t where city in ('杭州'," 苏州 ") order by name limit 100;
 
 如果把这条 SQL 语句里“limit 100”改成“limit 10000,100”的话，处理方式其实也差不多，即：要把上面的两条语句改成写：
 
-```
+```sql
 select * from t where city=" 杭州 " order by name limit 10100; 
 和
  select * from t where city=" 苏州 " order by name limit 10100。
@@ -322,7 +312,7 @@ select * from t where city=" 杭州 " order by name limit 10100;
 当然这个方案有一个明显的损失，就是从数据库返回给客户端的数据量变大了。  
  所以，如果数据的单行比较大的话，可以考虑把这两条 SQL 语句改成下面这种写法：
 
-```
+```sql
 select id,name from t where city=" 杭州 " order by name limit 10100; 
 和
 select id,name from t where city=" 苏州 " order by name limit 10100。

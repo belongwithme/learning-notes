@@ -1,24 +1,13 @@
 ---
 title: "Java Lock 深度解析"
 description: "在 Java 并发编程里，synchronized 关键字是我们最早接触也最常用的同步机制。它简单易用，能解决大部分场景下的线程安全问题。然而，随着业务场景的复杂化和对性能、灵活性的更高要求，synchronized 的局限性也逐渐显现。此时，java.util.concurrent.lock..."
-sourceId: "147251093"
-source: "https://blog.csdn.net/qq_45852626/article/details/147251093"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
-  - "Java"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
-  order: 147251093
+  order: 13
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251093)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251093)
 
 ## 前言
 
@@ -48,7 +37,7 @@ sidebar:
 
 **`Lock` 接口的核心方法：**
 
-```
+```java
 public interface Lock {
     // 获取锁。如果锁不可用，则当前线程将被禁用以进行线程调度，并处于休眠状态，
     // 直到获取锁。
@@ -100,7 +89,7 @@ public interface Lock {
 
 **重点理解：** `Lock` 是一个接口，它只定义规范，具体的实现由其子类完成（如 `ReentrantLock`）。使用 `Lock` 时，**必须手动释放锁**，这通常在 `finally` 块中完成，否则可能导致死锁。
 
-```
+```java
 Lock lock = new ReentrantLock();
 lock.lock(); // 获取锁
 try {
@@ -187,7 +176,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
 
 * **`synchronized`**：使用非常简单，只需在方法或代码块前加上 `synchronized` 关键字。JVM 会自动在进入同步代码块时获取锁，在退出同步代码块（正常结束或抛出异常）时自动释放锁。开发者无需关心锁的释放问题。
 
-  ```
+  ```java
   public synchronized void synchronizedMethod() {
       // 业务逻辑
   }
@@ -213,7 +202,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
   ```
 * **`Lock`**：需要手动实例化 `Lock` 对象（通常是 `ReentrantLock`），并在需要同步的代码块前后显式调用 `lock()` 和 `unlock()` 方法。**关键在于 `unlock()` 必须被调用**，否则其他线程将永远无法获取该锁。因此，`unlock()` 通常放在 `finally` 块中，确保即使 `try` 块中发生异常，锁也能被释放。
 
-  ```
+  ```java
   Lock lock = new ReentrantLock();
   // ...
   public void lockMethod() {
@@ -247,7 +236,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
 
   + **`tryLock()`**：尝试获取锁，如果锁当前可用，则获取成功并返回 `true`；如果锁已被其他线程持有，则立即返回 `false`，不会阻塞。这使得线程可以根据是否能立即获取锁来决定下一步的操作，避免无谓的等待。
 
-    ```
+    ```java
     if (lock.tryLock()) { // 尝试非阻塞获取锁
         try {
             // 获取锁成功，执行业务逻辑
@@ -273,7 +262,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
     ```
   + **`tryLock(long time, TimeUnit unit)`**：带超时的尝试获取锁。线程会尝试在指定的时间内获取锁。如果在超时时间内获取成功，返回 `true`；如果在超时时间到达时仍未获取成功，返回 `false`。等待过程中如果线程被中断，会抛出 `InterruptedException`。这对于需要避免无限等待的场景非常有用。
 
-    ```
+    ```java
     try {
         if (lock.tryLock(1, TimeUnit.SECONDS)) { // 尝试在1秒内获取锁
             try {
@@ -311,7 +300,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
     ```
   + **`lockInterruptibly()`**：可中断地获取锁。与 `lock()` 类似，如果锁不可用，线程会阻塞等待。但与 `lock()` 不同的是，如果在等待过程中，该线程被其他线程调用了 `interrupt()` 方法，那么该线程会**响应中断**，抛出 `InterruptedException` 并停止等待锁。这使得我们可以设计能够响应取消操作的同步逻辑。
 
-    ```
+    ```java
     try {
         lock.lockInterruptibly(); // 可中断地获取锁
         try {
@@ -350,7 +339,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
   + **非公平锁（默认）**：`new ReentrantLock()` 或 `new ReentrantLock(false)`。当锁被释放时，如果恰好有一个新的线程尝试获取锁，它**有可能**在等待队列中的线程被唤醒之前就“插队”获取到锁。这种方式吞吐量通常较高，因为减少了线程挂起和唤醒的开销。
   + **公平锁**：`new ReentrantLock(true)`。严格按照线程请求锁的 FIFO 顺序来分配锁。当锁被释放时，只有等待队列头部的线程才能获取锁。新来的线程如果发现锁已被占用或者队列不为空，会自觉排到队尾。公平锁能防止线程饥饿，但通常会带来额外的性能开销（上下文切换更频繁）。
 
-  ```
+  ```java
   // 创建一个公平锁
   Lock fairLock = new ReentrantLock(true);
   // 创建一个非公平锁 (默认)
@@ -387,7 +376,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
 
   **优势：** 使用多个 `Condition` 可以将不同条件的等待线程分组管理，实现更精确的唤醒。例如，在经典的“生产者-消费者”模型中，可以使用一个 `Condition` 管理“缓冲区满”时等待的生产者线程，另一个 `Condition` 管理“缓冲区空”时等待的消费者线程。当消费者消费后，只需唤醒等待“缓冲区满”的生产者 (`producerCondition.signal()`)，而不需要唤醒其他可能在等待的消费者。而 `synchronized` 的 `notify()` 只能随机唤醒一个等待线程（可能是生产者也可能是消费者），`notifyAll()` 则会唤醒所有等待线程，造成不必要的竞争和上下文切换（惊群效应）。
 
-  ```
+  ```java
   Lock lock = new ReentrantLock();
   Condition producerCondition = lock.newCondition(); // 生产者等待条件
   Condition consumerCondition = lock.newCondition(); // 消费者等待条件
@@ -480,7 +469,7 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
 
 想象一下 `synchronized`：
 
-```
+```java
 public class Widget {
     public synchronized void doSomething() {
         System.out.println("Widget.doSomething() called");
@@ -511,7 +500,7 @@ public class Widget {
 
 基本用法与 `Lock` 接口定义一致：
 
-```
+```java
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -633,7 +622,7 @@ final void lock() {
 
 **`acquire(1)` 内部的 `tryAcquire()` 实现差异：**
 
-```
+```java
 // java.util.concurrent.locks.ReentrantLock.NonfairSync
 protected final boolean tryAcquire(int acquires) {
     // 非公平锁的 tryAcquire，由 acquire(1) 调用
@@ -790,7 +779,7 @@ final boolean acquireQueued(final Node node, int arg) {
 
 **简化版 `release` 伪代码:**
 
-```
+```java
 public final boolean release(int arg) {
     // 尝试释放锁（调用子类的 tryRelease）
     if (tryRelease(arg)) { // 如果 tryRelease 返回 true，说明锁已完全释放
@@ -845,7 +834,7 @@ protected final boolean tryRelease(int releases) {
 
 `ReadWriteLock` 接口定义了获取“读锁”和“写锁”的方法：
 
-```
+```java
 public interface ReadWriteLock {
     // 返回用于读取操作的锁。
     Lock readLock();
@@ -916,7 +905,7 @@ public interface ReadWriteLock {
 
 假设我们有一个缓存类，读取操作很频繁，写入（更新缓存）操作相对较少。
 
-```
+```java
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -1116,7 +1105,7 @@ public class Cache<K, V> {
 
 **`Condition` 接口的核心方法：**
 
-```
+```java
 public interface Condition {
     // 使当前线程等待，直到被唤醒 (signal/signalAll) 或被中断。
     // 调用此方法前，当前线程必须持有与此 Condition 相关联的 Lock。
@@ -1164,7 +1153,7 @@ public interface Condition {
 
 `Condition` 最经典的用途是解决生产者-消费者问题，特别是当需要区分不同等待条件时。下面是一个使用 `ReentrantLock` 和两个 `Condition` 实现的有界阻塞队列的例子：
 
-```
+```java
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.Condition;

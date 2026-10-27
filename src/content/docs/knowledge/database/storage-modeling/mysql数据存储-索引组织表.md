@@ -1,24 +1,13 @@
 ---
 title: "MySQL数据存储- 索引组织表"
 description: "InnoDB 存储引擎是 MySQL 数据库中使用最为广泛的引擎，在海量大并发的 OLTP 业务中，InnoDB 必选。这一章我们聊一聊 MySQL InnoDB 存储引擎的索引结构。"
-sourceId: "145488386"
-source: "https://blog.csdn.net/qq_45852626/article/details/145488386"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: storage-modeling
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145488386
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145488386)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145488386)
 
 ## 前言
 
@@ -31,7 +20,7 @@ InnoDB 存储引擎是 MySQL 数据库中使用最为广泛的引擎，在海量
 ### 堆表
 
 堆表中的数据无序存放， 数据的排序完全依赖于索引.（Oracle、Microsoft SQL Server、PostgreSQL 早期默认支持的数据存储都是堆表结构）。  
- ![在这里插入图片描述](./assets/145488386/65f8f4283eaac0f5b7eb82a0.png)  
+ ![](./assets/145488386/65f8f4283eaac0f5b7eb82a0.png)  
  数据和索引分开存储。索引是排序后的数据，而堆表中的数据是无序的，索引的叶子节点存放了数据在堆表中的地址，当堆表的数据发生改变，且位置发生了变更，所有索引中的地址都要更新，这非常影响性能，特别是对于 OLTP 业务。
 
 ### 索引组织表
@@ -43,7 +32,7 @@ InnoDB 存储引擎是 MySQL 数据库中使用最为广泛的引擎，在海量
 * 数据是按主键排序存储的，不像普通表那样是无序的。
 * 数据和索引存储在一起，不需要额外的索引来定位数据。
 * 查询主键时更快，因为主键索引本身就包含数据。  
-   ![在这里插入图片描述](./assets/145488386/7d0c0539945f581e8bd939e9.png)  
+   ![](./assets/145488386/7d0c0539945f581e8bd939e9.png)  
    表 User 的主键是 id，所以表中的数据根据 id 排序存储，叶子节点存放了表中完整的记录，可以看到表中的数据存放在索引中，即表就是索引，索引就是表。
 
 ## 二级索引
@@ -52,7 +41,7 @@ InnoDB 存储引擎的数据是根据主键索引排序存储的，**除了主�
  二级索引也是一颗 B+ 树索引，但它和主键索引不同的是**叶子节点存放的是索引键值、主键值**。  
  举个例子:
 
-```
+```sql
 CREATE TABLE User (
 
     id BIGINT AUTO_INCREMENT,
@@ -76,12 +65,12 @@ SELECT * FROM User WHERE name = 'David'，
 
 整个流程是:  
  通过二级索引 idx\_name 只能定位主键值，需要额外再通过主键索引进行查询，才能得到最终的结果。\*\*这种“二级索引通过主键索引进行再一次查询”的操作叫作“回表”，\*\*你可以通过下图理解二级索引的查询：  
- ![在这里插入图片描述](./assets/145488386/db3dfe0e7174c188cbf5f25e.png)  
+ ![](./assets/145488386/db3dfe0e7174c188cbf5f25e.png)  
  二级索引的设计有个非常大的好处:  
  如果记录发生修改,其他索引无须进行维护,除非记录的主键发生修改.(因为二级索引存储的是主键，而不是数据的物理地址！)  
  举个例子:
 
-```
+```sql
 UPDATE employees SET salary = salary * 1.1 WHERE emp_id = 1001;
 
 
@@ -105,7 +94,7 @@ salary 发生了变化，但 emp\_id 没变，因此二级索引无需更新。
 
 我们给出一个业务的表User:
 
-```
+```sql
 CREATE TABLE User (
 
     id  BINARY(16) NOT NULL,

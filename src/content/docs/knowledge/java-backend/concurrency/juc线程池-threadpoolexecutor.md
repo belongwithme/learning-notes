@@ -1,23 +1,13 @@
 ---
 title: "JUC线程池-ThreadPoolExecutor"
 description: "在探讨ThreadPoolExecutor的细节之前，我们首先要理解为什么在Java并发编程中，线程池扮演着如此重要的角色。"
-sourceId: "147244662"
-source: "https://blog.csdn.net/qq_45852626/article/details/147244662"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
-  order: 147244662
+  order: 31
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147244662)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147244662)
 
 ## 1. 引言：为什么需要线程池？
 
@@ -27,7 +17,7 @@ sidebar:
 
 想象一下，如果你的应用程序需要处理大量并发请求，例如一个Web服务器。对于每个进来的请求，你都创建一个新的线程去处理：
 
-```
+```java
 // 伪代码：为每个请求创建新线程
 while (true) {
     Socket connection = serverSocket.accept();
@@ -79,7 +69,7 @@ JUC包提供了一个强大的并发框架，而`ThreadPoolExecutor`是这个框
    * 只定义了一个核心方法：`void execute(Runnable command)`。
    * 它的设计目的是将任务的提交与任务的执行解耦。调用者只需要关心如何提交任务，而不需要关心任务具体是如何被执行的（是新建线程执行？还是在当前线程执行？还是由线程池执行？）。
 
-   ```
+   ```java
    public interface Executor {
        void execute(Runnable command);
    }
@@ -93,7 +83,7 @@ JUC包提供了一个强大的并发框架，而`ThreadPoolExecutor`是这个框
    * 增加了提交带有返回值的任务（`Callable`）以及获取任务执行结果（`Future`）的能力（如`submit()`系列方法）。
    * 提供了更丰富的任务提交方式（如`invokeAny()`, `invokeAll()`）。
 
-   ```
+   ```java
    public interface ExecutorService extends Executor {
        void shutdown(); // 优雅关闭
        List<Runnable> shutdownNow(); // 立即关闭，返回未执行任务
@@ -114,7 +104,7 @@ JUC包提供了一个强大的并发框架，而`ThreadPoolExecutor`是这个框
    * 它提供了线程池所需的所有核心功能：线程创建、线程管理、任务排队、任务拒绝、生命周期控制等。
    * 它通过一系列可配置的参数（后面会详细介绍），允许开发者根据具体需求定制线程池的行为。
 
-   ```
+   ```java
    public class ThreadPoolExecutor extends AbstractExecutorService {
        // 实现了ExecutorService接口的所有方法，并提供了具体的线程池逻辑
        // 包含 corePoolSize, maximumPoolSize, keepAliveTime, workQueue 等核心参数
@@ -129,7 +119,7 @@ JUC包提供了一个强大的并发框架，而`ThreadPoolExecutor`是这个框
 
 **面向接口编程的好处**：这种接口与实现分离的设计允许我们编写更灵活的代码。我们可以面向`ExecutorService`接口编程，在运行时根据需要选择不同的实现（虽然`ThreadPoolExecutor`是最常用的，但还有如`ForkJoinPool`, `ScheduledThreadPoolExecutor`等其他实现）。
 
-```
+```java
 // 面向接口编程
 ExecutorService service = new ThreadPoolExecutor(...); // 或者 Executors.newFixedThreadPool(...)
 // 或者
@@ -159,7 +149,7 @@ service.shutdown();
 
 创建`ThreadPoolExecutor`最直接的方式是使用它的构造函数，传入核心参数：
 
-```
+```java
 import java.util.concurrent.*;
 
 public class ThreadPoolDemo {
@@ -492,7 +482,7 @@ public ThreadPoolExecutor(int corePoolSize,
 
 实现`java.util.concurrent.ThreadFactory`接口即可：
 
-```
+```java
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -574,7 +564,7 @@ public class NamedThreadFactory implements ThreadFactory {
 
 Google的Guava库提供了`ThreadFactoryBuilder`，可以更方便地创建自定义`ThreadFactory`：
 
-```
+```java
 // 需要引入 Guava 依赖
 // import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
@@ -616,7 +606,7 @@ ThreadPoolExecutor executor = new ThreadPoolExecutor(
    * **行为**：直接抛出`RejectedExecutionException`（运行时异常）。调用者需要捕获并处理这个异常。
    * **源码**：
 
-     ```
+     ```java
      public static class AbortPolicy implements RejectedExecutionHandler {
          public AbortPolicy() { }
          public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
@@ -644,7 +634,7 @@ ThreadPoolExecutor executor = new ThreadPoolExecutor(
    * **行为**：既不抛弃任务，也不抛出异常，而是**在提交任务的线程（调用`execute`或`submit`的线程）中直接执行这个被拒绝的任务**。
    * **源码**：
 
-     ```
+     ```java
      public static class CallerRunsPolicy implements RejectedExecutionHandler {
          public CallerRunsPolicy() { }
          public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
@@ -676,7 +666,7 @@ ThreadPoolExecutor executor = new ThreadPoolExecutor(
    * **行为**：**静默地丢弃**被拒绝的任务，不做任何处理，也不抛出异常。就像任务从未提交过一样。
    * **源码**：
 
-     ```
+     ```java
      public static class DiscardPolicy implements RejectedExecutionHandler {
          public DiscardPolicy() { }
          public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
@@ -700,7 +690,7 @@ ThreadPoolExecutor executor = new ThreadPoolExecutor(
    * **行为**：丢弃工作队列**队头**（即等待时间最长）的任务，然后**尝试重新提交**当前被拒绝的任务。如果再次提交失败（例如，在执行丢弃和重试之间线程池关闭了），任务仍然会被丢弃。
    * **源码**：
 
-     ```
+     ```java
      public static class DiscardOldestPolicy implements RejectedExecutionHandler {
          public DiscardOldestPolicy() { }
          public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
@@ -734,7 +724,7 @@ ThreadPoolExecutor executor = new ThreadPoolExecutor(
 
 如果标准策略无法满足需求，可以实现`java.util.concurrent.RejectedExecutionHandler`接口来创建自定义策略。
 
-```
+```java
 import java.util.concurrent.*;
 
 // 自定义策略：记录被拒绝的任务日志，然后丢弃
@@ -822,7 +812,7 @@ public class CustomRejectionDemo {
 
 如你提供的文档中提到的，有时可能会尝试实现一个“强制重试”的策略，例如使用`put()`方法强制将任务放入队列：
 
-```
+```java
 // 极不推荐的策略！
 public static class ForcePutPolicy implements RejectedExecutionHandler {
     public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
@@ -941,7 +931,7 @@ public static class ForcePutPolicy implements RejectedExecutionHandler {
 
 `ThreadPoolExecutor`内部通过一个名为`Worker`的内部类来管理工作线程。`Worker`类本身既实现了`Runnable`接口，又继承了`AbstractQueuedSynchronizer`（AQS）。
 
-```
+```java
 private final class Worker
     extends AbstractQueuedSynchronizer
     implements Runnable
@@ -985,7 +975,7 @@ private final class Worker
 * 线程启动后，执行`Worker`的`run()`方法，该方法随即调用外部`ThreadPoolExecutor`的`runWorker(this)`方法。
 * `runWorker`是工作线程的核心逻辑所在。它在一个循环中不断地尝试从任务队列中获取任务并执行。
 
-```
+```java
 // ThreadPoolExecutor.runWorker() 简化逻辑
 final void runWorker(Worker w) {
     Thread wt = Thread.currentThread();
@@ -1037,7 +1027,7 @@ final void runWorker(Worker w) {
 * `runWorker`循环中的`getTask()`方法负责从工作队列`workQueue`中获取下一个要执行的任务。
 * `getTask()`是一个阻塞方法，它会考虑线程池状态、核心线程超时设置、队列情况等。
 
-```
+```java
 // ThreadPoolExecutor.getTask() 简化逻辑
 private Runnable getTask() {
     boolean timedOut = false; // 上次获取任务是否超时
@@ -1171,7 +1161,7 @@ private static final int TERMINATED =  3 << COUNT_BITS; // 1610612736 (二进制
 1. **线程池的运行状态** (`runState`)：存储在`ctl`的高3位。
 2. **当前活动的工作线程数量** (`workerCount`)：存储在`ctl`的低29位。
 
-```
+```java
 private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
 
 // COUNT_BITS决定了workerCount占用的位数
@@ -1231,7 +1221,7 @@ graph LR
 
 这是向线程池提交任务的最核心方法。
 
-```
+```java
 public void execute(Runnable command) {
     if (command == null)
         throw new NullPointerException(); // 任务不能为空
@@ -1309,7 +1299,7 @@ final void reject(Runnable command) {
 
 `submit`方法用于提交需要返回结果的任务（`Callable`）或不需要返回结果的任务（`Runnable`），并返回一个`Future`对象。它是在`AbstractExecutorService`中实现的，内部通常会调用`execute`。
 
-```
+```java
 // AbstractExecutorService.java
 
 // submit(Callable<T> task)
@@ -1366,7 +1356,7 @@ protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
 
 **`FutureTask.run()` 源码核心逻辑（简化版）**：
 
-```
+```java
 public void run() {
     // 检查状态，如果不是NEW，或者CAS设置runner失败，直接返回
     if (state != NEW || !STATE.compareAndSet(this, NEW, RUNNING))
@@ -1430,7 +1420,7 @@ protected void setException(Throwable t) {
 
 这是创建和启动工作线程的核心内部方法。
 
-```
+```java
 private boolean addWorker(Runnable firstTask, boolean core) {
     // 外层循环，用于在CAS失败或状态改变时重试
     retry:
@@ -1566,7 +1556,7 @@ private void addWorkerFailed(Worker w) {
 
 **`shutdown()` - 优雅关闭**
 
-```
+```java
 public void shutdown() {
     final ReentrantLock mainLock = this.mainLock;
     mainLock.lock(); // 加全局锁
@@ -1635,7 +1625,7 @@ private void interruptIdleWorkers() {
 
 **`shutdownNow()` - 立即关闭**
 
-```
+```java
 public List<Runnable> shutdownNow() {
     List<Runnable> tasks;
     final ReentrantLock mainLock = this.mainLock;
@@ -1692,7 +1682,7 @@ private List<Runnable> drainQueue() {
 
 这是`shutdown()`, `shutdownNow()`, `processWorkerExit()`, `addWorkerFailed()` 等方法都会调用的核心终止逻辑。
 
-```
+```java
 final void tryTerminate() {
     for (;;) {
         int c = ctl.get();
@@ -1877,7 +1867,7 @@ protected void terminated() { }
 * **线程复用**：线程池的核心优势是复用线程。
 * **`ThreadLocal`陷阱**：如果在任务代码中使用了`ThreadLocal`存储数据，**必须**在任务执行完毕后（通常在`finally`块中）调用`ThreadLocal.remove()`来清理。否则，由于线程被复用，下一个使用该线程的任务可能会读取到上一个任务残留的数据，导致逻辑错误或**内存泄漏**（如果`ThreadLocal`存储了大对象，且该线程一直存活）。
 
-```
+```java
 ThreadLocal<UserInfo> userInfoThreadLocal = new ThreadLocal<>();
 
 // 在任务中

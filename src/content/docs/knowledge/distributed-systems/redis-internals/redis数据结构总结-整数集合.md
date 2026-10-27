@@ -1,25 +1,13 @@
 ---
 title: "Redis数据结构总结-整数集合"
 description: "整数集合是 Set 对象的底层实现之一。当一个 Set 对象只包含整数值元素，并且元素数量不大时，就会使用整数集这个数据结构作为底层实现。"
-sourceId: "145729512"
-source: "https://blog.csdn.net/qq_45852626/article/details/145729512"
-sourceSeries:
-  - "集合"
-  - "Redis"
-category: distributed-systems
-subcategory: redis-internals
-tags:
-  - "集合"
-  - "Redis"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145729512
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145729512)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145729512)
 
 ## 前言
 
@@ -52,11 +40,11 @@ contents 记录我们实际的数据集合，虽然我们看到结构体中给�
 整数集合会有一个升级规则，就是当我们将一个新元素加入到整数集合里面，如果新元素的类型（int32\_t）比整数集合现有所有元素的类型（int16\_t）都要长时，整数集合需要先进行升级，也就是按新元素的类型（int32\_t）扩展 contents 数组的空间大小，然后才能将新元素加入到整数集合里，当然升级的过程中，也要维持整数集合的有序性。  
  整数集合升级的过程不会重新分配一个新类型的数组，而是在原本的数组上扩展空间，然后在将每个元素按间隔类型大小分割，如果 encoding 属性值为 INTSET\_ENC\_INT16，则每个元素的间隔就是 16 位。  
  举个例子，假设有一个整数集合里有 3 个类型为 int16\_t 的元素。  
- ![在这里插入图片描述](./assets/145729512/425924181c0d41146633e2da.png)  
+ ![](./assets/145729512/425924181c0d41146633e2da.png)  
  往这个整数集合中加入一个新元素 65535，这个新元素需要用 int32\_t 类型来保存，所以整数集合要进行升级操作，首先需要为 contents 数组扩容，在原本空间的大小之上再扩容多 80 位（4x32-3x16=80），这样就能保存下 4 个类型为 int32\_t 的元素。  
- ![在这里插入图片描述](./assets/145729512/e1bda5d57e6876785d754d58.png)  
+ ![](./assets/145729512/e1bda5d57e6876785d754d58.png)  
  扩容完 contents 数组空间大小后，需要将之前的三个元素转换为 int32\_t 类型，并将转换后的元素放置到正确的位上面，并且需要维持底层数组的有序性不变，整个转换过程如下：  
- ![在这里插入图片描述](./assets/145729512/c2c1890df8ba90058eb15060.png)  
+ ![](./assets/145729512/c2c1890df8ba90058eb15060.png)  
  可以看到是有点麻烦,但是这样是有好处的.  
  如果要让一个数组同时保存 int16\_t、int32\_t、int64\_t 类型的元素，最简单做法就是直接使用 int64\_t 类型的数组。  
  不过这样的话，当如果元素都是 int16\_t 类型的，就会造成内存浪费的情况。  

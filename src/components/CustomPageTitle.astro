@@ -3,90 +3,59 @@ import Default from '@astrojs/starlight/components/PageTitle.astro';
 
 const entry = Astro.locals.starlightRoute?.entry || Astro.props.entry;
 const data = entry?.data || {};
-const { status, difficulty, tags } = data;
 
 // 页面标题是文章的唯一主视觉层，状态元信息保持安静。
+// 草稿是绝大多数导入文章的默认状态，不再单独标出。
 const statusMap: Record<string, { label: string, class: string }> = {
   verified: { label: '已验证', class: 'status-verified' },
   outdated: { label: '已过期', class: 'status-outdated' },
-  draft: { label: '草稿', class: 'status-draft' },
   evergreen: { label: '持续维护', class: 'status-evergreen' },
 };
 
-// 定义难度映射
-const diffMap: Record<string, string> = {
-  beginner: '初级',
-  intermediate: '中级',
-  advanced: '高级'
-};
-
-const currentStatus = status ? statusMap[status] : null;
-const currentDiff = difficulty ? diffMap[difficulty] : null;
+const currentStatus = data.status ? statusMap[data.status] : null;
+// 专题概览页带 hero，不计入首页的"继续阅读"。
+const recordVisit = entry?.id?.startsWith('knowledge/') && !data.hero;
 ---
 
 <Default {...Astro.props} />
 
-{(currentStatus || currentDiff || (tags && tags.length > 0)) && (
-  <div class="page-meta-badges">
-    {currentStatus && (
-      <span class={`badge badge-status ${currentStatus.class}`}>
-        <span class="status-dot" aria-hidden="true"></span>
-        {currentStatus.label}
-      </span>
-    )}
-    {currentDiff && (
-      <span class="badge badge-difficulty">
-        难度：{currentDiff}
-      </span>
-    )}
-    {tags && tags.map((tag: string) => (
-      <span class="badge badge-tag">#{tag}</span>
-    ))}
-  </div>
+{currentStatus && (
+  <p class={`page-status ${currentStatus.class}`}>
+    <span class="status-dot" aria-hidden="true"></span>
+    {currentStatus.label}
+  </p>
+)}
+
+{recordVisit && (
+  <script is:inline define:vars={{ title: data.title }}>
+    try {
+      const notes = JSON.parse(localStorage.getItem('recent-notes') || '[]')
+        .filter(note => note.href !== location.pathname);
+      notes.unshift({ href: location.pathname, title });
+      localStorage.setItem('recent-notes', JSON.stringify(notes.slice(0, 4)));
+    } catch {}
+  </script>
 )}
 
 <style>
-  .page-meta-badges {
+  .page-status {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.35rem 0.7rem;
-    margin-top: 1.15rem;
-    margin-bottom: 0.25rem;
-  }
-  .badge {
-    display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
+    margin: 1.15rem 0 0.25rem;
     color: var(--archive-muted, var(--sl-color-gray-3));
     font-family: var(--archive-sans, var(--sl-font));
     font-size: 0.78rem;
     font-weight: 500;
     line-height: 1.4;
   }
-  .badge + .badge::before {
-    content: '·';
-    margin-inline-end: 0.35rem;
-    color: var(--archive-line, var(--sl-color-hairline));
-  }
   .status-dot {
     width: 0.4rem;
     height: 0.4rem;
     border-radius: 50%;
-    background: var(--archive-muted, var(--sl-color-gray-3));
-  }
-  .status-verified .status-dot,
-  .status-evergreen .status-dot {
     background: var(--archive-accent, var(--sl-color-text-accent));
   }
   .status-outdated .status-dot {
     background: #b45309;
-  }
-  .badge-tag {
-    color: var(--archive-muted, var(--sl-color-gray-3));
   }
 </style>

@@ -1,24 +1,13 @@
 ---
 title: "JVM 的启动器类解读 -- sun.misc.Launcher"
 description: "在深入理解 Launcher 之前，我们需要先了解 Java 的类加载机制："
-sourceId: "153633467"
-source: "https://blog.csdn.net/qq_45852626/article/details/153633467"
-sourceSeries:
-  - "Java源码"
-category: java-backend
-subcategory: jvm-runtime
-tags:
-  - "Java源码"
-  - "JVM"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 153633467
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153633467)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153633467)
 
 ## Launcher 类解读
 ## sun.misc.Launcher 类解读
@@ -89,7 +78,7 @@ AppClassLoader（应用程序类加载器）
 
 **保证 Java 核心类库的安全性**
 
-```
+```java
 // 假设你自己写了一个 java.lang.String 类
 package java.lang;
 
@@ -165,7 +154,7 @@ public class String {
 
 这个类里面我们可以学习到很多设计模式的使用,整体看下来感觉挺受用的.
 
-```
+```java
 public class Launcher {
     // 单例模式 - 全局唯一的 Launcher 实例
     private static Launcher launcher = new Launcher();
@@ -189,7 +178,7 @@ public class Launcher {
 
 #### Launcher 的核心字段
 
-```
+```java
 public class Launcher {
     // URL 协议处理器工厂（如 http、https、file 等协议的处理）
     private static URLStreamHandlerFactory factory = new Factory();
@@ -220,7 +209,7 @@ public class Launcher {
 
 这是整个类加载体系的初始化入口：
 
-```
+```java
 public Launcher() {
     // ===========================================
     // 步骤1：创建扩展类加载器（ExtClassLoader）
@@ -314,7 +303,7 @@ public Launcher() {
 
 ##### 类定义和继承关系
 
-```
+```java
 static class ExtClassLoader extends URLClassLoader {
 
     static {
@@ -331,7 +320,7 @@ static class ExtClassLoader extends URLClassLoader {
 
 ##### 创建 ExtClassLoader
 
-```
+```java
 public static ExtClassLoader getExtClassLoader() throws IOException {
     // 1. 获取扩展目录列表
     final File[] dirs = getExtDirs();
@@ -360,7 +349,7 @@ public static ExtClassLoader getExtClassLoader() throws IOException {
 
 ##### 获取扩展目录
 
-```
+```java
 private static File[] getExtDirs() {
     // 从系统属性获取扩展目录路径
     // 例如：/usr/lib/jvm/java-8/jre/lib/ext
@@ -404,7 +393,7 @@ public ExtClassLoader(File[] dirs) throws IOException {
 
 ##### 将目录转换为 URL 数组
 
-```
+```java
 private static URL[] getExtURLs(File[] dirs) throws IOException {
     Vector<URL> urls = new Vector<URL>();
     for (int i = 0; i < dirs.length; i++) {
@@ -431,7 +420,7 @@ private static URL[] getExtURLs(File[] dirs) throws IOException {
 
 ##### 查找本地库
 
-```
+```java
 public String findLibrary(String name) {
     // 将库名转换为平台相关的名称
     // 例如：Windows -> xxx.dll, Linux -> libxxx.so
@@ -471,7 +460,7 @@ public String findLibrary(String name) {
 
 ##### 类定义
 
-```
+```java
 static class AppClassLoader extends URLClassLoader {
 
     static {
@@ -490,7 +479,7 @@ static class AppClassLoader extends URLClassLoader {
 
 ##### 创建 AppClassLoader
 
-```
+```java
 public static ClassLoader getAppClassLoader(final ClassLoader extcl)
     throws IOException {
 
@@ -534,7 +523,7 @@ AppClassLoader(URL[] urls, ClassLoader parent) {
 
 这是一个非常巧妙的性能优化：
 
-```
+```java
 public Class<?> loadClass(String name, boolean resolve)
     throws ClassNotFoundException {
 
@@ -601,7 +590,7 @@ AppClassLoader 查找失败
 
 ##### 权限管理
 
-```
+```java
 protected PermissionCollection getPermissions(CodeSource codesource) {
     PermissionCollection perms = super.getPermissions(codesource);
     // 允许从 classpath 加载的所有类调用 System.exit()
@@ -614,7 +603,7 @@ protected PermissionCollection getPermissions(CodeSource codesource) {
 
 ##### 运行时添加类路径（Instrumentation）
 
-```
+```java
 private void appendToClassPathForInstrumentation(String path) {
     assert(Thread.holdsLock(this));
 
@@ -633,7 +622,7 @@ private void appendToClassPathForInstrumentation(String path) {
 
 这是一个 **懒加载** 的静态内部类：
 
-```
+```java
 private static class BootClassPathHolder {
     static final URLClassPath bcp;
 
@@ -693,7 +682,7 @@ public static URLClassPath getBootstrapClassPath() {
 
 ##### 路径转 URL 数组
 
-```
+```java
 private static URL[] pathToURLs(File[] path) {
     URL[] urls = new URL[path.length];
     for (int i = 0; i < path.length; i++) {
@@ -707,7 +696,7 @@ private static URL[] pathToURLs(File[] path) {
 
 ##### 解析类路径字符串
 
-```
+```java
 private static File[] getClassPath(String cp) {
     File[] path;
     if (cp != null) {
@@ -758,7 +747,7 @@ private static File[] getClassPath(String cp) {
 
 ##### 文件转 URL
 
-```
+```java
 static URL getFileURL(File file) {
     try {
         // 转换为规范路径（解析 . 和 .. 等）
@@ -781,7 +770,7 @@ static URL getFileURL(File file) {
 
 #### Factory - URL 协议处理器工厂
 
-```
+```java
 private static class Factory implements URLStreamHandlerFactory {
     private static String PREFIX = "sun.net.www.protocol";
 
@@ -816,7 +805,7 @@ private static class Factory implements URLStreamHandlerFactory {
 
 这个类用于管理类加载器的文件访问权限：
 
-```
+```java
 class PathPermissions extends PermissionCollection {
     private File path[];          // 路径数组
     private Permissions perms;    // 权限集合
@@ -898,7 +887,7 @@ class PathPermissions extends PermissionCollection {
 
 #### JVM 启动时的类加载器创建流程
 
-```
+```java
 ┌─────────────────────────────────────────────────────────────┐
 │ JVM 启动（C++ 层）                                            │
 └─────────────────┬───────────────────────────────────────────┘
@@ -1094,7 +1083,7 @@ class PathPermissions extends PermissionCollection {
 
 #### Launcher 与其他关键类的协作关系
 
-```
+```java
 ┌────────────────────────────────────────────────────────────┐
 │                    JVM (C++ 层)                            │
 └────────┬───────────────────────────────────────────────────┘
@@ -1166,7 +1155,7 @@ class PathPermissions extends PermissionCollection {
 
 #### 类加载过程中的关键方法调用链
 
-```
+```java
 JVM 启动
   │
   ├─> (C++) 创建 BootstrapClassLoader
@@ -1274,21 +1263,21 @@ JVM 启动
 
 1. **单例模式**
 
-   ```
+   ```java
    private static Launcher launcher = new Launcher();
 
 
    ```
 2. **工厂模式**
 
-   ```
+   ```java
    private static URLStreamHandlerFactory factory = new Factory();
 
 
    ```
 3. **懒加载模式**
 
-   ```
+   ```java
    private static class BootClassPathHolder {
        static final URLClassPath bcp;
        // 只在第一次调用时初始化
@@ -1298,7 +1287,7 @@ JVM 启动
    ```
 4. **双亲委派模式**
 
-   ```
+   ```java
    // URLClassLoader.loadClass 的默认实现
    protected Class<?> loadClass(String name, boolean resolve) {
        // 1. 检查缓存
@@ -1355,7 +1344,7 @@ ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
 ##### knownToNotExist 缓存
 
-```
+```java
 // AppClassLoader.java:317
 if (ucp.knownToNotExist(name)) {
     // 跳过双亲委派流程，直接抛出异常
@@ -1408,7 +1397,7 @@ static {
 
 #### JDBC 驱动加载（SPI 机制）
 
-```
+```java
 // DriverManager.java (由 BootstrapClassLoader 加载)
 static {
     loadInitialDrivers();

@@ -1,23 +1,13 @@
 ---
 title: "并发编程JUC深度学习(十）Semaphore源码解析"
 description: "一般我们使用锁的时候，在多线程下严格要求只能一个线程获取到锁，但是在某些场景下，我们需要有多个线程获取到锁，但是这个时候其实称之为资源最好。"
-sourceId: "126391026"
-source: "https://blog.csdn.net/qq_45852626/article/details/126391026"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
-  order: 126391026
+  order: 20
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126391026)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126391026)
 
 ## 前言
 
@@ -36,10 +26,10 @@ sidebar:
 
 ## 继承结构
 
-![在这里插入图片描述](./assets/126391026/3310b779360d75211887ea6f.png)  
+![](./assets/126391026/3310b779360d75211887ea6f.png)  
 代码实现：
 
-```
+```java
 public class Semaphore implements java.io.Serializable
 
 
@@ -49,7 +39,7 @@ public class Semaphore implements java.io.Serializable
 
 ## Doc解析
 
-```
+```java
 /**
  * A counting semaphore.  Conceptually, a semaphore maintains a set of
  * permits.  
@@ -176,7 +166,7 @@ public class Semaphore implements java.io.Serializable
 一：Sync  
 Semaphore基于AQS实现。
 
-```
+```java
     /**
      * Synchronization implementation for semaphore.  Uses AQS state
      * to represent permits. Subclassed into fair and nonfair
@@ -247,7 +237,7 @@ Semaphore基于AQS实现。
 
 二：NonfairSync
 
-```
+```java
   static final class NonfairSync extends Sync {
         private static final long serialVersionUID = -2694183684443567898L;
 
@@ -265,7 +255,7 @@ Semaphore基于AQS实现。
 
 三：FairSync
 
-```
+```java
  static final class FairSync extends Sync {
         private static final long serialVersionUID = 2014338818796000944L;
 
@@ -296,7 +286,7 @@ Semaphore基于AQS实现。
 
 1:参数为信号量
 
-```
+```java
 public Semaphore(int permits) {
     sync = new NonfairSync(permits);
 }
@@ -306,7 +296,7 @@ public Semaphore(int permits) {
 
 2:参数信号量和是否公平性
 
-```
+```java
 public Semaphore(int permits, boolean fair) {
     sync = fair ? new FairSync(permits) : new NonfairSync(permits);
 }

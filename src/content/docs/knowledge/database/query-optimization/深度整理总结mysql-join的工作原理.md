@@ -1,24 +1,14 @@
 ---
 title: "深度整理总结MySQL——Join的工作原理"
 description: "这篇文章是对知识内容进行整合加上自己的理解,文章内容来自于各种文章,书籍,工作号内容."
-sourceId: "145455589"
-source: "https://blog.csdn.net/qq_45852626/article/details/145455589"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: query-optimization
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
+  label: "Join的工作原理"
   order: 145455589
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145455589)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145455589)
 
 ## 前言
 
@@ -39,7 +29,7 @@ sidebar:
 
 先建立两个表方便展示
 
-```
+```sql
  CREATE TABLE t1 (m1 int, n1 char(1));
  CREATE TABLE t2 (m2 int, n2 char(1));
  INSERT INTO t1 VALUES(1, 'a'), (2, 'b'), (3, 'c');
@@ -51,11 +41,11 @@ sidebar:
 连接的本质:  
  **把各个连接表中的记录都取出来依次匹配的组合加入结果集并返回给用户.**  
  我们把t1,t2两个表连接起来的过程如下图:  
- ![在这里插入图片描述](./assets/145455589/e03650afb380698db4711a42.png)  
+ ![](./assets/145455589/e03650afb380698db4711a42.png)  
  这个过程看起来就是把t1表的记录和t2的记录连起来组成新的更大的记录，所以这个查询过程称之为连接查询。  
  查询sql如下:
 
-```
+```sql
 SELECT * FROM t1, t2;
 
 
@@ -76,7 +66,7 @@ SELECT * FROM t1, t2;
 
 下面我们举个例子来说明
 
-```
+```sql
 SELECT * FROM t1, t2 WHERE t1.m1 > 1 AND t1.m1 = t2.m2 AND t2.n2 < 'd';
 
 
@@ -94,7 +84,7 @@ SELECT * FROM t1, t2 WHERE t1.m1 > 1 AND t1.m1 = t2.m2 AND t2.n2 < 'd';
 
 对于步骤一而言:  
  此处假设使用t1作为驱动表，那么就需要到t1表中找满足t1.m1 > 1的记录，因为表中的数据太少，我们也没在表上建立二级索引，所以此处查询t1表的访问方法就设定为all吧，也就是采用全表扫描的方式执行单表查询。  
- ![在这里插入图片描述](./assets/145455589/510a392d22903cf9a4a3206b.png)  
+ ![](./assets/145455589/510a392d22903cf9a4a3206b.png)  
  我们可以看到，t1表中符合t1.m1 > 1的记录有两条。
 
 对于步骤二而言:  
@@ -103,13 +93,13 @@ SELECT * FROM t1, t2 WHERE t1.m1 > 1 AND t1.m1 = t2.m2 AND t2.n2 < 'd';
 * 当t1.m1 = 2时，过滤条件t1.m1 = t2.m2就相当于t2.m2 = 2，所以此时t2表相当于有了t2.m2 = 2、t2.n2 < 'd’这两个过滤条件，然后到t2表中执行单表查询。
 * 当t1.m1 = 3时，过滤条件t1.m1 = t2.m2就相当于t2.m2 = 3，所以此时t2表相当于有了t2.m2 = 3、t2.n2 < 'd’这两个过滤条件，然后到t2表中执行单表查询。  
    具体如下图:  
-   ![在这里插入图片描述](./assets/145455589/6cd056d66d7bb8e40b52ecd6.png)  
+   ![](./assets/145455589/6cd056d66d7bb8e40b52ecd6.png)  
    从上面两个步骤可以看出来，我们上面介绍的这个两表连接查询共需要查询1次`t1`表，2次`t2`表。  
    当然这是在特定的过滤条件下的结果，如果我们把`t1.m1 > 1`这个条件去掉，那么从`t1`表中查出的记录就有3条，就需要查询3次`t2`表了。**也就是说在两表连接查询中，驱动表只需要访问一次，被驱动表可能被访问多次。**
 
 ### 内连接AND外连接
 
-```
+```sql
 CREATE TABLE student (
     number INT NOT NULL AUTO_INCREMENT COMMENT '学号',
     name VARCHAR(5) COMMENT '姓名',
@@ -214,7 +204,7 @@ mysql> SELECT s1.number, s1.name, s2.subject, s2.score FROM student AS s1, score
 
 比如我们要把t1表和t2表进行左外连接查询可以这么写：
 
-```
+```sql
 SELECT * FROM t1 LEFT [OUTER] JOIN t2 ON 连接条件 [WHERE 普通过滤条件];
 
 
@@ -250,7 +240,7 @@ mysql> SELECT s1.number, s1.name, s2.subject, s2.score FROM student AS s1 LEFT J
 
 右（外）连接和左（外）连接的原理是一样一样的，语法也只是把LEFT换成RIGHT而已：
 
-```
+```sql
 SELECT * FROM t1 RIGHT [OUTER] JOIN t2 ON 连接条件 [WHERE 普通过滤条件];
 
 
@@ -263,7 +253,7 @@ SELECT * FROM t1 RIGHT [OUTER] JOIN t2 ON 连接条件 [WHERE 普通过滤条件
 内连接和外连接的根本区别就是**在驱动表中的记录不符合ON子句中的连接条件时不会把该记录加入到最后的结果集.**  
  我们最开始介绍的那些连接查询的类型都是内连接。
 
-```
+```sql
 SELECT * FROM t1 [INNER | CROSS] JOIN t2 [ON 连接条件] [WHERE 普通过滤条件];
 
 
@@ -271,7 +261,7 @@ SELECT * FROM t1 [INNER | CROSS] JOIN t2 [ON 连接条件] [WHERE 普通过滤�
 
 不过之前仅仅提到了一种最简单的内连接语法，就是直接把需要连接的多个表都放到FROM子句后边。其实针对内连接，MySQL提供了好多不同的语法，我们以t1和t2表为例看看：
 
-```
+```sql
 SELECT * FROM t1 [INNER | CROSS] JOIN t2 [ON 连接条件] [WHERE 普通过滤条件];
 
 
@@ -284,7 +274,7 @@ SELECT * FROM t1 [INNER | CROSS] JOIN t2 [ON 连接条件] [WHERE 普通过滤�
 * SELECT \* FROM t1 CROSS JOIN t2;  
    上面的这些写法和直接把需要连接的表名放到FROM语句之后，用逗号,分隔开的写法是等价的：
 
-```
+```sql
  SELECT * FROM t1, t2;
 
 
@@ -379,7 +369,7 @@ MySQL 8.0 版本支持两种 JOIN 算法用于表之间的关联：
  步骤1：选取驱动表，使用与驱动表相关的过滤条件，选取代价最低的单表访问方法来执行对驱动表的单表查询。  
  步骤2：对上一步骤中查询驱动表得到的结果集中每一条记录，都分别到被驱动表中查找匹配的记录。  
  通用的两表连接过程如下图所示：  
- ![在这里插入图片描述](./assets/145455589/bd22b1402c4e23e441255e41.png)  
+ ![](./assets/145455589/bd22b1402c4e23e441255e41.png)  
  那如果我们有3个表呢?
 
 那么步骤2中得到的结果集就像是新的驱动表，然后第三个表就成为了被驱动表，重复上面过程，也就是步骤2中得到的结果集中的每一条记录都需要到t3表中找一找有没有匹配的记录，用伪代码表示一下这个过程就是这样：
@@ -406,18 +396,18 @@ for each row in t1 {   #此处表示遍历满足对t1单表查询结果集中的
  但是别忘了，查询t2表其实就相当于一次单表扫描，我们可以利用索引来加快查询速度。  
  举个例子:
 
-```
+```sql
 SELECT * FROM t1, t2 WHERE t1.m1 > 1 AND t1.m1 = t2.m2 AND t2.n2 < 'd';
 
 
 ```
 
-![在这里插入图片描述](./assets/145455589/e84cc38b9bd5cf49520893e0.png)  
+![](./assets/145455589/e84cc38b9bd5cf49520893e0.png)  
  查询驱动表t1后的结果集中有两条记录，嵌套循环连接算法需要对被驱动表查询2次,具体来说：
 
 * 当t1.m1 = 2时，去查询一遍t2表，对t2表的查询语句相当于：
 
-```
+```sql
 SELECT * FROM t2 WHERE t2.m2 = 2 AND t2.n2 < 'd';
 
 
@@ -425,7 +415,7 @@ SELECT * FROM t2 WHERE t2.m2 = 2 AND t2.n2 < 'd';
 
 * 当t1.m1 = 3时，再去查询一遍t2表，此时对t2表的查询语句相当于：
 
-```
+```sql
 SELECT * FROM t2 WHERE t2.m2 = 3 AND t2.n2 < 'd';
 
 
@@ -461,7 +451,7 @@ SELECT * FROM t2 WHERE t2.m2 = 3 AND t2.n2 < 'd';
  所以我们可不可以在把被驱动表的记录加载到内存的时候，一次性和多条驱动表中的记录做匹配，这样就可以大大减少重复从磁盘上加载被驱动表的代价了。  
  当前可以!设计MySQL的大佬提出了一个join buffer的概念.  
  join buffer就是执行连接查询前申请的一块固定大小的内存，先把若干条驱动表结果集中的记录装在这个join buffer中，然后开始扫描被驱动表，每一条被驱动表的记录一次性和join buffer中的多条驱动表记录做匹配，因为匹配的过程都是在内存中完成的，所以这样可以显著减少被驱动表的I/O代价。使用join buffer的过程如下图所示：  
- ![在这里插入图片描述](./assets/145455589/032aecea294b2258c4d006d9.png)  
+ ![](./assets/145455589/032aecea294b2258c4d006d9.png)  
  最好的情况是join buffer足够大，能容纳驱动表结果集中的所有记录，这样只需要访问一次被驱动表就可以完成连接操作了。设计MySQL的大佬把这种加入了join buffer的嵌套循环连接算法称之为基于块的嵌套连接（Block Nested-Loop Join）算法。  
   这个join buffer的大小是可以通过启动参数或者系统变量join\_buffer\_size进行配置，默认大小为262144字节（也就是256KB），最小可以设置为128字节。当然，对于优化被驱动表的查询来说，最好是为被驱动表加上效率高的索引，如果实在不能使用索引，并且自己的机器的内存也比较大可以尝试调大join\_buffer\_size的值来对连接查询进行优化。
 
@@ -498,7 +488,7 @@ Hash Join会扫描关联的两张表：
     Hash Join 选择驱动表和 Nested Loop Join 算法大致一样，都是较小的表作为驱动表。如果驱动表比较大，创建的哈希表超过了内存的大小，MySQL 会自动把结果转储到磁盘。  
     我们举个例子来说:
 
-```
+```sql
 SELECT 
 
     s_acctbal,
@@ -552,7 +542,7 @@ WHERE
 
 因为商品表part 不包含地区信息，所以要从关联表 partsupp 中得到商品供应商信息，然后再从供应商元数据表中得到供应商所在地区信息，最后在外表 region 连接，才能得到最终的结果。  
  最后执行结果如下图  
- ![在这里插入图片描述](./assets/145455589/76aef96a4f486d3ccadbca7d.png)  
+ ![](./assets/145455589/76aef96a4f486d3ccadbca7d.png)  
  从上图可以发现，其实最早进行连接的是表 supplier 和 nation，接着再和表 partsupp 连接，然后和 part 表连接，再和表 part 连接。上述左右连接算法都是 Nested Loop Join。这时的结果集记录大概有 79,330 条记录
 
 最后和表 region 进行关联，表 region 过滤得到结果5条，这时可以有 2 种选择：
@@ -600,7 +590,7 @@ OLTP 业务是海量并发，要求响应非常及时，在毫秒级别返回结
 如果 OLTP 业务的 JOIN 带有 WHERE 过滤条件，并且是根据主键、索引进行过滤，那么驱动表只有一条或少量记录，这时进行 JOIN 的开销是非常小的。  
  比如在淘宝的电商业务中，用户要查看自己的订单情况，其本质是在数据库中执行类似如下的 SQL 语句：
 
-```
+```sql
 SELECT o_custkey, o_orderdate, o_totalprice, p_name FROM orders,lineitem, part
 
 WHERE o_orderkey = l_orderkey
@@ -618,7 +608,7 @@ LIMIT 30;
 
 有些开发人员会以为上述 SQL 语句的 JOIN 开销非常大，因此认为拆成 3 条简单 SQL 会好一些，比如：
 
-```
+```sql
 SELECT * FROM orders 
 
 WHERE o_custkey = ? 

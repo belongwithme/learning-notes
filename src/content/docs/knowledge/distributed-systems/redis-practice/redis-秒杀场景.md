@@ -1,23 +1,13 @@
 ---
 title: "Redis- 秒杀场景"
 description: "秒杀场景的本质是在极短时间内承受大量并发请求，同时保证有限商品的正确售卖。它具有三个核心特征：高并发（短时间内大量用户涌入）、资源有限（商品数量有限）和时效性强（活动在特定时间开始和结束）。这种场景对系统的性能、一致性和可用性提出了极高的挑战。"
-sourceId: "146119697"
-source: "https://blog.csdn.net/qq_45852626/article/details/146119697"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-practice
-tags:
-  - "Redis"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 146119697
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146119697)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146119697)
 
 ## 什么是秒杀场景
 
@@ -173,7 +163,7 @@ return -1;
 * 在数据库层面，我们使用乐观锁机制（版本号或条件更新），避免并发更新冲突。  
    例如，库存扣减SQL使用条件更新：
 
-```
+```sql
 UPDATE stock SET quantity = quantity - 1, version = version + 1 WHERE id = ? AND quantity >= 1 AND version = ?
 
 

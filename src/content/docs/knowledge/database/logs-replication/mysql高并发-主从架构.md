@@ -1,25 +1,13 @@
 ---
 title: "MySQL高并发-主从架构"
 description: "因为互联网大部分业务场景都是读多写少的,比如电商服务,读和写的请求对比会差几个数量级,这时为了不让数据库的读成为业务瓶颈,同时保证写库的成功率,这时候可以把访问的压力从主库转移到从库,特别是单机数据库无法支撑并发读写,并且业务请求大部分为读操作的情况下."
-sourceId: "155357407"
-source: "https://blog.csdn.net/qq_45852626/article/details/155357407"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: logs-replication
-tags:
-  - "MySQL"
-  - "JUC"
-  - "SQL"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 155357407
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/155357407)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/155357407)
 
 ## 主从架构-读写分离
 

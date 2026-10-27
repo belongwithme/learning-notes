@@ -1,24 +1,14 @@
 ---
 title: "深度整理总结MySQL——组合索引工作原理"
 description: "在实际业务中，我们会遇到很多复杂的场景，比如对多个列进行查询。这时，可能会要求用户创建多个列组成的索引，如列 a 和 b 创建的组合索引，但究竟是创建（a，b）的索引，还是（b，a）的索引，结果却是完全不同的。"
-sourceId: "145489856"
-source: "https://blog.csdn.net/qq_45852626/article/details/145489856"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: indexes
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
+  label: "组合索引工作原理"
   order: 145489856
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145489856)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145489856)
 
 ## 前言
 
@@ -29,14 +19,14 @@ sidebar:
 
 组合索引: 多个列组合而成的B+数索引.  
  它既可以是主键索引,也可以是二级索引,如下例:  
- ![在这里插入图片描述](./assets/145489856/c6101d81f238d1d4096c4a3a.png)  
+ ![](./assets/145489856/c6101d81f238d1d4096c4a3a.png)  
  上图可以看到,组合索引只是排序的键值从1个变成了多个.  
  本质还是一颗B+树索引.  
  **但是（a，b）和（b，a）这样的组合索引，其排序结果是完全不一样的.**  
- ![在这里插入图片描述](./assets/145489856/d05565658e129dca02083342.png)  
+ ![](./assets/145489856/d05565658e129dca02083342.png)  
  对组合索引（a，b）来说，因为其对列 a、b 做了排序，所以它可以对下面两个查询进行优化：
 
-```
+```sql
 SELECT * FROM table WHERE a = ?
 SELECT * FROM table WHERE a = ？ AND b = ？
 
@@ -46,7 +36,7 @@ SELECT * FROM table WHERE a = ？ AND b = ？
 上述SQL查询中,WHERE后查询列a和b顺序无关,即使先写 b = ? AND a = ？依然可以使用组合索引（a，b）。  
  但是下面的 SQL 无法使用组合索引（a，b），因为（a，b）排序并不能推出（b，a）排序：
 
-```
+```sql
 SELECT * FROM table WHERE b = ?
 
 
@@ -54,7 +44,7 @@ SELECT * FROM table WHERE b = ?
 
 再举个例子,同样由于索引（a，b）已排序，因此下面这条 SQL 依然可以使用组合索引（a，b），以此提升查询的效率：
 
-```
+```sql
 SELECT * FROM table WHERE a = ？ ORDER BY b DESC
 
 
@@ -62,7 +52,7 @@ SELECT * FROM table WHERE a = ？ ORDER BY b DESC
 
 同样的原因，索引（a，b）排序不能得出（b，a）排序，因此下面的 SQL 无法使用组合索引（a，b）：
 
-```
+```sql
 SELECT * FROM table WHERE b = ？ ORDER BY a DESC
 
 
@@ -75,10 +65,10 @@ SELECT * FROM table WHERE b = ？ ORDER BY a DESC
 在真实的业务场景中，你会遇到根据某个列进行查询，然后按照时间排序的方式逆序展示。  
  比如在微博业务中:用户的微博展示的就是根据用户 ID 查询出用户订阅的微博，然后根据时间逆序展示；  
  又比如在电商业务中:用户订单详情页就是根据用户 ID 查询出用户的订单数据，然后根据购买时间进行逆序展示。  
- ![在这里插入图片描述](./assets/145489856/f17c9a1fc290c214d07c88e1.png)  
+ ![](./assets/145489856/f17c9a1fc290c214d07c88e1.png)  
  我们对核心业务表rders设计如下:
 
-```
+```sql
 CREATE TABLE `orders` (
 
   `O_ORDERKEY` int NOT NULL,
@@ -117,7 +107,7 @@ CREATE TABLE `orders` (
 * 字段 o\_orderdate(下单的时间)、o\_orderstatus(当前订单的状态)、o\_totalprice(订单的总价)、o\_orderpriority(订单的优先级) 用于描述订单的基本详情.  
    在有了上述订单表后，当用户查看自己的订单信息，并且需要根据订单时间排序查询时，可通过下面的 SQL：
 
-```
+```sql
 SELECT * FROM orders
 WHERE o_custkey = 147601 
 ORDER BY o_orderdate DESC
@@ -127,7 +117,7 @@ ORDER BY o_orderdate DESC
 
 但由于上述表结构的索引设计时，索引 ORDERS\_FK1 仅对列 O\_CUSTKEY 排序，因此在取出用户 147601 的数据后，还需要一次额外的排序才能得到结果，可通过命令EXPLAIN验证：
 
-```
+```sql
 EXPLAIN SELECT * FROM orders
 
 WHERE o_custkey = 147601 ORDER BY o_orderdate DESC 
@@ -174,7 +164,7 @@ SQL 语句的确可以使用索引 ORDERS\_FK1，但在 Extra 列中显示的 Us
 
 为此，我们在表 orders 上创建新的组合索引 idx\_custkey\_orderdate，对字段（o\_custkey，o\_orderdate）进行索引：
 
-```
+```sql
 ALTER TABLE orders ADD INDEX 
 idx_custkey_orderdate(o_custkey,o_orderdate);
 
@@ -183,7 +173,7 @@ idx_custkey_orderdate(o_custkey,o_orderdate);
 
 这时再进行之前的 SQL，根据时间展示用户的订单信息，其执行计划为：
 
-```
+```sql
 EXPLAIN FORMAT=tree 
 
 SELECT * FROM orders
@@ -205,7 +195,7 @@ EXPLAIN: -> Index lookup on orders using idx_custkey_orderdate (O_CUSTKEY=147601
  但是因为二级索引的叶子节点,包含索引和主键值,那如果我们查询的字段在二级所以叶子节点中,则就直接返回结果,无需回表。**这种通过组合索引避免回表的优化技术也称为索引覆盖（Covering Index）。**  
  如下面的SQL语句：
 
-```
+```sql
 SELECT o_custkey,o_orderdate,o_totalprice 
 FROM orders WHERE o_custkey = 147601
 
@@ -247,7 +237,7 @@ idx_custkey_orderdate,ORDERS_FK1
 执行计划显示上述SQL会使用到之前新创建的组合索引 idx\_custkey\_orderdate，但是，由于组合索引的叶子节点只包含（o\_custkey，o\_orderdate，\_orderid），没有字段 o\_totalprice 的值，所以需要通过 o\_orderkey 回表找到对应的 o\_totalprice。  
  再用explain看一下:
 
-```
+```sql
 EXPLAIN FORMAT=tree 
 
 SELECT o_custkey,o_orderdate,o_totalprice 
@@ -265,7 +255,7 @@ cost=6.65 表示的就是这条 SQL 当前的执行成本。不用关心 cost �
  解决办法:  
  想要避免回表，可以通过索引覆盖技术，创建(o\_custkey，o\_orderdate，o\_totalprice）的组合索引，如：
 
-```
+```sql
 ALTER TABLE `orders` ADD INDEX
 idx_custkey_orderdate_totalprice(o_custkey,o_orderdate,o_totalprice);
 
@@ -274,7 +264,7 @@ idx_custkey_orderdate_totalprice(o_custkey,o_orderdate,o_totalprice);
 
 然后再次通过命令 EXPLAIN 观察执行计划：
 
-```
+```sql
 EXPLAIN 
 
 SELECT o_custkey,o_orderdate,o_totalprice 
@@ -315,7 +305,7 @@ idx_custkey_orderdate,ORDERS_FK1,idx_custkey_orderdate_totalprice
 可以看到，这时优化器选择了新创建的组合索引 idx\_custkey\_orderdate\_totalprice，同时这时Extra 列不为 NULL，而是显示 Using index，这就表示优化器使用了索引覆盖技术。  
  再次观察 SQL 的执行成本，可以看到 cost 有明显的下降，从 6.65 下降为了 2.94：
 
-```
+```sql
 EXPLAIN FORMAT=tree 
 
 SELECT o_custkey,o_orderdate,o_totalprice 
@@ -333,7 +323,7 @@ EXPLAIN: -> Index lookup on orders using idx_custkey_orderdate_totalprice (O_CUS
 
 如果你想看索引覆盖技术的巨大威力，可以执行下面这条 SQL：
 
-```
+```sql
 SELECT o_custkey,SUM(o_totalprice) 
 
 FROM orders GROUP BY o_custkey;
@@ -344,7 +334,7 @@ FROM orders GROUP BY o_custkey;
 这条 SQL 表示返回每个用户购买订单的总额，业务可以根据这个结果对用户进行打标，删选出大客户，VIP 客户等。  
  我们先将创建的组合索引 idx\_custkey\_orderdate\_totalprice 设置为不可见，然后查看原先的执行计划：
 
-```
+```sql
 ALTER TABLE orders 
 
 ALTER INDEX idx_custkey_orderdate_totalprice INVISIBLE;
@@ -403,7 +393,7 @@ EXPLAIN: -> Group aggregate: sum(orders.O_TOTALPRICE)
 所以，执行这条 GROUP BY的SQL，总共需要花费 12.35 秒的时间。  
  **再来对比启用索引覆盖技术后的 SQL 执行计划情况：**
 
-```
+```sql
 ALTER TABLE orders 
 
 ALTER INDEX idx_custkey_orderdate_totalprice VISIBLE;
@@ -447,7 +437,7 @@ idx_custkey_orderdate,ORDERS_FK1,idx_custkey_orderdate_totalprice
 
 可以看到，这次的执行计划提升使用了组合索引 idx\_custkey\_orderdate\_totalprice，并且通过Using index 的提示，表示使用了索引覆盖技术。
 
-```
+```sql
 SELECT o_custkey,SUM(o_totalprice) 
 
 FROM orders GROUP BY o_custkey;

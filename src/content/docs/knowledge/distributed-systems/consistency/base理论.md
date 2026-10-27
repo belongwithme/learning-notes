@@ -1,22 +1,13 @@
 ---
 title: "Base理论"
 description: "BASE理论是对CAP理论的延伸和补充，特别适用于大型分布式系统，它提供了一种在保证系统可用性的同时，实现\"最终一致性\"的设计思路。"
-sourceId: "145986588"
-source: "https://blog.csdn.net/qq_45852626/article/details/145986588"
-sourceSeries: []
-category: distributed-systems
-subcategory: consistency
-tags:
-  - "分布式系统"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145986588
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145986588)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145986588)
 
 ## 什么是Base理论
 
@@ -108,7 +99,7 @@ BASE理论是对CAP理论中AP选择（可用性和分区容错性）的一种�
 
 #### 订单服务实现
 
-```
+```java
 @Service
 public class OrderServiceImpl implements OrderService {
     
@@ -242,7 +233,7 @@ public class OrderServiceImpl implements OrderService {
 
 #### 库存服务消息消费者
 
-```
+```java
 @Component
 @RocketMQMessageListener(
     topic = "topic_inventory_deduction",
@@ -301,7 +292,7 @@ public class InventoryDeductionConsumer implements RocketMQListener<InventoryDed
 
 #### 库存服务实现
 
-```
+```java
 @Service
 public class InventoryServiceImpl implements InventoryService {
     
@@ -428,7 +419,7 @@ public class InventoryServiceImpl implements InventoryService {
 
 #### 订单状态查询接口
 
-```
+```java
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {

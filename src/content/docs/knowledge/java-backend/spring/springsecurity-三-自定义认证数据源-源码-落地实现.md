@@ -1,22 +1,13 @@
 ---
-title: "SpringSecurity(三):自定义认证数据源(源码+落地实现)。"
+title: "SpringSecurity(三):自定义认证数据源(源码+落地实现)"
 description: "看这篇文章前，请确保有一定security基础或者看过上篇文章，没基础看不太好理解。"
-sourceId: "131399623"
-source: "https://blog.csdn.net/qq_45852626/article/details/131399623"
-sourceSeries: []
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 131399623
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131399623)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131399623)
 
 ## 前言
 
@@ -26,7 +17,7 @@ sidebar:
 
 流程分析我们在上一篇每一步都debug看一了下，这里我们进行一个梳理。  
  我们先看一下这张图：  
- ![在这里插入图片描述](./assets/131399623/4fdd31ffa3ecf0bde2d0f676.png)
+ ![](./assets/131399623/4fdd31ffa3ecf0bde2d0f676.png)
 
 1. 发起认证请求，请求中携带⽤户名、密码，该请求会被  
     `UsernamePasswordAuthenticationFilter` 拦截
@@ -45,7 +36,7 @@ sidebar:
 * `AuthenticationManager` 是⼀个认证管理器，它定义了 `Spring Security` 过滤  
    器要执⾏认证操作。
 
-```
+```java
 public interface AuthenticationManager {
 	Authentication authenticate(Authentication authentication) throws AuthenticationException;
 
@@ -57,7 +48,7 @@ public interface AuthenticationManager {
 * `ProviderManager`是`AuthenticationManager`接⼝的实现类。`Spring Security`  
    认证时默认使⽤就是 `ProviderManager`。
 
-```
+```java
 //代码太多，只列举较关键的代码
 public class ProviderManager implements AuthenticationManager, MessageSourceAware, InitializingBean {
 
@@ -134,7 +125,7 @@ public class ProviderManager implements AuthenticationManager, MessageSourceAwar
 
 * `AuthenticationProvider` 就是针对不同的身份类型执⾏的具体的身份认证。
 
-```
+```java
 public interface AuthenticationProvider {
 
 	Authentication authenticate(Authentication authentication) throws AuthenticationException;
@@ -148,14 +139,14 @@ public interface AuthenticationProvider {
 #### AuthenticationManager 与 ProviderManager
 
 先看一下结构图：  
- ![请添加图片描述](./assets/131399623/552d704d6cd0b3a3b4d950e5.png)  
+ ![](./assets/131399623/552d704d6cd0b3a3b4d950e5.png)  
  为什么列表有五个，但是我只显示了`ProviderManager`，因为其他四个都是内部类（感兴趣可以去看看）。  
  所以我们可以看出来：`ProviderManager` 是`AuthenticationManager`的唯⼀实现，也是 `Spring Security`默认使⽤实现。从这⾥不难看出默认情况下`AuthenticationManager` 就是⼀个ProviderManager。
 
 #### ProviderManager 与 AuthenticationProvider
 
 看一下官网的介绍图：  
- ![在这里插入图片描述](./assets/131399623/ffe08f70bd65c823a15f75b4.png)  
+ ![](./assets/131399623/ffe08f70bd65c823a15f75b4.png)  
  在 `Spring Seourity`中，允许系统同时⽀持多种不同的认证⽅式，例如同时⽀持⽤  
  户名/密码认证、`ReremberMe` 认证、⼿机号码动态认证等，⽽不同的认证⽅式对应了不同  
  的 `AuthenticationProvider`，所以⼀个完整的认证流程可能由多个  
@@ -186,7 +177,7 @@ ProviderManager 本身也可以有多个，多个ProviderManager 共⽤同⼀个
 
 根据上⾯的介绍，我们绘出新的 `AuthenticationManager`、`ProvideManager` 和  
  `AuthentictionProvider`关系：  
- ![在这里插入图片描述](./assets/131399623/299732dcde2de4ca6275a8ad.png)
+ ![](./assets/131399623/299732dcde2de4ca6275a8ad.png)
 
 ## 数据源的获取
 
@@ -195,18 +186,18 @@ ProviderManager 本身也可以有多个，多个ProviderManager 共⽤同⼀个
  下面我们debug看一下这个流程：
 
 1. 首先我们执行到DaoAuthenticationProvider这块内容：  
-    ![在这里插入图片描述](./assets/131399623/b87ddabee9c2356a0af8bc42.png)
+    ![](./assets/131399623/b87ddabee9c2356a0af8bc42.png)
 2. 执行到authenticate方法下：  
-    ![请添加图片描述](./assets/131399623/736a6e3dfbfef4316d0ef6a4.png)
+    ![](./assets/131399623/736a6e3dfbfef4316d0ef6a4.png)
 3. 执行`authenticate`方法，跳转到`AbstractUserDetailsAuthenticationProvider`这个方法下的`authenticate`：  
     为什么会跳转到跳转到`AbstractUserDetailsAuthenticationProvider`，因为`DaoAuthenticationProvider`没有覆盖这个方法，所以用的是父类`AbstractUserDetailsAuthenticationProvider`的。  
-    ![在这里插入图片描述](./assets/131399623/472bb1ffea477b51a9ca431a.png)
+    ![](./assets/131399623/472bb1ffea477b51a9ca431a.png)
 4. 一路执行到执行`retrieveUser`方法并进入到方法里面：  
-    ![请添加图片描述](./assets/131399623/6ca09eca56d9f98f0fc81e3c.png)
+    ![](./assets/131399623/6ca09eca56d9f98f0fc81e3c.png)
 5. 往下执行到`loadUserByUsername`方法并进入，通过调用内存中的数据完成认证：  
-    ![在这里插入图片描述](./assets/131399623/318133264ee8cc8db2d1001f.png)  
+    ![](./assets/131399623/318133264ee8cc8db2d1001f.png)  
     下面是一个流程图：  
-    ![请添加图片描述](./assets/131399623/16702d3b80a23b8e2934eca7.png)  
+    ![](./assets/131399623/16702d3b80a23b8e2934eca7.png)  
     总结：  
     `AuthenticationManager` 是认证管理器，在 `Spring Security` 中有全局  
     `AuthenticationManager`，也可以有局部`AuthenticationManager`。  
@@ -219,14 +210,14 @@ ProviderManager 本身也可以有多个，多个ProviderManager 共⽤同⼀个
 上面我们了解到`AuthenticationManager`的作用是什么，接下来我们去写一下这个，如果业务工作有需求，可以自定义配置。
 
 首先，我们之前在`application.properties`里面配置的账号信息（名称，密码，权限）注释一下。  
- ![请添加图片描述](./assets/131399623/30a4247e03bbc3f431d43a62.png)
+ ![](./assets/131399623/30a4247e03bbc3f431d43a62.png)
 
 ### 默认的全局 AuthenticationManager
 
 springboot 对 security 进⾏⾃动配置时⾃动在⼯⼚中创建⼀个全局`AuthenticationManager`。  
  代码例子如下(不优化版本)：
 
-```
+```java
 @Configuration
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
@@ -244,13 +235,13 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 ```
 
 结果如下：  
- ![请添加图片描述](./assets/131399623/35ac748288893fe090e5290b.png)  
+ ![](./assets/131399623/35ac748288893fe090e5290b.png)  
  第二种(优化后版本)：  
  优化思路：  
  `AuthenticationManagerBuilder`是默认配置对象，它默认找当前项目中是否存在自定义`UserDetailService`实例自动将当前项目`UserDetailService`实例设置为数据源。  
  我们看一下`UserDetailServiceAutoConfigutation`源码：
 
-```
+```java
 @AutoConfiguration
 @ConditionalOnClass(AuthenticationManager.class)
 @ConditionalOnBean(ObjectPostProcessor.class)
@@ -282,7 +273,7 @@ public class UserDetailsServiceAutoConfiguration {
 
 那么我们可以优化，代码如下：
 
-```
+```java
     @Bean
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager userDetailsService = new InMemoryUserDetailsManager();
@@ -311,7 +302,7 @@ public class UserDetailsServiceAutoConfiguration {
 
 自定义代码(错误版本)如下：
 
-```
+```java
     @Bean
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager userDetailsService = new InMemoryUserDetailsManager();
@@ -335,7 +326,7 @@ public class UserDetailsServiceAutoConfiguration {
 
 正确版本：
 
-```
+```java
   @Bean
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager userDetailsService = new InMemoryUserDetailsManager();
@@ -358,12 +349,12 @@ public class UserDetailsServiceAutoConfiguration {
 ```
 
 结果如下：  
- ![请添加图片描述](./assets/131399623/bf0280b275221af70f8b3d8e.png)  
+ ![](./assets/131399623/bf0280b275221af70f8b3d8e.png)  
  但是上面还存在一个问题——自定义的`AuthenticationManager`并没有在工厂中暴露出来，只能这个类中使用。
 
 如果我们想让它在工厂中暴露，可以在任何位置注入，添加覆盖下面的方法即可：
 
-```
+```java
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -375,7 +366,7 @@ public class UserDetailsServiceAutoConfiguration {
 
 我们进去简单看看，它会调用父类的实现：
 
-```
+```java
 protected AuthenticationManager authenticationManager() throws Exception {
 
 		if (!this.authenticationManagerInitialized) {
@@ -412,7 +403,7 @@ protected AuthenticationManager authenticationManager() throws Exception {
 
 它的返回值是`UserDetails`，我们来看看它(注意，这是一个接口：
 
-```
+```java
 public interface UserDetails extends Serializable {
 
 	Collection<? extends GrantedAuthority> getAuthorities();
@@ -439,7 +430,7 @@ public interface UserDetails extends Serializable {
 
 因为我们后面数据源要切换为数据库实现，所以需要一张用户表，那么我们就参考User来设计表，User源码如下：
 
-```
+```java
 public class User implements UserDetails, CredentialsContainer {
 
 	private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
@@ -466,7 +457,7 @@ public class User implements UserDetails, CredentialsContainer {
 
 根据上面信息，设计出表结构，如下：
 
-```
+```sql
 // ⽤户表
 CREATE TABLE `user`
 (
@@ -538,7 +529,7 @@ COMMIT;
 
 ### 引入依赖
 
-```
+```xml
   <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
@@ -561,7 +552,7 @@ COMMIT;
 
 ### 配置 springboot 配置⽂件
 
-```
+```properties
 server.port= 9090
 
  # 关闭thymeleaf 缓存
@@ -589,7 +580,7 @@ logging.level.com.example = debug
 
 #### 创建User对象
 
-```
+```java
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -699,7 +690,7 @@ public class User implements UserDetails {
 
 #### 创建Role对象
 
-```
+```java
 public class Role {
     private Integer id;
     private String name;
@@ -736,7 +727,7 @@ public class Role {
 
 #### 创建UserDao接口
 
-```
+```java
 //注意这里引用的是我们自定义的类型
 import com.example.entity.Role;
 import com.example.entity.User;
@@ -757,7 +748,7 @@ public interface UserDao {
 
 #### 创建UserMapper实现
 
-```
+```sql
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -793,7 +784,7 @@ public interface UserDao {
 
 #### 创建 UserDetailService 实例
 
-```
+```java
 import com.example.dao.UserDao;
 import com.example.entity.Role;
 import com.example.entity.User;
@@ -835,7 +826,7 @@ public class MyUserDetailService implements UserDetailsService {
 
 #### 配置 authenticationManager 使⽤⾃定义UserDetailService
 
-```
+```java
    private final MyUserDetailService myUserDetailService;
 
 
@@ -870,4 +861,4 @@ public class MyUserDetailService implements UserDetailsService {
 1. 请确保你的数据库版本
 2. 确保你的数据在数据库里面  
     最后结果：  
-    ![请添加图片描述](./assets/131399623/017b0ba67556d8e70fc907cc.png)
+    ![](./assets/131399623/017b0ba67556d8e70fc907cc.png)

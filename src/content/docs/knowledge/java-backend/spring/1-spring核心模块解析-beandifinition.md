@@ -1,24 +1,13 @@
 ---
-title: "1-Spring核心模块解析—BeanDifinition。"
+title: "1-Spring核心模块解析—BeanDefinition"
 description: "Spring中的BeanDifinition在Bean的实例化流程中占有着非常重要的角色，如果你不了解BeanDifinition的话，面试或者学习Bean的生命周期的话，如同空中楼阁，应付面试可以，如果你想真的成体系化，这部分内容推荐你仔细阅读。"
-sourceId: "128748042"
-source: "https://blog.csdn.net/qq_45852626/article/details/128748042"
-sourceSeries:
-  - "Spring核心模块解析"
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring核心模块解析"
-  - "Spring"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 128748042
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/128748042)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/128748042)
 
 ## 前言
 
@@ -59,11 +48,11 @@ Spring中的BeanDifinition在Bean的实例化流程中占有着非常重要的�
  举个不同方式创建Bean的例子就明白为什么BeanDefinition是有必要存在的：
 
 * 普普通通创建一个Java bean：  
-   ![在这里插入图片描述](./assets/128748042/dc36ac5475635ea3b710aae9.png)
+   ![](./assets/128748042/dc36ac5475635ea3b710aae9.png)
 * Spring创建Bean：  
-   ![在这里插入图片描述](./assets/128748042/99e0a790e05196ed10f513f9.png)
+   ![](./assets/128748042/99e0a790e05196ed10f513f9.png)
 
-![在这里插入图片描述](./assets/128748042/ee7facde18b1fc002b9d2a10.png)
+![](./assets/128748042/ee7facde18b1fc002b9d2a10.png)
 
 BeanDefinition 它遵循了"配置与实例分离"的原则。,我可以从源码和实际场景来说明:
 
@@ -78,7 +67,7 @@ BeanDefinition 它遵循了"配置与实例分离"的原则。,我可以从源�
 在源码 `BeanDefinitionOverrideFailureAnalyzerTests.java:73: context.setAllowBeanDefinitionOverriding(false);`  
  这说明 Spring 可以在 Bean 实例化之前就检测到定义冲突。
 
-```
+```java
 	private @Nullable BeanDefinitionOverrideException createFailure(Class<?> configuration) {
 		try {
 			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
@@ -100,7 +89,7 @@ BeanDefinition 它遵循了"配置与实例分离"的原则。,我可以从源�
 
 看 `AbstractDependsOnBeanFactoryPostProcessor.java:116` 的关键代码:
 
-```
+```java
   public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
      for (String beanName : getBeanNames(beanFactory)) {
          BeanDefinition definition = getBeanDefinition(beanName, beanFactory);
@@ -140,7 +129,7 @@ BeanDefinition 包含大量元数据,这些在 Bean 实例中没有:
 
 从源码 `SpringApplication.java:49-58` 可以看到这些导入:
 
-```
+```java
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -184,7 +173,7 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 
 ### 在 Spring 容器中的位置
 
-```
+```java
 ┌─────────────────────────────────────────────────────────┐
 │                    Spring IoC 容器                        │
 │                                                           │
@@ -236,7 +225,7 @@ BeanDefinition (接口)
 
 #### 上游：BeanDefinition 的来源
 
-```
+```java
 ┌──────────────────────────────────────────────────────┐
 │                 配置源                                 │
 │  • XML配置文件                                         │
@@ -261,7 +250,7 @@ BeanDefinition (接口)
 
 #### 中游：BeanDefinition 的注册和存储
 
-```
+```java
 // BeanDefinitionRegistry 接口（核心注册表）
 public interface BeanDefinitionRegistry {
     // 注册 BeanDefinition
@@ -285,7 +274,7 @@ public interface BeanDefinitionRegistry {
 
 **存储位置**：DefaultListableBeanFactory
 
-```
+```java
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory
         implements ConfigurableListableBeanFactory, BeanDefinitionRegistry {
 
@@ -308,7 +297,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 #### 下游：从 BeanDefinition 到 Bean 实例
 
-```
+```java
 BeanDefinition
       ↓
 BeanFactory.getBean()
@@ -342,7 +331,7 @@ AbstractAutowireCapableBeanFactory.createBean()
 
 ### BeanDifinition重点源码
 
-```
+```java
 package org.springframework.beans.factory.config;
 
 public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
@@ -398,7 +387,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
 #### 创建示例类
 
-```
+```java
 package com.example.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -446,7 +435,7 @@ class UserRepository {
 
 #### 查看 BeanDefinition 信息
 
-```
+```java
 package com.example.demo;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -528,7 +517,7 @@ Bean类名: com.example.demo.service.UserService
 
 #### 编程方式创建 BeanDefinition
 
-```
+```java
 package com.example.demo.config;
 
 import com.example.demo.service.CustomService;
@@ -598,7 +587,7 @@ class CustomService {
 
 Spring 允许在 Bean 实例化之前修改 BeanDefinition：
 
-```
+```java
 package com.example.demo.config;
 
 import org.springframework.beans.BeansException;
@@ -654,7 +643,7 @@ public class CustomBeanFactoryPostProcessor implements BeanFactoryPostProcessor 
 
 #### 注解扫描生成 BeanDefinition
 
-```
+```java
 // ClassPathBeanDefinitionScanner.doScan() 核心代码
 protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
     Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
@@ -697,7 +686,7 @@ protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
 
 #### 根据 BeanDefinition 创建实例
 
-```
+```java
 // AbstractAutowireCapableBeanFactory.createBean() 简化版
 protected Object doCreateBean(String beanName, RootBeanDefinition mbd, Object[] args) {
 
@@ -733,7 +722,7 @@ BeanDifinition初学时不容易，如果没有一个整体的理解，不太容
 
 #### 核心要点
 
-```
+```java
 1. 配置来源多样化
    ├── XML配置
    ├── 注解配置（@Component、@Bean）

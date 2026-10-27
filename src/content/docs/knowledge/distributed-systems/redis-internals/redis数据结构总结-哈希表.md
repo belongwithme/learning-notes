@@ -1,23 +1,13 @@
 ---
 title: "Redis数据结构总结-哈希表"
 description: "中，Hash 表被用来辅助 SQL 查询。"
-sourceId: "145727660"
-source: "https://blog.csdn.net/qq_45852626/article/details/145727660"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-internals
-tags:
-  - "Redis"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145727660
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145727660)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145727660)
 
 ## 前言
 
@@ -66,7 +56,7 @@ typedef struct dictht{
 
 哈希表是由数组 table 组成，table 中每个元素都是指向 dict.h/dictEntry 结构，dictEntry 结构定义如下：
 
-```
+```c
 typedef struct dictEntry{
      //键
      void *key;
@@ -89,7 +79,7 @@ typedef struct dictEntry{
  因为当值为整数或双精度浮点数时，由于其本身就是 64 位，就可以不用指针指向了，而是可以直接存在键值对的结构体中，这样就避免了再用一个指针，从而节省了内存空间。
 
 注意这里还有一个指向下一个哈希表节点的指针，我们知道哈希表最大的问题是存在哈希冲突，如何解决哈希冲突，有开放地址法和链地址法。这里采用的便是链地址法，通过next这个指针可以将多个哈希值相同的键值对连接在一起，用来解决哈希冲突。  
- ![在这里插入图片描述](./assets/145727660/93dcfd45e146012aa3c307ae.png)
+ ![](./assets/145727660/93dcfd45e146012aa3c307ae.png)
 
 ## 哈希冲突
 
@@ -97,7 +87,7 @@ typedef struct dictEntry{
  当一个键值对的键经过 Hash 函数计算后得到哈希值，再将(哈希值 % 哈希表大小)取模计算，得到的结果值就是该 key-value 对应的数组元素位置，也就是第几个哈希桶。  
  有个例子:  
  有一个可以存放 8 个哈希桶的哈希表。key1 经过哈希函数计算后，再将「哈希值 % 8 」进行取模计算，结果值为 1，那么就对应哈希桶 1，类似的，key9 和 key10 分别对应哈希桶 1 和桶 6。  
- ![在这里插入图片描述](./assets/145727660/63ae5c32c5faef1b00a1c88f.png)
+ ![](./assets/145727660/63ae5c32c5faef1b00a1c88f.png)
 
 ### 链式哈希
 
@@ -106,7 +96,7 @@ typedef struct dictEntry{
  因此多个哈希表节点可以用 next 指针构成一个单项链表，被分配到同一个哈希桶上的多个节点可以用这个单项链表连接起来，这样就解决了哈希冲突。  
  举个例子:  
  key1 和 key9 经过哈希计算后，都落在同一个哈希桶，链式哈希的话，key1 就会通过 next 指针指向 key9，形成一个单向链表。  
- ![在这里插入图片描述](./assets/145727660/5bf9f50c4b2e0969cd4a17da.png)  
+ ![](./assets/145727660/5bf9f50c4b2e0969cd4a17da.png)  
  链式哈希局限性也很明显，随着链表长度的增加，在查询这一位置上的数据的耗时就会增加，毕竟链表的查询的时间复杂度是 O(n)。  
  要想解决这一问题，就需要进行 rehash，也就是对哈希表的大小进行扩展。
 
@@ -130,7 +120,7 @@ typedef struct dict {
 
 ```
 
-![在这里插入图片描述](./assets/145727660/d7b338c4e503f8ba10fc9279.png)  
+![](./assets/145727660/d7b338c4e503f8ba10fc9279.png)  
  在正常服务请求阶段，插入的数据，都会写入到「哈希表 1」，此时的「哈希表 2 」 并没有被分配空间  
  两个表的交替使用流程:
 
@@ -138,7 +128,7 @@ typedef struct dict {
 * 将「哈希表 1 」的数据迁移到「哈希表 2」 中；
 * 迁移完成后，「哈希表 1 」的空间会被释放，并把「哈希表 2」 设置为「哈希表 1」，然后在「哈希表 2」 新创建一个空白的哈希表，为下次 rehash 做准备。
 
-![在这里插入图片描述](./assets/145727660/385dfba08735a47b73ed9f40.png)  
+![](./assets/145727660/385dfba08735a47b73ed9f40.png)  
  看起来挺合理的,但是在第二步的时候有问题,如果「哈希表 1 」的数据量非常大，那么在迁移至「哈希表 2 」的时候，因为会涉及大量的数据拷贝，此时可能会对 Redis 造成阻塞，无法服务其他请求。
 
 ### 渐进式rehash
@@ -159,7 +149,7 @@ typedef struct dict {
 #### 简单版本
 
 rehash 的触发条件跟\*\*负载因子（load factor）\*\*有关系。  
- ![在这里插入图片描述](./assets/145727660/b152180e75997e016f87ff9e.png)  
+ ![](./assets/145727660/b152180e75997e016f87ff9e.png)  
  触发 rehash 操作的条件，主要有两个：
 
 * 负载因子≥1,且没有执行 RDB 快照或没有进行 AOF 重写的时候
@@ -226,7 +216,7 @@ void updateDictResizePolicy(void) {
 * dictRelace：用来往 Hash 表中添加一个键值对，或者键值对存在时，修改键值对。
 * dictAddorFind：直接调用 dictAddRaw。  
    因此，当我们往 Redis 中写入新的键值对或是修改键值对时，Redis 都会判断下是否需要进行 rehash。这里你可以参考下面给出的示意图，其中就展示了 \_dictExpandIfNeeded 被调用的关系,如下图:  
-   ![在这里插入图片描述](./assets/145727660/7a91e687f4ebb3577511f9c0.png)  
+   ![](./assets/145727660/7a91e687f4ebb3577511f9c0.png)  
    简而言之，Redis 中触发 rehash 操作的关键，就是 \_dictExpandIfNeeded 函数和 updateDictResizePolicy 函数。\_dictExpandIfNeeded 函数会根据 Hash 表的负载因子以及能否进行 rehash 的标识，判断是否进行 rehash，而 updateDictResizePolicy 函数会根据 RDB 和 AOF 的执行情况，启用或禁用 rehash。
 
 ### 扩容会扩多大呢

@@ -1,4 +1,4 @@
-import catalog from "../data/english.json";
+import { catalog } from "./english-data";
 import { learningDay } from "../lib/english/model";
 import { addDays } from "../lib/english/practice-model";
 import { courseStages } from "../lib/english/journey-model";

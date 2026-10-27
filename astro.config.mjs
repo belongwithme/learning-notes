@@ -2,11 +2,18 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import vercel from '@astrojs/vercel';
-import { KnowledgeCategories, KnowledgeSubcategories, TopLevelSections } from './src/config/site-routing';
-import { CsdnRedirects } from './src/config/csdn-redirects.mjs';
+import { KnowledgeCategories, KnowledgeSubcategories } from './src/config/site-routing';
+import { Redirects } from './src/config/redirects.mjs';
+
+// Starlight reads "last updated" dates from `git log`. Git escapes non-ASCII paths by
+// default, which hides the date of every note with a Chinese file name.
+process.env.GIT_CONFIG_COUNT = '1';
+process.env.GIT_CONFIG_KEY_0 = 'core.quotepath';
+process.env.GIT_CONFIG_VALUE_0 = 'false';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://notes.ian2000.xyz',
 	adapter: vercel(),
 	vite: {
 		build: {
@@ -22,13 +29,13 @@ export default defineConfig({
 			},
 		},
 	},
-	redirects: CsdnRedirects,
+	redirects: Redirects,
 	integrations: [
 		starlight({
 			title: '学习档案',
 			description: '记录、验证和沉淀可复用的技术知识',
 			components: {
-				Head: './src/components/SpeedInsights.astro',
+				Head: './src/components/Head.astro',
 				PageTitle: './src/components/CustomPageTitle.astro',
 				ThemeProvider: './src/components/LightThemeProvider.astro',
 				ThemeSelect: './src/components/LightThemeSelect.astro',
@@ -43,16 +50,16 @@ export default defineConfig({
 				{
 					label: '专题索引',
 					items: [
-						{ label: '全部专题', slug: TopLevelSections.find(s => s.id === 'knowledge')?.slug || 'knowledge' },
+						{ label: '全部专题', slug: 'knowledge' },
 						...KnowledgeCategories.map(cat => ({
 							label: cat.label,
 							collapsed: true,
 							items: [
-								{ label: '专题概览', slug: cat.slug },
-								...(KnowledgeSubcategories[cat.id] || []).map(subcategory => ({
+								{ label: '专题概览', slug: `knowledge/${cat.id}` },
+								...KnowledgeSubcategories[cat.id].map(subcategory => ({
 									label: subcategory.label,
 									collapsed: true,
-									items: [{ autogenerate: { directory: `${cat.slug}/${subcategory.id}` } }],
+									items: [{ autogenerate: { directory: `knowledge/${cat.id}/${subcategory.id}` } }],
 								})),
 							],
 						})),

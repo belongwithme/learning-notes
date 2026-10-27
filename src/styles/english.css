@@ -638,7 +638,8 @@ main {
   background: var(--surface);
   padding: 18px;
   display: grid;
-  grid-template-columns: 2fr repeat(4, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+  align-items: end;
   gap: 14px;
 }
 .filters label,
@@ -650,11 +651,23 @@ main {
   font-size: 0.7rem;
   color: var(--muted);
 }
-.search-field {
-  grid-column: 1/-1;
-}
 .search-field input {
   font-size: 0.875rem;
+}
+.more-filters {
+  grid-column: 1/-1;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.more-filters summary {
+  cursor: pointer;
+  width: fit-content;
+}
+.more-filters-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 14px;
 }
 .date-filters {
   grid-column: 1/-1;
@@ -668,6 +681,11 @@ main {
 .date-filters button {
   font-size: 0.75rem;
   min-height: 44px;
+}
+#today-view,
+#analysis-view,
+#collection-view {
+  scroll-margin-top: 24px;
 }
 .list-heading {
   display: flex;
@@ -941,9 +959,6 @@ dialog::backdrop {
   .header-actions {
     gap: 12px;
   }
-  .header-actions > a {
-    display: none;
-  }
   .intro {
     padding: 30px 0 20px;
     display: block;
@@ -1031,8 +1046,12 @@ dialog::backdrop {
     text-align: right;
   }
   .filters {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     padding: 14px;
+    gap: 12px;
+  }
+  .more-filters-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
   .date-filters {

@@ -1,24 +1,14 @@
 ---
-title: "深度整理总结MySQL——Expalin指南(二)"
+title: "深度整理总结MySQL——Explain指南(二)"
 description: "本章接着上一章Expalin指南(一)续写."
-sourceId: "145594095"
-source: "https://blog.csdn.net/qq_45852626/article/details/145594095"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: query-optimization
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
+  label: "Explain指南(二)"
   order: 145594095
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145594095)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145594095)
 
 ## 前言
 
@@ -93,7 +83,7 @@ LIMIT子句的参数为0时，表示压根儿不打算从表中读出任何记�
  不过我们有一种方式查询某个执行计划花费的成本的方式——在EXPLAIN单词和真正的查询语句中间加上FORMAT=JSON。  
  举个例子来说：
 
-```
+```sql
 mysql> EXPLAIN FORMAT=JSON SELECT * FROM s1 INNER JOIN s2 ON s1.key1 = s2.key2 WHERE s1.common_field = 'a'\G
 *************************** 1. row ***************************
 

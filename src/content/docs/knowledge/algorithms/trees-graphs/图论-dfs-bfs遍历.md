@@ -1,28 +1,19 @@
 ---
 title: "图论- DFS/BFS遍历"
 description: "这里主要是看我们需要用一个visited数组来记录遍历过的节点,因为图可能会有环的情况."
-sourceId: "145482416"
-source: "https://blog.csdn.net/qq_45852626/article/details/145482416"
-sourceSeries: []
-category: algorithms
-subcategory: trees-graphs
-tags:
-  - "算法"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145482416
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145482416)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145482416)
 
 ## 深度优先搜素(DFS)
 
 ### Vertex模版 - 遍历所有节点
 
-```
+```java
 // 多叉树节点
 class Node {
     int val;
@@ -94,7 +85,7 @@ void traverse(Vertex s, boolean[] visited) {
 虽然邻接表/邻接矩阵的底层存储方式不同，但提供了统一的 API,基础模版用我们上一章说的就可以.  
  至于这个遍历方法如下:
 
-```
+```java
 // 遍历图的所有节点
 void traverse(Graph graph, int s, boolean[] visited) {
     // base case
@@ -127,7 +118,7 @@ void traverse(Graph graph, int s, boolean[] visited) {
  对于树而言,只能是父节点指向子节点,所以从根root出发,到任意一个节点targetNode的路径都是唯一的.  
  换句话说,我遍历一遍树结构的所有节点,一定能找到root到targetNode 的唯一路径.
 
-```
+```java
 // 多叉树的遍历框架，寻找从根节点到目标节点的路径
 List<Node> path = new LinkedList<>();
 void traverse(Node root, Node targetNode) {
@@ -169,7 +160,7 @@ void traverse(Node root, Node targetNode) {
 
 ### 不记录遍历步数的
 
-```
+```java
 // 多叉树的层序遍历
 void levelOrderTraverse(Node root) {
     if (root == null) {
@@ -213,7 +204,7 @@ void bfs(Graph graph, int s) {
 
 ### 需要记录遍历步数的
 
-```
+```java
 // 多叉树的层序遍历
 void levelOrderTraverse(Node root) {
     if (root == null) {
@@ -268,7 +259,7 @@ void bfs(Graph graph, int s) {
 
 ### 需要适配不同权重边的
 
-```
+```java
 // 多叉树的层序遍历
 // 每个节点自行维护 State 类，记录深度等信息
 class State {

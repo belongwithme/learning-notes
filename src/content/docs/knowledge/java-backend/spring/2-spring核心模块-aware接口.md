@@ -1,24 +1,13 @@
 ---
 title: "2-Spring核心模块——Aware接口"
 description: "普通的Bean 不需要主动获取 Spring 容器的引用，也不需要调用容器的 API."
-sourceId: "129347485"
-source: "https://blog.csdn.net/qq_45852626/article/details/129347485"
-sourceSeries:
-  - "Spring核心模块解析"
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring核心模块解析"
-  - "Spring"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 129347485
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129347485)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129347485)
 
 ## 前言
 
@@ -33,7 +22,7 @@ Aware翻译过来：“感知”，如果是XxxAware也就是对…感知的。
 
 ### 普通Bean(无感知,低耦合)
 
-```
+```java
 // 这是 Spring Boot 源码中的典型例子
   @Component
   public class MyComponent {
@@ -66,7 +55,7 @@ Aware翻译过来：“感知”，如果是XxxAware也就是对…感知的。
 
 ### 需要主动访问容器的 Bean（有感知）
 
-```
+```java
 // 如果你需要"主动获取容器中的信息"
   public class AdvancedComponent implements ApplicationContextAware {
 
@@ -108,7 +97,7 @@ Aware翻译过来：“感知”，如果是XxxAware也就是对…感知的。
 Aware接口是一种框架辅助属性注入的一种思想，其他框架中  
  瞧一眼源码：
 
-```
+```java
 /**
  * Marker superinterface indicating that a bean is eligible to be
  * notified by the Spring container of a particular framework object
@@ -148,14 +137,14 @@ Aware接口是回调，监听器和观察者设计模式的混合，它表示bea
 
 这些接口均继承自`org.springframework.beans.factory.Aware`标记接口，并提供一个将由Bean实现的Set方法，Spring通过基于Setter的依赖注入方式使相应的对象可以被Bean使用。  
  常见的Aware接口：  
- ![请添加图片描述](./assets/129347485/6f2ca79b50903e9a850b5686.png)
+ ![](./assets/129347485/6f2ca79b50903e9a850b5686.png)
 
 ### 例子
 
 以BeanNameAware为例：  
  BeanNameAware：使对象能够知道容器中定义的bean名称。
 
-```
+```java
 public class MyBeanName implements BeanNameAware {
    @Override
    public void setBeanName(String beanName){
@@ -170,7 +159,7 @@ public class MyBeanName implements BeanNameAware {
 类 
 中注册这种类型的bean:
 
-```
+```java
 @Configuration
 public class Config{
   @Bean(name="WangBeanName")
@@ -185,7 +174,7 @@ public class Config{
 
 启动应用程序上下文并从中获取bean:
 
-```
+```java
 AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
 MyBeanName myBeanName = context.getBean(MyBeanName.class); 
 

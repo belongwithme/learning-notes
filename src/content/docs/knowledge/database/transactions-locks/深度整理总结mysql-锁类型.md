@@ -1,24 +1,14 @@
 ---
 title: "深度整理总结MySQL——锁类型"
 description: "MySQL的锁是比较难的(个人认为).本章简单介绍一下锁的类型,帮助我们有个大致的了解."
-sourceId: "145524102"
-source: "https://blog.csdn.net/qq_45852626/article/details/145524102"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: transactions-locks
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
+  label: "锁类型"
   order: 145524102
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145524102)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145524102)
 
 ## 锁的类型
 ## 前言
@@ -95,7 +85,7 @@ UNLOCK TABLES;                -- 释放表锁
 
 读锁允许其他线程同时读取该表，但禁止写入。
 
-```
+```sql
 LOCK TABLES users READ;
 SELECT * FROM users; -- 允许查询
 INSERT INTO users (name) VALUES ('Alice'); -- 阻塞（不能写）
@@ -108,7 +98,7 @@ UNLOCK TABLES;
 
 写锁会阻塞所有其他线程，直到锁释放。
 
-```
+```sql
 LOCK TABLES users WRITE;
 SELECT * FROM users; -- 允许查询
 INSERT INTO users (name) VALUES ('Alice'); -- 允许写入
@@ -152,7 +142,7 @@ UNLOCK TABLES;
 读锁示例:  
  只要查询表，就会自动加MDL 读锁，防止表结构被修改。
 
-```
+```sql
 SELECT * FROM users;  -- 自动加 MDL 读锁
 -- 其他事务可以继续查询或修改 users 表，但不能执行 ALTER TABLE
 
@@ -162,7 +152,7 @@ SELECT * FROM users;  -- 自动加 MDL 读锁
 写锁示例:  
  ALTER TABLE 会加MDL 写锁，阻塞所有对 users 表的访问，直到 DDL 语句执行完毕。
 
-```
+```sql
 ALTER TABLE users ADD COLUMN age INT;  -- 自动加 MDL 写锁
 
 
@@ -173,7 +163,7 @@ ALTER TABLE users ADD COLUMN age INT;  -- 自动加 MDL 写锁
 MDL不会主动释放,当表上有长时间运行的查询(如大事务、慢 SQL),DDL语句会一直等待,导致死锁或阻塞所有查询.  
  举例
 
-```
+```sql
 -- 事务 1（长时间查询，持有 MDL 读锁）
 BEGIN;
 SELECT * FROM users;  -- 事务未提交，MDL 读锁一直持有
@@ -252,7 +242,7 @@ select ... for update;
 
 意向共享锁（IS）示例:
 
-```
+```sql
 -- 事务 1
 SELECT * FROM users WHERE age > 20;  -- 自动在表级加 IS 锁
 
@@ -264,7 +254,7 @@ SELECT * FROM users WHERE age > 20;  -- 自动在表级加 IS 锁
 意向排它锁(IX)示例:  
  当一个事务打算对表中的某些行加排他锁时，MySQL 会自动在表级别加上意向排他锁（IX）。
 
-```
+```sql
 -- 事务 2
 UPDATE users SET name = 'John' WHERE age > 30;  -- 自动在表级加 IX 锁
 
@@ -349,13 +339,13 @@ InnoDB 存储引擎中的 AUTO-INC 锁 只会在插入操作时使用，并且�
 
 ##### 案例
 
-```
+```sql
 select * from t_test where id = 1 for update;
 
 
 ```
 
-![在这里插入图片描述](./assets/145524102/829662b27ab4f202dfc9ddb0.png)  
+![](./assets/145524102/829662b27ab4f202dfc9ddb0.png)  
  当事务执行 commit 后，事务过程中生成的锁都会被释放。
 
 #### Gap Lock
@@ -372,14 +362,14 @@ select * from t_test where id = 1 for update;
 锁定两条记录之间的空隙。  
  例如，查询条件是 (value > 30 AND value < 40)，那么 Gap Lock 锁定的是 30 和 40 之间的空隙。  
  例如,表中有一个范围 id 为（3，5）间隙锁，那么其他事务就无法插入 id = 4 这条记录了.  
- ![在这里插入图片描述](./assets/145524102/dfd62ea79f4d91d1839e3947.png)  
+ ![](./assets/145524102/dfd62ea79f4d91d1839e3947.png)  
  ，间隙锁之间是兼容的，即两个事务可以同时持有包含共同间隙范围的间隙锁，并不存在互斥关系，因为间隙锁的目的是防止插入幻影记录而提出的。
 
 ##### 间隙与记录锁结合- 临键锁
 
 当查询条件包含某一特定记录时，Gap Lock 会与记录锁（例如，X 锁）结合使用，锁定某个范围的记录和记录之间的空隙。例如，查询条件是 (value >= 30 AND value <= 40)，此时会锁定 [30, 40] 范围内的记录，并且锁定 30 和 40 之间的空隙。  
  例如,表中有一个范围 id 为（3，5] 的 next-key lock，那么其他事务即不能插入 id = 4 记录，也不能修改 id = 5 这条记录。  
- ![在这里插入图片描述](./assets/145524102/c540000f72f1e50c30dcf458.png)  
+ ![](./assets/145524102/c540000f72f1e50c30dcf458.png)  
  next-key lock 即能保护该记录，又能阻止其他事务将新纪录插入到被保护记录前面的间隙中。
 
 **next-key lock 是包含间隙锁+记录锁的，如果一个事务获取了X 型的 next-key lock，那么另外一个事务在获取相同范围的 X 型的 next-key lock 时，是会被阻塞的。**

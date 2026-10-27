@@ -1,27 +1,17 @@
 ---
 title: "Enumeration 接口详解"
 description: "Enumeration 是 Java 中最早的迭代器接口（JDK 1.0 引入），用于逐个遍历集合中的元素。"
-sourceId: "153399744"
-source: "https://blog.csdn.net/qq_45852626/article/details/153399744"
-sourceSeries:
-  - "Java源码"
-category: java-backend
-subcategory: java-ecosystem
-tags:
-  - "Java源码"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 153399744
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153399744)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153399744)
 
 ## 一、核心定义
 
-```
+```java
 package java.util;
 
 public interface Enumeration<E> {
@@ -85,7 +75,7 @@ E nextElement();
 
 ### 基础使用
 
-```
+```java
 // 创建一个 Vector (支持 Enumeration 的经典集合)
 Vector<String> vector = new Vector<>();
 vector.add("Apple");
@@ -118,7 +108,7 @@ Cherry
 
 在 `ServiceLoader` 中也用到了 `Enumeration`：
 
-```
+```java
 // ServiceLoader.java 中的 LazyIterator
 private class LazyIterator implements Iterator<S> {
     Enumeration<URL> configs = null;  // 配置文件的 URL 枚举
@@ -160,7 +150,7 @@ private class LazyIterator implements Iterator<S> {
 
 ### 代码对比
 
-```
+```java
 // 使用 Enumeration (老式)
 Enumeration<String> enumeration = vector.elements();
 while (enumeration.hasMoreElements()) {
@@ -185,7 +175,7 @@ while (iterator.hasNext()) {
 
 ### 遗留集合类
 
-```
+```java
 // 1. Vector
 Vector<String> vector = new Vector<>();
 Enumeration<String> e1 = vector.elements();
@@ -208,7 +198,7 @@ Enumeration<Object> propNames = props.propertyNames();
 
 ### ClassLoader 中的使用
 
-```
+```java
 // 获取所有匹配的资源 URL
 ClassLoader cl = ClassLoader.getSystemClassLoader();
 Enumeration<URL> resources = cl.getResources("META-INF/services/com.example.MyService");
@@ -225,7 +215,7 @@ while (resources.hasMoreElements()) {
 
 ## 七、实现自定义 Enumeration
 
-```
+```java
 public class CustomEnumeration<E> implements Enumeration<E> {
     private E[] elements;
     private int index = 0;
@@ -265,7 +255,7 @@ while (enumeration.hasMoreElements()) {
 
 ### 转换为 List
 
-```
+```java
 // 方法 1: 使用 Collections.list()
 Vector<String> vector = new Vector<>(Arrays.asList("A", "B", "C"));
 Enumeration<String> enumeration = vector.elements();
@@ -325,7 +315,7 @@ NetworkInterface.getNetworkInterfaces() // 返回 Enumeration<NetworkInterface>
 
 ### 陷阱 1: 重复调用 nextElement()
 
-```
+```java
 // ❌ 错误：没有检查就调用
 Enumeration<String> e = vector.elements();
 e.nextElement();
@@ -343,7 +333,7 @@ while (e.hasMoreElements()) {
 
 ### 陷阱 2: 并发修改
 
-```
+```java
 // ❌ 错误：遍历时修改
 Vector<String> vector = new Vector<>(Arrays.asList("A", "B", "C"));
 Enumeration<String> e = vector.elements();
@@ -364,7 +354,7 @@ while (it.hasNext()) {
 
 ### 陷阱 3: Enumeration 不能重置
 
-```
+```java
 // ❌ 错误：Enumeration 无法重置
 Enumeration<String> e = vector.elements();
 while (e.hasMoreElements()) {
@@ -387,7 +377,7 @@ while (e2.hasMoreElements()) {
 
 ### 场景 1: 读取资源文件
 
-```
+```java
 // 在 ServiceLoader 中查找所有服务配置文件
 ClassLoader loader = Thread.currentThread().getContextClassLoader();
 String resourceName = "META-INF/services/" + MyService.class.getName();
@@ -404,7 +394,7 @@ while (configs.hasMoreElements()) {
 
 ### 场景 2: 遍历网络接口
 
-```
+```java
 import java.net.NetworkInterface;
 
 Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -424,7 +414,7 @@ while (interfaces.hasMoreElements()) {
 
 ### 场景 3: 读取系统属性
 
-```
+```java
 Properties props = System.getProperties();
 Enumeration<?> propNames = props.propertyNames();
 
@@ -443,7 +433,7 @@ while (propNames.hasMoreElements()) {
 
 ### ClassLoader.getResources() 返回 Enumeration
 
-```
+```java
 // ClassLoader.java
 public Enumeration<URL> getResources(String name) throws IOException {
     // 返回所有匹配资源的 URL 枚举
@@ -454,7 +444,7 @@ public Enumeration<URL> getResources(String name) throws IOException {
 
 ### ServiceLoader 如何使用
 
-```
+```java
 // ServiceLoader.java 的 LazyIterator
 private boolean hasNextService() {
     if (configs == null) {
@@ -491,7 +481,7 @@ private boolean hasNextService() {
 
 ### 迭代器模式
 
-```
+```java
 public interface Enumeration<E> {
     // 查询操作
     boolean hasMoreElements();
@@ -508,7 +498,7 @@ public interface Enumeration<E> {
 
 ### 与现代设计的对比
 
-```
+```java
 // Enumeration (JDK 1.0)
 public interface Enumeration<E> {
     boolean hasMoreElements();
@@ -585,7 +575,7 @@ ServiceLoader.load()
 
 ### 示例 1: 基础遍历
 
-```
+```java
 Vector<String> vector = new Vector<>();
 vector.add("Java");
 vector.add("Python");
@@ -601,7 +591,7 @@ while (e.hasMoreElements()) {
 
 ### 示例 2: 遍历 Hashtable
 
-```
+```java
 Hashtable<String, Integer> table = new Hashtable<>();
 table.put("Alice", 25);
 table.put("Bob", 30);
@@ -625,7 +615,7 @@ while (values.hasMoreElements()) {
 
 ### 示例 3: 在 ServiceLoader 场景中
 
-```
+```java
 ClassLoader loader = Thread.currentThread().getContextClassLoader();
 Enumeration<URL> configs = loader.getResources("META-INF/services/com.example.MyService");
 

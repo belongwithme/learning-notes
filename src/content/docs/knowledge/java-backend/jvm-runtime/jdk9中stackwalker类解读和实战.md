@@ -1,29 +1,19 @@
 ---
 title: "JDK9中StackWalker类解读和实战"
 description: "启动流程中最初会执行SpringApplication的初始化方法,如下:"
-sourceId: "153469705"
-source: "https://blog.csdn.net/qq_45852626/article/details/153469705"
-sourceSeries:
-  - "Java源码"
-category: java-backend
-subcategory: jvm-runtime
-tags:
-  - "Java源码"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 153469705
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153469705)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153469705)
 
 ## 初始在SpringApplication的初始化方法里面
 
 启动流程中最初会执行SpringApplication的初始化方法,如下:
 
-```
+```java
 public SpringApplication(@Nullable ResourceLoader resourceLoader, Class<?>... primarySources) {
 		//  - 保存资源加载器
 		//  - 断言主配置类不能为空
@@ -112,7 +102,7 @@ public SpringApplication(@Nullable ResourceLoader resourceLoader, Class<?>... pr
 
 `StackFrame` 代表调用栈中的一个栈帧,提供以下信息:
 
-```
+```java
 public interface StackFrame {
     String getClassName();           // 类名
     String getMethodName();          // 方法名
@@ -173,7 +163,7 @@ StackWalker walker = StackWalker.getInstance(
 
 核心方法,接受一个 `Function<Stream<StackFrame>, T>`,返回处理结果:
 
-```
+```java
 public <T> T walk(Function<? super Stream<StackFrame>, ? extends T> function)
 
 
@@ -189,7 +179,7 @@ public <T> T walk(Function<? super Stream<StackFrame>, ? extends T> function)
 
 简化的遍历方法:
 
-```
+```java
 public void forEach(Consumer<? super StackFrame> action)
 
 
@@ -215,7 +205,7 @@ public Class<?> getCallerClass()
 
 #### 一. 获取当前调用栈信息
 
-```
+```java
 public class Example01_BasicUsage {
     public static void main(String[] args) {
         level1();
@@ -252,7 +242,7 @@ Example01_BasicUsage.main(Example01_BasicUsage.java:3)
 
 #### 二. 获取调用者类名(常见于框架中)
 
-```
+```java
 public class Example02_GetCallerClass {
     private static final StackWalker walker =
         StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
@@ -297,7 +287,7 @@ public class Example02_GetCallerClass {
 
 #### 三: 使用 Stream API 过滤和限制栈帧
 
-```
+```java
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -489,7 +479,7 @@ private Optional<Class<?>> findMainClass(Stream<StackFrame> stack) {
 
 ##### 示例代码
 
-```
+```java
 package com.example.demo;
 
 import org.springframework.boot.SpringApplication;
@@ -584,7 +574,7 @@ Optional<StackFrame> = Optional[DemoApplication.main(String[])]
 
 结果：
 
-```
+```java
 Optional<Class<?>> = Optional[class com.example.demo.DemoApplication]
 
 

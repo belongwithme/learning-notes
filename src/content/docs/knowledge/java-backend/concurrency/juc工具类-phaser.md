@@ -1,23 +1,13 @@
 ---
 title: "JUC工具类-Phaser"
 description: "Phaser是java.util.concurrent包下的一个可重用的同步屏障（Synchronization Barrier）"
-sourceId: "147240379"
-source: "https://blog.csdn.net/qq_45852626/article/details/147240379"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
-  order: 147240379
+  order: 21
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147240379)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147240379)
 
 ## 一、 基础概念理解：Phaser是什么？
 
@@ -151,7 +141,7 @@ sidebar:
 
 **示例：**
 
-```
+```java
 import java.util.concurrent.Phaser;
 
 public class PhaserConstructionDemo {
@@ -189,7 +179,7 @@ public class PhaserConstructionDemo {
 
 **示例：**
 
-```
+```java
 import java.util.concurrent.Phaser;
 
 public class PhaserRegistrationDemo {
@@ -257,7 +247,7 @@ public class PhaserRegistrationDemo {
 
 **示例：演示三种到达方式**
 
-```
+```java
 import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ThreadLocalRandom;
@@ -370,7 +360,7 @@ public class PhaserArrivalDemo {
 
 **示例：**
 
-```
+```java
 import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.BrokenBarrierException; // 虽然这里不用，但它是相关概念
@@ -494,7 +484,7 @@ public class PhaserAwaitAdvanceDemo {
 
 这是一个非常典型的`Phaser`应用场景。假设我们有一个任务，需要分三步处理一批数据：加载数据 -> 处理数据 -> 保存结果。每一步都可能由多个线程并行完成。
 
-```
+```java
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Phaser;
@@ -627,7 +617,7 @@ public class DataProcessingPipeline {
 
 假设一个场景，我们有一组初始的工作线程，但在任务执行过程中，可能会根据负载情况动态增加新的工作线程，或者有些线程完成了特定的子任务后就可以提前退出。
 
-```
+```java
 import java.util.concurrent.Phaser;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
@@ -832,7 +822,7 @@ public class DynamicParticipantsDemo {
 **默认实现：**  
  `Phaser`的默认`onAdvance`实现非常简单：
 
-```
+```java
 protected boolean onAdvance(int phase, int registeredParties) {
     // 如果下一阶段的参与者数量为0，则终止Phaser
     return registeredParties == 0;
@@ -854,7 +844,7 @@ protected boolean onAdvance(int phase, int registeredParties) {
    * **需求:** 任务只需要执行固定的N个阶段。
    * **实现:** 在`onAdvance`中检查传入的`phase`参数。如果`phase`达到了预设的最大阶段数减1（因为`phase`是从0开始的），就返回`true`。
 
-   ```
+   ```java
    final int MAX_PHASES = 3; // 总共执行 0, 1, 2 三个阶段
    Phaser phaser = new Phaser(initialParties) {
        @Override
@@ -877,7 +867,7 @@ protected boolean onAdvance(int phase, int registeredParties) {
    * **需求:** 某个全局标志位被设置，或者某个共享资源耗尽，或者检测到错误条件，需要提前终止所有阶段。
    * **实现:** 在`onAdvance`中检查这些外部条件。
 
-   ```
+   ```java
    volatile boolean errorOccurred = false; // 假设这是一个全局错误标志
 
    Phaser phaser = new Phaser(initialParties) {
@@ -903,7 +893,7 @@ protected boolean onAdvance(int phase, int registeredParties) {
    * **需求:** 在从一个阶段进入下一个阶段时，需要执行一些全局的初始化或清理操作（比如重置共享数据结构、记录日志等）。
    * **实现:** 在`onAdvance`方法体内部，返回`false`之前，执行这些操作。因为`onAdvance`是由最后一个到达的线程执行的，可以确保这些操作在所有线程进入下一阶段之前完成。
 
-   ```
+   ```java
    SharedResource sharedResource = new SharedResource(); // 假设的共享资源
 
    Phaser phaser = new Phaser(initialParties) {
@@ -932,7 +922,7 @@ protected boolean onAdvance(int phase, int registeredParties) {
    * **需求:** 可能需要在某些阶段结束后，根据参与者的数量或其他状态，动态地调整后续行为，甚至可能强制等待（虽然不推荐在`onAdvance`里做长时间阻塞操作，因为它会阻塞阶段推进）。
    * **实现:** 利用`phase`和`registeredParties`参数，结合其他外部状态，实现复杂的逻辑判断。
 
-   ```
+   ```java
    Phaser phaser = new Phaser(initialParties) {
        @Override
        protected boolean onAdvance(int phase, int registeredParties) {
@@ -1000,7 +990,7 @@ CAS
 
 **示例 (概念性):**
 
-```
+```java
 // 假设有 1000 个任务线程
 int numThreads = 1000;
 int numGroups = 10; // 分成 10 组

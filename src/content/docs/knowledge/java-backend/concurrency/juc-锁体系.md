@@ -1,24 +1,13 @@
 ---
 title: "JUC-锁体系"
 description: "Java并发锁机制可以理解为一个分层的知识体系："
-sourceId: "146222694"
-source: "https://blog.csdn.net/qq_45852626/article/details/146222694"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
-  - "SQL"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
-  order: 146222694
+  order: 10
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146222694)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146222694)
 
 ## 整体架构
 

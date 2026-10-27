@@ -1,25 +1,13 @@
 ---
 title: "Java 堆排序（Heap Sort）详解教程"
 description: "堆是一种完全二叉树（complete binary tree），分为："
-sourceId: "153801123"
-source: "https://blog.csdn.net/qq_45852626/article/details/153801123"
-sourceSeries:
-  - "数据结构和算法"
-category: algorithms
-subcategory: algorithm-patterns
-tags:
-  - "数据结构和算法"
-  - "Java"
-  - "算法"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 153801123
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153801123)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153801123)
 
 ## 一、什么是堆（Heap）？
 
@@ -195,7 +183,7 @@ void heapify(int[] arr, int n, int i) {
 
 ## 七、完整堆排序代码
 
-```
+```java
 public class HeapSort {
     public static void heapSort(int[] arr) {
         int n = arr.length;

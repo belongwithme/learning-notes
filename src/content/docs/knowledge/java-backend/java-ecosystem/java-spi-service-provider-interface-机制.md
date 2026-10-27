@@ -1,24 +1,13 @@
 ---
 title: "Java SPI (Service Provider Interface) 机制"
 description: "SPI (Service Provider Interface) 是Java提供的一种服务发现机制，允许第三方为接口提供实现。它是一种基于接口的编程 + 策略模式 + 配置文件的设计模式。"
-sourceId: "153400057"
-source: "https://blog.csdn.net/qq_45852626/article/details/153400057"
-sourceSeries:
-  - "Java基础"
-category: java-backend
-subcategory: java-ecosystem
-tags:
-  - "Java基础"
-  - "Java"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 153400057
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153400057)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153400057)
 
 ## Java SPI机制
 ## 什么是SPI
@@ -61,7 +50,7 @@ sidebar:
 
 Java提供的工具类,用于加载服务提供者:
 
-```
+```java
 ServiceLoader<PaymentService> loader = ServiceLoader.load(PaymentService.class);
 
 
@@ -101,7 +90,7 @@ src/
 
 #### 1. SPI接口 (`PaymentService.java`)
 
-```
+```java
 public interface PaymentService {
     String getName();
     boolean pay(double amount, String orderId);
@@ -157,7 +146,7 @@ com.example.spi.impl.UnionPayService
 
 ### ServiceLoader源码解析
 
-```
+```java
 // ServiceLoader内部使用懒加载
 public final class ServiceLoader<S> implements Iterable<S> {
 
@@ -214,7 +203,7 @@ public final class ServiceLoader<S> implements Iterable<S> {
 
 **解决方案**:
 
-```
+```java
 // 确保实现类有public无参构造函数
 public class AlipayService implements PaymentService {
     public AlipayService() {  // 显式声明
@@ -241,7 +230,7 @@ public class AlipayService implements PaymentService {
 
 **优化建议**:
 
-```
+```java
 // 使用单例模式缓存ServiceLoader
 public class PaymentServiceFactory {
     private static final ServiceLoader<PaymentService> LOADER =

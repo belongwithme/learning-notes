@@ -1,24 +1,14 @@
 ---
 title: "深度整理总结MySQL——索引工作原理"
 description: "相信你在面试时，通常会被问到“什么是索引？”而你一定要能脱口而出：索引是提升查询速度的一种数据结构。"
-sourceId: "145485391"
-source: "https://blog.csdn.net/qq_45852626/article/details/145485391"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: indexes
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
+  label: "索引工作原理"
   order: 145485391
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145485391)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145485391)
 
 ## B+树索引数据结构
 ## 前言
@@ -58,7 +48,7 @@ MySQL 是支持范围查找的，所以索引的数据结构不仅要能高效�
 
 既然我们的索引数据最后肯定是排列好的,那么二分查找算法可以高效去定位数据.二分查找法每次都把查询的范围减半，这样时间复杂度就降到了 O(logn).  
  但是注意: **每次查找都需要不断计算中间位置**  
- ![在这里插入图片描述](./assets/145485391/e68037f20e4f09ec9fccd4d4.png)
+ ![](./assets/145485391/e68037f20e4f09ec9fccd4d4.png)
 
 ### 寻求合适的数据结构
 
@@ -115,7 +105,7 @@ B+树节点是数据页,存放用户的记录和各种信息,每个数据页默�
 * 所有数据只存储在叶子节点
 * 叶子节点之间通过双向链表相连,支持范围查询的高效遍历  
    如下图所示:  
-   ![在这里插入图片描述](./assets/145485391/3f2d4a6f9ce2d6277066102c.png)
+   ![](./assets/145485391/3f2d4a6f9ce2d6277066102c.png)
 
 ##### B+与B树比较
 

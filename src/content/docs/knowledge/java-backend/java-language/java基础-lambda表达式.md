@@ -1,24 +1,13 @@
 ---
 title: "Java基础-lambda表达式"
 description: "函数式编程，曾经有过一段黄金时代，后来又因面向对象范式的崛起而逐步变为小众范式。但是，函数式编程目前又开始在不同的语言中流行起来了，像Java 8、JS、Rust等语言都有对函数式编程的支持。"
-sourceId: "136749297"
-source: "https://blog.csdn.net/qq_45852626/article/details/136749297"
-sourceSeries:
-  - "Java基础"
-category: java-backend
-subcategory: java-language
-tags:
-  - "Java基础"
-  - "Java"
 status: draft
-difficulty: beginner
-contentType: knowledge
 sidebar:
   order: 136749297
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136749297)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136749297)
 
 ## 前言
 
@@ -39,7 +28,7 @@ sidebar:
 λ演算(读作lambda演算),它从数理逻辑(Mathematical logic)发展而来,使用变量绑定(binding)和代换规则(substitution)来研究函数如何抽象化定义(define),函数如何被应用(
 apply 
 )以及递归(recursion)的形式系统.  
- ![在这里插入图片描述](./assets/136749297/7afce318ed4431c379fc5bee.png)
+ ![](./assets/136749297/7afce318ed4431c379fc5bee.png)
 
 λ演算式有三个要点:
 
@@ -61,7 +50,7 @@ return i+j
 
 add括号里面的i和j就是形参  
  所以对应λ演算法的函数就是一个x,而它.后面就是函数体(定义了函数要做什么),在调用函数的时候,形参和函数体会被形参括起来,比如:(λx.xy)a == add(1,3) 其中这个a就是函数里的实参,如下图  
- ![请添加图片描述](./assets/136749297/dcd2cfa2debd3b0ae313e637.png)
+ ![](./assets/136749297/dcd2cfa2debd3b0ae313e637.png)
 
 我们习惯中的编程语言的函数在里面写的都是操作和指令,告诉计算机传进来的参数要对其进行什么操作.  
  也就是先有的数据和指令,函数是被定义在数据和指令这两个基础概念之上的  
@@ -72,7 +61,7 @@ add括号里面的i和j就是形参
  其实y是什么根本就不重要,因为在λ演算法里,**重点不是符号是什么,而是两个符号之间的关系**.  
  第一个x是形参,第二个y是什么无所谓,它只要和第一个符号不一样就行.  
  为了帮助我们更好的理解,我们拿过来一个例子来看符号之间的关系  
- ![在这里插入图片描述](./assets/136749297/b39e1ed35960f6e4f4d0e6e7.png)  
+ ![](./assets/136749297/b39e1ed35960f6e4f4d0e6e7.png)  
  上面的内容看不太明白也没关系,可以去看一下这个b站视频:【4. 用“λ演算法”去理解，为什么函数式编程会有更少的bug】https://www.bilibili.com/video/BV1d34y1v7xr?vd\_source=e69b8b220e292b8e4922bf6622e13c51  
  受限于时间和篇幅,没办法把视频中的思想很好的表达出来,不妨直接去看一下这个视频,相信就可以更好理解了.
 
@@ -96,7 +85,7 @@ lambda表达式可以简化匿名内部类的书写,但lambda表达式并不能�
 
 如果需要一个线程,常见的写法是:
 
-```
+```java
 new Thread( new Runnable(){
   @Override
   public void run(){
@@ -109,7 +98,7 @@ new Thread( new Runnable(){
 
 Thread类传递了一个匿名的Runnable对象,重载Runnable接口的run()方法来实现相应逻辑,这是JDK7及其以前的做法,虽然省去了为类起名字的烦恼,但是还不够简化,在JDK8中可以简化如下方式:
 
-```
+```java
 new Thread(
  () ->    System.out.println("Thread run()"); //省略接口名和方法名
 )
@@ -123,7 +112,7 @@ new Thread(
 
 如果给一个字符串列表通过自定义比较器,按照字符串长度进行排序,JDK7书写形式
 
-```
+```java
 List<String> list = Arrays.asList("I", "love", "you", "too");
 Collections.sort(list,new Comparator<String>(){
   @Override
@@ -144,7 +133,7 @@ compare
 ()方法,实现比较逻辑.  
  采用lambda表达式可简写如下:
 
-```
+```java
 // JDK8 Lambda表达式写法
 List<String> list = Arrays.asList("I", "love", "you", "too");
 Collections.sort(list,(s1,s2)->{
@@ -168,7 +157,7 @@ Collections.sort(list,(s1,s2)->{
  lambda的类型就是对应函数接口的类型.  
  lambda表达式另一个依据就是类型推断机制,在上下文信息足够多的情况下,编译期可以推断出参数表的类型,而不需要显示指名.lambda表达更多合法的书写形式如下:
 
-```
+```java
 // Lambda表达式的书写形式
 Runnable run = () -> System.out.println("Hello World");// 1 :无参函数的简写
 ActionListener listener = event -> System.out.println("button clicked");// 2 有参函数的简写
@@ -186,7 +175,7 @@ BinaryOperator<Long> addImplicit = (x, y) -> x + y;// 5 类型推断机制
 
 自定义函数接口很容易,只需要编写一个只有一个抽象方法的接口即可
 
-```
+```java
 @FunctionalInterface
 public interface ConsumerInterface<T>{
    void accept(T t)
@@ -197,7 +186,7 @@ public interface ConsumerInterface<T>{
 
 有了上述接口定义,我们可以写出下面的代码
 
-```
+```java
 ConsumerInterface<String> consumer = str -> System.out.println(str)
 
 
@@ -205,7 +194,7 @@ ConsumerInterface<String> consumer = str -> System.out.println(str)
 
 进阶一点的用法
 
-```
+```java
 class Mystream<T>{
  private List<T> list;
   public void myForEach(ConsumerInterface<T> consumer){
@@ -229,7 +218,7 @@ lambda表达式似乎只是为了简化匿名内部类书写,看起来仅仅是�
 
 匿名内部类仍然是一个类,只是不需要程序员显示指定类名,编译期会自动为该类取名,编译之后会产生两个class文件:
 
-```
+```java
 public class MainAnonymousClass {
 	public static void main(String[] args) {
 		new Thread(new Runnable(){
@@ -244,10 +233,10 @@ public class MainAnonymousClass {
 
 ```
 
-![在这里插入图片描述](./assets/136749297/626c61023b49030b1fe4bd06.png)  
+![](./assets/136749297/626c61023b49030b1fe4bd06.png)  
  进一步分析主类MainAnonymousClass.class字节码,可发现其创建了匿名内部类的对象:
 
-```
+```java
 // javap -c MainAnonymousClass.class
 public class MainAnonymousClass {
   ...
@@ -270,7 +259,7 @@ public class MainAnonymousClass {
 
 Lambda表达式通过invokedynamic指令实现,书写lambda表达式不会产生新的类,如果有如下代码,编译之后只有一个class文件:
 
-```
+```java
 public class MainLambda {
 	public static void main(String[] args) {
 		new Thread(
@@ -283,10 +272,10 @@ public class MainLambda {
 ```
 
 编译后的结果:  
- ![在这里插入图片描述](./assets/136749297/053ef622f085c2260fd08798.png)  
+ ![](./assets/136749297/053ef622f085c2260fd08798.png)  
  通过javap反编译命名,我们可以看到Lambda表达式内部表示的不同:
 
-```
+```java
 // javap -c -p MainLambda.class
 public class MainLambda {
   ...
@@ -317,7 +306,7 @@ public class MainLambda {
 既然lambda表达式不是内部类的简写,那么lambda内部的this引用和内部类对象没关系了.  
  在Lambda表达式中this的意义跟在表达式外部完全一样。因此下列代码将输出两遍Hello Hoolee，而不是两个引用地址。
 
-```
+```java
 public class Hello {
 	Runnable r1 = () -> { System.out.println(this); };
 	Runnable r2 = () -> { System.out.println(toString()); };
@@ -341,7 +330,7 @@ public class Hello {
 
 为引入lambda表达式,Java8新增了`java.util.function`包,里面包含常用函数接口,这是lambda表达式的基础,java集合框架也新增部分接口,以便与lambda表达式对接.  
  回顾一下Java集合框架的接口继承结构:  
- ![在这里插入图片描述](./assets/136749297/1a329781773feb5e62d01200.png)  
+ ![](./assets/136749297/1a329781773feb5e62d01200.png)  
  上图中绿色标注的接口类,表示在Java8中加入了新的接口方法,由于继承关系,他们相应的子类都会继承这些新方法,下面详细列举了这些方法.
 
 | 接口名 | 兼容的方法 |
@@ -358,7 +347,7 @@ public class Hello {
 
 #### forEach()
 
-```
+```java
   default void forEach(Consumer<? super T> action) {
         Objects.requireNonNull(action);
         for (T t : this) {
@@ -389,7 +378,7 @@ public interface Consumer<T> {
 需求: 假设有一个字符串列表,需要打印出其中所有长度大于3的字符串  
  Java7及以前我们可以用增强for循环实现:
 
-```
+```java
 //使用增强for循环迭代
 ArrayList<String> list = new ArrayList<>(Arrays.asList("I", "love", "you", "too"));
 for(String str : list){
@@ -402,7 +391,7 @@ for(String str : list){
 
 使用forEach方法结合匿名内部类可以这样实现:
 
-```
+```java
 //使用forEach()结合匿名内部类迭代
 ArrayList<String> list = new ArrayList<>(Arrays.asList("I", "love", "you", "too"));
 list.forEach(new Consumer<String>(){
@@ -418,7 +407,7 @@ list.forEach(new Consumer<String>(){
 
 上面调用forEach且使用匿名内部类实现Consumer接口,目前为止没看到这种设计的好处,但我们还有Lambda表达式,如下
 
-```
+```java
 ArrayList<String> list = new ArrayList<>(Arrays.asList("I", "love", "you", "too"));
 list.forEach( str -> {
  if(str.length() > 3)
@@ -432,7 +421,7 @@ list.forEach( str -> {
 
 #### removeIf()
 
-```
+```java
     default boolean removeIf(Predicate<? super E> filter) {
         Objects.requireNonNull(filter);
         boolean removed = false;
@@ -470,7 +459,7 @@ public interface Predicate<T> {
 
 在迭代过程中对容器进行删除操作必须使用迭代器,否则会抛出`ConcurrentModificationException`,所有上述需求传统写法为:
 
-```
+```java
 // 使用迭代器删除列表元素
 ArrayList<String> list = new ArrayList<>(Arrays.asList("I", "love", "you", "too"));
 while(it.hasNext()){
@@ -483,7 +472,7 @@ if(it.next().length()>3) // 删除长度大于3的元素
 
 现在使用`removeIf()`方法结合匿名内部类,我们可以这样实现:
 
-```
+```java
 // 使用removeIf()结合匿名名内部类实现
 ArrayList<String> list = new ArrayList<>(Arrays.asList("I", "love", "you", "too"));
 list.removeIf(new Predicate<String>(){ //删除长度大于3的元素
@@ -498,7 +487,7 @@ list.removeIf(new Predicate<String>(){ //删除长度大于3的元素
 
 上述代码使用`removeIf()`方法,并使用匿名内部类实现`Precicate`接口.相信你已经可以使用lambda表达式写了
 
-```
+```java
 // 使用removeIf()结合Lambda表达式实现
 ArrayList<String> list = new ArrayList<>(Arrays.asList("I", "love", "you", "too"));
 list.removeIf(str -> str.length() >3); //删除长度大于3的元素
@@ -510,7 +499,7 @@ list.removeIf(str -> str.length() >3); //删除长度大于3的元素
 
 #### replaceAll()
 
-```
+```java
   public void replaceAll(UnaryOperator<E> operator) {
      root.replaceAllRange(operator, offset, offset + size);
 }
@@ -534,7 +523,7 @@ list.removeIf(str -> str.length() >3); //删除长度大于3的元素
  需求: 假设有一个字符串列表,将其中所有长度大于3的元素转换成大写,其余元素不变.  
  Java7及之前似乎没有优雅的办法:
 
-```
+```java
 // 使用下标实现元素替换
 ArrayList<String> list = new ArrayList<>(Arrays.asList("I", "love", "you", "too"));
 for(int i =0; i<list.size(); i++){
@@ -548,7 +537,7 @@ if(str.length()>3)
 
 使用`replaceAll()`方法结合匿名内部类可以实现如下:
 
-```
+```java
 // 使用匿名内部类实现
 ArrayList<String> list = new ArrayList<>(Arrays.asList("I", "love", "you", "too"));
 list.replaceAll(new UnaryOperator<String>(){
@@ -565,7 +554,7 @@ return str;
 
 更简洁的lambda表达式实现:
 
-```
+```java
 // 使用Lambda表达式实现
 ArrayList<String> list = new ArrayList<>(Arrays.asList("I", "love", "you", "too"));
 list.replaceAll(str -> {
@@ -581,7 +570,7 @@ return str;
 
 该方法定义在List接口中,方法签名为`void sort(Comparator<? super E> c)`,根据`c`指定的比较规则对容器元素进行排序.
 
-```
+```java
    @Override
     @SuppressWarnings("unchecked")
     public void sort(Comparator<? super E> c) {
@@ -597,7 +586,7 @@ return str;
 
 Java7及以前`sort()`方法在`Collections`工具类中,代码如下:
 
-```
+```java
 // Collections.sort()方法
 ArrayList<String> list = new ArrayList<>(Arrays.asList("I", "love", "you", "too"));
 Collections.sort(list, new Comparator<String>(){
@@ -612,7 +601,7 @@ Collections.sort(list, new Comparator<String>(){
 
 现在可以直接用list.sort方法,结合lambda表达式,如下:
 
-```
+```java
 // List.sort()方法结合Lambda表达式
 ArrayList<String> list = new ArrayList<>(Arrays.asList("I", "love", "you", "too"));
 list.sort((str1, str2) -> str1.length() - str2.length());
@@ -626,7 +615,7 @@ list.sort((str1, str2) -> str1.length() - str2.length());
 
 #### forEach()
 
-```
+```java
        public final void forEach(Consumer<? super K> action) {
             Node<K,V>[] tab;
             if (action == null)
@@ -651,7 +640,7 @@ list.sort((str1, str2) -> str1.length() - str2.length());
 
 Java7以及之前代码如下：
 
-```
+```java
 // Java7以及之前迭代Map
 HashMap<Integer, String> map = new HashMap<>();
 map.put(1, "one");
@@ -666,7 +655,7 @@ for(Map.Entry<Integer,String> entry : map.entrySet()){
 
 使用`Map.forEach()`方法,结合匿名内部类,代码如下:
 
-```
+```java
 // 使用forEach()结合匿名内部类迭代Map
 HashMap<Integer, String> map = new HashMap<>();
 map.put(1, "one");
@@ -684,7 +673,7 @@ public void accept(Integer k ,String v){
 
 匿名内部类实现BiConsumer接口,但是实际场景根本每日用这种写法,因为有lambda表达式
 
-```
+```java
 // 使用forEach()结合Lambda表达式迭代Map
 HashMap<Integer, String> map = new HashMap<>();
 map.put(1, "one");
@@ -697,7 +686,7 @@ map.forEach((k,v) -> System.out.println(k+ "=" + v));
 
 #### replaceAll()
 
-```
+```java
   @Override
     public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
         Node<K,V>[] tab;
@@ -725,7 +714,7 @@ map.forEach((k,v) -> System.out.println(k+ "=" + v));
 
 Java7以及之前经典的代码如下：
 
-```
+```java
 // Java7以及之前替换所有Map中所有映射关系
 HashMap<Integer, String> map = new HashMap<>();
 map.put(1, "one");
@@ -740,7 +729,7 @@ for(Map.Entry<Integer,String> entry : map.entrySet()){
 
 使用`replaceAll()`方法结合匿名内部类,实现如下:
 
-```
+```java
 // 使用replaceAll()结合匿名内部类实现
 HashMap<Integer, String> map = new HashMap<>();
 map.put(1, "one");
@@ -758,7 +747,7 @@ return v.toUpperCase();
 
 使用lambda表达式实现如下:
 
-```
+```java
 // 使用replaceAll()结合Lambda表达式实现
 HashMap<Integer, String> map = new HashMap<>();
 map.put(1, "one");
@@ -773,7 +762,7 @@ map.replaceAll((k,v) -> v.toUpperCase());
 
 #### computeIfAbsent()
 
-```
+```java
    @Override
     public V computeIfAbsent(K key,
                              Function<? super K, ? extends V> mappingFunction) {
@@ -839,7 +828,7 @@ map.replaceAll((k,v) -> v.toUpperCase());
  `computeIfAbsent()` 常用来对Map的某个key值建立初始化映射.  
  比如我们要实现一个多值映射,Map的定义可能是`Map<K, Set<V>>`,要向Map中放入新值,通过下面代码实现:
 
-```
+```java
 Map<Integer, Set<String>> map = new HashMap<>();
 // Java7及以前的实现方式
 if(map.containsKey(1)){

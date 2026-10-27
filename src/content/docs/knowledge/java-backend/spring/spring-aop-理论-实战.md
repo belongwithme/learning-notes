@@ -1,24 +1,13 @@
 ---
 title: "Spring-AOP(理论,实战)"
 description: "典型的面向对象编程（OOP）中，模块化的基本单位是类（Class）。"
-sourceId: "154611263"
-source: "https://blog.csdn.net/qq_45852626/article/details/154611263"
-sourceSeries:
-  - "Spring核心模块解析"
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring核心模块解析"
-  - "Spring"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 154611263
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/154611263)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/154611263)
 
 ## Spring-AOP 理论和实战
 
@@ -168,7 +157,7 @@ Spring AOP 选择在运行时织入，这意味着它不需要特殊的编译器
 
 ### 五种通知类型
 
-```
+```java
 @Aspect
 @Component
 public class AdviceExample {
@@ -294,7 +283,7 @@ execution(com.example.entity.User *(..))
 
 ### 实战:请求日志记录
 
-```
+```java
 @Slf4j
 @Aspect
 @Component
@@ -406,7 +395,7 @@ Controller方法
 
 写法1: 直接在通知注解中写execution表达式
 
-```
+```java
   @Around("execution(* com.example.service..*.*(..))")
   public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
       // 切面逻辑
@@ -419,7 +408,7 @@ Controller方法
 
 写法2: 先定义@Pointcut,然后在通知中引用
 
-```
+```java
   @Pointcut("(execution(* com.leadyo.plm.*.controller.*.*(..)) " +
             "|| execution(* com.leadyo.plm.message.websocket.WebSocket.*(..)))" +
             "&&!execution(* com.leadyo.plm.controller.UtilsController.*(..)) ")
@@ -450,7 +439,7 @@ Controller方法
 
 **错误示例:**
 
-```
+```java
 // ❌ 错误:不返回结果
 @Around("requestLog()")
 public Object doAroundService(ProceedingJoinPoint pjp) throws Throwable {
@@ -468,7 +457,7 @@ String userName = userService.getUserName(1L);
 
 ### 实战:缓存清理
 
-```
+```java
 @Slf4j
 @Aspect
 @Component

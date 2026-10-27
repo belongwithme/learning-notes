@@ -1,23 +1,13 @@
 ---
 title: "JUC- CompletableFuture"
 description: "Java 从早期就提供了 Thread 和 Runnable 来支持并发，后来引入了 ExecutorService 和 Future 来简化线程管理和获取异步结果。然而，Future 接口本身存在一些局限性，例如 get() 方法的阻塞性、缺乏方便的回调机制以及组合多个任务能力的不足。"
-sourceId: "147267695"
-source: "https://blog.csdn.net/qq_45852626/article/details/147267695"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
-  order: 147267695
+  order: 34
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147267695)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147267695)
 
 ## 引言
 
@@ -86,7 +76,7 @@ Java 从早期就提供了 `Thread` 和 `Runnable` 来支持并发，后来引�
 
 **源码理解:**
 
-```
+```java
 // CompletableFuture 内部简化概念
 private volatile Object result; // 存储结果或异常 (用 volatile 保证可见性)
 private volatile Completion stack; // 指向回调链栈顶 (用 volatile 保证可见性)
@@ -222,7 +212,7 @@ void postComplete() {
    * **场景:** 当你只想异步执行一个操作，不关心其结果时，例如异步记录日志、发送通知（发出去即可）。
    * **示例:**
 
-     ```
+     ```java
      // 使用默认 commonPool
      CompletableFuture<Void> future1 = CompletableFuture.runAsync(() -> {
          System.out.println("异步任务正在执行 (无返回值)... Thread: " + Thread.currentThread().getName());
@@ -268,7 +258,7 @@ void postComplete() {
    * **场景:** 这是 **最常用** 的创建方式。当你需要异步执行一个操作并获取其结果时，例如异步查询数据库、调用远程 API。
    * **示例:**
 
-     ```
+     ```java
      // 使用默认 commonPool
      CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
          System.out.println("异步任务正在执行 (有返回值)... Thread: " + Thread.currentThread().getName());
@@ -324,7 +314,7 @@ void postComplete() {
      + 将一个普通值包装成 `CompletableFuture` 以适配需要 `CompletionStage` 的 API。
    * **示例:**
 
-     ```
+     ```java
      CompletableFuture<String> future = CompletableFuture.completedFuture("这是一个已知结果");
      System.out.println("Future 是否完成? " + future.isDone()); // 输出 true
      System.out.println("结果: " + future.join()); // 不会阻塞，立即返回
@@ -343,7 +333,7 @@ void postComplete() {
      + 构建一个需要立即失败的异步链。
    * **示例:**
 
-     ```
+     ```java
      // Java 9+
      // CompletableFuture<Object> future = CompletableFuture.failedFuture(new RuntimeException("模拟任务失败"));
      // System.out.println("Future 是否完成? " + future.isDone()); // 输出 true
@@ -395,7 +385,7 @@ void postComplete() {
 * **场景:** 当你需要基于上一步的异步结果进行进一步的计算、转换或处理，并且需要得到这个处理后的新结果时。例如：异步获取用户 ID 后，接着同步/异步查询用户详细信息。
 * **示例:**
 
-```
+```java
 CompletableFuture<Integer> initialFuture = CompletableFuture.supplyAsync(() -> {
     System.out.println("步骤1: 获取初始数字... Thread: " + Thread.currentThread().getName());
     return 10;
@@ -440,7 +430,7 @@ myExecutor.shutdown();
 * **场景:** 当你只需要对上一步的结果执行某个动作（比如打印日志、更新数据库、发送通知），并且后续流程不再需要这个结果时。
 * **示例:**
 
-```
+```java
 CompletableFuture<String> nameFuture = CompletableFuture.supplyAsync(() -> "Alice");
 
 // 同步消费
@@ -470,7 +460,7 @@ acceptFutureAsync.join();
 * **场景:** 当你只需要在上一步完成后触发一个与结果无关的动作时。例如：文件下载完成后，打印一条“下载完成”的日志。
 * **示例:**
 
-```
+```java
 CompletableFuture<Void> downloadFuture = CompletableFuture.runAsync(() -> {
     System.out.println("开始下载... Thread: " + Thread.currentThread().getName());
     try { Thread.sleep(500); } catch (InterruptedException e) {}
@@ -505,7 +495,7 @@ runFutureAsync.join();
 * **对比 `thenApply`:** 如果你在 `thenApply` 的 `Function` 中返回了一个 `CompletableFuture`，那么 `thenApply` 的结果将是 `CompletableFuture<CompletableFuture<U>>`。而 `thenCompose` 会自动“解包”，直接得到 `CompletableFuture<U>`。
 * **示例:**
 
-```
+```java
 // 模拟异步获取用户ID
 CompletableFuture<Integer> getUserIdFuture = CompletableFuture.supplyAsync(() -> {
     System.out.println("步骤1: 获取用户ID... Thread: " + Thread.currentThread().getName());
@@ -584,7 +574,7 @@ myExecutorCompose.shutdown();
 * **场景:** 当你需要等待两个 **独立不相关** 的异步任务都完成，然后使用它们各自的结果来执行下一步操作时。例如：异步查询用户基本信息和用户权限信息，两者都完成后，合并成一个包含完整信息的用户 DTO。
 * **示例:**
 
-```
+```java
 CompletableFuture<String> getUserNameFuture = CompletableFuture.supplyAsync(() -> {
     try { Thread.sleep(300); } catch (InterruptedException e) {}
     return "Alice";
@@ -630,7 +620,7 @@ combineExecutor.shutdown();
 * **场景:** 当你需要等待两个独立异步任务完成，然后基于它们的结果执行一个动作，但不需要产生新值时。例如：订单创建成功并且支付成功后，发送一个通知。
 * **示例:**
 
-```
+```java
 CompletableFuture<String> task1 = CompletableFuture.supplyAsync(() -> "任务1结果");
 CompletableFuture<String> task2 = CompletableFuture.supplyAsync(() -> "任务2结果");
 
@@ -653,7 +643,7 @@ acceptBothFuture.join();
 * **场景:** 当你需要等待两个独立的异步任务都结束（无论成功或失败，只要完成即可），然后触发一个与它们结果无关的动作。例如：两个初始化任务都完成后，标记系统状态为“就绪”。
 * **示例:**
 
-```
+```java
 CompletableFuture<Void> initTask1 = CompletableFuture.runAsync(() -> System.out.println("初始化任务1完成"));
 CompletableFuture<Void> initTask2 = CompletableFuture.runAsync(() -> System.out.println("初始化任务2完成"));
 
@@ -688,7 +678,7 @@ runAfterBothFuture.join();
 * **场景:** 当你需要并行执行多个独立的异步任务，并且必须等待 **所有** 任务都结束后，才能进行下一步处理（通常是聚合它们的结果）。例如：同时向多个不同的服务发起请求，等所有响应都回来后，汇总数据。
 * **示例:**
 
-```
+```java
 CompletableFuture<String> f1 = CompletableFuture.supplyAsync(() -> {
     try { Thread.sleep(300); } catch (InterruptedException e) {}
     System.out.println("f1 完成");
@@ -752,7 +742,7 @@ System.out.println("聚合后的结果: " + results);
 * **场景:** 当你需要并行执行多个任务，但只要 **其中任意一个** 返回结果就足够进行下一步处理时。例如：向多个镜像服务器请求同一个资源，使用最快返回的那个。
 * **示例:**
 
-```
+```java
 CompletableFuture<String> taskA = CompletableFuture.supplyAsync(() -> {
     try { Thread.sleep(500); } catch (InterruptedException e) {}
     System.out.println("Task A 完成");
@@ -818,7 +808,7 @@ taskC.join(); // 如果taskC抛异常，这里也会抛异常
 * **返回:** `CompletableFuture<T>`。
 * **示例:**
 
-```
+```java
 CompletableFuture<String> futureWithError = CompletableFuture.supplyAsync(() -> {
     if (Math.random() > 0.5) {
         throw new RuntimeException("模拟随机失败!");
@@ -850,7 +840,7 @@ System.out.println("最终结果 (可能来自成功或恢复): " + recoveryFutu
 * **场景:** 当你需要无论成功还是失败，都进行某些处理（如记录日志），并且可能需要根据结果或异常状态生成一个统一的最终状态或结果时。它比 `exceptionally` 更通用，因为它总会执行。
 * **示例:**
 
-```
+```java
 CompletableFuture<Integer> futureMaybeError = CompletableFuture.supplyAsync(() -> {
     if (Math.random() < 0.5) {
         throw new IllegalStateException("计算出错");
@@ -887,7 +877,7 @@ System.out.println("最终状态: " + statusFuture.join());
 * **场景:** 当你只想在任务完成后（无论结果如何）执行一些附加操作，但不想改变传递给下游的结果或异常时。
 * **示例:**
 
-```
+```java
 CompletableFuture<String> dataFuture = CompletableFuture.supplyAsync(() -> {
     System.out.println("正在获取数据...");
     if (Math.random() > 0.5) throw new RuntimeException("获取数据失败");
@@ -979,7 +969,7 @@ Spring
    * 在需要异步执行的 Service 方法上添加 `@Async` 注解（可以指定使用的 `TaskExecutor` Bean 名称，如 `@Async("myTaskExecutor")`），并将方法的返回类型声明为 `CompletableFuture<T>`。
    * Spring 会自动将该方法的调用拦截，并将其提交到指定的线程池中执行，然后立即返回一个未完成的 `CompletableFuture`。
 
-   ```
+   ```java
    // 配置类
    @Configuration
    @EnableAsync
@@ -1029,7 +1019,7 @@ Spring
    * 在像 Spring WebFlux 这样的响应式 Web 框架中，Controller 的处理方法可以直接返回 `Mono<CompletableFuture<T>>` 或 `Mono<T>`（框架通常能适配 `CompletableFuture`，例如通过 `Mono.fromFuture()`）。
    * 这使得整个请求处理链路可以保持非阻塞，从接收请求到业务逻辑处理再到返回响应，线程资源不会被长时间占用，极大地提高了服务的并发能力和资源利用率。
 
-   ```
+   ```java
    // WebFlux Controller 示例 (简化)
    @RestController
    public class UserController {
@@ -1165,7 +1155,7 @@ Spring
    * 对于任何可能长时间阻塞或无法保证完成的操作（特别是外部调用、等待资源等），**必须设置超时**。
    * **Java 9+:** 使用 `orTimeout(long timeout, TimeUnit unit)` 或 `completeOnTimeout(T value, long timeout, TimeUnit unit)` 方法。`orTimeout` 会在超时后让 Future 以 `TimeoutException` 异常完成；`completeOnTimeout` 会在超时后以给定的默认值正常完成。
 
-   ```
+   ```java
    // Java 9+
    CompletableFuture<String> potentiallyLongTask = CompletableFuture.supplyAsync(() -> {
        // ... 可能耗时很久的操作 ...
@@ -1181,7 +1171,7 @@ Spring
 
    * **Java 8:** 需要手动结合 `ScheduledExecutorService` 来实现超时。创建一个 `ScheduledExecutorService`，在指定延迟后调用目标 Future 的 `completeExceptionally(new TimeoutException())` 或 `complete(defaultValue)`。需要注意线程安全和确保只完成一次。
 
-   ```
+   ```java
    // Java 8 手动实现超时 (简化示例)
    public static <T> CompletableFuture<T> within(CompletableFuture<T> future, long timeout, TimeUnit unit) {
        final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, r -> {

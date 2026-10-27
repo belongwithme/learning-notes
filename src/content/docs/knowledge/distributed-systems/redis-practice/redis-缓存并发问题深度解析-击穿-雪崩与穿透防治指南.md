@@ -1,24 +1,13 @@
 ---
 title: "Redis 缓存并发问题深度解析：击穿、雪崩与穿透防治指南"
 description: "在现代分布式系统中，缓存是提升系统性能、降低后端负载不可或缺的关键组件。"
-sourceId: "147560796"
-source: "https://blog.csdn.net/qq_45852626/article/details/147560796"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-practice
-tags:
-  - "Redis"
-  - "JUC"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 147560796
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147560796)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147560796)
 
 ## 引言：缓存，高性能架构的基石与并发挑战
 
@@ -105,7 +94,7 @@ Redisson 提供了易于使用的分布式锁接口，并处理了锁的可重�
 
 **Java + Redisson 示例代码:**
 
-```
+```java
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -292,7 +281,7 @@ public class ProductServiceWithMutex {
 
 * **缓存结构：** 缓存的值不再是简单的业务数据，而是一个包含**业务数据**和**逻辑过期时间戳**的对象或 JSON 字符串。
 
-  ```
+  ```json
   {
     "data": { ... }, // 真实的业务数据
     "expireTime": 1678886400000 // 逻辑过期时间戳 (e.g., System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30))
@@ -310,7 +299,7 @@ public class ProductServiceWithMutex {
 
 **Java 伪代码示例 (结合逻辑过期与互斥锁):**
 
-```
+```java
 import com.fasterxml.jackson.databind.ObjectMapper; // Jackson for JSON
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -585,7 +574,7 @@ public class ProductServiceWithLogicalExpire {
 
   **Java 示例 (使用 `StringRedisTemplate`)**
 
-  ```
+  ```java
   import org.springframework.beans.factory.annotation.Autowired;
   import org.springframework.data.redis.core.StringRedisTemplate;
   import org.springframework.stereotype.Component;
@@ -742,7 +731,7 @@ Bug
   + 需要引入 Sentinel 依赖，并进行配置。
   + 在需要保护的方法上添加 `@SentinelResource` 注解，并配置流控规则。
 
-  ```
+  ```java
   import com.alibaba.csp.sentinel.annotation.SentinelResource;
   import com.alibaba.csp.sentinel.slots.block.BlockException;
   import org.springframework.stereotype.Service;
@@ -992,7 +981,7 @@ Bug
 
 **Java + Redis 示例 (使用 `StringRedisTemplate` 缓存空字符串):**
 
-```
+```java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -1126,7 +1115,7 @@ public class ProductServiceWithNullCache {
 
 **Java + Redisson `RBloomFilter` 示例:**
 
-```
+```java
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;

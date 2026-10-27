@@ -1,27 +1,13 @@
 ---
-title: "JUC并发集合-Java Fork/Join"
+title: "Java Fork/Join 框架详解"
 description: "在多核处理器时代，充分利用计算资源已成为提升应用性能的关键因素。然而，编写高效的并行程序一直是软件开发中的难题。开发者不仅需要考虑如何合理拆分任务，还要处理线程同步、负载均衡等复杂问题。Java作为企业级应用的主流语言，在并发编程领域不断演进，而Fork/Join框架的引入则是这一演进过程中的..."
-sourceId: "146907780"
-source: "https://blog.csdn.net/qq_45852626/article/details/146907780"
-sourceSeries:
-  - "集合"
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "集合"
-  - "JUC"
-  - "Java"
-  - "SQL"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
-  order: 146907780
+  order: 35
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146907780)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146907780)
 
 ## Java Fork/Join框架详解
 
@@ -369,7 +355,7 @@ ForkJoinPool具有以下关键特性，这些特性使其区别于传统的Threa
 
 ForkJoinPool提供了多个构造方法，允许开发者根据需要配置线程池的行为：
 
-```
+```java
 // 使用默认参数创建ForkJoinPool
 ForkJoinPool pool = new ForkJoinPool();
 
@@ -407,21 +393,21 @@ ForkJoinPool提供了多种方法来提交和执行任务：
 
 1. **execute(ForkJoinTask<?> task)**：异步执行任务，不等待完成。
 
-   ```
+   ```java
    pool.execute(new MyRecursiveAction());
 
 
    ```
 2. **invoke(ForkJoinTask task)**：执行任务并等待完成，返回结果。
 
-   ```
+   ```java
    Integer result = pool.invoke(new MyRecursiveTask());
 
 
    ```
 3. **submit(ForkJoinTask task)**：提交任务，返回一个可用于获取结果的Future对象。
 
-   ```
+   ```java
    Future<Integer> future = pool.submit(new MyRecursiveTask());
    Integer result = future.get();
 
@@ -450,7 +436,7 @@ ForkJoinPool提供了多种方法来提交和执行任务：
    ```
 7. **shutdownNow()**：尝试立即关闭线程池，停止处理等待任务，中断正在执行的任务。
 
-   ```
+   ```java
    List<Runnable> notExecuted = pool.shutdownNow();
 
 
@@ -475,7 +461,7 @@ ForkJoinPool相比于ThreadPoolExecutor的一个关键优势是它能更高效�
 
 1. **合理设置并行度**：通常设置为可用处理器核心数，但对于IO密集型任务可以适当增加。
 
-   ```
+   ```java
    int parallelism = Runtime.getRuntime().availableProcessors();
    ForkJoinPool pool = new ForkJoinPool(parallelism);
 
@@ -495,7 +481,7 @@ ForkJoinPool相比于ThreadPoolExecutor的一个关键优势是它能更高效�
    ```
 3. **利用commonPool()减少资源消耗**：除非有特殊需求，否则优先使用公共池。
 
-   ```
+   ```java
    Integer result = ForkJoinPool.commonPool().invoke(new MyRecursiveTask());
 
 
@@ -658,7 +644,7 @@ ForkJoinTask实现了这些方法，但也添加了一些特有的方法，如fo
 
 Future接口的实现使得ForkJoinTask可以与Java并发框架的其他部分无缝集成。例如，可以将ForkJoinTask提交给ExecutorService，或者在需要Future功能的地方使用ForkJoinTask。
 
-```
+```java
 // 作为Future使用
 ForkJoinTask<Integer> task = new MyRecursiveTask();
 pool.execute(task);
@@ -721,7 +707,7 @@ RecursiveTask和RecursiveAction是ForkJoinTask的两个主要子类，用于实�
 
 两者都要求实现compute()方法，这是分治算法的核心，决定了如何分割任务和处理/合并结果。compute()方法一般的实现模式是：
 
-```
+```java
 protected ResultType compute() {
     // 1. 判断任务是否小到可以直接计算
     if (任务足够小) {
@@ -751,7 +737,7 @@ protected ResultType compute() {
 
 这种模式适用于RecursiveTask。对于RecursiveAction，由于没有返回值，模式略有不同：
 
-```
+```java
 protected void compute() {
     // 1. 判断任务是否小到可以直接处理
     if (任务足够小) {
@@ -787,7 +773,7 @@ protected void compute() {
 
 1. **并行搜索**：在大型数据集中查找特定元素或满足特定条件的元素。
 
-   ```
+   ```java
    // 在数组中查找最大值
    class FindMaxTask extends RecursiveTask<Integer> {
        // ...实现compute()方法
@@ -797,7 +783,7 @@ protected void compute() {
    ```
 2. **数值计算**：需要返回计算结果的数学运算，如求和、求平均值等。
 
-   ```
+   ```java
    // 计算数组元素之和
    class SumTask extends RecursiveTask<Long> {
        // ...实现compute()方法
@@ -807,7 +793,7 @@ protected void compute() {
    ```
 3. **归并操作**：需要合并子结果的操作，如MapReduce模式中的reduce阶段。
 
-   ```
+   ```java
    // 统计单词出现频率
    class WordCountTask extends RecursiveTask<Map<String, Integer>> {
        // ...实现compute()方法
@@ -820,7 +806,7 @@ protected void compute() {
 
 1. **并行数组操作**：对数组元素进行并行修改，如初始化、转换等。
 
-   ```
+   ```java
    // 并行数组初始化
    class ArrayInitAction extends RecursiveAction {
        // ...实现compute()方法
@@ -830,7 +816,7 @@ protected void compute() {
    ```
 2. **并行IO操作**：并行处理文件或网络IO，如并行下载、文件处理等。
 
-   ```
+   ```java
    // 并行文件处理
    class FileProcessAction extends RecursiveAction {
        // ...实现compute()方法
@@ -840,7 +826,7 @@ protected void compute() {
    ```
 3. **副作用操作**：执行具有副作用但不需要返回值的操作，如数据库更新、日志记录等。
 
-   ```
+   ```java
    // 并行数据库更新
    class DatabaseUpdateAction extends RecursiveAction {
        // ...实现compute()方法
@@ -857,7 +843,7 @@ protected void compute() {
 
 **示例1：使用RecursiveTask计算数组元素之和**
 
-```
+```java
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
@@ -945,7 +931,7 @@ public class ArraySumExample {
 
 **示例2：使用RecursiveAction并行初始化数组**
 
-```
+```java
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 
@@ -1075,7 +1061,7 @@ CountedCompleter提供了一系列方法来管理任务的执行和完成：
 
 1. **onCompletion(CountedCompleter<?> caller)**：所有子任务完成时的回调方法。
 
-   ```
+   ```java
    @Override
    public void onCompletion(CountedCompleter<?> caller) {
        // 处理任务完成逻辑
@@ -1139,7 +1125,7 @@ CountedCompleter提供了一系列方法来管理任务的执行和完成：
    ```
 8. **getCompleter()**：获取父任务（如果有）。
 
-   ```
+   ```java
    CountedCompleter<?> parent = getCompleter();
    if (parent != null) {
        // 与父任务交互
@@ -1156,7 +1142,7 @@ CountedCompleter特别适合以下场景：
 
 1. **复杂依赖关系的任务**：任务之间存在非树形的依赖关系，如有向无环图(DAG)。
 
-   ```
+   ```java
    // 构建任务依赖网络
    TaskA taskA = new TaskA(null);
    TaskB taskB = new TaskB(taskA);
@@ -1167,7 +1153,7 @@ CountedCompleter特别适合以下场景：
    ```
 2. **事件驱动的并行处理**：基于事件完成触发后续操作，如异步IO完成后的数据处理。
 
-   ```
+   ```java
    // 异步IO完成后处理数据
    class DataProcessTask extends CountedCompleter<Void> {
        // 在onCompletion中处理IO完成事件
@@ -1177,7 +1163,7 @@ CountedCompleter特别适合以下场景：
    ```
 3. **"尽快返回"类型的搜索**：在找到第一个满足条件的结果后立即返回，无需等待所有子任务完成。
 
-   ```
+   ```java
    // 并行搜索第一个匹配元素
    class FindFirstTask extends CountedCompleter<Element> {
        // 找到匹配元素后调用complete(result)
@@ -1187,7 +1173,7 @@ CountedCompleter特别适合以下场景：
    ```
 4. **动态任务创建**：任务执行过程中动态创建新的子任务，数量事先不确定。
 
-   ```
+   ```java
    // 根据处理结果动态创建子任务
    if (needMoreProcessing) {
        addToPendingCount(1);
@@ -1198,7 +1184,7 @@ CountedCompleter特别适合以下场景：
    ```
 5. **批处理操作**：需要等待一批操作全部完成后执行最终处理。
 
-   ```
+   ```java
    // 等待所有数据库操作完成后提交事务
    class BatchUpdateTask extends CountedCompleter<Void> {
        // 在onCompletion中提交事务
@@ -1239,7 +1225,7 @@ CountedCompleter与RecursiveTask和RecursiveAction相比有以下区别：
 
 **使用RecursiveTask**：
 
-```
+```java
 class SumTask extends RecursiveTask<Long> {
     @Override
     protected Long compute() {
@@ -1260,7 +1246,7 @@ class SumTask extends RecursiveTask<Long> {
 
 **使用RecursiveAction**：
 
-```
+```java
 class ProcessAction extends RecursiveAction {
     @Override
     protected void compute() {
@@ -1281,7 +1267,7 @@ class ProcessAction extends RecursiveAction {
 
 **使用CountedCompleter**：
 
-```
+```java
 class ProcessTask extends CountedCompleter<Void> {
     private long result;
     
@@ -1352,7 +1338,7 @@ class ProcessTask extends CountedCompleter<Void> {
    * 实现简单，适合大多数场景，如数组排序、区间搜索等。
    * 代码示例：
 
-     ```
+     ```java
      if (end - start > THRESHOLD) {
          int mid = start + (end - start) / 2;
          leftTask = new MyTask(array, start, mid);
@@ -1373,7 +1359,7 @@ class ProcessTask extends CountedCompleter<Void> {
    * 适合处理数据有明显分块的场景，如矩阵分块计算。
    * 代码示例：
 
-     ```
+     ```java
      if (size > THRESHOLD) {
          int parts = Math.min(size / SUB_SIZE, MAX_PARTS);
          for (int i = 0; i < parts; i++) {
@@ -1400,7 +1386,7 @@ class ProcessTask extends CountedCompleter<Void> {
    * 大型任务可能采用细粒度拆分，小型任务则直接执行。
    * 代码示例：
 
-     ```
+     ```java
      if (end - start > THRESHOLD) {
          // 根据系统负载或任务特性动态计算拆分点
          int splitPoint = calculateSplitPoint(start, end, systemLoad);
@@ -1530,7 +1516,7 @@ ForkJoinPool的工作队列采用了精心设计的结构：
 
 从源码层面看，WorkQueue的核心结构大致如下：
 
-```
+```java
 static final class WorkQueue {
     // 队列数组，存储待执行的任务
     ForkJoinTask<?>[] array;
@@ -1668,7 +1654,7 @@ fork()和invoke()方法在执行原理上有本质区别：
    * **特点**：任务可能由当前线程或其他线程执行，不保证立即执行。
    * **源码简化版**：
 
-     ```
+     ```java
      public final ForkJoinTask<V> fork() {
          Thread t;
          if ((t = Thread.currentThread()) instanceof ForkJoinWorkerThread)
@@ -1696,7 +1682,7 @@ fork()和invoke()方法在执行原理上有本质区别：
    * **特点**：对于单个任务，通常比fork()+join()组合更高效。
    * **源码简化版**：
 
-     ```
+     ```java
      public final V invoke() {
          if (Thread.currentThread() instanceof ForkJoinWorkerThread) {
              // 尝试直接执行
@@ -1839,7 +1825,7 @@ fork()和invoke()方法在执行原理上有本质区别：
    * 违反了Fork/Join框架的设计意图，无法利用并行执行的优势。
 3. **递归层次过深**：
 
-   ```
+   ```java
    // 可能导致栈溢出的模式
    protected Integer compute() {
        if (array.length == 1)
@@ -1865,7 +1851,7 @@ fork()和invoke()方法在执行原理上有本质区别：
    * 创建过多的小任务会增加系统开销，降低性能。
 4. **任务粒度过小**：
 
-   ```
+   ```java
    // 粒度过小的模式
    for (int i = 0; i < array.length; i++) {
        new ProcessTask(array[i]).fork();
@@ -1887,7 +1873,7 @@ fork()和invoke()方法在执行原理上有本质区别：
 
 下面通过一个实际示例，展示fork()和invoke()的正确使用方式：
 
-```
+```java
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
@@ -1985,7 +1971,7 @@ public class MergeSortExample {
 
 fork()方法是Fork/Join框架的核心，用于异步执行任务。其源码实现非常简洁：
 
-```
+```java
 public final ForkJoinTask<V> fork() {
     Thread t;
     if ((t = Thread.currentThread()) instanceof ForkJoinWorkerThread)
@@ -2020,7 +2006,7 @@ public final ForkJoinTask<V> fork() {
 
 join()方法用于等待任务完成并获取结果，其实现比fork()复杂得多：
 
-```
+```java
 public final V join() {
     int s;
     if ((s = doJoin() & DONE_MASK) != NORMAL)
@@ -2067,7 +2053,7 @@ join()方法的实现展示了Fork/Join框架的一个关键优化：
 
 WorkQueue的push和poll方法是任务入队和出队的核心实现：
 
-```
+```java
 // 将任务压入队列头部
 void push(ForkJoinTask<?> task) {
     ForkJoinTask<?>[] a; ForkJoinPool p;
@@ -2205,7 +2191,7 @@ Fork/Join框架特别适合那些可以分解为相似子任务的计算密集�
 
 **并行归并排序实现**：
 
-```
+```java
 import java.util.Arrays;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
@@ -2310,7 +2296,7 @@ public class ParallelMergeSort {
 
 **并行矩阵乘法实现**：
 
-```
+```java
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
@@ -2439,7 +2425,7 @@ Fork/Join框架也适用于大型文件的并行处理，如文件搜索、内�
 
 **并行文件搜索实现**：
 
-```
+```java
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -2519,7 +2505,7 @@ public class ParallelFileSearch {
 
 **并行图像模糊处理实现**：
 
-```
+```java
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
@@ -2674,7 +2660,7 @@ public class ParallelImageBlur {
    * 默认并行度等于可用处理器数量，这对CPU密集型任务通常是最优的。
    * 对于IO密集型任务，可以设置更高的并行度，如处理器数量的2倍。
 
-   ```
+   ```java
    int parallelism = Runtime.getRuntime().availableProcessors() * 2;
    ForkJoinPool customPool = new ForkJoinPool(parallelism);
 
@@ -2685,7 +2671,7 @@ public class ParallelImageBlur {
    * 对于独立任务，可以考虑使用异步模式（FIFO）。
    * 异步模式适合任务之间没有数据依赖的场景。
 
-   ```
+   ```java
    ForkJoinPool asyncPool = new ForkJoinPool(
        parallelism, 
        ForkJoinPool.defaultForkJoinWorkerThreadFactory, 
@@ -2701,7 +2687,7 @@ public class ParallelImageBlur {
    * 这可以避免与其他并行操作（如并行流）竞争资源。
    * 记得在不再需要时关闭自定义池。
 
-   ```
+   ```java
    ForkJoinPool customPool = new ForkJoinPool(parallelism);
    try {
        result = customPool.invoke(task);
@@ -2724,7 +2710,7 @@ public class ParallelImageBlur {
    * 阻塞操作（如IO、锁等待）会占用工作线程，降低整体性能。
    * 如果必须使用阻塞操作，考虑使用ManagedBlocker或增加并行度。
 
-   ```
+   ```java
    // 使用ManagedBlocker处理阻塞操作
    ForkJoinPool.managedBlock(new ManagedBlocker() {
        private boolean done = false;
@@ -2750,7 +2736,7 @@ public class ParallelImageBlur {
    * 优先使用分而治之的方法，每个任务处理自己的数据副本。
    * 如果必须共享状态，使用线程安全的数据结构或原子操作。
 
-   ```
+   ```java
    // 不推荐：任务共享可变状态
    class BadTask extends RecursiveAction {
        private static int sharedCounter = 0; // 共享状态，会导致竞争
@@ -2781,7 +2767,7 @@ public class ParallelImageBlur {
    * 确保有合理的终止条件，防止递归过深。
    * 考虑使用批处理方式，而不是为每个元素创建任务。
 
-   ```
+   ```java
    // 不推荐：为每个元素创建任务
    for (int i = 0; i < array.length; i++) {
        new ProcessTask(array[i]).fork();
@@ -2801,7 +2787,7 @@ public class ParallelImageBlur {
    * 对于数组，按照连续区间拆分通常比交错拆分更高效。
    * 考虑CPU缓存行的大小，避免假共享问题。
 
-   ```
+   ```java
    // 推荐：保持数据局部性的拆分
    new ArrayTask(array, 0, mid).fork();
    new ArrayTask(array, mid, end).compute();
@@ -2820,7 +2806,7 @@ public class ParallelImageBlur {
    * 使用JMH（Java Microbenchmark Harness）等专业基准测试框架。
    * 考虑JVM预热、即时编译等因素，避免测量偏差。
 
-   ```
+   ```java
    @Benchmark
    public void testParallelImplementation() {
        // 测试并行实现
@@ -2839,7 +2825,7 @@ public class ParallelImageBlur {
    * 理想情况下，加速比应接近处理器核心数。
    * 记录不同输入大小下的加速比，分析可扩展性。
 
-   ```
+   ```java
    long sequentialTime = measureSequentialTime();
    long parallelTime = measureParallelTime();
    double speedup = (double)sequentialTime / parallelTime;
@@ -2880,7 +2866,7 @@ Java的并行流（Parallel Streams）在内部使用Fork/Join框架来实现并
    * 最终操作（如collect、reduce）合并各线程的结果。
 3. **源码示例**：
 
-   ```
+   ```java
    // AbstractTask.java (Stream API内部实现)
    @Override
    protected K compute() {
@@ -2932,7 +2918,7 @@ Java的并行流（Parallel Streams）在内部使用Fork/Join框架来实现并
    * 非集合数据结构的并行处理，如矩阵、图像、文件系统等。
    * 需要自定义线程池或特殊配置的场景。
 
-   ```
+   ```java
    // 使用Fork/Join框架实现自定义并行算法
    CustomTask task = new CustomTask(data);
    ForkJoinPool customPool = new ForkJoinPool(16);
@@ -2946,7 +2932,7 @@ Java的并行流（Parallel Streams）在内部使用Fork/Join框架来实现并
    * 在关键性能点使用自定义Fork/Join任务。
    * 利用并行流的简洁性和Fork/Join的灵活性。
 
-   ```
+   ```java
    // 混合使用：并行流处理集合，Fork/Join处理复杂计算
    Result result = data.parallelStream()
                       .filter(predicate)
@@ -2991,7 +2977,7 @@ Java的并行流（Parallel Streams）在内部使用Fork/Join框架来实现并
    * 并行流默认使用ForkJoinPool.commonPool()，这可能与其他并行操作共享资源。
    * 对于关键应用，考虑使用自定义ForkJoinPool：
 
-   ```
+   ```java
    ForkJoinPool customPool = new ForkJoinPool(16);
    result = customPool.submit(() -> 
        data.parallelStream().map(func).collect(Collectors.toList())
@@ -3028,7 +3014,7 @@ Java的并行流（Parallel Streams）在内部使用Fork/Join框架来实现并
    * 使用收集器（collectors）而非外部累加器。
    * 错误示例：
 
-   ```
+   ```java
    // 错误：使用共享累加器
    List<Integer> results = new ArrayList<>();
    data.parallelStream().map(func).forEach(results::add); // 竞争问题
@@ -3111,7 +3097,7 @@ Fork/Join框架的异常处理机制与普通Java异常处理有所不同，理�
 
 从源码层面看，异常处理的核心实现在ForkJoinTask的setExceptionalCompletion和join方法中：
 
-```
+```java
 // 设置异常完成状态
 final void setExceptionalCompletion(Throwable ex) {
     int s = status & ~DONE_MASK;
@@ -3176,7 +3162,7 @@ private void reportException(int s) {
    ```
 3. **自定义异常处理器**：
 
-   ```
+   ```java
    ForkJoinPool customPool = new ForkJoinPool(
        parallelism,
        ForkJoinPool.defaultForkJoinWorkerThreadFactory,
@@ -3191,7 +3177,7 @@ private void reportException(int s) {
    ```
 4. **在compute()方法中处理异常**：
 
-   ```
+   ```java
    @Override
    protected Integer compute() {
        try {
@@ -3248,7 +3234,7 @@ private void reportException(int s) {
    * Java 8引入的CompletableFuture提供了更丰富的异常处理API。
    * 可以将ForkJoinTask转换为CompletableFuture处理。
 
-   ```
+   ```java
    CompletableFuture<Integer> future = CompletableFuture.supplyAsync(
        () -> {
            MyRecursiveTask task = new MyRecursiveTask(data);
@@ -3302,7 +3288,7 @@ ForkJoinTask提供了取消任务执行的方法：
    * 如果任务尚未开始执行，它将不会被执行。
    * 如果任务已在执行，取消操作不会中断执行（除非任务自己检查取消状态）。
 
-   ```
+   ```java
    // ForkJoinTask内部实现（简化版）
    public boolean cancel(boolean mayInterruptIfRunning) {
        return (setCompletion(CANCELLED) & DONE_MASK) == CANCELLED;
@@ -3315,7 +3301,7 @@ ForkJoinTask提供了取消任务执行的方法：
    * isCancelled()方法检查任务是否被取消。
    * 任务可以周期性地检查自己的取消状态，并在被取消时提前退出。
 
-   ```
+   ```java
    @Override
    protected Integer compute() {
        for (int i = 0; i < iterations; i++) {
@@ -3354,7 +3340,7 @@ ForkJoinTask提供了取消任务执行的方法：
    ```
 2. **使用CompletableFuture的超时功能**：
 
-   ```
+   ```java
    CompletableFuture<Integer> future = CompletableFuture.supplyAsync(
        () -> ForkJoinPool.commonPool().invoke(task)
    );
@@ -3412,7 +3398,7 @@ ForkJoinTask提供了取消任务执行的方法：
    * 在任务的关键点检查取消状态。
    * 如果检测到取消，清理资源并提前返回。
 
-   ```
+   ```java
    @Override
    protected Result compute() {
        // 初始化资源
@@ -3439,7 +3425,7 @@ ForkJoinTask提供了取消任务执行的方法：
    * 虽然cancel(true)不会中断线程，但任务可以响应线程中断。
    * 在任务中检查Thread.interrupted()或捕获InterruptedException。
 
-   ```
+   ```java
    @Override
    protected Result compute() {
        try {
@@ -3464,7 +3450,7 @@ ForkJoinTask提供了取消任务执行的方法：
    * 使用try-finally块确保清理代码执行。
    * 考虑使用Java 7的try-with-resources语法自动关闭资源。
 
-   ```
+   ```java
    @Override
    protected Result compute() {
        try (Resource resource = new Resource()) {
@@ -3481,7 +3467,7 @@ ForkJoinTask提供了取消任务执行的方法：
    * 当父任务被取消时，考虑取消所有子任务。
    * 实现可以在join()子任务前检查自己的取消状态。
 
-   ```
+   ```java
    @Override
    protected Result compute() {
        // 创建子任务
@@ -3571,7 +3557,7 @@ ForkJoinTask提供了取消任务执行的方法：
    * 根据系统资源和任务特性动态调整粒度。
    * 考虑实现自适应拆分算法，根据运行时情况决定是否继续拆分。
 
-   ```
+   ```java
    @Override
    protected Integer compute() {
        int size = end - start;
@@ -3616,7 +3602,7 @@ ForkJoinTask提供了取消任务执行的方法：
      + 如果必须共享，使用线程安全的数据结构或原子操作。
      + 考虑使用"分而治之"策略，每个任务处理自己的数据副本，最后合并结果。
 
-   ```
+   ```java
    // 问题代码：使用共享计数器
    static class BadCountTask extends RecursiveAction {
        private static AtomicInteger counter = new AtomicInteger(0); // 共享状态
@@ -3689,7 +3675,7 @@ ForkJoinTask提供了取消任务执行的方法：
      + 在Java 8+中，可以使用@Contended注解（需要JVM参数）。
      + 合理组织数据结构，相关数据放在一起，不相关数据分开。
 
-   ```
+   ```java
    // 问题代码：可能导致假共享
    class SharedData {
        volatile long value1; // 可能与value2在同一缓存行
@@ -3799,7 +3785,7 @@ ForkJoinTask提供了取消任务执行的方法：
      + 使用有向无环图（DAG）模型设计任务依赖。
      + 考虑使用CompletableFuture等更灵活的并发工具处理复杂依赖。
 
-   ```
+   ```java
    // 问题代码：递归依赖
    class BadTask extends RecursiveTask<Integer> {
        @Override
@@ -3866,7 +3852,7 @@ ForkJoinTask提供了取消任务执行的方法：
      + 考虑使用对象池或数组等预分配数据结构。
      + 使用基本类型而非包装类，减少装箱/拆箱开销。
 
-   ```
+   ```java
    // 问题代码：频繁分配对象
    @Override
    protected List<Result> compute() {
@@ -3897,7 +3883,7 @@ ForkJoinTask提供了取消任务执行的方法：
      + 对于CPU密集型任务，并行度通常设为处理器核心数。
      + 对于IO密集型任务，可以设置更高的并行度。
 
-   ```
+   ```java
    // 问题代码：固定并行度
    ForkJoinPool pool = new ForkJoinPool(4); // 硬编码并行度
 

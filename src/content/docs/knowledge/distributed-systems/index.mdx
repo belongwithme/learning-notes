@@ -1,31 +1,13 @@
 ---
 title: 分布式系统
-description: 并发、消息、任务调度与可靠性边界。
+description: Redis、Kafka、分布式锁、缓存一致性与分库分表。
 hero:
   title: 分布式系统
-  tagline: 关注系统在延迟、失败、重试与并发条件下的真实行为，而不是只罗列中间件的使用方式。
-tableOfContents:
-  minHeadingLevel: 2
-  maxHeadingLevel: 2
+  tagline: Redis 的实现与高可用、Kafka 消息模型，以及分布式锁、缓存一致性等协调问题。
+tableOfContents: false
 ---
 
-import ArchiveKicker from '../../../../components/ArchiveKicker.astro';
-import ArchiveScopeList from '../../../../components/ArchiveScopeList.astro';
-import ArchiveStatus from '../../../../components/ArchiveStatus.astro';
+import CategoryIndex from '../../../../components/CategoryIndex.astro';
+import { KnowledgeSubcategories } from '../../../../config/site-routing';
 
-<ArchiveKicker title="COLLECTION 03 · DISTRIBUTED SYSTEMS" />
-
-## 收录范围
-
-<ArchiveScopeList items={[
-	{ number: '01', title: '协调与并发', description: '锁、幂等、状态竞争与正确性边界。' },
-	{ number: '02', title: '消息与任务', description: '异步处理、调度、重试和背压控制。' },
-	{ number: '03', title: '可靠性', description: '故障隔离、降级、恢复与可观测性。' }
-]} />
-
-## 内容状态
-
-<ArchiveStatus 
-	title="历史文章已导入，内容正在逐篇验证。" 
-	description="导入内容统一保留为草稿，后续补充故障模型、适用范围与验证证据。" 
-/>
+<CategoryIndex base="knowledge/distributed-systems" groups={KnowledgeSubcategories['distributed-systems']} />
