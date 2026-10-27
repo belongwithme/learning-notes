@@ -1,23 +1,13 @@
 ---
 title: "Redis数据结构总结-listPack"
 description: "quicklist 虽然通过控制 quicklistNode 结构里的压缩列表的大小或者元素个数，来减少连锁更新带来的性能影响，但是并没有完全解决连锁更新的问题。"
-sourceId: "145747076"
-source: "https://blog.csdn.net/qq_45852626/article/details/145747076"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-internals
-tags:
-  - "Redis"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145747076
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145747076)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145747076)
 
 ## 前言
 
@@ -39,7 +29,7 @@ Redis
 类 
 型（entry-encoding）、元素数据 (entry-data)，以及编码类型和元素数据这两部分的长度 (entry-len)，如下图所示。
 
-![在这里插入图片描述](./assets/145747076/695b968c3f5e60c7d59b225d.png)
+![](./assets/145747076/695b968c3f5e60c7d59b225d.png)
 
 ### 结构
 
@@ -72,11 +62,11 @@ typedef struct {
    对于整数编码来说，当 listpack 元素的编码类型为 `LP_ENCODING_7BIT_UINT` 时，表示元素的实际数据是一个 7 bit 的无符号整数。  
    又因为 `LP_ENCODING_7BIT_UINT` 本身的宏定义值为 0，所以编码类型的值也相应为 0，占 1 个 bit。  
    此时，编码类型和元素实际数据共用 1 个字节(8bit)，这个字节的最高位为 0，表示编码类型，后续的 7 位用来存储 7 bit 的无符号整数，如下图所示：  
-   ![在这里插入图片描述](./assets/145747076/c65f193c1b6bb1bd828c445c.png)
+   ![](./assets/145747076/c65f193c1b6bb1bd828c445c.png)
 * LP\_ENCODING\_13BIT\_INT  
    这表示元素的实际数据是 13 bit 的整数。  
    因为 LP\_ENCODING\_13BIT\_INT 的宏定义值为 0xC0，转换为二进制值是 1100 0000，所以，这个二进制值中的后 5 位和后续的 1 个字节，共 13 位，会用来保存 13bit 的整数。而该二进制值中的前 3 位 110，则用来表示当前的编码类型。  
-   ![在这里插入图片描述](./assets/145747076/2c3a2c27f53f486db471fa31.png)  
+   ![](./assets/145747076/2c3a2c27f53f486db471fa31.png)  
    在了解了 LP\_ENCODING\_7BIT\_UINT 和 LP\_ENCODING\_13BIT\_INT 这两种编码类型后，剩下的 LP\_ENCODING\_16BIT\_INT、LP\_ENCODING\_24BIT\_INT、LP\_ENCODING\_32BIT\_INT 和 LP\_ENCODING\_64BIT\_INT，你应该也就能知道它们的编码方式了。  
    这四种类型是分别用 2 字节（16 bit）、3 字节（24 bit）、4 字节（32 bit）和 8 字节（64 bit）来保存整数数据。同时，它们的编码类型本身占 1 字节，编码类型值分别是它们的宏定义值。
 
@@ -87,7 +77,7 @@ typedef struct {
 * LP\_ENCODING\_6BIT\_STR  
    当编码类型为 `LP_ENCODING_6BIT_STR` 时，编码类型占 1 字节。该类型的宏定义值是 0x80，对应的二进制值是 1000 0000，这其中的前 2 位是用来标识编码类型本身，而后 6 位保存的是字符串长度。然后，列表项中的数据部分保存了实际的字符串。  
    下面的图展示了三种字符串编码类型和数据的布局，你可以看下  
-   ![在这里插入图片描述](./assets/145747076/8727f3a2192fe85f1c105941.png)
+   ![](./assets/145747076/8727f3a2192fe85f1c105941.png)
 
 ### 避免连锁更新的实现方式
 
@@ -132,7 +122,7 @@ unsigned char *lpNext(unsigned char *lp, unsigned char *p) {
 
 这样一来，lpSkip 函数就知道当前项的编码类型、实际数据和 entry-len 的总长度了，也就可以将当前项指针向右偏移相应的长度，从而实现查到下一个列表项的目的。
 
-![在这里插入图片描述](./assets/145747076/40a9fb73b71044784029ac83.png)
+![](./assets/145747076/40a9fb73b71044784029ac83.png)
 
 #### 从右向左
 
@@ -145,7 +135,7 @@ unsigned char *lpNext(unsigned char *lp, unsigned char *p) {
 * 最高位为 1，表示 entry-len 还没有结束，当前字节的左边字节仍然表示 entry-len 的内容；
 * 最高位为 0，表示当前字节已经是 entry-len 最后一个字节了。  
    而 entry-len 每个字节的低 7 位，则记录了实际的长度信息。这里你需要注意的是，entry-len 每个字节的低 7 位采用了大端模式存储，也就是说，entry-len 的低位字节保存在内存高地址上。  
-   ![在这里插入图片描述](./assets/145747076/c3b6862ab36dee050ee9b8d7.png)  
+   ![](./assets/145747076/c3b6862ab36dee050ee9b8d7.png)  
    正是因为有了 entry-len 的特别编码方式，lpDecodeBacklen 函数就可以从当前列表项起始位置的指针开始，向左逐个字节解析，得到前一项的 entry-len 值。  
    这也是 lpDecodeBacklen 函数的返回值。而从刚才的介绍中，我们知道 entry-len 记录了编码类型和实际数据的长度之和。  
    因此，lpPrev 函数会再调用 lpEncodeBacklen 函数，来计算得到 entry-len 本身长度，这样一来，我们就可以得到前一项的总长度，而 lpPrev 函数也就可以将指针指向前一项的起始位置了。所以按照这个方法，listpack 就实现了从右向左的查询功能。

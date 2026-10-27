@@ -1,24 +1,13 @@
 ---
 title: "深度整理总结MySQL——组合索引工作原理"
 description: "在实际业务中，我们会遇到很多复杂的场景，比如对多个列进行查询。这时，可能会要求用户创建多个列组成的索引，如列 a 和 b 创建的组合索引，但究竟是创建（a，b）的索引，还是（b，a）的索引，结果却是完全不同的。"
-sourceId: "145489856"
-source: "https://blog.csdn.net/qq_45852626/article/details/145489856"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: indexes
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 145489856
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145489856)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145489856)
 
 ## 前言
 
@@ -29,11 +18,11 @@ sidebar:
 
 组合索引: 多个列组合而成的B+数索引.  
  它既可以是主键索引,也可以是二级索引,如下例:  
- ![在这里插入图片描述](./assets/145489856/c6101d81f238d1d4096c4a3a.png)  
+ ![](./assets/145489856/c6101d81f238d1d4096c4a3a.png)  
  上图可以看到,组合索引只是排序的键值从1个变成了多个.  
  本质还是一颗B+树索引.  
  **但是（a，b）和（b，a）这样的组合索引，其排序结果是完全不一样的.**  
- ![在这里插入图片描述](./assets/145489856/d05565658e129dca02083342.png)  
+ ![](./assets/145489856/d05565658e129dca02083342.png)  
  对组合索引（a，b）来说，因为其对列 a、b 做了排序，所以它可以对下面两个查询进行优化：
 
 ```sql
@@ -75,7 +64,7 @@ SELECT * FROM table WHERE b = ？ ORDER BY a DESC
 在真实的业务场景中，你会遇到根据某个列进行查询，然后按照时间排序的方式逆序展示。  
  比如在微博业务中:用户的微博展示的就是根据用户 ID 查询出用户订阅的微博，然后根据时间逆序展示；  
  又比如在电商业务中:用户订单详情页就是根据用户 ID 查询出用户的订单数据，然后根据购买时间进行逆序展示。  
- ![在这里插入图片描述](./assets/145489856/f17c9a1fc290c214d07c88e1.png)  
+ ![](./assets/145489856/f17c9a1fc290c214d07c88e1.png)  
  我们对核心业务表rders设计如下:
 
 ```sql

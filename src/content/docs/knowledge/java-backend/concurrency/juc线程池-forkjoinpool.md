@@ -1,24 +1,13 @@
 ---
 title: "JUC线程池- ForkJoinPool"
 description: "在探讨 ForkJoinPool 之前，我们先思考一个问题：对于某些特定"
-sourceId: "147392232"
-source: "https://blog.csdn.net/qq_45852626/article/details/147392232"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
-  - "SQL"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147392232
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147392232)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147392232)
 
 ## Java ForkJoinPool
 ## 引言：为何需要 ForkJoinPool？

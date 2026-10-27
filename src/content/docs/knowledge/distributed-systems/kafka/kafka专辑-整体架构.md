@@ -1,23 +1,13 @@
 ---
 title: "Kafka专辑- 整体架构"
 description: "Kafka 的架构设计核心目标只有两个：极高的吞吐量（High Throughput）和 极高的可靠性（High Availability）。"
-sourceId: "156466401"
-source: "https://blog.csdn.net/qq_45852626/article/details/156466401"
-sourceSeries:
-  - "Kafka"
-category: distributed-systems
-subcategory: kafka
-tags:
-  - "Kafka"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 156466401
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156466401)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156466401)
 
 ## 前言
 

@@ -1,24 +1,13 @@
 ---
 title: "计算机网络- UDP协议详解"
 description: "与TCP不同，UDP（用户数据报协议）是一种简单的、无连接的传输层协议，它提供了最小的传输服务，没有建立连接、确认、重传或流量控制等机制。UDP的简单性使其在某些应用场景中比TCP更为适用，特别是在实时性要求高、允许少量数据丢失的应用中。本章将深入探讨UDP的原理、特性、实现和应用。"
-sourceId: "147141915"
-source: "https://blog.csdn.net/qq_45852626/article/details/147141915"
-sourceSeries:
-  - "计算机网络"
-category: computer-fundamentals
-subcategory: networking
-tags:
-  - "计算机网络"
-  - "TCP/IP"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147141915
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141915)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141915)
 
 ## 5. UDP协议详解
 

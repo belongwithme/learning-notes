@@ -1,23 +1,13 @@
 ---
 title: "refresh() 方法流程梳理图"
 description: "希望这些图能帮你更清晰地理解 refresh() 方法!"
-sourceId: "153478165"
-source: "https://blog.csdn.net/qq_45852626/article/details/153478165"
-sourceSeries:
-  - "Spring核心模块解析"
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring核心模块解析"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 153478165
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153478165)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153478165)
 
 @[TOC](refresh() 方法流程图)
 

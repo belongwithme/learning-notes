@@ -1,27 +1,13 @@
 ---
 title: "JUC并发集合-Java Fork/Join"
 description: "在多核处理器时代，充分利用计算资源已成为提升应用性能的关键因素。然而，编写高效的并行程序一直是软件开发中的难题。开发者不仅需要考虑如何合理拆分任务，还要处理线程同步、负载均衡等复杂问题。Java作为企业级应用的主流语言，在并发编程领域不断演进，而Fork/Join框架的引入则是这一演进过程中的..."
-sourceId: "146907780"
-source: "https://blog.csdn.net/qq_45852626/article/details/146907780"
-sourceSeries:
-  - "集合"
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "集合"
-  - "JUC"
-  - "Java"
-  - "SQL"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 146907780
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146907780)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146907780)
 
 ## Java Fork/Join框架详解
 

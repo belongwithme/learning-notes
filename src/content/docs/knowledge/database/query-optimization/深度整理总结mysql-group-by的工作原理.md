@@ -1,24 +1,13 @@
 ---
 title: "深度整理总结MySQL——Group By的工作原理"
 description: "group by 是用来对数据进行分组的，一般与聚合函数一起使用，对分组后的数据进行聚合。"
-sourceId: "145465483"
-source: "https://blog.csdn.net/qq_45852626/article/details/145465483"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: query-optimization
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 145465483
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145465483)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145465483)
 
 ## 前言
 
@@ -47,9 +36,9 @@ call idata();
 ```
 
 这个语句的逻辑是把表 t1 里的数据，按照 id%10 进行分组统计，并按照 m 的结果排序后输出。结果如下:  
- ![在这里插入图片描述](./assets/145465483/9fd90b0e1c5a8b5d394eac1f.png)  
+ ![](./assets/145465483/9fd90b0e1c5a8b5d394eac1f.png)  
  它的 explain 结果如下：  
- ![在这里插入图片描述](./assets/145465483/f0c14e8e84f06437ce21b632.png)  
+ ![](./assets/145465483/f0c14e8e84f06437ce21b632.png)  
  在 Extra 字段里面，我们可以看到三个信息：
 
 Using index，表示这个语句使用了覆盖索引，选择了索引 a，不需要回表；  
@@ -73,9 +62,9 @@ Using index，表示这个语句使用了覆盖索引，选择了索引 a，不�
 * 如果表中有主键为 x 的行，就将 x 这一行的 c 值加 1；
 
 3. 遍历完成后，再根据字段 m 做排序，得到结果集返回给客户端。(**注意,这里的排序不是一定的,如果数据已经排好了,那么这里就不需要排序了**)  
-    ![在这里插入图片描述](./assets/145465483/5941befffacab23ee23ec2b9.png)  
+    ![](./assets/145465483/5941befffacab23ee23ec2b9.png)  
     整个流程如下:  
-    ![在这里插入图片描述](./assets/145465483/2014fddd83def9fadcf20576.png)
+    ![](./assets/145465483/2014fddd83def9fadcf20576.png)
 
 ### 内存临时表已满怎么办
 
@@ -94,7 +83,7 @@ select id%100 as m, count(*) as c from t1 group by m order by null limit 10;
 把内存临时表的大小限制为最大 1024 字节，并把语句改成 id % 100，这样返回结果里有 100 行数据。但是，这时的内存临时表大小不够存下这 100 行数据，也就是说，执行过程中会发现内存临时表大小到达了上限（1024 字节）。
 
 那么，这时候就会把**内存临时表转成磁盘临时表**，磁盘临时表默认使用的引擎是 InnoDB。  
- ![在这里插入图片描述](./assets/145465483/af6746b7e995a0891019a0dd.png)  
+ ![](./assets/145465483/af6746b7e995a0891019a0dd.png)  
  如果说t1的数据量很大,这个查询需要的磁盘临时表会占用大量的磁盘空间.
 
 ## 如何优化Group By
@@ -108,7 +97,7 @@ select id%100 as m, count(*) as c from t1 group by m order by null limit 10;
 那么，如果扫描过程中可以保证出现的数据是有序的，是不是就简单了呢？
 
 假设，现在有一个类似的这么一个数据结构，我们来看看 group by 可以怎么做。  
- ![在这里插入图片描述](./assets/145465483/a63d9e55e5dcd95326791709.png)  
+ ![](./assets/145465483/a63d9e55e5dcd95326791709.png)  
  可以看到，如果可以确保输入的数据是有序的，那么计算 group by 的时候，就只需要从左到右，顺序扫描，依次累加。也就是下面这个过程：  
  当碰到第一个 1 的时候，已经知道累积了 X 个 0，结果集里的第一行就是 (0,X);  
  当碰到第一个 2 的时候，已经知道累积了 Y 个 1，结果集里的第二行就是 (1,Y);
@@ -134,7 +123,7 @@ select z, count(*) as c from t1 group by z;
 ```
 
 优化后的 group by 语句的 explain 结果，如下图所示：  
- ![在这里插入图片描述](./assets/145465483/15c3a81696135615ffe98bdd.png)  
+ ![](./assets/145465483/15c3a81696135615ffe98bdd.png)  
  从 Extra 字段可以看到，这个语句的执行不再需要临时表，也不需要排序了。
 
 再举个例子:  
@@ -176,8 +165,8 @@ select SQL_BIG_RESULT id%100 as m, count(*) as c from t1 group by m;
 4. 排序完成后，就得到了一个有序数组。  
     根据有序数组，得到数组里面的不同值，以及每个值的出现次数。这一步的逻辑，你已经从前面的图 10 中了解过了。  
     下面两张图分别是执行流程图和执行 explain 命令得到的结果。  
-    ![在这里插入图片描述](./assets/145465483/da62dace621a9295bc036fcb.png)  
-    ![在这里插入图片描述](./assets/145465483/3aa61a385f6d07e671510f03.png)  
+    ![](./assets/145465483/da62dace621a9295bc036fcb.png)  
+    ![](./assets/145465483/3aa61a385f6d07e671510f03.png)  
     从 Extra 字段可以看到，这个语句的执行没有再使用临时表，而是直接用了排序算法。
 
 ### 小结

@@ -1,24 +1,13 @@
 ---
 title: "Java基础—反射"
 description: "动态语言：运行时可以改变其结构（新的函数可以引进，已有的函数可以被删除等结构上的变化）。"
-sourceId: "135677619"
-source: "https://blog.csdn.net/qq_45852626/article/details/135677619"
-sourceSeries:
-  - "Java基础"
-category: java-backend
-subcategory: java-language
-tags:
-  - "Java基础"
-  - "Java"
 status: draft
-difficulty: beginner
-contentType: knowledge
 sidebar:
   order: 135677619
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/135677619)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/135677619)
 
 ## 前置知识
 
@@ -108,7 +97,7 @@ Thinking
 举个多态类层次结构例子.  
  基类为Shape,派生出的具体类有Circle,Square,Triangle.
 
-![在这里插入图片描述](./assets/135677619/8763f81d801bee63f3b9305d.png)
+![](./assets/135677619/8763f81d801bee63f3b9305d.png)
 
 那么面向对象的目的是:代码只需要操作对基类的引用.所以,如果要添加一个新类(比如派生出Rhombold)来扩展程序,就不会影响到原来的代码.  
  Shape接口动态的绑定了draw()方法,目的是我们使用泛化的Shape来调用draw().  
@@ -163,7 +152,7 @@ class Triangle extends Shape{
 ```
 
 调用结果如下:  
- ![在这里插入图片描述](./assets/135677619/9e50825a9155b42bd635b429.png)  
+ ![](./assets/135677619/9e50825a9155b42bd635b429.png)  
  把Shape对象(这里指Cir,Squ,Tri,以上为缩写)放入List的
 数组 
 时会向上转型.  
@@ -312,7 +301,7 @@ class Cookie{
 
 ```
 
-![在这里插入图片描述](./assets/135677619/2dc248c2fd0bf8e4d70e9f30.png)  
+![](./assets/135677619/2dc248c2fd0bf8e4d70e9f30.png)  
  这里的每个类Candy、Gum和Cookie，都有一个static子句，该子句在类第一次被加载时执行。这时会有相应的信息打印出来，告诉我们这个类什么时候被加载了。  
  从输出中可以看到，Class对象仅在需要的时候才被加载，static初始化是在类加载时进行的
 
@@ -370,7 +359,7 @@ Java虚拟机（JVM）中的类加载器子系统负责将Java类加载到JVM中
 
 那么我们也可以反推得出，无论创建多少个实例对象，在JVM中都只有一个Class对象，即在内存中每个类有且只有一个相对应的Class对象。
 
-![在这里插入图片描述](./assets/135677619/2aaaa14b6ddf9907a5ca7672.png)  
+![](./assets/135677619/2aaaa14b6ddf9907a5ca7672.png)  
  当然我们也可以用代码证明，非常简单：
 
 ```java

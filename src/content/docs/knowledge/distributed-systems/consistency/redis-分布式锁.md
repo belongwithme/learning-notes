@@ -1,24 +1,13 @@
 ---
 title: "Redis-分布式锁"
 description: "分布式锁是解决分布式系统中并发控制问题的关键机制。在单体应用中，我们可以使用Java的synchronized或ReentrantLock来实现线程同步，但这些机制只在单个JVM内有效。"
-sourceId: "146058321"
-source: "https://blog.csdn.net/qq_45852626/article/details/146058321"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: consistency
-tags:
-  - "Redis"
-  - "SQL"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 146058321
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146058321)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146058321)
 
 ## 为什么需要分布式锁
 

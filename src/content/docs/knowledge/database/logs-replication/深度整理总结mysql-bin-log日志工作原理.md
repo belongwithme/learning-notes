@@ -1,24 +1,13 @@
 ---
 title: "深度整理总结MySQL——bin Log日志工作原理"
 description: "前面介绍的 undo log 和 redo log 这两个日志都是 Innodb 存储引擎生成的。"
-sourceId: "145588432"
-source: "https://blog.csdn.net/qq_45852626/article/details/145588432"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: logs-replication
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 145588432
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145588432)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145588432)
 
 ## undo Log日志工作原理
 ## 前言
@@ -103,7 +92,7 @@ MySQL 给每个线程分配了一片内存用于缓冲 binlog ，该内存叫 bi
 ### 什么时候会写入磁盘
 
 在事务提交的时候，执行器把 binlog cache 里的完整事务写入到 binlog 文件中,并清空 binlog cache。如下图：  
- ![在这里插入图片描述](./assets/145588432/466a594153fa8aea3a4e9007.png)  
+ ![](./assets/145588432/466a594153fa8aea3a4e9007.png)  
  每个线程有自己 binlog cache，但是最终都写到同一个 binlog 文件:
 
 * 图中的 write，指的就是指把日志写入到 binlog 文件,write 的写入速度还是比较快的，因为不涉及磁盘 I/O。

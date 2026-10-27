@@ -1,23 +1,13 @@
 ---
 title: "深度学习ReentrantReadWriteLock"
 description: "在并发编程中，保护共享资源是核心问题之一。"
-sourceId: "147251482"
-source: "https://blog.csdn.net/qq_45852626/article/details/147251482"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 147251482
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251482)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251482)
 
 ## 1. 基础概念：为什么需要 ReentrantReadWriteLock？
 

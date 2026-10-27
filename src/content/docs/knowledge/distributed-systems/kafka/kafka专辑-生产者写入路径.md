@@ -1,23 +1,13 @@
 ---
 title: "Kafka专辑 : 生产者写入路径"
 description: "Java NIO：非阻塞 I/O，Selector 多路复用机制。"
-sourceId: "156488501"
-source: "https://blog.csdn.net/qq_45852626/article/details/156488501"
-sourceSeries:
-  - "Kafka"
-category: distributed-systems
-subcategory: kafka
-tags:
-  - "Kafka"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 156488501
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156488501)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156488501)
 
 ## 必要前置知识
 

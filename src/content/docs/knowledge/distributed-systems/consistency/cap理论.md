@@ -1,22 +1,13 @@
 ---
 title: "CAP理论"
 description: "CAP理论是分布式系统设计中的一个基础理论，由Eric Brewer在2000年提出。它指出在一个分布式系统中，以下三个特性不可能同时满足，最多只能同时满足其中两个："
-sourceId: "145986524"
-source: "https://blog.csdn.net/qq_45852626/article/details/145986524"
-sourceSeries: []
-category: distributed-systems
-subcategory: consistency
-tags:
-  - "分布式系统"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145986524
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145986524)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145986524)
 
 ## 前言
 

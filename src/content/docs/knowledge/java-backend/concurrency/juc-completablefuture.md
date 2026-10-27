@@ -1,23 +1,13 @@
 ---
 title: "JUC- CompletableFuture"
 description: "Java 从早期就提供了 Thread 和 Runnable 来支持并发，后来引入了 ExecutorService 和 Future 来简化线程管理和获取异步结果。然而，Future 接口本身存在一些局限性，例如 get() 方法的阻塞性、缺乏方便的回调机制以及组合多个任务能力的不足。"
-sourceId: "147267695"
-source: "https://blog.csdn.net/qq_45852626/article/details/147267695"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147267695
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147267695)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147267695)
 
 ## 引言
 

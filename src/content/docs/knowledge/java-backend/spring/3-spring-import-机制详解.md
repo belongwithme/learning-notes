@@ -1,24 +1,13 @@
 ---
 title: "3-Spring - @Import 机制详解"
 description: "@Import注解用于导入一个或多个组件类，通常是@Configuration配置类。它提供了类似于"
-sourceId: "153630729"
-source: "https://blog.csdn.net/qq_45852626/article/details/153630729"
-sourceSeries:
-  - "Spring核心模块解析"
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring核心模块解析"
-  - "Spring"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 153630729
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153630729)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153630729)
 
 ## @Import注解简介
 

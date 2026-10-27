@@ -1,24 +1,13 @@
 ---
 title: "深度整理总结MySQL——事务简介"
 description: "事务(Transaction) 是指一组操作的集合,集合中的操作作为一个整体被执行,全部成功或全部失败."
-sourceId: "145508618"
-source: "https://blog.csdn.net/qq_45852626/article/details/145508618"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: transactions-locks
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 145508618
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145508618)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145508618)
 
 ## 什么是事务
 
@@ -235,7 +224,7 @@ CHECK
 * 失败状态：操作未能继续完成，可能因为数据库错误、系统崩溃等。
 * 中止状态：由于操作失败，小王账户的余额被回滚，恢复到未扣款前的状态。
 * 提交状态：如果操作成功，小王账户余额减少，小黎账户余额增加，修改持久保存到磁盘，操作完成。  
-   ![在这里插入图片描述](./assets/145508618/650d187d6709904be04099f1.png)
+   ![](./assets/145508618/650d187d6709904be04099f1.png)
 
 ## 事务语法
 

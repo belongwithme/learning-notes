@@ -1,23 +1,13 @@
 ---
 title: "JUC线程池-ScheduledThreadPoolExecutor"
 description: "在 Java 开发中，我们经常会遇到需要延迟执行或周期性执行任务的场景。比如："
-sourceId: "147246468"
-source: "https://blog.csdn.net/qq_45852626/article/details/147246468"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147246468
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147246468)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147246468)
 
 ## 1. 引言：为什么需要 ScheduledThreadPoolExecutor？
 

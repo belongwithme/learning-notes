@@ -1,29 +1,18 @@
 ---
 title: "Redis数据结构总结-链表&&压缩列表"
 description: "但是我们去操作的话并不是去操作listNode,而是list."
-sourceId: "145724458"
-source: "https://blog.csdn.net/qq_45852626/article/details/145724458"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-internals
-tags:
-  - "Redis"
-  - "算法"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145724458
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145724458)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145724458)
 
 ## 结构设计
 
 Redis 的链表是双向无环链表  
- ![在这里插入图片描述](./assets/145724458/e49f53fb53584167d4993057.png)  
+ ![](./assets/145724458/e49f53fb53584167d4993057.png)  
  它的结构也非常简单:
 
 ```c
@@ -60,7 +49,7 @@ typedef struct listNode
 上述也体现了Redis的设计哲学:  
  **Redis 的设计目标之一是提供简单、高效、通用的数据结构，而不是让用户直接操作底层实现。通过提供 LIST，Redis 将链表的复杂性封装起来，同时提供了强大的功能和性能。**
 
-![在这里插入图片描述](./assets/145724458/f295aaeb9ca80b1904348288.png)  
+![](./assets/145724458/f295aaeb9ca80b1904348288.png)  
  list的结构如下：
 
 ```
@@ -124,7 +113,7 @@ ziplist 是经过特殊编码的双向列表结构，用来提高内存使用效
 
 ```
 
-![在这里插入图片描述](./assets/145724458/aaf50f8f70285efe7d4dd6e4.png)
+![](./assets/145724458/aaf50f8f70285efe7d4dd6e4.png)
 
 | 属性 | 字节数 | 含义 |
 | --- | --- | --- |

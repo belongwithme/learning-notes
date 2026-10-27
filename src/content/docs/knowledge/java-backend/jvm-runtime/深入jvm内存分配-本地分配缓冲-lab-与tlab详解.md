@@ -1,23 +1,13 @@
 ---
 title: "深入JVM内存分配-本地分配缓冲（LAB）与TLAB详解"
 description: "在 Java 程序中，对象的创建是一个极其频繁的操作。每一次 new 关键字的背后，都是 JVM 在堆内存中寻找合适空间并完成对象初始化的过程。在并发环境下，多个应用程序线程同时请求分配内存，这会带来一个显而易见的挑战：内存分配的线程安全问题。"
-sourceId: "147445092"
-source: "https://blog.csdn.net/qq_45852626/article/details/147445092"
-sourceSeries:
-  - "JVM"
-category: java-backend
-subcategory: jvm-runtime
-tags:
-  - "JVM"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147445092
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147445092)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147445092)
 
 ## 一、 引言：为何需要本地分配缓冲？
 

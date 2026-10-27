@@ -1,24 +1,13 @@
 ---
 title: "Java基础-注解"
 description: "注解的汉语意思: 用浅近的文字解释艰深的词句"
-sourceId: "136016127"
-source: "https://blog.csdn.net/qq_45852626/article/details/136016127"
-sourceSeries:
-  - "Java基础"
-category: java-backend
-subcategory: java-language
-tags:
-  - "Java基础"
-  - "Java"
 status: draft
-difficulty: beginner
-contentType: knowledge
 sidebar:
   order: 136016127
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136016127)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136016127)
 
 ## 注解是用来干什么的
 

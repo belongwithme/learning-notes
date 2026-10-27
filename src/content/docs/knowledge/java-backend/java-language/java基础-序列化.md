@@ -1,30 +1,19 @@
 ---
 title: "Java基础-序列化"
 description: "数据的最小单元是比特(bit),8个bit组成一个字节(Byte),也就是像00110011,在ASCII编码里A这个字为6501000001(二进制)."
-sourceId: "136736487"
-source: "https://blog.csdn.net/qq_45852626/article/details/136736487"
-sourceSeries:
-  - "Java基础"
-category: java-backend
-subcategory: java-language
-tags:
-  - "Java基础"
-  - "Java"
 status: draft
-difficulty: beginner
-contentType: knowledge
 sidebar:
   order: 136736487
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136736487)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136736487)
 
 ## 前言
 
 数据的最小单元是比特(bit),8个bit组成一个字节(Byte),也就是像00110011,在ASCII编码里A这个字为65->01000001(二进制).  
  我们在电脑上和朋友打字聊天时,传输的文字都是像01000001这种(序列化),但电脑自动帮我们转换为对应的文字(反序列化)  
- ![在这里插入图片描述](./assets/136736487/ad9fea996ec82e5bc7fe10c6.png)
+ ![](./assets/136736487/ad9fea996ec82e5bc7fe10c6.png)
 
 ## 什么是序列化和反序列化
 
@@ -33,7 +22,7 @@ sidebar:
 
 * 序列化: 把Java对象转换为字节序列
 * 反序列化: 把字节序列恢复为原先的Java对象  
-   ![在这里插入图片描述](./assets/136736487/f04a06bbc8e9ac91460fce7d.png)
+   ![](./assets/136736487/f04a06bbc8e9ac91460fce7d.png)
 
 序列化机制从某种意义上来说也弥补了平台化的一些差异,毕竟转换后的字节流可以在其他平台上进行反序列化来恢复对象.
 
@@ -113,10 +102,10 @@ public static void deserialize(  ) throws IOException, ClassNotFoundException {
 
 如果我们在定义Student类时忘记加`implement Serializable`时会发生什么呢?  
  结果就是:此时程序运行会报错,并抛出`NotSerializableException`异常  
- ![在这里插入图片描述](./assets/136736487/a68b45a82cffd570e88c0662.png)  
+ ![](./assets/136736487/a68b45a82cffd570e88c0662.png)  
  那么为什么会抛出异常呢?  
  我们跟一下源码看一下ObjectOutputStream的writeObject0方法底层  
- ![在这里插入图片描述](./assets/136736487/0a40a133d1871ba2637b8873.png)  
+ ![](./assets/136736487/0a40a133d1871ba2637b8873.png)  
  如果一个对象既不是字符串、数组、枚举，而且也没有实现Serializable接口的话，在序列化时就会抛出`NotSerializableException`异常.
 
 ### Externalizable 接口
@@ -180,7 +169,7 @@ private Person person;
 
 ```
 
-![在这里插入图片描述](./assets/136736487/263546b0a2f919cf8c594b3f.png)  
+![](./assets/136736487/263546b0a2f919cf8c594b3f.png)  
  程序直接报错，因为Person类的对象是不可序列化的，这导致了Teacher的对象不可序列化
 
 #### 同一对象序列化多次的机制
@@ -247,7 +236,7 @@ public class ReadTeacher {
 2. 当程序试图序列化一个对象时,都会先检查此对象是否已经序列化过,只有此对象从未(在此虚拟机)被序列化过,才会将对象序列化为字节序列输出
 3. 如果此对象已经序列化过,则直接输出编号即可  
     图示上述序列化过程  
-    ![在这里插入图片描述](./assets/136736487/36793d4f7db24be6c13794c7.png)
+    ![](./assets/136736487/36793d4f7db24be6c13794c7.png)
 
 #### java序列化算法潜在的问题
 
@@ -290,7 +279,7 @@ private static final long serialVersionUID = 1111013L;
 ```
 
 如果反序列化使用的class的版本号与序列化时使用的不一致,反序列化会报`InvalidClassException`  
- ![在这里插入图片描述](./assets/136736487/1847ce2b5a1d9eb73915580d.png)  
+ ![](./assets/136736487/1847ce2b5a1d9eb73915580d.png)  
  序列化版本号可自由制定,如果自己不指定,JVM会根据类信息自己计算一个版本号,这样随着class的升级,就无法正确反序列化;  
  不指定版本号另一个明显隐患是:不利于JVM间的移植,可能class文件没有更改,但不同JVM计算规则可能不一样,这样也导致无法反序列化.  
  如果不想手动赋值，你也可以借助IDE的自动添加功能，比如我使用的IntelliJ IDEA，按alt + enter就可以为类自动生成和添加serialVersionUID字段，十分方便.  

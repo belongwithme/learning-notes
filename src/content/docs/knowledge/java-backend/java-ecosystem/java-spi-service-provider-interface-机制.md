@@ -1,24 +1,13 @@
 ---
 title: "Java SPI (Service Provider Interface) 机制"
 description: "SPI (Service Provider Interface) 是Java提供的一种服务发现机制，允许第三方为接口提供实现。它是一种基于接口的编程 + 策略模式 + 配置文件的设计模式。"
-sourceId: "153400057"
-source: "https://blog.csdn.net/qq_45852626/article/details/153400057"
-sourceSeries:
-  - "Java基础"
-category: java-backend
-subcategory: java-ecosystem
-tags:
-  - "Java基础"
-  - "Java"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 153400057
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153400057)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153400057)
 
 ## Java SPI机制
 ## 什么是SPI

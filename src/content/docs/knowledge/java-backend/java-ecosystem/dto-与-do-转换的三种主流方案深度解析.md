@@ -1,22 +1,13 @@
 ---
 title: "DTO 与 DO 转换的三种主流方案深度解析"
 description: "日常开发中，多数人都会遵循分层架构的最佳实践，不同层之间的数据流转离不开对象的转换。"
-sourceId: "150551730"
-source: "https://blog.csdn.net/qq_45852626/article/details/150551730"
-sourceSeries: []
-category: java-backend
-subcategory: java-ecosystem
-tags:
-  - "Java 后端"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 150551730
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/150551730)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/150551730)
 
 ## 前言
 

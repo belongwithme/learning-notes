@@ -1,24 +1,13 @@
 ---
 title: "导出重复问题记录-bugs专辑"
 description: "业务场景：导出报表（接口 Reportinfo/createReport，reporttype=9999），列表查询接口为 queryAnomalyStationPage。"
-sourceId: "157477388"
-source: "https://blog.csdn.net/qq_45852626/article/details/157477388"
-sourceSeries:
-  - "mysql-bugs"
-category: retrospectives
-subcategory: production-issues
-tags:
-  - "mysql-bugs"
-  - "问题复盘"
 status: draft
-difficulty: intermediate
-contentType: retrospective
 sidebar:
   order: 157477388
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/157477388)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/157477388)
 
 ## 一、问题记录
 

@@ -1,24 +1,13 @@
 ---
 title: "并发编程JUC深度学习(七）无锁（乐观锁）"
 description: "乐观锁总是假设最好的情况，每次去拿数据的时候都认为数据不会被修改，所以不会上锁，只是在更新的时候会判断一下在这期间别人有没有去更新这个数据，主要是由版本号机制和CAS算法实现，这里我们主要介绍CAS算法实现。"
-sourceId: "126045364"
-source: "https://blog.csdn.net/qq_45852626/article/details/126045364"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 126045364
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126045364)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126045364)
 
 ## 前言
 
@@ -91,7 +80,7 @@ class AccountUnsafe implements Account{
 ```
 
 运行结果：  
- ![在这里插入图片描述](./assets/126045364/c6ab2c709a3787459642ccbf.png)  
+ ![](./assets/126045364/c6ab2c709a3787459642ccbf.png)  
  结果不为0，答案错误。  
  2：加锁
 
@@ -158,7 +147,7 @@ class AccountUnsafe implements Account{
 ```
 
 结果：  
- ![在这里插入图片描述](./assets/126045364/3fbfe9282c0ccd04fd29c2fc.png)  
+ ![](./assets/126045364/3fbfe9282c0ccd04fd29c2fc.png)  
  我们可以看到结果正确。
 
 3：无锁实现
@@ -222,14 +211,14 @@ class AccountCas implements Account{
 ```
 
 运行结果：  
- ![在这里插入图片描述](./assets/126045364/0fc5d76889b703035f2f8fc0.png)  
+ ![](./assets/126045364/0fc5d76889b703035f2f8fc0.png)  
  可以看到结果正确。  
  那么让我们debug进去看看cas到底是什么，进入compareAndSet方法：  
- ![在这里插入图片描述](./assets/126045364/dae0ddefb0874b69786743d4.png)  
+ ![](./assets/126045364/dae0ddefb0874b69786743d4.png)  
  再进入compareAndSetInt方法：  
- ![在这里插入图片描述](./assets/126045364/478da97153f769d965efeb7c.png)  
+ ![](./assets/126045364/478da97153f769d965efeb7c.png)  
  这个方法是哪个类里面的呢？我们来看看：  
- ![在这里插入图片描述](./assets/126045364/eeed34544f9835c87bd58039.png)
+ ![](./assets/126045364/eeed34544f9835c87bd58039.png)
 
 1. 由此我们可以看到，**CAS是一种系统原语，由若干条指令组成，在执行过程中不允许被中断，是一条CPU的原子指令，不会造成所谓数据不一致问题。**
 2. 由于Java方法无法直接访问底层系统，需要通过本地(native)方法来访问，Unsafe相当于一个后门，基于该类可以直接操作特定内存数据。
@@ -451,7 +440,7 @@ public class aotimcCASdemo {
 ```
 
 这里结果为：  
- ![在这里插入图片描述](./assets/126045364/be64d52b95057f830faee301.png)
+ ![](./assets/126045364/be64d52b95057f830faee301.png)
 
 ## LongAdder原理
 
@@ -488,17 +477,17 @@ AtomicLong等其他传统atomic原子类对于数值的更改，通常是**在�
     传统原子类内部维护了一个对象类型的value属性值，多个线程之间的cas竞争实际上是争夺这个value属性的更新权，但是CAS操作只会保证同时只有一个线程能够更新成功，**如果把一个变量分解为多个变量，让同样多的线程去竞争多个资源，最后统计总和**，这样能缓解线程竞争导致的性能问题。  
     这种思想在高并发环境下非常有用。  
     无并发：  
-    ![在这里插入图片描述](./assets/126045364/e4326845928b517dfcd624c9.png)  
+    ![](./assets/126045364/e4326845928b517dfcd624c9.png)  
     多并发AtomicLong：  
-    ![在这里插入图片描述](./assets/126045364/123c61c086b40a94e0a1daa8.png)  
+    ![](./assets/126045364/123c61c086b40a94e0a1daa8.png)  
     高并发LongAdder：  
-    ![在这里插入图片描述](./assets/126045364/616ae0a494ecdd803ad1f425.png)
+    ![](./assets/126045364/616ae0a494ecdd803ad1f425.png)
 
 ### LongAdder源码解读
 
 #### 继承关系结构图
 
-![在这里插入图片描述](./assets/126045364/ffb427bd67426379d909e76d.png)  
+![](./assets/126045364/ffb427bd67426379d909e76d.png)  
  代码实现：
 
 ```java

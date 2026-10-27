@@ -1,24 +1,13 @@
 ---
 title: "深度整理总结MySQL——可重复读隔离是否完全解决幻读"
 description: "前面我们介绍了几种隔离级别和并发执行下MySQL在不同隔离级别会出现的问题."
-sourceId: "145519650"
-source: "https://blog.csdn.net/qq_45852626/article/details/145519650"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: transactions-locks
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 145519650
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145519650)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145519650)
 
 ## 可重复读是否完全解决幻读
 ## 前言
@@ -54,9 +43,9 @@ SELECT * FROM t_test WHERE id > 100;
 在执行第一个查询语句后，会创建一个 Read View,后续的查询语句利用这个 Read View,通过这个 Read View 就可以在 undo log 版本链找到事务开始时的数据，所以事务过程中每次查询的数据都是一样的，即使中途有其他事务插入了新纪录，是查询不出来这条数据的，所以就很好了避免幻读问题。  
  举例:  
  数据库表 t\_stu 如下，其中 id 为主键。  
- ![在这里插入图片描述](./assets/145519650/cc8a780019849d87210fa5a4.png)  
+ ![](./assets/145519650/cc8a780019849d87210fa5a4.png)  
  然后在可重复读隔离级别下，有两个事务的执行顺序如下：  
- ![在这里插入图片描述](./assets/145519650/8f3166d116c5b630815cf5f5.png)  
+ ![](./assets/145519650/8f3166d116c5b630815cf5f5.png)  
  即使事务 B 中途插入了一条记录，事务 A 前后两次查询的结果集都是一样的，并没有出现所谓的幻读现象。
 
 ## 当前读如何避免幻读
@@ -66,10 +55,10 @@ SELECT * FROM t_test WHERE id > 100;
  所以 update 的时候肯定要知道最新的数据。
 
 假设，表中有一个范围 id 为（3，5）间隙锁，那么其他事务就无法插入 id = 4 这条记录了，这样就有效的防止幻读现象的发生.  
- ![在这里插入图片描述](./assets/145519650/71d3c7dae90c88fa991a267a.png)  
+ ![](./assets/145519650/71d3c7dae90c88fa991a267a.png)  
  举个例子如下:
 
-![在这里插入图片描述](./assets/145519650/4cb4ee3dbb751dde6e63ccb1.png)  
+![](./assets/145519650/4cb4ee3dbb751dde6e63ccb1.png)  
  事务 A 执行了这面这条锁定读语句后，就在对表中的记录加上 id 范围为 (2, +∞] 的 next-key lock（next-key lock 是间隙锁+记录锁的组合）.  
  关于锁后面我会详细出文章聊的,目前看不懂也没关系的.  
  然后，事务 B 在执行插入语句的时候，判断到插入的位置被事务 A 加了 next-key lock,于是事物 B 会生成一个插入意向锁，同时进入等待状态，直到事务 A 提交了事务。这就避免了由于事务 B 插入新记录而导致事务 A 发生幻读的现象。
@@ -81,7 +70,7 @@ SELECT * FROM t_test WHERE id > 100;
 ### 幻读场景一
 
 还是以这张表作为例子：  
- ![在这里插入图片描述](./assets/145519650/20c399f34b9dddad5e54ab80.png)  
+ ![](./assets/145519650/20c399f34b9dddad5e54ab80.png)  
  事务 A 执行查询 id = 5 的记录，此时表中是没有该记录的，所以查询不出来。
 
 ```
@@ -129,7 +118,7 @@ mysql> select * from t_stu where id = 5;
 ```
 
 整个发生幻读的时序图如下  
- ![在这里插入图片描述](./assets/145519650/8b7be79ebd747c6ecfbf131c.png)  
+ ![](./assets/145519650/8b7be79ebd747c6ecfbf131c.png)  
  在可重复读隔离级别下，事务 A 第一次执行普通的 select 语句时生成了一个 ReadView，之后事务 B 向表中新插入了一条 id = 5 的记录并提交。  
  接着，事务 A 对 id = 5 这条记录进行了更新操作,在这个时刻，这条新记录的 trx\_id 隐藏列的值就变成了事务 A 的事务 id，之后事务 A 再使用普通 select 语句去查询这条记录时就可以看到这条记录了，于是就发生了幻读。
 

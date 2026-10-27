@@ -1,23 +1,13 @@
 ---
 title: "Redis- 哨兵"
 description: "Redis哨兵(Sentinel)是我认为Redis生态系统中最优雅的设计之一,它通过一种分布式监控和决策机制解决了Redis高可用性的核心问题。"
-sourceId: "146119441"
-source: "https://blog.csdn.net/qq_45852626/article/details/146119441"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-reliability
-tags:
-  - "Redis"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 146119441
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146119441)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146119441)
 
 ## 哨兵模式
 ## 哨兵模式

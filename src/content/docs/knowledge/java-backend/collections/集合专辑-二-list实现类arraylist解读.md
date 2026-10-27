@@ -1,23 +1,13 @@
 ---
 title: "集合专辑(二)：List实现类ArrayList解读"
 description: "底层是基于数组实现，根据元素的增加而动态扩容，可以理解为它是加强版的数组。ArrayList允许元素为null。它是线程不安全的，在多线程下，不建议使用ArrayList。"
-sourceId: "125694580"
-source: "https://blog.csdn.net/qq_45852626/article/details/125694580"
-sourceSeries:
-  - "集合"
-category: java-backend
-subcategory: collections
-tags:
-  - "集合"
 status: draft
-difficulty: intermediate
-contentType: practice
 sidebar:
   order: 125694580
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125694580)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125694580)
 
 ## 简介
 
@@ -27,9 +17,9 @@ sidebar:
 
 ### 结构图
 
-![在这里插入图片描述](./assets/125694580/5ee3917de485e523e8d1ecb8.png)  
+![](./assets/125694580/5ee3917de485e523e8d1ecb8.png)  
  代码实现（实现继承关系)：  
- ![在这里插入图片描述](./assets/125694580/709f7555310d772d83aa49f8.png)
+ ![](./assets/125694580/709f7555310d772d83aa49f8.png)
 
 1. AbstractList：继承AbstractList抽象类，使用实现的公共方法。  
     解读：  
@@ -37,16 +27,16 @@ sidebar:
     对于这段话的解释，我刚开始是比较蒙的，平时也没有接触过，后来学习后发现里面大有文章。
 
 首先给出两个图  
- ![在这里插入图片描述](./assets/125694580/e0c417debe0029e060bb88f4.png)![在这里插入图片描述](./assets/125694580/bcba19c61fa341711ee58369.png)  
+ ![](./assets/125694580/e0c417debe0029e060bb88f4.png)![](./assets/125694580/bcba19c61fa341711ee58369.png)  
  List 接口继承了 Collection 接口，在 Collection 接口的基础上增加了一些方法。  
  对比 Collection 接口，可以发现，**List 加了很多根据下标操作集合的方法**，所以当你要分析方法的抽象方法是来自于List还是Collection时，你可以观察一下参数里面是否有下标，如果有就是来自List，没有就是Collection。综上我们了解到了，**List接口在Collection基础上，进一步加强了List根据下标去操作的特性**。
 
 有了这个铺垫，结合上面给的AbstractList概念，我们再来看AbstractList 抽象类:  
  我们现在已经了解到了**此类提供List接口的基本实现**，它是对 List 接口的初步实现，也是对 Collection 的进一步实现。**进一步解释就是实现了 List 的抽象类，他实现了 List 接口中的大部分方法，同时他继承了 AbstractCollection ，沿用了一些 AbstractCollection 中的实现。这两个抽象类可以看成是模板方法模式的一种体现。**  
  聪明的你看到这里是不是发现一个问题？  
- ![在这里插入图片描述](./assets/125694580/d4744fa8b3c3005558d4f5de.png)  
+ ![](./assets/125694580/d4744fa8b3c3005558d4f5de.png)  
  既然AbstractList 抽象类是对 List 接口的初步实现，也是对 Collection 的进一步实现，那么为什么在ArrayList的继承关系中，在已经继承了AbstractList还要去实现List接口？  
- 如图：![在这里插入图片描述](./assets/125694580/949ea50a9d59788d8bfd004b.png)  
+ 如图：![](./assets/125694580/949ea50a9d59788d8bfd004b.png)  
  其实这个问题无关紧要，查了查网上的解释，觉得是因为可读性。，查stackoverflow上有个回答这么说的：I’ve asked Josh Bloch, and he informs me that it was a mistake. He used to think, long ago, that there was some value in it, but he since “saw the light”. Clearly JDK maintainers haven’t considered 
 this 
  to be worth backing out later.  
@@ -56,25 +46,25 @@ this
 
 * 要实现不可修改的AbstractList。  
    只需要扩展此类并为get(int)和size()方法提供实现即可。  
-   实现如下![在这里插入图片描述](./assets/125694580/ec21533b08136567f8112609.png)  
+   实现如下![](./assets/125694580/ec21533b08136567f8112609.png)  
    如果直接去用，则报错（语法也不通过），如图：  
-   ![在这里插入图片描述](./assets/125694580/a09a0c2c8e2698760437ca80.png)
+   ![](./assets/125694580/a09a0c2c8e2698760437ca80.png)
 * 实现可修改的AbstractList。  
    必须另外重写set(int, E)方法（否则抛出UnsupportedOperationException ）。
 * 实现可变大小的AbstractList。
-* 必须另外重写add(int, E)和remove(int)方法。举个add的例子，remove同理，感兴趣可以试一试，如图：![在这里插入图片描述](./assets/125694580/263be055e95f567b3369a5ed.png)  
+* 必须另外重写add(int, E)和remove(int)方法。举个add的例子，remove同理，感兴趣可以试一试，如图：![](./assets/125694580/263be055e95f567b3369a5ed.png)  
    所以，看到这我们都明白了，这个类不支持一些实现与抽象方法，比如set()，add()，remove()等List新引入的接口。  
    要使用就必须由子类去重写，那么子类都有谁呢？  
    ArrayList类，Vector类，AbstractSequentialList抽象类。  
    顺便提一嘴：get()不能确定子类是链表还是数组，所以get()需要强制要求子类去实现。  
-   ![在这里插入图片描述](./assets/125694580/2c79d70135bb23c959a02e11.png)
+   ![](./assets/125694580/2c79d70135bb23c959a02e11.png)
 
 2. List：实现List接口操作规范，增删遍历等操作。
 3. RandomAccess：提供随机访问功能。  
-    解读：ist集合中用的较多的就是ArrayList 和 LinkedList 两个类，这两者作比较你可以发现，**ArrayList有这个接口，但是LinkedList没有**，如图：![在这里插入图片描述](./assets/125694580/ad36c560e821f5cf77b9aaec.png)  
-    ![在这里插入图片描述](./assets/125694580/c6d70d72027f47e30913b8b0.png)  
+    解读：ist集合中用的较多的就是ArrayList 和 LinkedList 两个类，这两者作比较你可以发现，**ArrayList有这个接口，但是LinkedList没有**，如图：![](./assets/125694580/ad36c560e821f5cf77b9aaec.png)  
+    ![](./assets/125694580/c6d70d72027f47e30913b8b0.png)  
     现在我们去看看这个RandomAccess，进入后发现接口里面什么都没有= =。  
-    ![在这里插入图片描述](./assets/125694580/8f5fabb29be710b958945031.png)  
+    ![](./assets/125694580/8f5fabb29be710b958945031.png)  
     不慌，我们去看看doc，通过这个我们了解到，这个接口是作为标志接口。
 
 ```java
@@ -95,7 +85,7 @@ Marker interface used by <tt>List</tt> implementations to indicate that
 5. Serializable: 提供可序列化功能。  
     解读：这块要详细解读有点复杂，后面我会连接上redis相关的数据库知识揉在一起说，保证过瘾，先挖个坑嘿嘿= =。  
     咳咳，先看一下这个接口发现什么都没有  
-    ![在这里插入图片描述](./assets/125694580/3b6502fc1f1709d95e1d93c2.png)  
+    ![](./assets/125694580/3b6502fc1f1709d95e1d93c2.png)  
     目前我们先简单认定实现这个接口会提供可序列化功能。
 
 ## 源码分析
@@ -195,7 +185,7 @@ This is typically accomplished by synchronizing on some object that naturally en
  * should be used only to detect bugs.</i>
  *但是在非同步的情况下，fail-fast并不确保每次都会触发，因此依赖此异常的代码都是错误的，这个异常仅仅只是为了发现代码bug而已。
  * <p>This class is a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @author  Josh Bloch
@@ -785,41 +775,41 @@ private void ensureCapacityInternal(int minCapacity) {
  首先它先将modCount++，这个成员变量记录着集合的修改次数，也就每次add或者remove它的值都会加1。  
  接着重点来了，**它有一个判断，判断你确认的容量值是不是大于原数组的大小，如果是的，则扩容。**  
  举个例子：如果我们是第一次add，且我们是无参构造的对象。（这个例子看完，聪明的你可以去尝试一下debug，去再了解一下有参构造的流程，只要你好好的看这个例子，有参的过程不在话下）  
- ![在这里插入图片描述](./assets/125694580/9272bb228e4c69cd4d9f66e1.png)  
+ ![](./assets/125694580/9272bb228e4c69cd4d9f66e1.png)  
  接着进入无参构造方法，且elementData对象是DEFAULTCAPACITY\_EMPTY\_ELEMENTDATA  
- ![在这里插入图片描述](./assets/125694580/3126e13b952a560bfba3160e.png)  
+ ![](./assets/125694580/3126e13b952a560bfba3160e.png)  
  接着进入第一次add的过程如下：  
- ![在这里插入图片描述](./assets/125694580/2f2453ee269b21d2a486c1ae.png)  
- 首先要执行 ensureCapacityInternal(size + 1)，注意此时的参数size=0,e=1![在这里插入图片描述](./assets/125694580/a8184acf06149fc2b1edc9c3.png)接着进入ensureCapacityInternal(int minCapacity)，这里们很清楚，这里的minCapacity是1  
- ![在这里插入图片描述](./assets/125694580/6ece0a86111dec83e987b945.png)  
+ ![](./assets/125694580/2f2453ee269b21d2a486c1ae.png)  
+ 首先要执行 ensureCapacityInternal(size + 1)，注意此时的参数size=0,e=1![](./assets/125694580/a8184acf06149fc2b1edc9c3.png)接着进入ensureCapacityInternal(int minCapacity)，这里们很清楚，这里的minCapacity是1  
+ ![](./assets/125694580/6ece0a86111dec83e987b945.png)  
  然后执行ensureExplicitCapacity嵌套的方法calculateCapacity(Object[] elementData, int minCapacity)  
  进入之后首先判断我们构造函数的对象是不是无参的。  
- ![在这里插入图片描述](./assets/125694580/d683c206c216b4c37fd44825.png)  
+ ![](./assets/125694580/d683c206c216b4c37fd44825.png)  
  这里因为我们是无参的构造，所以进入的if判断，注意这里的max参数的值，DEFAULT\_CAPACITY=10，minCapacity=1，所以我们将要返回的无疑是DEFAULT\_CAPACITY=10.  
- ![在这里插入图片描述](./assets/125694580/a2506032c531e919a9493f25.png)  
+ ![](./assets/125694580/a2506032c531e919a9493f25.png)  
  这里我们看到了minCapacity变为了10.  
  接着我们要进入if判断，**我们要扩容的值-原数组大小，如果>0，则进行扩容。**  
- ![在这里插入图片描述](./assets/125694580/db0d19d22d8fce3d0ee949f2.png)  
+ ![](./assets/125694580/db0d19d22d8fce3d0ee949f2.png)  
  然后我们在上面已经介绍过，这里简单看一下执行过程里面的参数大小和改变。  
  刚进入时：  
- ![在这里插入图片描述](./assets/125694580/24f7b5bdc7511a49784dbbf8.png)  
+ ![](./assets/125694580/24f7b5bdc7511a49784dbbf8.png)  
  执行扩容算法后：因为原先老数组大小为0，所以扩容1.5倍依旧为0  
- ![在这里插入图片描述](./assets/125694580/bebf4ea9b1c565ea4eafa379.png)  
+ ![](./assets/125694580/bebf4ea9b1c565ea4eafa379.png)  
  下面执行判断逻辑，第一个判断：newCapacity - minCapacity < 0，新容量大小是否大于预设容量大小，这里明显0-10<0,所以进入方法块：  
- ![在这里插入图片描述](./assets/125694580/728c21b343896e9b3fc6ecb9.png)  
+ ![](./assets/125694580/728c21b343896e9b3fc6ecb9.png)  
  我们可以看到，新数组容量变为了10，之后执行第二个判断：newCapacity - MAX\_ARRAY\_SIZE > 0，目的是看一下新扩容大小是否超过最大标准，这里显然不大于，所以进行下一步：  
- ![在这里插入图片描述](./assets/125694580/268f45b3f4ae4c6ce176f854.png)  
+ ![](./assets/125694580/268f45b3f4ae4c6ce176f854.png)  
  接下来是数组的拷贝转移：  
  首先进入  
- ![在这里插入图片描述](./assets/125694580/0c668f82374777f37636639f.png)  
+ ![](./assets/125694580/0c668f82374777f37636639f.png)  
  接着进入：注意参数  
- ![在这里插入图片描述](./assets/125694580/e00611a3583c56932c72cd44.png)  
+ ![](./assets/125694580/e00611a3583c56932c72cd44.png)  
  这里先比较数组类型，然后创建数组。然后进行拷贝，最后返回拷贝好的数组copy。  
- ![在这里插入图片描述](./assets/125694580/dedb354635b8365ddb549342.png)  
+ ![](./assets/125694580/dedb354635b8365ddb549342.png)  
  之后一步步返回到开始的地方：  
- ![在这里插入图片描述](./assets/125694580/b3d7e4ac3f31f2d126e8004b.png)  
+ ![](./assets/125694580/b3d7e4ac3f31f2d126e8004b.png)  
  执行代码后add方法完成：  
- ![在这里插入图片描述](./assets/125694580/4b95c1a7e28f829aae93d2e0.png)  
+ ![](./assets/125694580/4b95c1a7e28f829aae93d2e0.png)  
  至此，我们add的过程和ArrayList的扩容机制已经相当熟悉啦= =。
 
 ## 结尾

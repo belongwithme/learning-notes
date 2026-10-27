@@ -1,24 +1,13 @@
 ---
 title: "Java基础-复制"
 description: "在编码中,我们可能会遇到需要将对象的属性复制到另一个对象中,这种情况叫做拷贝."
-sourceId: "136745684"
-source: "https://blog.csdn.net/qq_45852626/article/details/136745684"
-sourceSeries:
-  - "Java基础"
-category: java-backend
-subcategory: java-language
-tags:
-  - "Java基础"
-  - "Java"
 status: draft
-difficulty: beginner
-contentType: knowledge
 sidebar:
   order: 136745684
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136745684)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136745684)
 
 ## 前言
 
@@ -31,7 +20,7 @@ sidebar:
  举个例子来说:  
  一个人可以有多个名字,比如我中文名叫王一,英文名叫Ian(开头大写i),这两个名字指的都是我.  
  参考下图  
- ![在这里插入图片描述](./assets/136745684/5c257aad78e572ae3080a6d8.png)  
+ ![](./assets/136745684/5c257aad78e572ae3080a6d8.png)  
  代码示例:
 
 ```java
@@ -83,7 +72,7 @@ true
 * 属性是引用类型  
    拷贝的是内存地址(即复制引用但不复制引用的对象),因为如果其中一个对象改变了这个地址,就会影响到另一个对象.  
    如下图:  
-   ![在这里插入图片描述](./assets/136745684/4c74569898508ba932c625fd.png)  
+   ![](./assets/136745684/4c74569898508ba932c625fd.png)  
    那么如何实现浅拷贝呢?  
    **在需要拷贝的类上实现Cloneable接口并重写其clone(方法)**  
    为什么要重写呢?  
@@ -166,7 +155,7 @@ public class test {
 
 ```
 
-![在这里插入图片描述](./assets/136745684/50d2a5a8f0cdf68062f4c6ae.png)
+![](./assets/136745684/50d2a5a8f0cdf68062f4c6ae.png)
 
 ## 深拷贝
 
@@ -175,7 +164,7 @@ public class test {
  在实际使用时，我们肯定是希望新拷贝出来的对象不受原对象的影响，否则咱们做出拷贝的意义何在？（我就碰到过因为对象被同事插进来的代码导致对象发生了变更，代码出现BUG的问题，后面是使用的深拷贝才消除同事的代码对该对象的影响）  
  深拷贝概念:  
  在对引用数据类型进行拷贝的时候,创建了一个新的对象,并且复制其内的成员变量.  
- ![在这里插入图片描述](./assets/136745684/e6e2d5e94f4916eea790d606.png)  
+ ![](./assets/136745684/e6e2d5e94f4916eea790d606.png)  
  在具体实现深拷贝上,这里提供两个方式,重写clone()方法和序列法
 
 ### 重写clone()方法
@@ -220,7 +209,7 @@ Son{age=13, name='son1', father=Father{name='bigFather'}}
 
 如果引用数量太多,或者层数太多了使用深拷贝会让人绝望!  
  那么我们可以使用序列化的方式来实现深拷贝  
- ![在这里插入图片描述](./assets/136745684/63257e0f33a69601067f746e.png)  
+ ![](./assets/136745684/63257e0f33a69601067f746e.png)  
  序列化后,将二进制字节流内容写到一个媒介(文本或字符数组),然后通过这个媒介读取数据,原对象写入这个媒介后拷贝给clone对象,原对象的修改不会影响clone对象,因为clone对象是从这个媒介读取的.  
  熟悉对象缓存的知道Java对象存在Redis中,在Redis中读取出来生成Java对象,这就需要用到序列化和反序列化.  
  一般是将Java对象存储为字节流或者Json串然后反序列化成Java对象.  

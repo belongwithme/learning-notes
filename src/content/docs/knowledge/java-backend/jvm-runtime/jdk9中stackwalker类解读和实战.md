@@ -1,23 +1,13 @@
 ---
 title: "JDK9中StackWalker类解读和实战"
 description: "启动流程中最初会执行SpringApplication的初始化方法,如下:"
-sourceId: "153469705"
-source: "https://blog.csdn.net/qq_45852626/article/details/153469705"
-sourceSeries:
-  - "Java源码"
-category: java-backend
-subcategory: jvm-runtime
-tags:
-  - "Java源码"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 153469705
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153469705)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153469705)
 
 ## 初始在SpringApplication的初始化方法里面
 

@@ -1,23 +1,13 @@
 ---
 title: "JUC工具类-Semaphore"
 description: "你正在管理一个停车场，这个停车场只有 10 个停车位。同一时间，可能有几十辆甚至上百辆车想要进入停车场。"
-sourceId: "147242254"
-source: "https://blog.csdn.net/qq_45852626/article/details/147242254"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147242254
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147242254)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147242254)
 
 ## 0. 前言：为什么需要 Semaphore？
 

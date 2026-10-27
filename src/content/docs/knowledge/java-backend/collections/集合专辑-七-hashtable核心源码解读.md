@@ -1,23 +1,13 @@
 ---
 title: "集合专辑(七)：HashTable核心源码解读"
 description: "3：hashTable是线程安全的，hashMap是线程不安全的"
-sourceId: "125968262"
-source: "https://blog.csdn.net/qq_45852626/article/details/125968262"
-sourceSeries:
-  - "集合"
-category: java-backend
-subcategory: collections
-tags:
-  - "集合"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 125968262
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125968262)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125968262)
 
 ## 简单介绍
 
@@ -29,7 +19,7 @@ sidebar:
 
 ### 继承结构关系
 
-![在这里插入图片描述](./assets/125968262/85c94cfe8b035b5674d06b58.png)  
+![](./assets/125968262/85c94cfe8b035b5674d06b58.png)  
 代码实现如下：
 
 ```java
@@ -318,7 +308,7 @@ jvm
 
 ### HashTable的 数据结构
 
-![在这里插入图片描述](./assets/125968262/16e2071f791fa503d360f68b.png)  
+![](./assets/125968262/16e2071f791fa503d360f68b.png)  
 我们学过了HashMap，现在来看HashTable就很简单了，内部构成是通过拉链法实现单向链表。
 
 ### HashTable的构造函数

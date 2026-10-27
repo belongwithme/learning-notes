@@ -1,23 +1,13 @@
 ---
 title: "JUC线程池-FutureTask"
 description: "在现代软件开发中，尤其是后端服务开发，高并发和高性能是永恒的追求。为了充分利用多核处理器的能力，提升应用的响应速度和吞吐量，异步编程和"
-sourceId: "147245941"
-source: "https://blog.csdn.net/qq_45852626/article/details/147245941"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147245941
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147245941)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147245941)
 
 ## 引言
 

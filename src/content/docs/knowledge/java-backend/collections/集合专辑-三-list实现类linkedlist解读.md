@@ -1,23 +1,13 @@
 ---
 title: "集合专辑(三)：List实现类LinkedList解读"
 description: "我们之前了解过了ArrayList,现在再来看LinkedList就已经很简单了，但值得一提的是，两者的数据结构不同导致了他们在使用场景注定是有区别的。"
-sourceId: "125743610"
-source: "https://blog.csdn.net/qq_45852626/article/details/125743610"
-sourceSeries:
-  - "集合"
-category: java-backend
-subcategory: collections
-tags:
-  - "集合"
 status: draft
-difficulty: intermediate
-contentType: practice
 sidebar:
   order: 125743610
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125743610)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125743610)
 
 ## 前言
 
@@ -42,19 +32,19 @@ sidebar:
 
 ### 结构图
 
-![在这里插入图片描述](./assets/125743610/94ad3efe416ef54c0a0df7a6.png)
+![](./assets/125743610/94ad3efe416ef54c0a0df7a6.png)
 
 ### 继承和实现的方法和接口
 
 代码：  
- ![在这里插入图片描述](./assets/125743610/bb6a3303375363a2eb8d73c1.png)
+ ![](./assets/125743610/bb6a3303375363a2eb8d73c1.png)
 
 1. AbstractSequentialList：继承AbstractList抽象类，使用实现的公共方法。  
     这个建议去看ArrayList那篇，已经解读过了，在这不多说了。
 2. List：实现List接口操作规范，增删遍历等操作。
 3. Cloneable：提供可拷贝功能.
 4. Deque：继承自Queue，在Queue的增删查基础上，增加了双端操作对应的接口，外加push/pop的栈操作  
-    ![在这里插入图片描述](./assets/125743610/f557220a7f53ac1ef4d9bd63.png)  
+    ![](./assets/125743610/f557220a7f53ac1ef4d9bd63.png)  
     定义线性Collection，它实际是双端队列的简称(double ended queue)，大多数Deque接口的实现不会限制元素数量，但是这里有限制，最大容量为Integer.MAX\_VALUE
 5. Serializable 接口： 实现了该接口标示了类可以被序列化和反序列化。
 
@@ -120,7 +110,7 @@ sidebar:
  * 但是在非同步的情况下，fail-fast并不确保每次都会触发，因此依赖此异常的代码都是错误的，这个异常仅仅只是为了发现代码bug而已。
  *
  * <p>This class is a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @author  Josh Bloch

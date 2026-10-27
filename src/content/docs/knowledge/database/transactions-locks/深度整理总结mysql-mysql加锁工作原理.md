@@ -1,24 +1,13 @@
 ---
 title: "深度整理总结MySQL——MySQL加锁工作原理"
 description: "上篇我们聊过锁都有哪些类型,那这篇我们聊MySQL什么时候会把锁添加在索引上."
-sourceId: "145552674"
-source: "https://blog.csdn.net/qq_45852626/article/details/145552674"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: transactions-locks
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 145552674
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145552674)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145552674)
 
 ## 前言
 
@@ -178,7 +167,7 @@ SELECT * FROM employees WHERE id = 2 FOR UPDATE;
 
 ```
 
-![在这里插入图片描述](./assets/145552674/49b1c75641d5e98bd65be966.png)  
+![](./assets/145552674/49b1c75641d5e98bd65be966.png)  
  我们可以在Lock\_Type字段里看到一共加了两个锁，分别为：
 
 * 表锁： X类型的意向锁
@@ -204,7 +193,7 @@ SELECT * FROM performance_schema.data_locks;
 ```
 
 执行后获取的结果如下:  
- ![在这里插入图片描述](./assets/145552674/dac5303964da5e9d98f33ed3.png)  
+ ![](./assets/145552674/dac5303964da5e9d98f33ed3.png)  
  从上图可以看到，共加了两个锁，分别是：
 
 * 表锁：X 类型的意向锁；
@@ -242,7 +231,7 @@ SELECT * FROM performance_schema.data_locks;
   + **如果是 `<` 查询条件**：当扫描到终止范围记录时，`next-key` 锁会退化成 **间隙锁**，但其他记录会加 **`next-key` 锁**。
   + **如果是 `<=` 查询条件**：当扫描到终止范围记录时，**`next-key` 锁不会退化成间隙锁**，直接锁住该记录。  
      下面我们详细解释.我们目前表中数据如下:  
-     ![在这里插入图片描述](./assets/145552674/e95a8c31101c2a718d34d518.png)
+     ![](./assets/145552674/e95a8c31101c2a718d34d518.png)
 
 #### > 或>=的情况
 
@@ -257,7 +246,7 @@ SELECT * FROM employees WHERE id > 5 FOR UPDATE;
 ```
 
 执行结果如下:  
- ![在这里插入图片描述](./assets/145552674/8e7b049d7444ebeff4e0e8ec.png)  
+ ![](./assets/145552674/8e7b049d7444ebeff4e0e8ec.png)  
  我们可以看到加的是两个行级锁:
 
 * X型的临键锁,范围(6,+正无穷)
@@ -280,7 +269,7 @@ SELECT * FROM employees WHERE id >= 5 FOR UPDATE;
 ```
 
 执行结果如下:  
- ![在这里插入图片描述](./assets/145552674/8b02fb4dc1d68ac58b491ab2.png)  
+ ![](./assets/145552674/8b02fb4dc1d68ac58b491ab2.png)  
  可以看到了加了三个锁:
 
 * 记录锁,id=5
@@ -290,7 +279,7 @@ SELECT * FROM employees WHERE id >= 5 FOR UPDATE;
 
 #### <或<=的情况
 
-现在我们修改一下表的数据,修改后如下:![在这里插入图片描述](./assets/145552674/1d97a24ea5a542b2fe5c6e10.png)
+现在我们修改一下表的数据,修改后如下:![](./assets/145552674/1d97a24ea5a542b2fe5c6e10.png)
 
 ##### < 且条件值记录不存在的情况
 
@@ -303,7 +292,7 @@ SELECT * FROM employees WHERE id < 6 FOR UPDATE;
 ```
 
 分析锁如下:  
- ![在这里插入图片描述](./assets/145552674/144e067e88e4eb08f44d9918.png)  
+ ![](./assets/145552674/144e067e88e4eb08f44d9918.png)  
  可以看出加了三个锁:
 
 * 临键锁 (负无穷,1]
@@ -323,7 +312,7 @@ SELECT * FROM employees WHERE id <=5 FOR UPDATE;
 ```
 
 分析锁得出:  
- ![在这里插入图片描述](./assets/145552674/0ed6625108ee6acb5eefde28.png)  
+ ![](./assets/145552674/0ed6625108ee6acb5eefde28.png)  
  可以看出加了两个锁:
 
 * 临键锁,范围(负无穷,1]
@@ -340,7 +329,7 @@ SELECT * FROM employees WHERE id <5 FOR UPDATE;
 ```
 
 分析锁得到如下:  
- ![在这里插入图片描述](./assets/145552674/9d1c6c13629e92946e2e07ec.png)  
+ ![](./assets/145552674/9d1c6c13629e92946e2e07ec.png)  
  可以看出获取的锁:
 
 * 临键锁,范围(负无穷,1]
@@ -368,7 +357,7 @@ SELECT * FROM employees WHERE id <5 FOR UPDATE;
 下面我们详细说明.
 
 表格数据如下:  
- ![在这里插入图片描述](./assets/145552674/e14f6793b2c9ef420f6ab76f.png)
+ ![](./assets/145552674/e14f6793b2c9ef420f6ab76f.png)
 
 #### 记录不存在
 
@@ -389,7 +378,7 @@ SELECT * FROM employees WHERE salary  = 7000 FOR UPDATE;
 ```
 
 分析锁如下:  
- ![在这里插入图片描述](./assets/145552674/3ec1b377eaa572c9d6f9cabd.png)  
+ ![](./assets/145552674/3ec1b377eaa572c9d6f9cabd.png)  
  加锁流程如下:
 
 * 定位第一条不符合查询条件的二级索引,即扫描到salary=7500,该二级索引的临键锁会退化成间隙锁,范围是(6500,7500).
@@ -421,7 +410,7 @@ SELECT * FROM employees WHERE salary  = 7000 FOR UPDATE;
 
 **语句是否可以执行成功，关键还要考虑插入记录的主键值，因为「二级索引值（salary 列）+主键值（id列）」才可以确定插入的位置，确定了插入位置后，就要看插入的位置的下一条记录是否有间隙锁，如果有间隙锁，就会发生阻塞，如果没有间隙锁，则可以插入成功。**
 
-![在这里插入图片描述](./assets/145552674/fb173d37e1182218927a8d2a.png)  
+![](./assets/145552674/fb173d37e1182218927a8d2a.png)  
  上面图片的LOCK\_DATA是什么意思呢?  
  第一个数值是表示的二级索引,也就是我们salary的值.  
  第二个数值表示的是主键值,它代表的是Id值.  
@@ -442,7 +431,7 @@ select * from demo.employees where salary = 7500 for update;
 ```
 
 执行结果如下:  
- ![请添加图片描述](./assets/145552674/d8eaccf0f4d3665df149a0f8.png)  
+ ![](./assets/145552674/d8eaccf0f4d3665df149a0f8.png)  
  我们可以看到是加了三个锁:
 
 * 主键索引  
@@ -458,7 +447,7 @@ select * from demo.employees where salary = 7500 for update;
 
 非唯一索引和主键索引的范围查询的加锁也有所不同.  
  不同之处在于非唯一索引范围查询，**索引的 next-key lock 不会有退化为间隙锁和记录锁的情况，也就是非唯一索引进行范围查询时，对二级索引记录加锁都是加 next-key 锁。**  
- ![请添加图片描述](./assets/145552674/ff7def4496e9388ece181f18.png)  
+ ![](./assets/145552674/ff7def4496e9388ece181f18.png)  
  我们可以看到是加了五个锁:
 
 * 主键索引  

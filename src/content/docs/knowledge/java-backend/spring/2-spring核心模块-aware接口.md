@@ -1,24 +1,13 @@
 ---
 title: "2-Spring核心模块——Aware接口"
 description: "普通的Bean 不需要主动获取 Spring 容器的引用，也不需要调用容器的 API."
-sourceId: "129347485"
-source: "https://blog.csdn.net/qq_45852626/article/details/129347485"
-sourceSeries:
-  - "Spring核心模块解析"
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring核心模块解析"
-  - "Spring"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 129347485
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129347485)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129347485)
 
 ## 前言
 
@@ -148,7 +137,7 @@ Aware接口是回调，监听器和观察者设计模式的混合，它表示bea
 
 这些接口均继承自`org.springframework.beans.factory.Aware`标记接口，并提供一个将由Bean实现的Set方法，Spring通过基于Setter的依赖注入方式使相应的对象可以被Bean使用。  
  常见的Aware接口：  
- ![请添加图片描述](./assets/129347485/6f2ca79b50903e9a850b5686.png)
+ ![](./assets/129347485/6f2ca79b50903e9a850b5686.png)
 
 ### 例子
 

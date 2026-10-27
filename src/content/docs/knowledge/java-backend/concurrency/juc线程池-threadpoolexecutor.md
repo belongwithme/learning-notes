@@ -1,23 +1,13 @@
 ---
 title: "JUC线程池-ThreadPoolExecutor"
 description: "在探讨ThreadPoolExecutor的细节之前，我们首先要理解为什么在Java并发编程中，线程池扮演着如此重要的角色。"
-sourceId: "147244662"
-source: "https://blog.csdn.net/qq_45852626/article/details/147244662"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147244662
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147244662)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147244662)
 
 ## 1. 引言：为什么需要线程池？
 

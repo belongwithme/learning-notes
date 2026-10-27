@@ -1,23 +1,13 @@
 ---
 title: "JUC工具类-Phaser"
 description: "Phaser是java.util.concurrent包下的一个可重用的同步屏障（Synchronization Barrier）"
-sourceId: "147240379"
-source: "https://blog.csdn.net/qq_45852626/article/details/147240379"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147240379
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147240379)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147240379)
 
 ## 一、 基础概念理解：Phaser是什么？
 

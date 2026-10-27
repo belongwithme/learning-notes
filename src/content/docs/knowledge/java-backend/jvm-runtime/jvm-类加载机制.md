@@ -1,23 +1,13 @@
 ---
 title: "JVM-类加载机制"
 description: "对于Java开发者来说，我们每天都在编写 .java 文件，然后通过编译器将其编译成 .class 文件。那么，这些 .class 文件是如何被加载到Java虚拟机（JVM）中，并最终变成我们可以在程序中使用的对象和方法的呢？这个过程就是 类加载（Class Loading）。"
-sourceId: "147471419"
-source: "https://blog.csdn.net/qq_45852626/article/details/147471419"
-sourceSeries:
-  - "JVM"
-category: java-backend
-subcategory: jvm-runtime
-tags:
-  - "JVM"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 147471419
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147471419)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147471419)
 
 ## 前言：为什么需要了解类加载？
 

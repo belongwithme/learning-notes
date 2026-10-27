@@ -1,30 +1,20 @@
 ---
 title: "并发编程JUC深度学习(二）进程与线程（源码描述部分）"
 description: "本文着重分析代码，理清里面的逻辑，我们主要分析Thread。"
-sourceId: "125993672"
-source: "https://blog.csdn.net/qq_45852626/article/details/125993672"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 125993672
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125993672)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125993672)
 
 ## Thread源码解析
  本文着重分析代码，理清里面的逻辑，我们主要分析Thread。
 
 ## 继承结构
 
-![在这里插入图片描述](./assets/125993672/ce9f706fb0418d00519d9ad1.png)  
+![](./assets/125993672/ce9f706fb0418d00519d9ad1.png)  
  代码实现：
 
 ```java
@@ -237,7 +227,7 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-![在这里插入图片描述](./assets/125993672/198137c166c3dc4cd26f95c1.png)
+![](./assets/125993672/198137c166c3dc4cd26f95c1.png)
 
 ### Thread(Runnable target)
 
@@ -249,7 +239,7 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-这个方法通常用Runnable启动线程的方法，实际上Runnable对象被放置在了target变量中，之后通过jvm启动线程![在这里插入图片描述](./assets/125993672/35344b4ed1a1c8261be2d261.png)
+这个方法通常用Runnable启动线程的方法，实际上Runnable对象被放置在了target变量中，之后通过jvm启动线程![](./assets/125993672/35344b4ed1a1c8261be2d261.png)
 
 ### Thread(Runnable target, AccessControlContext acc)
 
@@ -262,7 +252,7 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 ```
 
 传入Runnable同时也可以指定AccessControlContext（根据其封装的上下文做出系统资源访问决策。）  
- ![在这里插入图片描述](./assets/125993672/632d4c5c338699fab3dbec67.png)
+ ![](./assets/125993672/632d4c5c338699fab3dbec67.png)
 
 ### Thread(ThreadGroup group, Runnable target)
 
@@ -274,7 +264,7 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-![在这里插入图片描述](./assets/125993672/0d1055e10f0cf6d29678d5c4.png)  
+![](./assets/125993672/0d1055e10f0cf6d29678d5c4.png)  
  使用线程组。  
  如果有安全管理器，则线程由安全管理器返回SecurityManager.getThreadGroup()。  
  如果没有安全管理器或者SecurityManager.getThreadGroup()返回为空，则返回当前的线程组。
@@ -289,7 +279,7 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-![在这里插入图片描述](./assets/125993672/d4dd0abadd6d0ac68b062ae6.png) 指定线程的名称
+![](./assets/125993672/d4dd0abadd6d0ac68b062ae6.png) 指定线程的名称
 
 ### Thread(ThreadGroup group, String name)
 
@@ -301,7 +291,7 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-![在这里插入图片描述](./assets/125993672/7207a0ed1619cfabb0c1b88e.png)
+![](./assets/125993672/7207a0ed1619cfabb0c1b88e.png)
 
 ### Thread(Runnable target, String name)
 
@@ -313,7 +303,7 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-![在这里插入图片描述](./assets/125993672/0d1dc93543d01f4e6b8b5f7c.png)
+![](./assets/125993672/0d1dc93543d01f4e6b8b5f7c.png)
 
 ### Thread(ThreadGroup group, Runnable target, String name)
 
@@ -325,7 +315,7 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-![在这里插入图片描述](./assets/125993672/b67ac24609cb7ffe0cfe3d04.png)
+![](./assets/125993672/b67ac24609cb7ffe0cfe3d04.png)
 
 ### Thread(ThreadGroup group, Runnable target, String name,long stackSize)
 
@@ -338,7 +328,7 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-![在这里插入图片描述](./assets/125993672/85591ee36749fcb710fca128.png)
+![](./assets/125993672/85591ee36749fcb710fca128.png)
 
 ### Thread(ThreadGroup group, Runnable target, String name,long stackSize, boolean inheritThreadLocals)
 
@@ -351,7 +341,7 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-![在这里插入图片描述](./assets/125993672/3d78534ab7b0835ffe4b1b1f.png)  
+![](./assets/125993672/3d78534ab7b0835ffe4b1b1f.png)  
  我们来详细的介绍一下最后一个构造方法，因为前面所有的构造方法中的this，最后指向的都是最后一个构造方法  
  我们看看this里面的代码：
 

@@ -1,23 +1,13 @@
 ---
 title: "JUC工具类-ThreadLocal"
 description: "多线程的世界里，线程安全是一个永恒的主题。"
-sourceId: "147243211"
-source: "https://blog.csdn.net/qq_45852626/article/details/147243211"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147243211
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147243211)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147243211)
 
 ## 引言：为何需要 ThreadLocal？
 

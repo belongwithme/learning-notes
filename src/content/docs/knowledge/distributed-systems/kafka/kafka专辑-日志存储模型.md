@@ -1,23 +1,13 @@
 ---
 title: "Kafka专辑: 日志存储模型"
 description: "磁盘 I/O：顺序写（极快，接近内存） vs 随机写（慢，磁头寻道）。"
-sourceId: "156488012"
-source: "https://blog.csdn.net/qq_45852626/article/details/156488012"
-sourceSeries:
-  - "Kafka"
-category: distributed-systems
-subcategory: kafka
-tags:
-  - "Kafka"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 156488012
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156488012)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156488012)
 
 ## 前置知识
 

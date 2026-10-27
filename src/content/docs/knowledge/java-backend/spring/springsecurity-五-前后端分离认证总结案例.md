@@ -1,22 +1,13 @@
 ---
 title: "SpringSecurity(五):前后端分离认证总结案例。"
 description: "和上一篇一样，从上倒下复制粘贴，所有代码贴完再运行，代码没有问题，只要贴对，都可以顺利跑出来的。"
-sourceId: "131454099"
-source: "https://blog.csdn.net/qq_45852626/article/details/131454099"
-sourceSeries: []
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring"
 status: draft
-difficulty: intermediate
-contentType: practice
 sidebar:
   order: 131454099
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131454099)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131454099)
 
 ## 前言
 
@@ -52,7 +43,7 @@ sidebar:
 
 我们确定了`UsernamePasswordAuthenticationFilter`不适合作为我们要用的过滤器，所以我们自己创建一个名为`LoginFilter`的过滤器。  
  但是security里面是有一系列的过滤器的，我们要确保`LoginFilter`替换`UsernamePasswordAuthenticationFilter`后位置不变。  
- ![请添加图片描述](./assets/131454099/dec6c5f88449b7ed241922ed.png)
+ ![](./assets/131454099/dec6c5f88449b7ed241922ed.png)
 
 ## Controller层
 

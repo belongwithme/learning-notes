@@ -1,23 +1,13 @@
 ---
 title: "集合专辑(五)：Map接口&&HashMap(1.8)核心解读"
 description: "本来按顺序来解读的话呢，这节应该分享的是Collection接口下Set接口下的HashSet实现"
-sourceId: "125796898"
-source: "https://blog.csdn.net/qq_45852626/article/details/125796898"
-sourceSeries:
-  - "集合"
-category: java-backend
-subcategory: collections
-tags:
-  - "集合"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 125796898
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125796898)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125796898)
 
 ## Map与HashMap一文解决
 ## 前言：
@@ -77,11 +67,11 @@ Jdk1.8之后，采用的是数组+链表/红黑树，之所以改为**红黑树�
 我们需要理解几个概念，以便我们更好的了解HashMap。  
  bucket：HashMap中数组对应的索引位置（槽位）。  
  bin：在HashMap中，有多个元素的key都计算到同一个bucket中，我们会通过链表或红黑树的方式来存储，这个链表或者红黑树就是bin。  
- ![在这里插入图片描述](./assets/125796898/7d2746549717d547153d3a31.png)
+ ![](./assets/125796898/7d2746549717d547153d3a31.png)
 
 ### 继承关系
 
-![在这里插入图片描述](./assets/125796898/feb781cdd4ef69d0f08df24f.png)  
+![](./assets/125796898/feb781cdd4ef69d0f08df24f.png)  
  代码如下：
 
 ```java
@@ -205,7 +195,7 @@ Thus, in the face of concurrent  modification, the iterator fails quickly and cl
  * should be used only to detect bugs.</i>
  *不要让程序依赖这个异常来保证其正确性，fail-fast机制只能用来检测bug。
  * <p>This class is a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @param <K> the type of keys maintained by this map
@@ -636,7 +626,7 @@ public interface Consumer<T> {
 
 ```
 
-![在这里插入图片描述](./assets/125796898/5da27bcfc690aa27587eeacd.png)  
+![](./assets/125796898/5da27bcfc690aa27587eeacd.png)  
  可以看到，这是AbstractMap里面的一个成员变量（用transient修饰，返回值是一个set集合)，  
  我们看后面的代码：
 
@@ -699,7 +689,7 @@ final class KeySet extends AbstractSet<K> {
 ```
 
 t：保存hash数组的table  
- ![在这里插入图片描述](./assets/125796898/1fd3c629a456d74b42a1ac6d.png)  
+ ![](./assets/125796898/1fd3c629a456d74b42a1ac6d.png)  
  index：数组的索引
 
 进一步解释一下这两行代码：
@@ -716,13 +706,13 @@ t：保存hash数组的table
  现在我们分析过了keyset的底层调用逻辑.  
  **有个问题还需要思考：它到底怎么把键加入到keyset里面的？**  
  我们上面一路分析下来，发现事情并不简单，我们并没有发现keyset返回了一个集合（集合里保存了HashMap所有的Key），它只是创建了一个KeySet类的对象，并没有把HashMap的key都加入进来，之后方法就返回了。  
- ![在这里插入图片描述](./assets/125796898/c2b9a55baecb1dbec10bcce1.png)  
+ ![](./assets/125796898/c2b9a55baecb1dbec10bcce1.png)  
  而我们在调试代码的时候，可以明显的看出，执行完`ks=new KeySet()`后，ks中就已经有元素了.  
  **那么到底是什么时候HashMap的key加入到KeySet集合中的呢？**
 
 我们之前看keySet类的构造函数，发现只有默认构造函数，如果不是在keySet构造函数里把HashMap的可以加入进来，那么可能是KeySet的父类构造函数中加入进来：  
- ![在这里插入图片描述](./assets/125796898/2ba4dd41e28d97b8183c8d52.png)  
- ![在这里插入图片描述](./assets/125796898/c64bd5cc4b6975279f434756.png)然而我们通过上图可以看到，都是空实现。。。  
+ ![](./assets/125796898/2ba4dd41e28d97b8183c8d52.png)  
+ ![](./assets/125796898/c64bd5cc4b6975279f434756.png)然而我们通过上图可以看到，都是空实现。。。  
  这部分真的卡了我好久= =！  
  当我们调用HashMap的keySet方法时，我们得到一个Set视图，这个视图代表了HashMap中所有的键，这个Set视图并不是通过复制HashMap中所有的键来创建的，而是提供了一个窗口或接口来直接访问HashMap中的键。  
  **所以关键点在于：keySet返回的Set对象并不包含实际的键数据，它只是提供了一种方式来遍历和查看HashMap中的键。当你使用迭代器或for-each循环遍历这个set时，它会在内部访问HashMap的数据结构，并逐个返回键。**
@@ -731,7 +721,7 @@ t：保存hash数组的table
  原因在于:idea显示对象信息时，会调用对象的toString方法。。。。  
  注意：这个调用是隐式的！！！  
  AbstractMap中的toString方法：  
- ![在这里插入图片描述](./assets/125796898/36ea30c0ddd05875c8773322.png)
+ ![](./assets/125796898/36ea30c0ddd05875c8773322.png)
 
 #### EntrySet
 
@@ -947,7 +937,7 @@ final class Values extends AbstractCollection<V> {
 5. 遍历tab[i]判断链表是否>8.大于8则可能转成红黑树（当然必需数组要>64），满足则在红黑树插入节点；  
     否则在链表中插入；在遍历链表的过程中如果存在key的hashCode&Equals相等则替换即可。
 6. 插入成功，判断hashmap的size是否超过threshold的值，超过则扩容。  
-    ![在这里插入图片描述](./assets/125796898/be3a39423726db1d4c50c6a5.png)
+    ![](./assets/125796898/be3a39423726db1d4c50c6a5.png)
 
 #### resize扩容方法
 

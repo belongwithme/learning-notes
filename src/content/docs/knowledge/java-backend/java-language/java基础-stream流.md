@@ -1,24 +1,13 @@
 ---
 title: "Java基础--Stream流"
 description: "Stream流是Java8及之后版本引入的新特性,主要用于简化集合和数组操作."
-sourceId: "136862710"
-source: "https://blog.csdn.net/qq_45852626/article/details/136862710"
-sourceSeries:
-  - "Java基础"
-category: java-backend
-subcategory: java-language
-tags:
-  - "Java基础"
-  - "Java"
 status: draft
-difficulty: beginner
-contentType: knowledge
 sidebar:
   order: 136862710
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136862710)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136862710)
 
 ## 前言
 
@@ -38,7 +27,7 @@ Java8新增的接口,允许以声明性方式处理
  **什么是声明式编程**  
  声明式的理解都是相对于命令式(imperativ)而言的,是对于命令式编程不同的编程泛型的一种合称.  
  声明式编程中我们描述的是目标状态,命令式编程中我们描述的是一系列动作.  
- ![在这里插入图片描述](./assets/136862710/2ca57445fc4e72538c85109b.png)
+ ![](./assets/136862710/2ca57445fc4e72538c85109b.png)
 
 ## Stream特点
 
@@ -52,7 +41,7 @@ Java8新增的接口,允许以声明性方式处理
 
 * 创建Stream
 * Stream中间处理
-* 终止Stream![在这里插入图片描述](./assets/136862710/057f81acbfe5ac3f5898db54.png)  
+* 终止Stream![](./assets/136862710/057f81acbfe5ac3f5898db54.png)  
    每个Stream管道操作类型都包含N个API方法,先列举下各API方法的功能介绍.
 
 ### 开始管道
@@ -123,7 +112,7 @@ map与flatMap都是用于已有的元素转换为其他元素.
 
 * map必须是一对一的,即每个元素都只能转换为一个新元素
 * flatmapkey是一对多的,即每个元素都可以转换为一个或者多个新的元素.  
-   ![在这里插入图片描述](./assets/136862710/fc8d4dedddfb79e9f696b215.png)  
+   ![](./assets/136862710/fc8d4dedddfb79e9f696b215.png)  
    举个例子:有一个字符串ID列表，现在需要将其转为User对象列表。
 * 用map来实现
 
@@ -177,7 +166,7 @@ public void stringToIntFlatmap() {
 补充一句: flatMap操作的时候其实是先对每个元素处理后返回一个stream,然后将多个stream展开
 合并 
 为一个新的完整的stream,如下图所示:  
- ![在这里插入图片描述](./assets/136862710/02aadfa256259d346d0b1575.png)
+ ![](./assets/136862710/02aadfa256259d346d0b1575.png)
 
 #### peek和foreach方法
 

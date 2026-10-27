@@ -1,22 +1,13 @@
 ---
 title: "并发容器（二）：Concurrent类下的ConcurrentHashMap源码级解析"
 description: "之前我们在集合篇里聊完了HashMap和HashTable，我们又学习了并发编程的基本内容，现在我们来聊一聊Concurrent类下的重要容器，ConcurrentHashMap。"
-sourceId: "126124080"
-source: "https://blog.csdn.net/qq_45852626/article/details/126124080"
-sourceSeries: []
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 126124080
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126124080)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126124080)
 
 ## 并发容器-ConcurrentHashMap
 ## 前言
@@ -59,7 +50,7 @@ ConcurrentHashMap在JDK1.7中,提供了一种颗粒度更细的加锁机制.
 * 结构为Segment数组 + HashEntry数组 + 链表
 
 这种设计可以理解为"化整为零"的思想，就像一个小区有16个门，每个门都有独立的保安，居民只需要跟自己门的保安打交道，大大减少了排队等待的时间。  
- ![在这里插入图片描述](./assets/126124080/842fbe2a2ce69c6c50fd02d0.png)  
+ ![](./assets/126124080/842fbe2a2ce69c6c50fd02d0.png)  
  (图片转载自网络)
 
 #### HashEntry
@@ -112,7 +103,7 @@ static final class Segment<K,V> extends ReentrantLock implements Serializable {
  即每个Segment守护着n个HashEntry,而每一个HashEntry本身可以当作一条链表连接n个HashEntry.
 
 那么可以用图来表示一下segment和hashEntry的关系  
- ![在这里插入图片描述](./assets/126124080/7de062a1d1b2895867b8a2be.png)
+ ![](./assets/126124080/7de062a1d1b2895867b8a2be.png)
 
 ### JDK1.8版本
 

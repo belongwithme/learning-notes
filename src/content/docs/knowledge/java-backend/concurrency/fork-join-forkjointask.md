@@ -1,24 +1,13 @@
 ---
 title: "Fork/Join - ForkJoinTask"
 description: "Fork/Join框架是Java 7引入的一个强大的并行处理框架，专为可以递归分解的问题设计。在这个框架中，ForkJoinTask是核心组件，它提供了支持分治算法的任务抽象。"
-sourceId: "147397422"
-source: "https://blog.csdn.net/qq_45852626/article/details/147397422"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
-  - "SQL"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147397422
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147397422)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147397422)
 
 ## Fork/Join框架核心组件：ForkJoinTask详解
 

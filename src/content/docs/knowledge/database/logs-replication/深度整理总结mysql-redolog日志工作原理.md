@@ -1,24 +1,13 @@
 ---
 title: "深度整理总结MySQL——redoLog日志工作原理"
 description: "你知道什么是存储引擎、随机 IO 和顺序 IO吗？你知道 MySQL 中的缓冲池吗？binlog 听说过吗？都有什么用？"
-sourceId: "145585470"
-source: "https://blog.csdn.net/qq_45852626/article/details/145585470"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: logs-replication
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 145585470
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145585470)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145585470)
 
 ## redo log的工作原理
 ## 前言
@@ -55,7 +44,7 @@ Redo Log一种物理日志，记录对数据页的修改内容，用于保证事
 
 事务提交之前发生了崩溃（这里的崩溃不是宕机崩溃，而是事务执行错误，mysql 还是正常运行的。如果是宕机崩溃的话，其实就不需要通过 undo log 回滚了，因为事务没有提交，事务的数据并不会持久化，还是在内存中，宕机崩溃了数据就丢失了，因为事务没有提交，事务的数据并不会持久化，还是在内存中，宕机崩溃了数据就丢失了),重启后会通过 undo log 回滚事务。  
  事务提交之后发生了崩溃（这里的崩溃是宕机崩溃），重启后会通过 redo log 恢复事务，如下图：  
- ![在这里插入图片描述](./assets/145585470/1ccee7441ce1622504fac2c3.png)  
+ ![](./assets/145585470/1ccee7441ce1622504fac2c3.png)  
  所以有了 redo log，再通过 WAL 技术，InnoDB 就可以保证即使数据库发生异常重启，之前已提交的记录都不会丢失，这个能力称为 crash-safe（崩溃恢复）。  
  可以看出来， redo log 保证了事务四大特性中的持久性。
 
@@ -80,7 +69,7 @@ WAL全名为Write-Ahead Logging，是一种在数据库系统中用于保证数�
  如果直接写入磁盘，这样会产生大量的 I/O 操作，而且磁盘的运行速度远慢于内存。  
  所以，redo log 也有自己的缓存—— redo log buffer.  
  所以，redo log 也有自己的缓存—— redo log buffer.  
- ![在这里插入图片描述](./assets/145585470/eb025ebdf218df33b55890ee.png)  
+ ![](./assets/145585470/eb025ebdf218df33b55890ee.png)  
  redo log buffer 默认大小 16 MB，可以通过 innodb\_log\_Buffer\_size 参数动态的调整大小，增大它的大小可以让 MySQL 处理「大事务」是不必写入磁盘，进而提升写 IO 性能。
 
 ## redo log 什么时候刷盘
@@ -107,7 +96,7 @@ WAL全名为Write-Ahead Logging，是一种在数据库系统中用于保证数�
 * 当设置该参数为 2 时  
    每次事务提交时，都只是缓存在 redo log buffer 里的 redo log写到 redo log 文件，注意写入到「 redo log 文件」并不意味着写入到了磁盘，因为操作系统的文件系统中有个 Page Cache，Page Cache 是专门用来缓存文件数据的，所以写入「 redo log文件」意味着写入到了操作系统的文件缓存。  
    如下图:  
-   ![在这里插入图片描述](./assets/145585470/feafcdfe81d19c2ff5b08a74.png)
+   ![](./assets/145585470/feafcdfe81d19c2ff5b08a74.png)
 
 #### 参数为0 和2时,什么时候将redo log 写入到磁盘.
 
@@ -121,7 +110,7 @@ InnoDB 的后台线程每隔 1 秒:
    较取值为 0 情况下更安全，因为 MySQL 进程的崩溃并不会丢失数据，只有在操作系统崩溃或者系统断电的情况下,上一秒钟所有事务数据才可能丢失.
 
 刷盘时机如下图:  
- ![在这里插入图片描述](./assets/145585470/7ddfd02b2d54de5e98943ee1.png)
+ ![](./assets/145585470/7ddfd02b2d54de5e98943ee1.png)
 
 #### 应用场景是什么
 
@@ -136,13 +125,13 @@ InnoDB 的后台线程每隔 1 秒:
 ## redo log 文件写满了怎么办
 
 默认情况下， InnoDB 存储引擎有 1 个重做日志文件组( redo log Group），「重做日志文件组」由有 2 个 redo log 文件组成，这两个 redo 日志的文件名叫 ：ib\_logfile0 和 ib\_logfile1 。  
- ![在这里插入图片描述](./assets/145585470/aa747bc2e74aa15245ee965f.png)  
+ ![](./assets/145585470/aa747bc2e74aa15245ee965f.png)  
  在重做日志组中，每个 redo log File 的大小是固定且一致的,在重做日志组.中，每个 redo log File 的大小是固定且一致的,假设每个 redo log File 设置的上限是 1 GB，那么总共就可以记录 2GB 的操作。  
  **重做日志文件组是以循环写的方式工作的，从头开始写，写到末尾就又回到开头，相当于一个环形。**  
- ![在这里插入图片描述](./assets/145585470/218117f4ec762984f442a573.png)  
+ ![](./assets/145585470/218117f4ec762984f442a573.png)  
  redo log 是为了防止 Buffer Pool 中的脏页丢失而设计的,Buffer Pool 的脏页刷新到了磁盘中，那么 redo log 对应的记录也就没用了,这时候我们擦除这些旧记录，以腾出空间记录新的更新操作。  
  InnoDB 用 write pos 表示 redo log 当前记录写到的位置，用 checkpoint 表示当前要擦除的位置.如下图:  
- ![在这里插入图片描述](./assets/145585470/d474629f20c7a5224ff0e1ff.png)  
+ ![](./assets/145585470/d474629f20c7a5224ff0e1ff.png)  
  图中:
 
 * write pos 和 checkpoint 的移动都是顺时针方向；

@@ -1,23 +1,13 @@
 ---
 title: "深入学习ReentrantLock"
 description: "在并发编程的世界里，\"锁\"是一个无法回避的核心概念。当多个线程需要访问共享资源时，如果没有适当的同步机制，就可能导致数据竞争、状态不一致等严重问题。"
-sourceId: "147250524"
-source: "https://blog.csdn.net/qq_45852626/article/details/147250524"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147250524
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147250524)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147250524)
 
 ## 0. 前言：为什么需要 ReentrantLock？
 

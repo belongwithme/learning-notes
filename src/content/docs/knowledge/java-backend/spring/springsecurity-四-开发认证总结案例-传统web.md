@@ -1,22 +1,13 @@
 ---
 title: "SpringSecurity(四):开发认证总结案例(传统Web)"
 description: "这是一个WEB的案例，我写的思路就是，你从上倒下复制粘贴，这个案例可以跑起来，方便后面学知识的时候用。由于视频文档这部分没有显示，所以看这篇会省很多时间。"
-sourceId: "131453315"
-source: "https://blog.csdn.net/qq_45852626/article/details/131453315"
-sourceSeries: []
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring"
 status: draft
-difficulty: intermediate
-contentType: practice
 sidebar:
   order: 131453315
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131453315)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131453315)
 
 ## 传统Web开发认证总结案例
 ## 前言

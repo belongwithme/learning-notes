@@ -1,23 +1,13 @@
 ---
 title: "LockSupport 深度解析"
 description: "在 Java 的并发世界中，线程同步是保证数据一致性和程序正确性的核心。"
-sourceId: "147251274"
-source: "https://blog.csdn.net/qq_45852626/article/details/147251274"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 147251274
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251274)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251274)
 
 ## 1. 引言：为什么需要 LockSupport？
 

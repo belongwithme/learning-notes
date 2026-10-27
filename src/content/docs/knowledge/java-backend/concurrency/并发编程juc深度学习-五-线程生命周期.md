@@ -1,23 +1,13 @@
 ---
 title: "并发编程JUC深度学习(五）线程生命周期"
 description: "在java领域，实现并发程序的主要手段就是多线程，那么知道线程的生命周期是很有必要的。"
-sourceId: "126028316"
-source: "https://blog.csdn.net/qq_45852626/article/details/126028316"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 126028316
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126028316)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126028316)
 
 ## 线程的生命周期
 ## 前言
@@ -31,7 +21,7 @@ sidebar:
 ## 通用的线程生命周期
 
 通用线程生命周期是一个五个状态的模型：  
- ![在这里插入图片描述](./assets/126028316/7e92c74c91205ef0a1805881.png)  
+ ![](./assets/126028316/7e92c74c91205ef0a1805881.png)  
  我们分别解释一下这五个状态：  
  1：新建（初始状态）：这里指的是线程已经被创建，但是**还不允许分配CPU执行**，这个状态属于编程语言特有的，**仅仅在编程语言层面被创建*，而在操作系统层面，真正的线程还没有被创建*。  
  2：可运行状态：线程可以分配CPU执行。这这种状态下，真正的操作系统线程已经被成功创建了，所以可以分配CPU执行。  

@@ -1,23 +1,13 @@
 ---
 title: "深入理解 G1 GC：已记忆集合（RSet）与收集集合（CSet）详解"
 description: "GarbageFirst (G1) 垃圾回收器是 Java HotSpot 虚拟机中一种面向服务端应用的、"
-sourceId: "147445862"
-source: "https://blog.csdn.net/qq_45852626/article/details/147445862"
-sourceSeries:
-  - "JVM"
-category: java-backend
-subcategory: jvm-runtime
-tags:
-  - "JVM"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147445862
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147445862)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147445862)
 
 ## 一、 引言：G1 GC 的基石
 

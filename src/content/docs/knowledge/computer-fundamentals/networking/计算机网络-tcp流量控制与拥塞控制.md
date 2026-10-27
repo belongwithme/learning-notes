@@ -1,24 +1,13 @@
 ---
 title: "计算机网络-TCP流量控制与拥塞控制"
 description: "TCP的流量控制和拥塞控制是两种不同但相互关联的机制，它们共同调节TCP连接的数据传输速率。流量控制主要解决的是通信双方速率不匹配的问题，防止发送方发送数据的速率超过接收方处理能力；而拥塞控制主要解决的是网络资源有限的问题，防止过多数据注入到网络中导致网络拥塞。本章将深入探讨这两种机制的原理和实现。"
-sourceId: "147141905"
-source: "https://blog.csdn.net/qq_45852626/article/details/147141905"
-sourceSeries:
-  - "计算机网络"
-category: computer-fundamentals
-subcategory: networking
-tags:
-  - "计算机网络"
-  - "TCP/IP"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147141905
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141905)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141905)
 
 ## 4. TCP流量控制与拥塞控制
 

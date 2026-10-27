@@ -1,22 +1,13 @@
 ---
 title: "Spring核心模块 - 三大核心PostProcessor"
 description: "Spring的后处理器是Spring对外开发的重要扩展点，允许我们介入到Bean的整个实例化流程中来，以达到动态注册BeanDefinition，动态修改BeanDefinition，以及动态修改Bean的作用。"
-sourceId: "129154666"
-source: "https://blog.csdn.net/qq_45852626/article/details/129154666"
-sourceSeries: []
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 129154666
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129154666)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129154666)
 
 ## 后置处理器
 ## 前言
@@ -227,7 +218,7 @@ public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegi
 
 在容器启动时，Spring会自动检测到`MyBeanDefinitionRegistryPostProcessor`并将其实例化和注册到容器中。在容器启动完成后，我们的`myBean`就可以在容器中被其他的Bean所依赖和使用了。
 
-后面针对这个执行顺序，我们引用一个图来说明，相信看到这你就明白啦：![请添加图片描述](./assets/129154666/e79bb272ee8f3975db228de0.png)  
+后面针对这个执行顺序，我们引用一个图来说明，相信看到这你就明白啦：![](./assets/129154666/e79bb272ee8f3975db228de0.png)  
  你以为到这就结束啦吗？咱们No，再来一个Demo收尾！
 
 ##### 使用Spring的BeanFactoryPostProcessor扩展点完成自定义注解扫描
@@ -407,7 +398,7 @@ userService.show();
 * 实际项目中不用自己写：Spring AOP 的 `AbstractAutoProxyCreator` 本身就是一个 `BeanPostProcessor`，也是在 `postProcessAfterInitialization` 中为 Bean 生成代理（有接口用 JDK 代理，没有接口用 CGLIB）。
 
 最后梳理一下，如果你前面耐心看完，这张图不用多解释了，一看就明白了🫡：  
- ![请添加图片描述](./assets/129154666/706254fca1e8a72da9dd6f46.png)
+ ![](./assets/129154666/706254fca1e8a72da9dd6f46.png)
 
 #### BeanFactoryPostProcessor&&BeanPostProcessor的不同点
 

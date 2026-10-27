@@ -1,22 +1,13 @@
 ---
 title: "Java对象内存布局详解"
 description: "Java对象在内存中的布局由以下三部分组成："
-sourceId: "147057384"
-source: "https://blog.csdn.net/qq_45852626/article/details/147057384"
-sourceSeries: []
-category: java-backend
-subcategory: jvm-runtime
-tags:
-  - "Java"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147057384
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147057384)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147057384)
 
 ## 一、概述
 

@@ -1,23 +1,13 @@
 ---
 title: "Redis 有序集合 ZSet 深度解析教程"
 description: "有序集合（Sorted Set，简称 ZSet）是一种非常强大且常用的数据结构。它既像集合（Set）一样保证成员（member）的唯一性，又允许为每个成员关联一个分数（score），并能根据分数对成员进行高效排序。"
-sourceId: "147478619"
-source: "https://blog.csdn.net/qq_45852626/article/details/147478619"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-internals
-tags:
-  - "Redis"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 147478619
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147478619)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147478619)
 
 ## Redis-ZSet
 ## 引言

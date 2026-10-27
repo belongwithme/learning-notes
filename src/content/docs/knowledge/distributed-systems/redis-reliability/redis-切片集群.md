@@ -1,23 +1,13 @@
 ---
 title: "Redis- 切片集群"
 description: "Redis Cluster是Redis官方提供的分布式解决方案，它通过数据分片技术将数据自动分散存储到多个节点上，实现了水平扩展能力."
-sourceId: "146119463"
-source: "https://blog.csdn.net/qq_45852626/article/details/146119463"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-reliability
-tags:
-  - "Redis"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 146119463
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146119463)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146119463)
 
 ## 什么是Redis Cluster吗？为什么需要切片集群？
 

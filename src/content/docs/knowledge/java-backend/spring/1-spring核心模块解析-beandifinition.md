@@ -1,24 +1,13 @@
 ---
 title: "1-Spring核心模块解析—BeanDifinition。"
 description: "Spring中的BeanDifinition在Bean的实例化流程中占有着非常重要的角色，如果你不了解BeanDifinition的话，面试或者学习Bean的生命周期的话，如同空中楼阁，应付面试可以，如果你想真的成体系化，这部分内容推荐你仔细阅读。"
-sourceId: "128748042"
-source: "https://blog.csdn.net/qq_45852626/article/details/128748042"
-sourceSeries:
-  - "Spring核心模块解析"
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring核心模块解析"
-  - "Spring"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 128748042
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/128748042)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/128748042)
 
 ## 前言
 
@@ -59,11 +48,11 @@ Spring中的BeanDifinition在Bean的实例化流程中占有着非常重要的�
  举个不同方式创建Bean的例子就明白为什么BeanDefinition是有必要存在的：
 
 * 普普通通创建一个Java bean：  
-   ![在这里插入图片描述](./assets/128748042/dc36ac5475635ea3b710aae9.png)
+   ![](./assets/128748042/dc36ac5475635ea3b710aae9.png)
 * Spring创建Bean：  
-   ![在这里插入图片描述](./assets/128748042/99e0a790e05196ed10f513f9.png)
+   ![](./assets/128748042/99e0a790e05196ed10f513f9.png)
 
-![在这里插入图片描述](./assets/128748042/ee7facde18b1fc002b9d2a10.png)
+![](./assets/128748042/ee7facde18b1fc002b9d2a10.png)
 
 BeanDefinition 它遵循了"配置与实例分离"的原则。,我可以从源码和实际场景来说明:
 

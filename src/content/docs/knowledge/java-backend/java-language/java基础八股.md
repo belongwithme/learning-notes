@@ -1,24 +1,13 @@
 ---
 title: "Java基础八股"
 description: "Java是一门面向对象的编程语言,具备封装,继承,多态,抽象四大特性"
-sourceId: "139376920"
-source: "https://blog.csdn.net/qq_45852626/article/details/139376920"
-sourceSeries:
-  - "Java基础"
-category: java-backend
-subcategory: java-language
-tags:
-  - "Java基础"
-  - "Java"
 status: draft
-difficulty: beginner
-contentType: knowledge
 sidebar:
   order: 139376920
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/139376920)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/139376920)
 
 ## Java语言
 
@@ -285,7 +274,7 @@ System.out.println(A == B)
 第一行代码会发生装箱,也就说这行代码等价于`Integer A = Integer.valueOf(40)`.  
  所以A直接使用的是缓存中的对象,而Integer B 会直接创建新的对象,  
  所以答案是false/  
- ![在这里插入图片描述](./assets/139376920/89cdaa02e0ff9b750aba6519.png)
+ ![](./assets/139376920/89cdaa02e0ff9b750aba6519.png)
 
 ### Integer 和 int 有什么区别
 
@@ -403,13 +392,13 @@ New运算符.
 * 浅拷贝  
    会在堆上创建一个新的对象(区别引用拷贝的一点),只拷贝对象本身,如果原对象内部属性是引用类型的话,会复制内部对象的引用地址,与原对象共用一个内部对象.
 
-![在这里插入图片描述](./assets/139376920/ad427cc15eb56f0d62cadd65.png)
+![](./assets/139376920/ad427cc15eb56f0d62cadd65.png)
 
 ### Java中是值传递还是引用传递,还是两者共存
 
 Java传递的只有值  
  执行方法时,会将方法的栈帧压入栈内存,但是栈帧中的变量不会相互影响.  
- ![在这里插入图片描述](./assets/139376920/c3a26b6f918baa800eb4d307.png)
+ ![](./assets/139376920/c3a26b6f918baa800eb4d307.png)
 
 ## Java常见类
 

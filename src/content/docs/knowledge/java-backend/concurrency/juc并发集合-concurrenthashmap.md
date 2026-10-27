@@ -1,25 +1,13 @@
 ---
 title: "JUC并发集合-ConcurrentHashMap"
 description: "ConcurrentHashMap是Java并发包(java.util.concurrent)中提供的一个线程安全的"
-sourceId: "146809247"
-source: "https://blog.csdn.net/qq_45852626/article/details/146809247"
-sourceSeries:
-  - "集合"
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "集合"
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 146809247
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146809247)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146809247)
 
 ## 1. 基础概念
 

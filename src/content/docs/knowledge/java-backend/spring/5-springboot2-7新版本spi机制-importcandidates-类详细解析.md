@@ -1,24 +1,13 @@
 ---
 title: "5 - SpringBoot2.7新版本SPI机制-ImportCandidates 类详细解析"
 description: "ImportCandidates 是 Spring Boot 2.7+ 版本引入的自动配置类加载器,用于替代旧版 SpringFactoriesLoader 的部分功能。"
-sourceId: "153470947"
-source: "https://blog.csdn.net/qq_45852626/article/details/153470947"
-sourceSeries:
-  - "Spring核心模块解析"
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring核心模块解析"
-  - "Spring"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 153470947
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153470947)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153470947)
 
 ## 介绍
 

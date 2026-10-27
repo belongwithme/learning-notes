@@ -1,24 +1,13 @@
 ---
 title: "深度整理总结MySQL——Expalin指南(二)"
 description: "本章接着上一章Expalin指南(一)续写."
-sourceId: "145594095"
-source: "https://blog.csdn.net/qq_45852626/article/details/145594095"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: query-optimization
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 145594095
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145594095)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145594095)
 
 ## 前言
 

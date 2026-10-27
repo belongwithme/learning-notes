@@ -1,24 +1,13 @@
 ---
 title: "Kafka专辑- 消息队列是什么"
 description: "简单来说，消息队列是指在应用程序之间传输数据的一种通信方法。"
-sourceId: "156466220"
-source: "https://blog.csdn.net/qq_45852626/article/details/156466220"
-sourceSeries:
-  - "Kafka"
-category: distributed-systems
-subcategory: kafka
-tags:
-  - "Kafka"
-  - "算法"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 156466220
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156466220)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156466220)
 
 ## 什么是消息队列
 ## 什么是消息队列 (Message Queue)？

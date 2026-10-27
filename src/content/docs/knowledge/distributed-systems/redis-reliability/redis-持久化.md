@@ -1,23 +1,13 @@
 ---
 title: "Redis- 持久化"
 description: "Redis是跑在内存里的,那程序重启或者服务崩溃,数据就会丢失,如果业务场景希望重启之后数据还在,就需要持久化,即把数据保持到可永久保存的"
-sourceId: "145764851"
-source: "https://blog.csdn.net/qq_45852626/article/details/145764851"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-reliability
-tags:
-  - "Redis"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145764851
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145764851)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145764851)
 
 ## 持久化是什么
 

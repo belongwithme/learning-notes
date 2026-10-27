@@ -1,22 +1,13 @@
 ---
 title: "图论- DFS/BFS遍历"
 description: "这里主要是看我们需要用一个visited数组来记录遍历过的节点,因为图可能会有环的情况."
-sourceId: "145482416"
-source: "https://blog.csdn.net/qq_45852626/article/details/145482416"
-sourceSeries: []
-category: algorithms
-subcategory: trees-graphs
-tags:
-  - "算法"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145482416
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145482416)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145482416)
 
 ## 深度优先搜素(DFS)
 

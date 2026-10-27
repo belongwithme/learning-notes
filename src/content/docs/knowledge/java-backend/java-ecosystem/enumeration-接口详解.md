@@ -1,23 +1,13 @@
 ---
 title: "Enumeration 接口详解"
 description: "Enumeration 是 Java 中最早的迭代器接口（JDK 1.0 引入），用于逐个遍历集合中的元素。"
-sourceId: "153399744"
-source: "https://blog.csdn.net/qq_45852626/article/details/153399744"
-sourceSeries:
-  - "Java源码"
-category: java-backend
-subcategory: java-ecosystem
-tags:
-  - "Java源码"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 153399744
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153399744)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153399744)
 
 ## 一、核心定义
 

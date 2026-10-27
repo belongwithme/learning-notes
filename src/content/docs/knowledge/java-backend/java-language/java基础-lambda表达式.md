@@ -1,24 +1,13 @@
 ---
 title: "Java基础-lambda表达式"
 description: "函数式编程，曾经有过一段黄金时代，后来又因面向对象范式的崛起而逐步变为小众范式。但是，函数式编程目前又开始在不同的语言中流行起来了，像Java 8、JS、Rust等语言都有对函数式编程的支持。"
-sourceId: "136749297"
-source: "https://blog.csdn.net/qq_45852626/article/details/136749297"
-sourceSeries:
-  - "Java基础"
-category: java-backend
-subcategory: java-language
-tags:
-  - "Java基础"
-  - "Java"
 status: draft
-difficulty: beginner
-contentType: knowledge
 sidebar:
   order: 136749297
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136749297)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136749297)
 
 ## 前言
 
@@ -39,7 +28,7 @@ sidebar:
 λ演算(读作lambda演算),它从数理逻辑(Mathematical logic)发展而来,使用变量绑定(binding)和代换规则(substitution)来研究函数如何抽象化定义(define),函数如何被应用(
 apply 
 )以及递归(recursion)的形式系统.  
- ![在这里插入图片描述](./assets/136749297/7afce318ed4431c379fc5bee.png)
+ ![](./assets/136749297/7afce318ed4431c379fc5bee.png)
 
 λ演算式有三个要点:
 
@@ -61,7 +50,7 @@ return i+j
 
 add括号里面的i和j就是形参  
  所以对应λ演算法的函数就是一个x,而它.后面就是函数体(定义了函数要做什么),在调用函数的时候,形参和函数体会被形参括起来,比如:(λx.xy)a == add(1,3) 其中这个a就是函数里的实参,如下图  
- ![请添加图片描述](./assets/136749297/dcd2cfa2debd3b0ae313e637.png)
+ ![](./assets/136749297/dcd2cfa2debd3b0ae313e637.png)
 
 我们习惯中的编程语言的函数在里面写的都是操作和指令,告诉计算机传进来的参数要对其进行什么操作.  
  也就是先有的数据和指令,函数是被定义在数据和指令这两个基础概念之上的  
@@ -72,7 +61,7 @@ add括号里面的i和j就是形参
  其实y是什么根本就不重要,因为在λ演算法里,**重点不是符号是什么,而是两个符号之间的关系**.  
  第一个x是形参,第二个y是什么无所谓,它只要和第一个符号不一样就行.  
  为了帮助我们更好的理解,我们拿过来一个例子来看符号之间的关系  
- ![在这里插入图片描述](./assets/136749297/b39e1ed35960f6e4f4d0e6e7.png)  
+ ![](./assets/136749297/b39e1ed35960f6e4f4d0e6e7.png)  
  上面的内容看不太明白也没关系,可以去看一下这个b站视频:【4. 用“λ演算法”去理解，为什么函数式编程会有更少的bug】https://www.bilibili.com/video/BV1d34y1v7xr?vd\_source=e69b8b220e292b8e4922bf6622e13c51  
  受限于时间和篇幅,没办法把视频中的思想很好的表达出来,不妨直接去看一下这个视频,相信就可以更好理解了.
 
@@ -244,7 +233,7 @@ public class MainAnonymousClass {
 
 ```
 
-![在这里插入图片描述](./assets/136749297/626c61023b49030b1fe4bd06.png)  
+![](./assets/136749297/626c61023b49030b1fe4bd06.png)  
  进一步分析主类MainAnonymousClass.class字节码,可发现其创建了匿名内部类的对象:
 
 ```java
@@ -283,7 +272,7 @@ public class MainLambda {
 ```
 
 编译后的结果:  
- ![在这里插入图片描述](./assets/136749297/053ef622f085c2260fd08798.png)  
+ ![](./assets/136749297/053ef622f085c2260fd08798.png)  
  通过javap反编译命名,我们可以看到Lambda表达式内部表示的不同:
 
 ```java
@@ -341,7 +330,7 @@ public class Hello {
 
 为引入lambda表达式,Java8新增了`java.util.function`包,里面包含常用函数接口,这是lambda表达式的基础,java集合框架也新增部分接口,以便与lambda表达式对接.  
  回顾一下Java集合框架的接口继承结构:  
- ![在这里插入图片描述](./assets/136749297/1a329781773feb5e62d01200.png)  
+ ![](./assets/136749297/1a329781773feb5e62d01200.png)  
  上图中绿色标注的接口类,表示在Java8中加入了新的接口方法,由于继承关系,他们相应的子类都会继承这些新方法,下面详细列举了这些方法.
 
 | 接口名 | 兼容的方法 |

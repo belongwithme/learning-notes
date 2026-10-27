@@ -1,23 +1,13 @@
 ---
 title: "深入理解Condition接口"
 description: "在多线程编程中，线程间的协作至关重要。我们经常遇到这样的场景：一个线程需要等待某个条件满足后才能继续执行，而这个条件的改变依赖于其他线程的操作。"
-sourceId: "147251627"
-source: "https://blog.csdn.net/qq_45852626/article/details/147251627"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147251627
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251627)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251627)
 
 ## 1. 前言：为什么需要Condition？
 

@@ -1,24 +1,13 @@
 ---
 title: "深度整理总结MySQL——索引正确使用姿势"
 description: "这篇文章是补充一些基本概念和实战的一些使用建议."
-sourceId: "145496486"
-source: "https://blog.csdn.net/qq_45852626/article/details/145496486"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: indexes
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: beginner
-contentType: practice
 sidebar:
   order: 145496486
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145496486)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145496486)
 
 ## 前言
 

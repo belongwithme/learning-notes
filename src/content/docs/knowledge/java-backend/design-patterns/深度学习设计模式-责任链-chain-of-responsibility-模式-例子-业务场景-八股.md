@@ -1,30 +1,20 @@
 ---
 title: "深度学习设计模式：责任链(Chain of Responsibility)模式（例子+业务场景+八股）"
 description: "责任链是我觉得比较好理解,也是开发中比较能经常看到的设计模式,我个人认为它的核心思想: 把请求的发送者和接受者解耦,让多个对象都有机会处理这个请求."
-sourceId: "150583196"
-source: "https://blog.csdn.net/qq_45852626/article/details/150583196"
-sourceSeries:
-  - "设计模式"
-category: java-backend
-subcategory: design-patterns
-tags:
-  - "设计模式"
 status: draft
-difficulty: beginner
-contentType: practice
 sidebar:
   order: 150583196
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/150583196)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/150583196)
 
 ## 责任链模式
 ## 前言
 
 责任链是我觉得比较好理解,也是开发中比较能经常看到的设计模式,我个人认为它的核心思想: **把请求的发送者和接受者解耦,让多个对象都有机会处理这个请求.  
  将这些对象连成一条链,沿着这条链传递请求,直到有一个对象处理它为止.**  
- ![在这里插入图片描述](./assets/150583196/76a489c62a4c265a74998762.png)
+ ![](./assets/150583196/76a489c62a4c265a74998762.png)
 
 ## 什么是责任链模式
 
@@ -33,7 +23,7 @@ sidebar:
 
 ### 责任链模式结构–静态结构-例子一
 
-![在这里插入图片描述](./assets/150583196/6b9e31495379bbdee10e251d.png)  
+![](./assets/150583196/6b9e31495379bbdee10e251d.png)  
  上图说明:
 
 * **1. 处理者 （Handler）** 声明了所有具体处理者的通用接口。 该接口通常仅包含单个方法用于请求处理， 但有时其还会包含一个设置链上下个处理者的方法。

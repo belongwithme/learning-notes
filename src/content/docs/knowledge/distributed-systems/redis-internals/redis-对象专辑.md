@@ -1,23 +1,13 @@
 ---
 title: "Redis- 对象专辑"
 description: "Redis中实际操作主要有6个对象,它们的底层会依赖一些数据结构(字符串,跳表,哈希表等),不同对象也有可能依赖相同数据结构,文章以对象为主,再介绍相关联的数据结构. 文章以实践为第一原理,结合《Redis的设计与实现》理论和n个博客构成Redis系列文章."
-sourceId: "143355397"
-source: "https://blog.csdn.net/qq_45852626/article/details/143355397"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-internals
-tags:
-  - "Redis"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 143355397
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/143355397)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/143355397)
 
 ## Redis-常见数据类型和应用
 ## 前言
@@ -148,8 +138,8 @@ robj *createStringObject(const char *ptr, size_t len) {
 embstr和raw都是redisObject 和 sds 两个结构组成的.  
  差异在于:  
  embstr下redisObject和sds是连续的内存.而raw编码下的内存是分开的  
- ![在这里插入图片描述](./assets/143355397/911e641060155ce22ce5e805.png)  
- ![在这里插入图片描述](./assets/143355397/bd3dfa2f170b5d0e20b2f08f.png)
+ ![](./assets/143355397/911e641060155ce22ce5e805.png)  
+ ![](./assets/143355397/bd3dfa2f170b5d0e20b2f08f.png)
 
 ##### embstr和raw 比较
 
@@ -196,7 +186,7 @@ struct __attribute__ ((__packed__)) sdshdr8 {
 
 ```
 
-![在这里插入图片描述](./assets/143355397/6f190d466ce22a6f8fc17c7f.png)  
+![](./assets/143355397/6f190d466ce22a6f8fc17c7f.png)  
  所以我们可以看出SDS是如何对症下药解决问题的:
 
 1. 增加长度字段len,快速返回长度
@@ -264,7 +254,7 @@ end
 ## List对象
 
 Redis List 是一组连接起来的字符串集合.  
- ![在这里插入图片描述](./assets/143355397/8d626f0ee07ac5007b94d888.png)
+ ![](./assets/143355397/8d626f0ee07ac5007b94d888.png)
 
 ### 元素限制
 
@@ -343,12 +333,12 @@ List有两种编码方式,一种为ZIPLIST(压缩列表),另一种为LINKEDLIST(
 
 ZIPList编码的列表对象使用压缩列表作为底层实现,每个压缩节点(entry)保存了一个列表元素.  
  内存排列很紧凑,可以有效节约内存空间.  
- ![在这里插入图片描述](./assets/143355397/660087b8dcb1af409a9070ed.png)
+ ![](./assets/143355397/660087b8dcb1af409a9070ed.png)
 
 #### LINKEDLIST
 
 如果不满足上面的条件,则使用LINKEDLIST编码.  
- ![在这里插入图片描述](./assets/143355397/a16c8047a8d13aa516566dff.png)  
+ ![](./assets/143355397/a16c8047a8d13aa516566dff.png)  
  可以看到,以链表的形式连接在一起,实际上删除更为灵活,但是内存不足ZIPLIST紧凑.  
  所以只有在列表个数或节点数据长度比较大的时候,才会使用LINKEDLIST编码,以加快处理性能,一定程度上牺牲了内存.
 
@@ -357,7 +347,7 @@ ZIPList编码的列表对象使用压缩列表作为底层实现,每个压缩节
 如果节点非常多,LINKEDLIST链表的节点就很多,会占用不少内存.  
  后面版本引进了QUICKLIST,属于ZIPLIST和LINKEDLIST的结合体.  
  它将linkedLIst按段切分,每一段使用zipLIst来紧凑存储,多个zipLIst使用双向指针连接起来.  
- ![在这里插入图片描述](./assets/143355397/3bb0ed95628eb4d8f6851ccf.png)
+ ![](./assets/143355397/3bb0ed95628eb4d8f6851ccf.png)
 
 #### LISTPACK编码
 
@@ -374,7 +364,7 @@ ZIPLIST本身存在连锁更新的问题,所以Redis7.0之后,使用LISTPACK的�
 #### 压缩列表的作用
 
 压缩列表是LIst的底层数据结构,提供紧凑型的数据存储方式,能节约内存,小数据量的时候遍历访问性能好(连续+缓存命中率好)  
- ![在这里插入图片描述](./assets/143355397/c1fcea7d6831210c5ed339bc.png)
+ ![](./assets/143355397/c1fcea7d6831210c5ed339bc.png)
 
 1. zlbytes: ZIPLIST一共占多少字节数,这个包含zlbytes本身占据的字节.
 2. zltail: ZIPLIST尾巴节点相对于ZIPLIST的开头(起始指针)便宜的字节数.通过这个字段可以快速定位到尾部节点.
@@ -384,7 +374,7 @@ ZIPLIST本身存在连锁更新的问题,所以Redis7.0之后,使用LISTPACK的�
 
 #### ZIPLIST节点的数据结构
 
-![在这里插入图片描述](./assets/143355397/e0719be92735e35c31bc7951.png)  
+![](./assets/143355397/e0719be92735e35c31bc7951.png)  
  previous\_entry\_length是记录前一个节点长度
 
 1. prevlen: 表示上一个节点的数据长度.如果前一个节点长度<254字节,那么prevlen需要一字节来保存长度值;如果前一节点长度>=254,那么prevlen需要用5字节空间来保存长度值.
@@ -409,7 +399,7 @@ ZIPLIST本身存在连锁更新的问题,所以Redis7.0之后,使用LISTPACK的�
 
 List 本身就是按先进先出的顺序对数据进行存取的,如果使用 List 作为消息队列保存消息的话,就已经能满足消息保序的需求了。  
  List 可以使用 LPUSH + RPOP （或者反过来，RPUSH+LPOP）命令实现消息队列.  
- ![在这里插入图片描述](./assets/143355397/0ba3f489a0728b14f6f28ba8.png)
+ ![](./assets/143355397/0ba3f489a0728b14f6f28ba8.png)
 
 * 生产者使用 LPUSH key value[value…] 将消息插入到队列的头部,如果 key 不存在则会创建一个空的队列再插入消息。
 * 消费者使用 RPOP key 依次读取队列的消息，先进先出.  
@@ -640,7 +630,7 @@ key为抽奖活动名，value为员工名称，把所有员工名称放入抽奖
 相比于 Set 类型多了一个排序属性 score（分值）,对于有序集合 ZSet 来说，每个存储元素相当于有两个值组成的，一个是有序集合的元素值，一个是排序值.
 
 有序集合保留了集合不能有重复成员的特性（分值可以重复），但不同的是，有序集合中的元素可以排序。  
- ![在这里插入图片描述](./assets/143355397/fc63e4ce331815dda549e64c.png)
+ ![](./assets/143355397/fc63e4ce331815dda549e64c.png)
 
 ### 内部实现
 
@@ -731,7 +721,7 @@ ZREM student_scores "Charlie"
 Hash 是一个键值对（key - value）集合，其中 value 的形式如:`value=[{field1，value1}，...{fieldN，valueN}]`.  
  Hash 特别适合用于存储对象  
  Hash 与 String 对象的区别如下图所示:  
- ![在这里插入图片描述](./assets/143355397/04487acb40e56ba9da8e57ae.png)
+ ![](./assets/143355397/04487acb40e56ba9da8e57ae.png)
 
 ### 内部实现
 
@@ -746,14 +736,14 @@ Hash 类型的底层数据结构是由压缩列表或哈希表实现的:
 ### 应用场景
 
 Hash 类型的 （key，field， value） 的结构与对象的（对象id， 属性， 值）的结构相似，也可以用来存储对象。  
- ![在这里插入图片描述](./assets/143355397/bf4974cabf9a907d2c85983e.png)  
+ ![](./assets/143355397/bf4974cabf9a907d2c85983e.png)  
  String + Json也是存储对象的一种方式，那么存储对象时，到底用 String + json 还是用 Hash 呢？  
  一般对象用 String + Json 存储，对象中某些频繁变化的属性可以考虑抽出来用 Hash 类型存储。
 
 #### 购物车
 
 以用户 id 为 key，商品 id 为 field，商品数量为 value,恰好构成了购物车的3个要素，如下图所示。  
- ![在这里插入图片描述](./assets/143355397/3d267f58302598333cf91180.png)  
+ ![](./assets/143355397/3d267f58302598333cf91180.png)  
  涉及的命令如下：
 
 * 添加商品：`HSET cart:{用户id} {商品id} 1`
@@ -768,7 +758,7 @@ Hash 类型的 （key，field， value） 的结构与对象的（对象id， �
 Bitmap，即位图，是一串连续的二进制数组（0和1），可以通过偏移量（offset）定位元素。  
  BitMap通过最小的单位bit来进行0|1的设置，表示某个元素的值或者状态，时间复杂度为O(1)。  
  它进行储存将非常节省空间，特别适合一些数据量大且使用二值统计的场景。  
- ![在这里插入图片描述](./assets/143355397/91465116533b00ccc12b4715.png)
+ ![](./assets/143355397/91465116533b00ccc12b4715.png)
 
 ### 内部实现
 
@@ -987,7 +977,7 @@ Stream本质上是Redis中的key，相关指令根据可以分为两类，分别
 
 项目中部分web请求的处理是异步处理，web服务调用底层模块异步执行。当底层模块处理完成后需要保存结果并通知web服务，所以使用Stream作为保存的载体。  
  当底层模块处理完成后需要保存结果并通知web服务，所以使用Stream作为保存的载体。  
- ![在这里插入图片描述](./assets/143355397/22ed47bfb928ff5aa087a430.png)
+ ![](./assets/143355397/22ed47bfb928ff5aa087a430.png)
 
 ### Stream 和专业消息队列对比
 
@@ -1005,7 +995,7 @@ RabbitMQ
 #### 消息不丢
 
 消息队列的使用模型如下：  
- ![在这里插入图片描述](./assets/143355397/e407e5a1176dd8fdf882c1b4.png)  
+ ![](./assets/143355397/e407e5a1176dd8fdf882c1b4.png)  
  要保证消息不丢，就需要在生产者、中间件、消费者这三个方面来分析。
 
 * 生产者  

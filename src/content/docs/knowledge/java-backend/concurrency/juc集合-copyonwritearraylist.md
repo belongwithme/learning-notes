@@ -1,24 +1,13 @@
 ---
 title: "JUC集合-CopyOnWriteArrayList"
 description: "在多线程编程成为常态的今天，如何安全、高效地处理共享数据是每个 Java 仔必须面对的课题。"
-sourceId: "147248147"
-source: "https://blog.csdn.net/qq_45852626/article/details/147248147"
-sourceSeries:
-  - "JUC集合"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC集合"
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147248147
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147248147)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147248147)
 
 ## 1. 引言：并发环境中的 List 缺点
 

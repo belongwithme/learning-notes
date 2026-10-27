@@ -1,23 +1,13 @@
 ---
 title: "集合专辑(八)：HashMap的子类LinkedHashMap核心源码解读"
 description: "在我们刚学习LInkedList的时候我们知道，LinkedList实际上性能不会比ArrayList高很多，因为LinkedList只有在前向插入的时候性能才会比ArrayList高。"
-sourceId: "125979672"
-source: "https://blog.csdn.net/qq_45852626/article/details/125979672"
-sourceSeries:
-  - "集合"
-category: java-backend
-subcategory: collections
-tags:
-  - "集合"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 125979672
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125979672)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125979672)
 
 ## 前言
 
@@ -28,7 +18,7 @@ LInkedHashMap就是这样的一种数据结构，综合了HashMap和链表的有
 
 ### 继承结构关系
 
-![在这里插入图片描述](./assets/125979672/8af7884a29dee650bd9f304a.png)  
+![](./assets/125979672/8af7884a29dee650bd9f304a.png)  
 代码实现：
 
 ```java
@@ -168,13 +158,13 @@ The {@code replace} methods only result in an access of the entry if the value i
 
 ### 数据结构
 
-![在这里插入图片描述](./assets/125979672/a03c2eb28afb13701b11df85.png)  
+![](./assets/125979672/a03c2eb28afb13701b11df85.png)  
 我们需要注意，LinkedHashMap实际上是一个Entry节点链入双向链表的HashMap,通过维护一个Entry的双向链表，保证了插入Entry中顺序
 
 ### Entry内部类
 
 (1)：Entry的继承结构  
-![在这里插入图片描述](./assets/125979672/7f5451df5c2badf7c3485c1b.png)  
+![](./assets/125979672/7f5451df5c2badf7c3485c1b.png)  
 代码实现：
 
 ```java

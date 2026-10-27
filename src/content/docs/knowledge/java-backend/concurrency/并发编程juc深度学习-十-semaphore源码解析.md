@@ -1,23 +1,13 @@
 ---
 title: "并发编程JUC深度学习(十）Semaphore源码解析"
 description: "一般我们使用锁的时候，在多线程下严格要求只能一个线程获取到锁，但是在某些场景下，我们需要有多个线程获取到锁，但是这个时候其实称之为资源最好。"
-sourceId: "126391026"
-source: "https://blog.csdn.net/qq_45852626/article/details/126391026"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 126391026
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126391026)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126391026)
 
 ## 前言
 
@@ -36,7 +26,7 @@ sidebar:
 
 ## 继承结构
 
-![在这里插入图片描述](./assets/126391026/3310b779360d75211887ea6f.png)  
+![](./assets/126391026/3310b779360d75211887ea6f.png)  
 代码实现：
 
 ```java

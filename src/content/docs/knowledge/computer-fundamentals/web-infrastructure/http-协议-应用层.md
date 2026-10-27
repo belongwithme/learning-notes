@@ -1,22 +1,13 @@
 ---
 title: "HTTP 协议-应用层"
 description: "HTTP（HyperText Transfer Protocol）是互联网的核心应用层协议，主要用于浏览器与服务器之间的数据传输。HTTP 协议建立在 TCP/IP 协议之上，采用请求响应模式实现通信。"
-sourceId: "147133289"
-source: "https://blog.csdn.net/qq_45852626/article/details/147133289"
-sourceSeries: []
-category: computer-fundamentals
-subcategory: web-infrastructure
-tags:
-  - "TCP/IP"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147133289
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147133289)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147133289)
 
 ## 一、HTTP 协议基础
 

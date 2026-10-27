@@ -1,23 +1,13 @@
 ---
 title: "Redis - 经典业务场景"
 description: "大Key问题是指在Redis等内存数据库中，某个Key对应的value数据结构过大，通常是指单个Key的大小超过10KB甚至达到MB级别。这些大Key在读写操作时会消耗过多的内存和网络带宽，导致Redis性能下降，甚至引发系统稳定性问题。"
-sourceId: "146058369"
-source: "https://blog.csdn.net/qq_45852626/article/details/146058369"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-practice
-tags:
-  - "Redis"
 status: draft
-difficulty: intermediate
-contentType: practice
 sidebar:
   order: 146058369
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146058369)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146058369)
 
 ## 大key
 

@@ -1,23 +1,13 @@
 ---
 title: "JVM-卡表"
 description: "1. 垃圾回收的挑战： 简述自动内存管理的必要性以及垃圾回收（GC）的目标（回收内存、避免内存泄漏）。提及 GC 对应用程序性能的影响，特别是 StopTheWorld (STW) 暂停。"
-sourceId: "147441821"
-source: "https://blog.csdn.net/qq_45852626/article/details/147441821"
-sourceSeries:
-  - "JVM"
-category: java-backend
-subcategory: jvm-runtime
-tags:
-  - "JVM"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147441821
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147441821)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147441821)
 
 ## 一、 引言：为什么我们需要关心卡表？
 

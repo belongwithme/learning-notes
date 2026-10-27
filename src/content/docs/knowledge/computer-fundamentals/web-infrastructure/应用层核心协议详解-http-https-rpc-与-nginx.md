@@ -1,24 +1,13 @@
 ---
 title: "应用层核心协议详解：HTTP, HTTPS, RPC 与 Nginx"
 description: "应用层是互联网协议栈的最顶层，直接面向我们日常使用的各种网络应用，例如网页浏览、文件传输、电子邮件等。理解应用层的核心协议对于任何Web开发者来说都至关重要"
-sourceId: "147380628"
-source: "https://blog.csdn.net/qq_45852626/article/details/147380628"
-sourceSeries:
-  - "计算机网络"
-category: computer-fundamentals
-subcategory: web-infrastructure
-tags:
-  - "计算机网络"
-  - "TCP/IP"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147380628
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147380628)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147380628)
 
 ## 前言
 

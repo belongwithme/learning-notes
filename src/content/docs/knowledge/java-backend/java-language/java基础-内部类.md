@@ -1,24 +1,13 @@
 ---
 title: "Java基础-内部类"
 description: "Java不仅可以定义变量和方法,还可以定义类."
-sourceId: "136279140"
-source: "https://blog.csdn.net/qq_45852626/article/details/136279140"
-sourceSeries:
-  - "Java基础"
-category: java-backend
-subcategory: java-language
-tags:
-  - "Java基础"
-  - "Java"
 status: draft
-difficulty: beginner
-contentType: knowledge
 sidebar:
   order: 136279140
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136279140)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136279140)
 
 ```
 ```
@@ -71,7 +60,7 @@ public class Outter {
 
 ```
 
-![在这里插入图片描述](./assets/136279140/d8d2d597b524536ff1a59fc0.png)  
+![](./assets/136279140/d8d2d597b524536ff1a59fc0.png)  
  反编译Outter$Inner.class文件得到下面信息:
 
 ```java

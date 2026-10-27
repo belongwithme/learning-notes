@@ -1,23 +1,13 @@
 ---
 title: "JUC-Condition"
 description: "ondition接口本质上是Java并发编程中的一种线程等待通知机制，它允许线程在某个条件不满足时暂时释放锁并等待，直到其他线程改变了条件并发出通知。"
-sourceId: "146222582"
-source: "https://blog.csdn.net/qq_45852626/article/details/146222582"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 146222582
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146222582)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146222582)
 
 ## 什么是Condition接口，在Java并发编程中的作用是什么
 

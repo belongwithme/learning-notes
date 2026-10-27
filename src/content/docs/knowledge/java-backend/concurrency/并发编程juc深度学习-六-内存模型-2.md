@@ -1,23 +1,13 @@
 ---
 title: "并发编程JUC深度学习(六）内存模型_2"
 description: "上一章我们了解到，在并发场景中，因为可见性，原子性，有序性导致的问题常常会违背我们的直觉，从而成为并发编程BUG之源。"
-sourceId: "126050732"
-source: "https://blog.csdn.net/qq_45852626/article/details/126050732"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 126050732
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126050732)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126050732)
 
 ## 内存模型\_2
 ## 前言
@@ -76,7 +66,7 @@ r=1;
 
 ```
 
-![在这里插入图片描述](./assets/126050732/81a01eeaf60eb19b709d8c45.png)
+![](./assets/126050732/81a01eeaf60eb19b709d8c45.png)
 
 #### 如何保证有序性
 
@@ -87,7 +77,7 @@ r=1;
 
 1. 写屏障仅仅保证之后的读 能够读到最新的结果，但不能保证读跑到前面去。
 2. 有序性保证也仅仅保证了本线程相关代码不被重排序  
-    ![在这里插入图片描述](./assets/126050732/b08a23ce20065c2db8066f70.png)  
+    ![](./assets/126050732/b08a23ce20065c2db8066f70.png)  
     t1虽然在写入i=1加入了写屏障，但是并不能保证t2线程是先读的，所以t2线程读到的还是0；
 
 ### Happens-Before规则
@@ -146,7 +136,7 @@ reader
 传递性，如果A Happens-Before B，且B Happens-Before C，那么A Happens-Before C。
 
 我们将规则三运用到例子中，看看发生了什么  
- ![在这里插入图片描述](./assets/126050732/1fecc5055f1ce79af9eedd53.png)
+ ![](./assets/126050732/1fecc5055f1ce79af9eedd53.png)
 
 1. “x=42” Happens-Before 写变量 “a=true”，这是规则一的内容
 2. 写变量 “a=true” Happens-Before 读变量 “a=true” ，这是规则二内容

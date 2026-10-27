@@ -1,13 +1,7 @@
 ---
 title: Java 并发编程学习路线
 description: 从线程基础、内存模型到 AQS、并发容器、线程池与 Fork/Join，按前置关系串起站内全部 Java 并发笔记。
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: learning-path
 sidebar:
   order: 2
 ---

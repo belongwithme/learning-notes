@@ -1,25 +1,13 @@
 ---
 title: "JUC并发集合-ConcurrentLinkedQueue"
 description: "ConcurrentLinkedQueue是Java并发包(java.util.concurrent)中提供的一个线程安全的无界非阻塞队列，基于链表数据结构实现。它实现了Queue接口，遵循"
-sourceId: "146808729"
-source: "https://blog.csdn.net/qq_45852626/article/details/146808729"
-sourceSeries:
-  - "集合"
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "集合"
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 146808729
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146808729)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146808729)
 
 ## 1. 基础概念
 

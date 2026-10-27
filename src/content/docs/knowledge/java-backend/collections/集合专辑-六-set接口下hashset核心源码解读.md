@@ -1,30 +1,20 @@
 ---
 title: "集合专辑(六)：Set接口下HashSet核心源码解读"
 description: "我们之前已经学习了HashMap的核心思想和逻辑，现在再来看HashSet就已经很简单了，因为HashSet的底层就是HashMap= =。"
-sourceId: "125951275"
-source: "https://blog.csdn.net/qq_45852626/article/details/125951275"
-sourceSeries:
-  - "集合"
-category: java-backend
-subcategory: collections
-tags:
-  - "集合"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 125951275
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125951275)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125951275)
 
 ## HashSet解读
 ## 前言
 
 我们之前已经学习了HashMap的核心思想和逻辑，现在再来看HashSet就已经很简单了，因为HashSet的底层就是HashMap= =。  
  简单看一眼：  
- ![在这里插入图片描述](./assets/125951275/a79b2fa515f1e8279b78d3c2.png)
+ ![](./assets/125951275/a79b2fa515f1e8279b78d3c2.png)
 
 ## 一： 简单介绍
 
@@ -44,7 +34,7 @@ HashSet 的底层实现确实是基于 HashMap 的，但这并不意味着 HashS
 
 ## 二：继承图&结构
 
-![在这里插入图片描述](./assets/125951275/1973d1e4ee523389ae37ab9e.png)  
+![](./assets/125951275/1973d1e4ee523389ae37ab9e.png)  
  代码实现如下：
 
 ```java

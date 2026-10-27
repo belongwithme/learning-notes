@@ -1,23 +1,13 @@
 ---
 title: "Redis数据结构总结-quickList"
 description: "为什么会出现ziplist？有两个原因促进它的出现："
-sourceId: "145745965"
-source: "https://blog.csdn.net/qq_45852626/article/details/145745965"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-internals
-tags:
-  - "Redis"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145745965
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145745965)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145745965)
 
 ## 前言
 
@@ -39,7 +29,7 @@ sidebar:
    实际上，所谓的连锁更新，就是指当一个元素插入后，会引起当前位置元素新增 prevlensize 的空间。而当前位置元素的空间增加后，又会进一步引起该元素的后续元素，其 prevlensize 所需空间的增加。
 
 这样，一旦插入位置后续的所有元素，都会因为前序元素的 prevlenszie 增加，而引起自身空间也要增加，这种每个元素的空间都需要增加的现象，就是连锁更新。  
- ![在这里插入图片描述](./assets/145745965/4d652f5f8a8ed9e321757e51.png)  
+ ![](./assets/145745965/4d652f5f8a8ed9e321757e51.png)  
  连锁更新一旦发生，就会导致 ziplist 占用的内存空间要多次重新分配，这就会直接影响到 ziplist 的访问性能。
 
 ## 什么是quickList
@@ -101,7 +91,7 @@ typedef struct quicklistNode {
 quicklistNode 结构体里包含了前一个节点和下一个节点指针，这样每个 quicklistNode 形成了一个双向链表。  
  但是链表节点的元素不再是单纯保存元素值，而是保存了一个压缩列表，所以 quicklistNode 结构体里有个指向压缩列表的指针 \*zl。  
  下图可以帮你更好理解quickList数据结构:  
- ![在这里插入图片描述](./assets/145745965/9579bdccee2dcd0dcf2dae51.png)
+ ![](./assets/145745965/9579bdccee2dcd0dcf2dae51.png)
 
 ### 数据压缩
 

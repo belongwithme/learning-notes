@@ -1,23 +1,13 @@
 ---
 title: "Java 线程中断机制详解"
 description: "在并发编程中，我们经常需要协调不同线程的执行。"
-sourceId: "147280008"
-source: "https://blog.csdn.net/qq_45852626/article/details/147280008"
-sourceSeries: []
-category: java-backend
-subcategory: concurrency
-tags:
-  - "Java"
-  - "JUC"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 147280008
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147280008)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147280008)
 
 ## 1. 引言：为什么需要线程中断？
 

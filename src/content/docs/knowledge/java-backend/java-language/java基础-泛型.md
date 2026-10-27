@@ -1,24 +1,13 @@
 ---
 title: "Java基础-泛型"
 description: "Java泛型是JDK5引入的一个新特性,它提供编译时类型安全检测机制."
-sourceId: "136664018"
-source: "https://blog.csdn.net/qq_45852626/article/details/136664018"
-sourceSeries:
-  - "Java基础"
-category: java-backend
-subcategory: java-language
-tags:
-  - "Java基础"
-  - "Java"
 status: draft
-difficulty: beginner
-contentType: knowledge
 sidebar:
   order: 136664018
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136664018)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/136664018)
 
 ## 基本概念
 
@@ -276,9 +265,9 @@ public static <T> T doGetRequst(String url,Result<T> result){
 ```
 
 或者拿一张网图来解释:  
- ![在这里插入图片描述](./assets/136664018/2af603096fb13faccac658ee.png)  
+ ![](./assets/136664018/2af603096fb13faccac658ee.png)  
  调用泛型方法语法格式  
- ![在这里插入图片描述](./assets/136664018/d4528a238d5cd15caa2bae65.png)  
+ ![](./assets/136664018/d4528a238d5cd15caa2bae65.png)  
  `Class<T>`的作用是指明泛型的具体类型,而`Class<T>`类型的变量c,可以用来创建泛型类的对象.
 
 为什么要用变量c来创建对象呢?  
@@ -601,13 +590,13 @@ class Pair {
 
 * 擦除类定义中的类型参数 - 无限制类型擦除  
    当类定义中的类型参数没有任何限制的时候,在类型擦除中直接被替换为Object,即形如 和 <?>的类型参数都被替换为Object.  
-   ![在这里插入图片描述](./assets/136664018/559bd08abcf96270bd331c32.png)
+   ![](./assets/136664018/559bd08abcf96270bd331c32.png)
 * 擦除类定义中的类型参数 - 有限制类型擦除  
    当类定义中的类型参数存在限制(上下界)时,在类型擦除中替换为类型参数的上界和下界,比如`<T extends Number>`和`<? extends Number>`的类型参数被替换为`Number`，`<? super Number>` 被替换为`Object`.  
-   ![在这里插入图片描述](./assets/136664018/440eb123de75235ccdf98583.png)
+   ![](./assets/136664018/440eb123de75235ccdf98583.png)
 * 擦除方法定义中的类型参数  
    擦除方法定义中的类型参数原则和擦除类定义中的类型参数是一样的,这里仅以擦除方法定义中的有限制类型参数为例.  
-   ![在这里插入图片描述](./assets/136664018/cf42679f8b614a0748ade6a2.png)
+   ![](./assets/136664018/cf42679f8b614a0748ade6a2.png)
 
 #### 怎么证明存在类型擦除呢
 
@@ -710,7 +699,7 @@ ArrayList list2 = new ArrayList<String>(); //第二种 情况
 ```
 
 第一种情况可以实现与完全使用泛型参数一样的效果,第二种情况则没有这个效果.  
- ![在这里插入图片描述](./assets/136664018/8e51cde2d15c893324dd7fa6.png)
+ ![](./assets/136664018/8e51cde2d15c893324dd7fa6.png)
 
 这是为什么呢?  
  因为类型检查中编译之前就完成了,new ArrayList()只是在内存中开辟了一个存储空间，可以存储任何类型对象.  
@@ -833,7 +822,7 @@ public Date getValue() {
 ```
 
 父类的类型是Object,而子类的类型是Date,参数类型不一样,这如果是在普通的继承关系中,根本不会是重写,而是重载,我们在main方法测试一下  
- ![在这里插入图片描述](./assets/136664018/c7018676579c2ad7282de058.png)  
+ ![](./assets/136664018/c7018676579c2ad7282de058.png)  
  如果是重载,那么子类的两个setValue方法,一个是参数Date,一个是Object,没有子类继承父类Object类型参数方法,确实是重写了,而不是重载了.
 
 **为什么会这样呢?**  

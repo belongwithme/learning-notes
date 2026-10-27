@@ -1,23 +1,13 @@
 ---
 title: "集合专辑(一)：集合框架&&Collection接口介绍"
 description: "Java是面向对象的编程语言，对其描述事物都是通过对象来体现，因为万物皆对象，所以基本数据类型是不足以满足我们的需求，这时我们需要一个容器来实现我们的需求。"
-sourceId: "125552009"
-source: "https://blog.csdn.net/qq_45852626/article/details/125552009"
-sourceSeries:
-  - "集合"
-category: java-backend
-subcategory: collections
-tags:
-  - "集合"
 status: draft
-difficulty: beginner
-contentType: knowledge
 sidebar:
   order: 125552009
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125552009)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125552009)
 
 ## 集合框架&&Collection接口介绍）
 ## 简单介绍
@@ -29,7 +19,7 @@ Java是面向对象的编程语言，对其描述事物都是通过对象来体�
 
 ### 集合和数组的对比
 
-![在这里插入图片描述](./assets/125552009/a1afd65d86f1e006acb41960.png)
+![](./assets/125552009/a1afd65d86f1e006acb41960.png)
 
 ### 集合框架介绍
 
@@ -40,20 +30,20 @@ Java集合主要由两个跟接口Collection和Map派生出来的.
  Queue:队列集合  
  Map:代表存储key-value对的集合,可以根据元素的key来访问value.  
  单列集合  
- ![在这里插入图片描述](./assets/125552009/3cd1deaf524454dc70c6d084.png)
+ ![](./assets/125552009/3cd1deaf524454dc70c6d084.png)
 
 双列  
- ![在这里插入图片描述](./assets/125552009/325f0b7e43eb16f8cbce9f2d.png)
+ ![](./assets/125552009/325f0b7e43eb16f8cbce9f2d.png)
 
 ## Collection集合
 
 ### collection简介
 
-![在这里插入图片描述](./assets/125552009/8dc8df6a1a19e83a696e2a94.png)
+![](./assets/125552009/8dc8df6a1a19e83a696e2a94.png)
 
 ### collection方法
 
-![在这里插入图片描述](./assets/125552009/f02a74115f868d47fa9d9f63.png)  
+![](./assets/125552009/f02a74115f868d47fa9d9f63.png)  
  以下演示部分方法代码
 
 ```java
@@ -111,10 +101,10 @@ Java集合主要由两个跟接口Collection和Map派生出来的.
 
 方式一：使用Iterator（迭代器）  
  简介：  
- ![在这里插入图片描述](./assets/125552009/2b0b3c831af6f92c0efc1f3e.png)  
+ ![](./assets/125552009/2b0b3c831af6f92c0efc1f3e.png)  
  执行原理：  
  单例集合数据存储结构如下：  
- ![在这里插入图片描述](./assets/125552009/ce72c17febdbb765fc360829.png)  
+ ![](./assets/125552009/ce72c17febdbb765fc360829.png)  
  我们通过构造一个迭代器，使用里面的next方法移动指针，从上到下（实际是从前往后，这里方便理解竖起来了）移动指针。  
  注意：在调用`iteration.next()`方法之前必需调用`iteration.hasNext()`进行检测  
  若不调用，且下一条记录无效，直接调用`it.next()`会抛出`NoSuchElementException`异常
@@ -141,7 +131,7 @@ Java集合主要由两个跟接口Collection和Map派生出来的.
 
 方法二：使用for循环增强  
  增强for循环，其实是简化版的iteration，本质是一样的底层依旧是迭代器，  
- ![在这里插入图片描述](./assets/125552009/02f24837da86ec158ab053a1.png)
+ ![](./assets/125552009/02f24837da86ec158ab053a1.png)
 
 只能遍历集合或数组  
  基本语法：  
@@ -172,7 +162,7 @@ Java集合主要由两个跟接口Collection和Map派生出来的.
  List接口通过数组或链表数据结构来实现,这些数据结构本身就能够支持有序性和可重复性  
  无论是数组实现还是链表实现,它们本身都不限制元素的唯一性,且顺序一个是靠索引位置,一个是节点之间的链接关系来维护,所以可以实现这两个特性.
 
-![在这里插入图片描述](./assets/125552009/f7fe0073a862182f8b025988.png)
+![](./assets/125552009/f7fe0073a862182f8b025988.png)
 
 ### 方法示例
 
@@ -310,7 +300,7 @@ class Employee{
 ```
 
 结果：  
- ![在这里插入图片描述](./assets/125552009/fd0085ee32008ee1ef793b02.png)
+ ![](./assets/125552009/fd0085ee32008ee1ef793b02.png)
 
 更改hashCode和Equals方法：
 
@@ -382,7 +372,7 @@ class Employee{
 ```
 
 结果如下：  
- ![在这里插入图片描述](./assets/125552009/c66415e59d099b1e903769f2.png)  
+ ![](./assets/125552009/c66415e59d099b1e903769f2.png)  
  这里只是简单介绍一下Set这个接口，**它的方法**和List没有什么区别,list和set下面的实现类在后面的文章分享。
 
 ## Queue

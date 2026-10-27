@@ -1,23 +1,13 @@
 ---
 title: "Redis简单操作（不定期更新）-不包含理论知识"
 description: "rediscli [option] [commonds]"
-sourceId: "127291307"
-source: "https://blog.csdn.net/qq_45852626/article/details/127291307"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-practice
-tags:
-  - "Redis"
 status: draft
-difficulty: beginner
-contentType: knowledge
 sidebar:
   order: 127291307
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/127291307)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/127291307)
 
 ## Redis实操
 ## 启动Redis
@@ -52,8 +42,8 @@ kill -9 redsi线程号
 
 ```
 
-启动![在这里插入图片描述](./assets/127291307/a12edbf6ceee850d6c47fab0.png)  
- 停止![在这里插入图片描述](./assets/127291307/e9e202f03b7febf999056473.png)  
+启动![](./assets/127291307/a12edbf6ceee850d6c47fab0.png)  
+ 停止![](./assets/127291307/e9e202f03b7febf999056473.png)  
  方式三：开机自启(不建议）
 
 ```
@@ -84,10 +74,10 @@ systemctl enable redis.service
 
 ```
 
-![在这里插入图片描述](./assets/127291307/22324127c3601c429931ee69.png)  
+![](./assets/127291307/22324127c3601c429931ee69.png)  
  重启后查询管程redis线程是否运行
 
-![在这里插入图片描述](./assets/127291307/39f869d952f195a220102bb3.png)
+![](./assets/127291307/39f869d952f195a220102bb3.png)
 
 ### Redis客户端
 

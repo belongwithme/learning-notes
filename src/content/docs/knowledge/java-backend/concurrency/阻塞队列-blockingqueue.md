@@ -1,24 +1,13 @@
 ---
 title: "阻塞队列-BlockingQueue"
 description: "想象一下现实生活中的流水线：上游工序不断生产零件（生产者），下游工序不断取用零件进行组装（消费者）。为了保证流水线顺畅运行，通常会在上下游之间设置一个传送带或缓冲区。这个缓冲区有几个关键作用："
-sourceId: "147334606"
-source: "https://blog.csdn.net/qq_45852626/article/details/147334606"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
-  - "算法"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147334606
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147334606)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147334606)
 
 ## Java BlockingQueue 深度教程
 ## 0. 前言：为什么需要 BlockingQueue？

@@ -1,24 +1,13 @@
 ---
 title: "JVM 的启动器类解读 -- sun.misc.Launcher"
 description: "在深入理解 Launcher 之前，我们需要先了解 Java 的类加载机制："
-sourceId: "153633467"
-source: "https://blog.csdn.net/qq_45852626/article/details/153633467"
-sourceSeries:
-  - "Java源码"
-category: java-backend
-subcategory: jvm-runtime
-tags:
-  - "Java源码"
-  - "JVM"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 153633467
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153633467)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153633467)
 
 ## Launcher 类解读
 ## sun.misc.Launcher 类解读

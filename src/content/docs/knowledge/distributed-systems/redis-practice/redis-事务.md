@@ -1,24 +1,13 @@
 ---
 title: "Redis-事务"
 description: "所谓的事务，就是指对数据进行读写的一系列操作。事务在执行时，会提供专门的属性保证，包括原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）和持久性（Durability），也就是 ACID 属性。"
-sourceId: "145794663"
-source: "https://blog.csdn.net/qq_45852626/article/details/145794663"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-practice
-tags:
-  - "Redis"
-  - "SQL"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145794663
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145794663)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145794663)
 
 ## 前言
 
@@ -169,12 +158,12 @@ WATCH机制的具体实现是由WATCH命令实现的,举个例子:
  在 t3 时，客户端 Y 也给实例发送了一个 DECR 命令，要修改 a:stock 的值，实例收到命令后就直接执行了。  
  等到 t4 时，实例收到客户端 X 发送的 EXEC 命令，但是，实例的 WATCH 机制发现 a:stock 已经被修改了，就会放弃事务执行。这样一来，事务的隔离性就可以得到保证了。  
  当然，如果没有使用 WATCH 机制，在 EXEC 命令前执行的并发操作是会对数据进行读写的。而且，在执行 EXEC 命令的时候，事务要操作的数据已经改变了，在这种情况下，Redis 并没有做到让事务对其它操作隔离，隔离性也就没有得到保障。下面这张图显示了没有 WATCH 机制时的情况，你可以看下。  
- ![在这里插入图片描述](./assets/145794663/505a21488e6d475a545b97f6.png)
+ ![](./assets/145794663/505a21488e6d475a545b97f6.png)
 
 在 t2 时刻，客户端 X 发送的 EXEC 命令还没有执行，但是客户端 Y 的DECR 命令就执行了，此时，a:stock 的值会被修改，这就无法保证 X 发起的事务的隔离性了。  
  刚刚说的是并发操作在 EXEC 命令前执行的情况，下面我再来说一说第二种情况：并发操作在 EXEC 命令之后被服务器端接收并执行。  
  因为 Redis 是用单线程执行命令，而且，EXEC 命令执行后，Redis会保证先把命令队列中的所有命令执行完。所以，在这种情况下，并发操作不会破坏事务的隔离性，如下图所示：  
- ![在这里插入图片描述](./assets/145794663/f1d516d220709bc4c5195935.png)  
+ ![](./assets/145794663/f1d516d220709bc4c5195935.png)  
  最后，我们来分析一下 Redis 事务的持久性属性保证情况。
 
 ### 持久性
@@ -188,7 +177,7 @@ WATCH机制的具体实现是由WATCH命令实现的,举个例子:
 ### 小结
 
 在这节课上，我们学习了 Redis 中的事务实现。Redis 通过 MULTI、EXEC、DISCARD 和 WATCH 四个命令来支持事务机制，这 4 个命令的作用，我总结在下面的表中，你可以再看下。  
- ![在这里插入图片描述](./assets/145794663/ce3df51ef096680d9a290c58.png)  
+ ![](./assets/145794663/ce3df51ef096680d9a290c58.png)  
  事务的 ACID 属性是我们使用事务进行正确操作的基本要求。  
  通过这节课的分析，我们了解到了，Redis 的事务机制可以保证一致性和隔离性，但是无法保证持久性。不过，因为 Redis 本身是内存数据库，持久性并不是一个必须的属性，我们更加关注的还是原子性、一致性和隔离性这三个属性。
 

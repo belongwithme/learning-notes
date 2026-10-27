@@ -1,24 +1,13 @@
 ---
 title: "计算机网络- TCP与UDP对比与选择"
 description: "传输层的两个主要协议TCP和UDP各有特点，适用于不同的应用场景。本章将深入比较TCP和UDP的特性，分析它们的优缺点，并提供在不同应用场景中选择合适协议的指导。"
-sourceId: "147141942"
-source: "https://blog.csdn.net/qq_45852626/article/details/147141942"
-sourceSeries:
-  - "计算机网络"
-category: computer-fundamentals
-subcategory: networking
-tags:
-  - "计算机网络"
-  - "TCP/IP"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147141942
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141942)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141942)
 
 ## 6. TCP与UDP对比与选择
 

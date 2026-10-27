@@ -1,23 +1,13 @@
 ---
 title: "Redis-列表结构实操"
 description: "之前总结过列表的数据结构,但是只是理论知识肯定是不行的,思来想去,总结了一些实操例子和实操场景,个人觉得还是很有用的,尤其是后面的场景,平时有我遇见的然后总结下来,例子都是我自己跑过的,没什么问题,有问题评论区见."
-sourceId: "145847450"
-source: "https://blog.csdn.net/qq_45852626/article/details/145847450"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-practice
-tags:
-  - "Redis"
 status: draft
-difficulty: intermediate
-contentType: practice
 sidebar:
   order: 145847450
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145847450)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145847450)
 
 ## 列表实操
 ## 前言
@@ -112,7 +102,7 @@ OK
 ### 列表阻塞操作
 
 如何创建终端连接,因为我用的是可视化工具,所以只需要打开多个查询窗口即可,如下图是打开了两个:  
- ![在这里插入图片描述](./assets/145847450/5cfb5a0299a7d02f83cf0221.png)  
+ ![](./assets/145847450/5cfb5a0299a7d02f83cf0221.png)  
  列表阻塞操作是Redis提供的一种特殊功能，允许客户端在列表为空时进入等待状态，直到有新元素被添加到列表中。这种操作主要通过BLPOP、BRPOP、BRPOPLPUSH等命令实现。  
  阻塞操作的核心特点是：
 
@@ -175,10 +165,10 @@ TIME
 ```
 
 获取第5页用时:  
- ![在这里插入图片描述](./assets/145847450/fe251c0b0f231a735e300a00.png)
+ ![](./assets/145847450/fe251c0b0f231a735e300a00.png)
 
 获取第50页用时:  
- ![在这里插入图片描述](./assets/145847450/7680aa9558a352fb338e25cf.png)  
+ ![](./assets/145847450/7680aa9558a352fb338e25cf.png)  
  可以看到第50页的访问时间会明显长于第5页,这说明LRANGE操作的时间复杂度与索引位置成正比,对于大型列表，不适合用LRANGE实现远端分页.  
  那怎么办呢?下面有个优化方案
 
@@ -270,7 +260,7 @@ EVAL "for i=1,10000 do redis.call('ZADD', 'products_sorted', i, 'product_'..i) e
 
 ```
 
-![在这里插入图片描述](./assets/145847450/3593d8cb4ae4e2e9e4a392b1.png)
+![](./assets/145847450/3593d8cb4ae4e2e9e4a392b1.png)
 
 * 分页公式
 

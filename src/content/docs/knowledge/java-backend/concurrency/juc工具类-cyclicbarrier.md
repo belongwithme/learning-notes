@@ -1,23 +1,13 @@
 ---
 title: "JUC工具类-CyclicBarrier"
 description: "在高并发程序设计中，实现多个线程之间的相互等待、协调推进是一项常见且具有挑战性的任务。"
-sourceId: "147238412"
-source: "https://blog.csdn.net/qq_45852626/article/details/147238412"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147238412
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147238412)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147238412)
 
 ## 1. 引言
 

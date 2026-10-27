@@ -1,22 +1,13 @@
 ---
 title: "BeanDefinition 详解"
 description: "BeanDefinition 是 Spring 框架中用来描述 Bean 的元数据接口，它包含了创建和管理 Bean 所需的所有配置信息。"
-sourceId: "153478335"
-source: "https://blog.csdn.net/qq_45852626/article/details/153478335"
-sourceSeries: []
-category: java-backend
-subcategory: spring
-tags:
-  - "Java 后端"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 153478335
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153478335)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153478335)
 
 ## 一、什么是 BeanDefinition？
 

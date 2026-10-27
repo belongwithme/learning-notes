@@ -1,22 +1,13 @@
 ---
 title: "Base理论"
 description: "BASE理论是对CAP理论的延伸和补充，特别适用于大型分布式系统，它提供了一种在保证系统可用性的同时，实现\"最终一致性\"的设计思路。"
-sourceId: "145986588"
-source: "https://blog.csdn.net/qq_45852626/article/details/145986588"
-sourceSeries: []
-category: distributed-systems
-subcategory: consistency
-tags:
-  - "分布式系统"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145986588
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145986588)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145986588)
 
 ## 什么是Base理论
 

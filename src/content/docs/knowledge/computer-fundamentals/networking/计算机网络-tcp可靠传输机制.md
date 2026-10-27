@@ -1,24 +1,13 @@
 ---
 title: "计算机网络-TCP可靠传输机制"
 description: "TCP（传输控制协议）的核心特性是提供可靠的数据传输服务，即确保数据能够无错、完整、按序地从发送方传输到接收方。这种可靠性是通过一系列精心设计的机制实现的，包括序列号与确认号机制、超时重传机制、滑动窗口机制和差错控制机制等。本章将深入探讨这些机制的原理和实现。"
-sourceId: "147141877"
-source: "https://blog.csdn.net/qq_45852626/article/details/147141877"
-sourceSeries:
-  - "计算机网络"
-category: computer-fundamentals
-subcategory: networking
-tags:
-  - "计算机网络"
-  - "TCP/IP"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 147141877
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141877)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141877)
 
 ## 3. TCP可靠传输机制
 

@@ -1,23 +1,13 @@
 ---
 title: "集合专辑(四)：List实现类Vector核心解读"
 description: "它的底层是一个对象数组protected Object[] elementData，和ArrayList有一些"
-sourceId: "125781311"
-source: "https://blog.csdn.net/qq_45852626/article/details/125781311"
-sourceSeries:
-  - "集合"
-category: java-backend
-subcategory: collections
-tags:
-  - "集合"
 status: draft
-difficulty: intermediate
-contentType: practice
 sidebar:
   order: 125781311
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125781311)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125781311)
 
 一：简单介绍  
 它的底层是一个对象数组`protected Object[] elementData`，和ArrayList有一些
@@ -27,7 +17,7 @@ sidebar:
 多线程 
 的环境下。  
 二：继承关系  
-![在这里插入图片描述](./assets/125781311/369a93a76aa8d410d9fb12ad.png)  
+![](./assets/125781311/369a93a76aa8d410d9fb12ad.png)  
 代码实现：
 
 ```java
@@ -95,7 +85,7 @@ The {@link Enumeration Enumerations} returned by the {@link #elements() elements
  *
  * <p>As of the Java 2 platform v1.2, this class was retrofitted to
  * implement the {@link List} interface, making it a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/index.html">
  * Java Collections Framework</a>.  Unlike the new collection
  * implementations, {@code Vector} is synchronized.  If a thread-safe
  * implementation is not needed, it is recommended to use {@link
@@ -320,9 +310,9 @@ private static int hugeCapacity(int minCapacity) {
 
 ```
 
-![在这里插入图片描述](./assets/125781311/4a55d5f4df88676c98c1f3b3.png)  
+![](./assets/125781311/4a55d5f4df88676c98c1f3b3.png)  
 运行到11行，准备进行扩容：  
-![在这里插入图片描述](./assets/125781311/6be6019c2b62845bfdc00e46.png)  
+![](./assets/125781311/6be6019c2b62845bfdc00e46.png)  
 进入add代码里：
 
 ```java
@@ -336,15 +326,15 @@ private static int hugeCapacity(int minCapacity) {
 
 ```
 
-![在这里插入图片描述](./assets/125781311/6cc2fe2e1bef4805243149fb.png)  
+![](./assets/125781311/6cc2fe2e1bef4805243149fb.png)  
 进入ensureCapacityHelper(elementCount + 1)方法：  
-![在这里插入图片描述](./assets/125781311/9cf05354ef7dc934f1e71bc5.png)  
+![](./assets/125781311/9cf05354ef7dc934f1e71bc5.png)  
 这里进入if判断，minCapacity为11，element.length为10，所以进入if方法块,执行grow方法：
 
-![在这里插入图片描述](./assets/125781311/3f8a3c90bfcd220699053a54.png)  
+![](./assets/125781311/3f8a3c90bfcd220699053a54.png)  
 执行完后完成扩容：  
-![在这里插入图片描述](./assets/125781311/0f9b3339f8452d2a84200746.png)  
+![](./assets/125781311/0f9b3339f8452d2a84200746.png)  
 最后完成赋值：  
-![在这里插入图片描述](./assets/125781311/97b9792877a3dea331ee0557.png)
+![](./assets/125781311/97b9792877a3dea331ee0557.png)
 
 到这里Vector方法就介绍完了，感兴趣自己去debug再看一看。

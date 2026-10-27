@@ -1,24 +1,13 @@
 ---
 title: "阻塞队列-ArrayBlockingQueue"
 description: "java.util.concurrent (JUC) 包提供了多种阻塞队列的实现，其中 ArrayBlockingQueue 以其有界、基于数组和线程安全的特性，在需要精确控制资源和流量的场景中扮演着重要角色。"
-sourceId: "147398714"
-source: "https://blog.csdn.net/qq_45852626/article/details/147398714"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
-  - "算法"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147398714
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147398714)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147398714)
 
 ## ArrayBlockingQueue 深度解析：从入门到原理
 

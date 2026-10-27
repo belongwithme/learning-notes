@@ -1,24 +1,13 @@
 ---
 title: "Spring的核心模块：Bean的生命周期（内含依赖循环+业务场景）。"
 description: "上篇文章我们介绍了Spring的一个核心模块BeanDifinition。"
-sourceId: "129154492"
-source: "https://blog.csdn.net/qq_45852626/article/details/129154492"
-sourceSeries:
-  - "Spring核心模块解析"
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring核心模块解析"
-  - "Spring"
 status: draft
-difficulty: intermediate
-contentType: practice
 sidebar:
   order: 129154492
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129154492)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129154492)
 
 ## 前言
 
@@ -413,13 +402,13 @@ Department和Employee对象之间形成了双向引用关系，Department持有�
 #### 那么，为什么会出现循环引用问题呢？
 
 循环引用问题通常出现在双向引用关系中，例如A对象持有B对象的引用，B对象持有A对象的引用。在这种情况下，如果不加以限制，可能会导致对象的创建和销毁出现问题。  
- ![请添加图片描述](./assets/129154492/e528d51ff39071e1cc8d60e9.png)
+ ![](./assets/129154492/e528d51ff39071e1cc8d60e9.png)
 
 具体来说，当Spring容器在创建A对象时，需要先创建B对象并将B对象注入到A对象中。而在创建B对象时，又需要先创建A对象并将A对象注入到B对象中。这样就会形成一个循环依赖的情况，导致对象无法创建成功。
 
 为了避免循环引用问题，可以使用一些技巧来限制对象之间的依赖关系。  
  例如，可以使用@Lazy注解来延迟注入，或者使用Setter方法注入来解决循环引用问题，当然spring自带的也有缓存也是解决方案。同时，需要根据实际情况选择合适的注入方式，保证代码的可读性和可维护性。  
- ![请添加图片描述](./assets/129154492/7529bd5ad195d609fef9319e.png)
+ ![](./assets/129154492/7529bd5ad195d609fef9319e.png)
 
 为了更好懂一些，我们举一个订单系统的 业务场景：  
  假设有一个简单的订单系统，包括订单（Order）和用户（User）两个实体类。  
@@ -479,7 +468,7 @@ public class User {
 ```
 
 我们首先给一个图来看：  
- ![在这里插入图片描述](./assets/129154492/52e3b564481f3ae0406ac786.png)  
+ ![](./assets/129154492/52e3b564481f3ae0406ac786.png)  
  这里简单聊一下大概的过程：  
  1.首先一个`userService`实例化创建完毕之后，并不是直接存到`singletonFactories`三级缓存里面，这个`userService`会用`ObjectFactory`进行一个包装，换句话说就是为它创建一个`ObjectFactory`,然后添加到三级缓存中，我们来看一下这个类：
 
@@ -522,7 +511,7 @@ public interface ObjectFactory<T> {
 
 一张图，无需多言，这个老师真的非常牛！！！！非常清晰。  
  如果觉得哪里看不明白，欢迎留言。  
- ![请添加图片描述](./assets/129154492/1a0be5bc67a74e64b5cc8f4b.png)
+ ![](./assets/129154492/1a0be5bc67a74e64b5cc8f4b.png)
 
 ## 总结
 

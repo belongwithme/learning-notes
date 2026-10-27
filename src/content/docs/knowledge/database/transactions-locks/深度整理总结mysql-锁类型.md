@@ -1,24 +1,13 @@
 ---
 title: "深度整理总结MySQL——锁类型"
 description: "MySQL的锁是比较难的(个人认为).本章简单介绍一下锁的类型,帮助我们有个大致的了解."
-sourceId: "145524102"
-source: "https://blog.csdn.net/qq_45852626/article/details/145524102"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: transactions-locks
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 145524102
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145524102)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145524102)
 
 ## 锁的类型
 ## 前言
@@ -355,7 +344,7 @@ select * from t_test where id = 1 for update;
 
 ```
 
-![在这里插入图片描述](./assets/145524102/829662b27ab4f202dfc9ddb0.png)  
+![](./assets/145524102/829662b27ab4f202dfc9ddb0.png)  
  当事务执行 commit 后，事务过程中生成的锁都会被释放。
 
 #### Gap Lock
@@ -372,14 +361,14 @@ select * from t_test where id = 1 for update;
 锁定两条记录之间的空隙。  
  例如，查询条件是 (value > 30 AND value < 40)，那么 Gap Lock 锁定的是 30 和 40 之间的空隙。  
  例如,表中有一个范围 id 为（3，5）间隙锁，那么其他事务就无法插入 id = 4 这条记录了.  
- ![在这里插入图片描述](./assets/145524102/dfd62ea79f4d91d1839e3947.png)  
+ ![](./assets/145524102/dfd62ea79f4d91d1839e3947.png)  
  ，间隙锁之间是兼容的，即两个事务可以同时持有包含共同间隙范围的间隙锁，并不存在互斥关系，因为间隙锁的目的是防止插入幻影记录而提出的。
 
 ##### 间隙与记录锁结合- 临键锁
 
 当查询条件包含某一特定记录时，Gap Lock 会与记录锁（例如，X 锁）结合使用，锁定某个范围的记录和记录之间的空隙。例如，查询条件是 (value >= 30 AND value <= 40)，此时会锁定 [30, 40] 范围内的记录，并且锁定 30 和 40 之间的空隙。  
  例如,表中有一个范围 id 为（3，5] 的 next-key lock，那么其他事务即不能插入 id = 4 记录，也不能修改 id = 5 这条记录。  
- ![在这里插入图片描述](./assets/145524102/c540000f72f1e50c30dcf458.png)  
+ ![](./assets/145524102/c540000f72f1e50c30dcf458.png)  
  next-key lock 即能保护该记录，又能阻止其他事务将新纪录插入到被保护记录前面的间隙中。
 
 **next-key lock 是包含间隙锁+记录锁的，如果一个事务获取了X 型的 next-key lock，那么另外一个事务在获取相同范围的 X 型的 next-key lock 时，是会被阻塞的。**

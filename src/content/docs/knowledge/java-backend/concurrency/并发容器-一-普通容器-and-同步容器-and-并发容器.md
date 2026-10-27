@@ -1,25 +1,13 @@
 ---
 title: "并发容器（一）：普通容器&&同步容器&&并发容器"
 description: "之前我们学习过了集合，并发编程，现在我们来学习并发容器，在并发编程中，经常听到Java集合类，同步容器，并发容器，那么他们之间有哪些分类，优劣呢，我们先把这个框架给分清楚了，这样后面学习的时候不会乱。"
-sourceId: "126122998"
-source: "https://blog.csdn.net/qq_45852626/article/details/126122998"
-sourceSeries:
-  - "集合"
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "集合"
-  - "JUC"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 126122998
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126122998)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126122998)
 
 ## 前言
 
@@ -38,8 +26,8 @@ sidebar:
 3.HashTable  
 4.Collections.synchronized方法生成  
 举个例子：  
-![在这里插入图片描述](./assets/126122998/fdcaa1b7cd86601f2421ac79.png)  
-![在这里插入图片描述](./assets/126122998/394ff2a43d0fa3f9164dba8f.png)  
+![](./assets/126122998/fdcaa1b7cd86601f2421ac79.png)  
+![](./assets/126122998/394ff2a43d0fa3f9164dba8f.png)  
 我们可以看到，这些容器实现线程安全的方式就是将它们的封装起来，并在需要同步的方法上添加关键字synchronized。  
 只是，这样做的代价是削弱了并发性，当多个线程共同竞争容器级的锁时，吞吐量就会降低。
 

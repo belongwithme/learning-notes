@@ -1,26 +1,13 @@
 ---
 title: "分布式锁Redis基础理论与落地实现与Redisson。"
 description: "系统或者集群模式下多进程可见并且互斥的锁。"
-sourceId: "130828424"
-source: "https://blog.csdn.net/qq_45852626/article/details/130828424"
-sourceSeries:
-  - "Redis"
-  - "JUC"
-category: distributed-systems
-subcategory: consistency
-tags:
-  - "Redis"
-  - "JUC"
-  - "SQL"
 status: draft
-difficulty: beginner
-contentType: practice
 sidebar:
   order: 130828424
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/130828424)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/130828424)
 
 ## 基本概念
 
@@ -28,9 +15,9 @@ sidebar:
  满足
 分布式 
 系统或者集群模式下多进程可见并且互斥的锁。  
- ![请添加图片描述](./assets/130828424/840edc24e1ee5509756b97ae.png)  
+ ![](./assets/130828424/840edc24e1ee5509756b97ae.png)  
  不同分布式锁的实现方案  
- 分别从互斥，高可用，高性能，安全性方面来分析。![请添加图片描述](./assets/130828424/06b01e041c2306320820d513.png)
+ 分别从互斥，高可用，高性能，安全性方面来分析。![](./assets/130828424/06b01e041c2306320820d513.png)
 
 ## 基于Redis的分布式锁
 
@@ -56,7 +43,7 @@ sidebar:
 答：将这两个动作设置为原子动作，使用`SET`命令：`SET lock thread1 EX 10 NX`。
 
 流程图如下：  
- ![请添加图片描述](./assets/130828424/c0c79b27a50ee6638ce5f389.png)
+ ![](./assets/130828424/c0c79b27a50ee6638ce5f389.png)
 
 ### 基于Redis实现分布式锁初级版本
 
@@ -120,9 +107,9 @@ public class SimpleRedisLock implements ILock {
  线程1因为业务阻塞的时间超过了锁持有的时间，在未完成业务的情况下释放了。  
  那么线程2此时获取到了锁，在线程2执行业务的期间线程1的业务完成，直接释放了锁。  
  那么此时线程3拿到了锁，开始了执行业务。  
- ![请添加图片描述](./assets/130828424/080890372d1108eeefc4e43b.png)  
+ ![](./assets/130828424/080890372d1108eeefc4e43b.png)  
  解决方法：  
- 在释放锁前，判断一下锁标示是否是自己的。![请添加图片描述](./assets/130828424/594099cedd3ae338412c5e83.png)
+ 在释放锁前，判断一下锁标示是否是自己的。![](./assets/130828424/594099cedd3ae338412c5e83.png)
 
 ### 改进Redis的分布式锁
 
@@ -208,12 +195,12 @@ Redis提供了Lua脚本功能，在一个脚本中编写多条Redis命令，确�
 
 1. 无参数  
     例如我们要执行`redis.call('set','name','jack')这个脚本，语法如下：` EVAL “return redis.call(‘set’,‘name’,‘jacl’)” 0 `  
-    ![请添加图片描述](./assets/130828424/a8764e6e489e2a773d638f2c.png)
+    ![](./assets/130828424/a8764e6e489e2a773d638f2c.png)
 2. 有参数  
     如果脚本中的key，value不写死，可以作为参数传递。  
     key类型参数会放入KEYS数组，其他参数会放入ARGV数组，在脚本中可以从KEYS和ARGV数组获取这些参数：  
     `EVAL "return redis.call('set',KEYS[1], ARGV[1] ) " 1 name wang`   
-    ![请添加图片描述](./assets/130828424/3417c8e94f1dfdb41b3a55e9.png)
+    ![](./assets/130828424/3417c8e94f1dfdb41b3a55e9.png)
 
 #### 利用Lua脚本写释放锁业务流程
 
@@ -257,12 +244,12 @@ return 0
 
 需求：基于Lua脚本实现分布式锁的释放锁逻辑  
  提示：RedisTemplate调用Lua脚本的API如下：  
- ![请添加图片描述](./assets/130828424/d6f1a0dff4a3045c15d869c4.png)  
- ![请添加图片描述](./assets/130828424/1de750999be888263c2f7e2f.png)  
+ ![](./assets/130828424/d6f1a0dff4a3045c15d869c4.png)  
+ ![](./assets/130828424/1de750999be888263c2f7e2f.png)  
  在
 idea 
 中写lua文件：  
- ![请添加图片描述](./assets/130828424/4fc996336a697701bd7d2280.png)  
+ ![](./assets/130828424/4fc996336a697701bd7d2280.png)  
  对锁的实现进行改造：
 
 ```java
@@ -319,7 +306,7 @@ idea
 
 ### 总结
 
-![请添加图片描述](./assets/130828424/2b01afc5ea71074d29e8e643.png)  
+![](./assets/130828424/2b01afc5ea71074d29e8e643.png)  
  那么，目前为止，我们的分布式锁已经相对完善了，当然好学的你肯定不满足于当前的现状，那么就继续走下去吧。
 
 ## Redisson
@@ -455,14 +442,14 @@ class RedissonTest {
 
 如果我们用redis来做的话，不能实现可重入锁，原因如下：
 
-* 首先我们来看一下这个流程![请添加图片描述](./assets/130828424/4a1696fe0f92d9f7b596fc79.png)
-* 数据结构![请添加图片描述](./assets/130828424/cffe0865315db442d375f70a.png)  
+* 首先我们来看一下这个流程![](./assets/130828424/4a1696fe0f92d9f7b596fc79.png)
+* 数据结构![](./assets/130828424/cffe0865315db442d375f70a.png)  
    那么这样的数据结构不支持可重入锁的实现，因为我们没有字段去记录重入的次数，只能判断是否为自己的锁。
 
 redisson的数据结构可以支持，它的数据结构如下：  
- ![请添加图片描述](./assets/130828424/f8270da3e7e27b603d0a6fb9.png)  
+ ![](./assets/130828424/f8270da3e7e27b603d0a6fb9.png)  
  它的流程如下：  
- ![请添加图片描述](./assets/130828424/7d6600142602488e1c4cf1b5.png)  
+ ![](./assets/130828424/7d6600142602488e1c4cf1b5.png)  
  redisson底层是通过Lua脚本去实现的，具体如下所示：
 
 ```

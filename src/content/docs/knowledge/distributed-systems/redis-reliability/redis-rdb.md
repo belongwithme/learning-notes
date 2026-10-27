@@ -1,23 +1,13 @@
 ---
 title: "Redis-RDB"
 description: "因为Redis的数据都储存在内存中，当进程退出时，所有数据都将丢失。"
-sourceId: "145765328"
-source: "https://blog.csdn.net/qq_45852626/article/details/145765328"
-sourceSeries:
-  - "Redis"
-category: distributed-systems
-subcategory: redis-reliability
-tags:
-  - "Redis"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 145765328
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145765328)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145765328)
 
 ## 前言
 
@@ -131,9 +121,9 @@ dir /usr/local/var/db/redis/
  执行 bgsave 过程中，Redis 依然可以继续处理操作命令的，也就是数据是能被修改的.  
  只需要依赖一个关键技术: **写时复制技术（Copy-On-Write, COW）**  
  执行 bgsave 命令的时候，会通过 fork() 创建子进程，此时子进程和父进程是共享同一片内存数据的，因为创建子进程的时候，会复制父进程的页表，但是页表指向的物理内存还是一个。  
- ![在这里插入图片描述](./assets/145765328/a6ba6dfa0db266365a2f1818.png)  
+ ![](./assets/145765328/a6ba6dfa0db266365a2f1818.png)  
  只有在发生修改内存数据的情况时，物理内存才会被复制一份。  
- ![在这里插入图片描述](./assets/145765328/f422bbbcd1db1e11417b1521.png)  
+ ![](./assets/145765328/f422bbbcd1db1e11417b1521.png)  
  这样的目的是**为了减少创建子进程时的性能损耗，从而加快创建子进程的速度**，毕竟创建子进程的过程中，是会阻塞主线程的。  
  所以，创建 bgsave 子进程后，由于共享父进程的所有内存数据，于是就可以直接读取主线程（父进程）里的内存数据，并将数据写入到 RDB 文件。
 
@@ -164,6 +154,6 @@ bgsave 快照过程中，如果主线程修改了共享数据，发生了写时�
 
 当开启了混合持久化时，在 AOF 重写日志时，fork 出来的重写子进程会先将与主线程共享的内存数据以 RDB 方式写入到 AOF 文件，然后主线程处理的操作命令会被记录在重写缓冲区里，重写缓冲区里的增量命令会以 AOF 方式写入到 AOF 文件，写入完成后通知主进程将新的含有 RDB 格式和 AOF 格式的 AOF文件替换旧的的 AOF 文件。  
  使用了混合持久化，AOF 文件的前半部分是 RDB 格式的全量数据，后半部分是 AOF 格式的增量数据。  
- ![在这里插入图片描述](./assets/145765328/95bdd5188604c963314191c9.png)  
+ ![](./assets/145765328/95bdd5188604c963314191c9.png)  
  重启 Redis 加载数据的时候，由于前半部分是 RDB 内容，这样加载的时候速度会很快.  
  加载完 RDB 的内容后，才会加载后半部分的 AOF 内容，这里的内容是 Redis 后台子进程重写 AOF 期间，主线程处理的操作命令，可以使得数据更少的丢失。

@@ -1,24 +1,13 @@
 ---
 title: "Spring的核心模块：容器刷新refresh原理解析（六万字整理）。"
 description: "前面我们聊过bean的生命周期，也涉及到了一些容器的初始化，那么现在我们就来一起聊聊Spring框架中当之无愧的炸子鸡之一的AbstractApplicationContext类下的Refresh方法。"
-sourceId: "129447982"
-source: "https://blog.csdn.net/qq_45852626/article/details/129447982"
-sourceSeries:
-  - "Spring核心模块解析"
-category: java-backend
-subcategory: spring
-tags:
-  - "Spring核心模块解析"
-  - "Spring"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 129447982
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129447982)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129447982)
 
 ## 前言
 
@@ -1004,7 +993,7 @@ protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactor
 
 或许你以为结束了,但是真正的困难才刚刚开始,你是否会好奇,到底是如何调用所有的BeanFactoryPostProcessor呢?  
  我们来进入到invokeBeanFactoryPostProcessors方法中看一看就明白了,下面这个方法比较繁琐,所以我花了一些时间做了个图,希望能帮助理解:  
- ![在这里插入图片描述](./assets/129447982/a22ad92c257d9abb2ee75264.png)
+ ![](./assets/129447982/a22ad92c257d9abb2ee75264.png)
 
 代码如下:
 

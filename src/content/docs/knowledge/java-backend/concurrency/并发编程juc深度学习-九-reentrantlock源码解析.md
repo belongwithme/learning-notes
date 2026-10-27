@@ -1,23 +1,13 @@
 ---
 title: "并发编程JUC深度学习(九）ReentrantLock源码解析"
 description: "上一篇文章我们细说了AQS，如果我们搞明白了一些AQS，再来学习ReentrantLock就很容易了，相对来说简单了许多，核心还是AQS的那些东西，本篇我们敞开了聊聊ReentrantLock细节内容。"
-sourceId: "126131210"
-source: "https://blog.csdn.net/qq_45852626/article/details/126131210"
-sourceSeries:
-  - "JUC"
-category: java-backend
-subcategory: concurrency
-tags:
-  - "JUC"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 126131210
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126131210)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126131210)
 
 ## 前言
 
@@ -32,7 +22,7 @@ ReentrantLock是java并发包下重要的同步工具，实现了可重入互斥
 
 ## 继承结构
 
-![在这里插入图片描述](./assets/126131210/a740be03238a45fa4cf8028e.png)  
+![](./assets/126131210/a740be03238a45fa4cf8028e.png)  
 代码实现：
 
 ```java
@@ -313,7 +303,7 @@ ReentranLock的内部类有三种，抽象类Sync，公平锁与非公平锁。
 ## 形象总结一下ReentrantLock
 
 这里引用阿星大佬的一个图  
-![在这里插入图片描述](./assets/126131210/77a4248fd0e34f7ebf292b0c.png)  
+![](./assets/126131210/77a4248fd0e34f7ebf292b0c.png)  
 可以对着这个图看一看源码，很清晰
 
 ## 总结

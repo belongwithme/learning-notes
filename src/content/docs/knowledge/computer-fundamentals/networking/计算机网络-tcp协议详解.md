@@ -1,24 +1,13 @@
 ---
 title: "计算机网络-TCP协议详解"
 description: "传输控制协议（Transmission Control Protocol，TCP）是互联网协议族中最核心的协议之一，由Vint Cerf和Bob Kahn在1974年设计并于1981年在RFC 793中正式定义。TCP是一种面向连接的、可靠的、基于字节流的传输层通信协议，为应用程序提供了可靠的..."
-sourceId: "147141866"
-source: "https://blog.csdn.net/qq_45852626/article/details/147141866"
-sourceSeries:
-  - "计算机网络"
-category: computer-fundamentals
-subcategory: networking
-tags:
-  - "计算机网络"
-  - "TCP/IP"
 status: draft
-difficulty: intermediate
-contentType: knowledge
 sidebar:
   order: 147141866
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141866)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141866)
 
 ## 2. TCP协议详解
 

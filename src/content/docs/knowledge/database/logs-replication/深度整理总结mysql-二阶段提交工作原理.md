@@ -1,24 +1,13 @@
 ---
 title: "深度整理总结MySQL——二阶段提交工作原理"
 description: "之前三种日志类型我们都了解过了,下面我们通过一个例子来引出我们要聊的二阶段提交."
-sourceId: "145589737"
-source: "https://blog.csdn.net/qq_45852626/article/details/145589737"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: logs-replication
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: source-analysis
 sidebar:
   order: 145589737
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145589737)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145589737)
 
 ## 前言
 
@@ -100,7 +89,7 @@ MySQL 重启后，通过 redo log 能将 Buffer Pool 中 id = 1 这行数据的 
 
 为了保证这两个日志的一致性，MySQL 使用了内部 XA 事务,内部XA事务由binlog作为协调者,存储引擎是参与者.  
  当客户端执行commit语句或者在自动提交情况下,MySQL内部开启一个XA事务,分两阶段完成XA事务提交,如下图:  
- ![在这里插入图片描述](./assets/145589737/3907cdff9edb2cdc53b5bef4.png)  
+ ![](./assets/145589737/3907cdff9edb2cdc53b5bef4.png)  
  事务的提交过程有两个阶段，就是将 redo log 的写入拆成了两个步骤：  
  prepare 和 commit，中间再穿插写入binlog，具体如下.
 
@@ -112,7 +101,7 @@ MySQL 重启后，通过 redo log 能将 Buffer Pool 中 id = 1 这行数据的 
 ### 异常重启出现的现象
 
 下图中有时刻 A 和时刻 B 都有可能发生崩溃：  
- ![在这里插入图片描述](./assets/145589737/95cb5a7b45732029867a0318.png)  
+ ![](./assets/145589737/95cb5a7b45732029867a0318.png)  
  不管是时刻 A（redo log 已经写入磁盘， binlog 还没写入磁盘），还是时刻 B（redo log ,binlog 已经写入磁盘,但redolog的状态没改变），**此时的 redo log 都处于 prepare 状态**。
 
 MySQL 重启后会按顺序扫描 redo log 文件,碰到处于 prepare 状态的 redo log，就拿着 redo log 中的XID 去 binlog 查看是否存在此 XID:
@@ -180,7 +169,7 @@ binlog 和 redo log 在内存中都对应的缓存空间:
    保证了事务写入的顺序.  
    队列的规则:  
    第一个进入队列的事务会成为 leader,leader来领导所在队列的所有事务，全权负责整队的操作,完成后通知队内其他事务操作结束。  
-   ![在这里插入图片描述](./assets/145589737/a95197746ddf7e36ba34b290.png)  
+   ![](./assets/145589737/a95197746ddf7e36ba34b290.png)  
    可以看的出来，锁粒度减小了，这样就使得多个阶段可以并发执行,从而提升效率.
 
 ### 有 binlog 组提交，那有 redo log 组提交吗？
@@ -199,11 +188,11 @@ MySQL 5.7 开始有 redo log 组提交.
 #### flush阶段
 
 第一个事务会成为 flush 阶段的 Leader，此时后面到来的事务都是 Follower ：  
- ![在这里插入图片描述](./assets/145589737/879f26e2c3fe5edb2b6900a0.png)  
+ ![](./assets/145589737/879f26e2c3fe5edb2b6900a0.png)  
  获取队列中事务组,由绿色事务组的 Leader 对 redo log 做一次 write + fsync，即一次将同组事务的 redolog 刷盘：  
- ![在这里插入图片描述](./assets/145589737/06e61d28fd86eb346826b433.png)  
+ ![](./assets/145589737/06e61d28fd86eb346826b433.png)  
  完成prepare 阶段后，将绿色这一组事务执行过程中产生的 binlog Cache写入 binlog 文件(调用 write，不会调用 fsync，所以不会刷盘，binlog 文件在操作系统的文件系统中).  
- ![在这里插入图片描述](./assets/145589737/7e28b630d48fbb0158bca7d7.png)  
+ ![](./assets/145589737/7e28b630d48fbb0158bca7d7.png)  
  从上面这个过程，可以知道 **flush 阶段队列的作用是用于支撑 redo log 的组提交**.  
  这一步完成后数据库崩溃，由于 binlog 中没有该组事务的记录，所以 MySQL 会在重启后回滚该组事务。
 
@@ -211,9 +200,9 @@ MySQL 5.7 开始有 redo log 组提交.
 
 写入到 binlog 文件后，并不会马上执行刷盘的操作,而是会等待一段时间，这个等待的时长由`Binlog_group_commit_sync_delay` 参数控制,目的:为了组合更多事务的 binlog，然后再一起刷盘.  
  如下图  
- ![在这里插入图片描述](./assets/145589737/a2f70308edca3acf6ef9c859.png)  
+ ![](./assets/145589737/a2f70308edca3acf6ef9c859.png)  
  等待的过程中，如果事务的数量提前达到了`Binlog_group_commit_sync_no_delay_count`参数设置的值,就不用继续等待了，就马上将 binlog 刷盘，如下图：  
- ![在这里插入图片描述](./assets/145589737/383016d22785ed8b6a6ab57e.png)  
+ ![](./assets/145589737/383016d22785ed8b6a6ab57e.png)  
  从上面的过程，可以知道 sync 阶段队列的作用是用**于支持 binlog 的组提交**。
 
 那如果你想优化,相信你能感觉到可以调哪些参数,当然是等待时间和等待事务.
@@ -230,7 +219,7 @@ MySQL 5.7 开始有 redo log 组提交.
 #### commit阶段
 
 调用引擎的提交事务接口，将 redo log 状态设置为 commit。  
- ![在这里插入图片描述](./assets/145589737/de5c915995db2b2e368eb92d.png)  
+ ![](./assets/145589737/de5c915995db2b2e368eb92d.png)  
  commit 阶段队列的作用是承接 sync 阶段的事务，完成最后的引擎提交,使得 sync 可以尽早的处理下一组事务，最大化组提交的效率。
 
 ## MySQL磁盘I/O很高,有什么优化的方法

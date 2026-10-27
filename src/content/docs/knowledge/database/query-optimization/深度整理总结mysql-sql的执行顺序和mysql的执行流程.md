@@ -1,30 +1,19 @@
 ---
 title: "深度整理总结MySQL——SQL的执行顺序和MySQL的执行流程"
 description: "但实际上并不是从上到下去解析的,真实的执行顺序是:"
-sourceId: "145474586"
-source: "https://blog.csdn.net/qq_45852626/article/details/145474586"
-sourceSeries:
-  - "MySQL"
-category: database
-subcategory: query-optimization
-tags:
-  - "MySQL"
-  - "SQL"
 status: draft
-difficulty: advanced
-contentType: knowledge
 sidebar:
   order: 145474586
 ---
 
 
-> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145474586)（历史文章导入，当前状态为草稿）
+> 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145474586)
 
 ## SQL的执行顺序和流程
 ## SQL的执行顺序
 
 这是一条标准的查询语句:  
- ![在这里插入图片描述](./assets/145474586/775e19490a17284520cd819c.png)  
+ ![](./assets/145474586/775e19490a17284520cd819c.png)  
  但实际上并不是从上到下去解析的,真实的执行顺序是:
 
 1. 我们先执行from,join来确定表之间的连接关系，得到初步的数据
@@ -35,7 +24,7 @@ sidebar:
 6. 将查询结果去重distinct
 7. 最后合并各组的查询结果，按照order by的条件进行排序
 
-![在这里插入图片描述](./assets/145474586/f7575fd750b046306af8fd42.png)  
+![](./assets/145474586/f7575fd750b046306af8fd42.png)  
  那么为什么会是这样的顺序呢?  
  可能我们猛一下会认为先执行select,然后依次往下走,但仔细一想这实际上是不可能的.  
  因为一开始就select,数据源都不知道是什么?而且也没有处理过数据,如何select呢?  
@@ -56,7 +45,7 @@ sidebar:
 
 上面的话换句话问,MySQL执行流程是什么样子的  
  先来一张上帝视角图,解释了执行一条SQL查询语句.MySQL内部架构里的各个功能模块  
- ![在这里插入图片描述](./assets/145474586/3a1a806896f433b6dcf8a35e.png)
+ ![](./assets/145474586/3a1a806896f433b6dcf8a35e.png)
 
 MySQL 的架构共分为两层：Server 层和存储引擎层.
 
@@ -99,7 +88,7 @@ MySQL服务在收到SQL语句后会对SQL语句解析.而解析的工作通过�
     关键字| 非关键字| 关键字 |非关键字  
     select |username |from |userinfo
 2. 语法分析:根据**词法分析的结果**和**语法规则**判断SQL语句是否符合MySQL语法.  
-    ![在这里插入图片描述](./assets/145474586/2b2e254d263d098a60ad75c4.png)
+    ![](./assets/145474586/2b2e254d263d098a60ad75c4.png)
 
 如果语法不对,会在解析时将错误返回给客户端.注意:表不存在或字段不存在的错误无法再解析时被检测出来
 
@@ -129,4 +118,4 @@ MySQL服务在收到SQL语句后会对SQL语句解析.而解析的工作通过�
 ## 总结
 
 最后回看这张图是不是很清晰了  
- ![在这里插入图片描述](./assets/145474586/998153b5c08b9872d91773df.png)
+ ![](./assets/145474586/998153b5c08b9872d91773df.png)
