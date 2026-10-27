@@ -31,7 +31,7 @@ LInkedHashMap就是这样的一种数据结构，综合了HashMap和链表的有
 ![在这里插入图片描述](./assets/125979672/8af7884a29dee650bd9f304a.png)  
 代码实现：
 
-```
+```java
 public class LinkedHashMap<K,V>
     extends HashMap<K,V>
     implements Map<K,V>
@@ -43,7 +43,7 @@ public class LinkedHashMap<K,V>
 
 ### Doc解析
 
-```
+```java
 /**
  * <p>Hash table and linked list implementation of the <tt>Map</tt> interface,
  * with predictable iteration order.  
@@ -177,7 +177,7 @@ The {@code replace} methods only result in an access of the entry if the value i
 ![在这里插入图片描述](./assets/125979672/7f5451df5c2badf7c3485c1b.png)  
 代码实现：
 
-```
+```java
  /**
      * HashMap.Node subclass for normal LinkedHashMap entries.
      */
@@ -279,7 +279,7 @@ public LinkedHashMap(int initialCapacity) {
 
 3：有参构造(参数为初始容量和负载因子)
 
-```
+```java
   public LinkedHashMap(int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
         accessOrder = false;
@@ -335,7 +335,7 @@ public LinkedHashMap(int initialCapacity) {
 你在LinkedHashMap的源码中找不到put方法，因为它完美继承了HashMap的put(Key,Value)的方法  
 其源码：
 
-```
+```java
  public V put(K key, V value) {
         return putVal(hash(key), key, value, false, true);
     }
@@ -431,7 +431,7 @@ public LinkedHashMap(int initialCapacity) {
 我们可以称他们为维护链表的操作，接下来我们一个个进行分析：  
 1：afterNodeAccess：
 
-```
+```java
 //在节点被访问后根据accessOrder判断是否需要调整链表顺序，如果accessOrder为true，那么被access的节点就要移动到tail(尾部，也就是最新的节点) 
   void afterNodeAccess(Node<K,V> e) { /  / move node to last
         LinkedHashMap.Entry<K,V> last;    //链表尾节点
@@ -467,7 +467,7 @@ public LinkedHashMap(int initialCapacity) {
 
 2：afterNodeInsertion
 
-```
+```java
   void afterNodeInsertion(boolean evict) { // possibly remove eldest
         LinkedHashMap.Entry<K,V> first;
         if (evict && (first = head) != null && removeEldestEntry(first)) {
@@ -485,7 +485,7 @@ public LinkedHashMap(int initialCapacity) {
 这个方法目的是删除最老的节点（head节点），但是这个方法默认是不执行的，留给我们自己扩展，因为removeEldestEntry默认为false。  
 3：afterNodeRemoval
 
-```
+```java
  void afterNodeRemoval(Node<K,V> e) { // unlink
         LinkedHashMap.Entry<K,V> p =
             (LinkedHashMap.Entry<K,V>)e, b = p.before, a = p.after;
@@ -507,7 +507,7 @@ public LinkedHashMap(int initialCapacity) {
 
 现在我们来看读取方法get：
 
-```
+```java
   public V get(Object key) {
         Node<K,V> e;
         if ((e = getNode(hash(key), key)) == null)

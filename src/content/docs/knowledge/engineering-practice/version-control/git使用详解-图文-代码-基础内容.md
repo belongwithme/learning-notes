@@ -130,7 +130,7 @@ sidebar:
 * 在工作目录中初始化新仓库  
    要对现有的某个项目开始用Git管理，只需到此项目所在的目录，执行：
 
-```
+```bash
 git init
 
 
@@ -145,7 +145,7 @@ git init
 
 如果当前目录下有几个文件想要纳入版本控制，需要先用git add命令告诉Git开始对这些文件进行跟踪，然后提交：
 
-```
+```bash
  git add *.c
     $ git add README
     $ git commit -m 'initial project version'
@@ -190,7 +190,7 @@ git@gitee.com:xxx/Spring-shiro.git
 要确定哪些文件当前处于什么状态，可以用git status 命令。  
  如果在克隆仓库之后立即执行此命令，会看到类似这样的输出：
 
-```
+```bash
 git status
 
 
@@ -213,7 +213,7 @@ git status
 
 使用命令git add开始跟踪一个新文件。所以要跟踪Wang文件，运行：
 
-```
+```bash
 git add Wang
 
 
@@ -221,7 +221,7 @@ git add Wang
 
 使用命令git add开始跟踪一个新文件，所以，要跟踪Wang文件，运行：
 
-```
+```bash
 git add Wang
 
 
@@ -318,7 +318,7 @@ diff
 现在暂存区域已经准备妥当可以提交了。  
  在此之前，一定要确认还有什么修改过的或新建的文件还没有git add过，否则提交的时候不会记录这些还没暂存起来的变化。所以，每次提交前，先用git status 看下，是不是都已经暂存起来了，然后再运行提交命令 git commit
 
-```
+```bash
 $ git commit
 
 
@@ -348,7 +348,7 @@ $ git commit
  不过Git会推断出究竟发生什么。  
  要在Git中对文件改名，用下面这个命令：
 
-```
+```bash
 $ git mv file_from  file_to
 
 
@@ -358,7 +358,7 @@ $ git mv file_from  file_to
  ![在这里插入图片描述](./assets/128272455/9880db59141b8205ab6fd0d6.png)  
  其实，运行git mv 就相当于运行了下面三个命令：
 
-```
+```bash
 $ mv benchmarks.rb  benchmark
 $ git rm  benchmarks.rb
 $ git add benchmark 
@@ -396,7 +396,7 @@ origin
 
 先指定一个简单的名字，以便将来引用 ，运行指令
 
-```
+```bash
 git remote add [shortname] [url]
 
 
@@ -408,7 +408,7 @@ git remote add [shortname] [url]
  举个栗子：  
  我们要抓取所有demo有的的，但是本地仓库没有的，可以运行git fetch demo：
 
-```
+```bash
 git fetch demo
 ```
 ![在这里插入图片描述](./assets/128272455/remote-043223db4a6c9924.png)

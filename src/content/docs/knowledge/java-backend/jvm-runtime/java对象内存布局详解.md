@@ -98,7 +98,7 @@ JVM要求对象的起始地址必须是8字节的整数倍（64位系统）。�
 
 以下是一个简单类对象在内存中的布局示例：
 
-```
+```java
 class Example {
     int a;
     boolean b;
@@ -136,7 +136,7 @@ Java的synchronized锁机制与对象头中的Mark Word密切相关。从JDK 6�
 
 可以使用JOL（Java Object Layout）工具查看对象在内存中的实际布局：
 
-```
+```java
 import org.openjdk.jol.info.ClassLayout;
 
 public class ObjectLayoutExample {

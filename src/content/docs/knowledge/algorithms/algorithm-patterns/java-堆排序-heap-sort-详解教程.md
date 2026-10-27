@@ -195,7 +195,7 @@ void heapify(int[] arr, int n, int i) {
 
 ## 七、完整堆排序代码
 
-```
+```java
 public class HeapSort {
     public static void heapSort(int[] arr) {
         int n = arr.length;

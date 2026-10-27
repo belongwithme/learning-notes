@@ -75,7 +75,7 @@ sidebar:
 那么，Git又是如何创建一个新的分支的呢？答案很简单，创建一个新的分支指针。  
  比如新建一个testing分支，我们使用`git branch`命令
 
-```
+```bash
 $ git branch testing
 
 
@@ -101,7 +101,7 @@ $ git branch testing
 
 我们再提交一次就可以发现里面的秘密：
 
-```
+```bash
 $ vim test.rb
   $ git commit -a -m 'made a change'
 
@@ -114,7 +114,7 @@ $ vim test.rb
  图（1-7）——每次提交后HEAD随着分支一起向前移动  
  所以你可以看到，testing向前移动了一格，而master仍然指向原先`git checkout`时所在的`commit`对象，现在我们回到`master`分支看看：
 
-```
+```bash
 $ git checkout master
 
 
@@ -129,7 +129,7 @@ $ git checkout master
  我们作些修改后再次提交：  
  执行代码
 
-```
+```bash
 $ vim test.rb
     $ git commit -a -m 'made other changes'
 
@@ -164,7 +164,7 @@ $ vim test.rb
 现在，你需要去修补问题追踪系统上#53问题。  
  这里我们把新建的分支取名为iss53，要新建并切换该分支，运行`git checkout`并加上`- b`参数：
 
-```
+```bash
 $ git checkout -b iss53
 
 
@@ -172,7 +172,7 @@ $ git checkout -b iss53
 
 相当于执行下面两条命令：
 
-```
+```bash
 $ git branch iss53
   $ git checkout iss53
 
@@ -202,7 +202,7 @@ $ vim index.html
 
 切换master分支：
 
-```
+```bash
 $ git checkout master
 
 
@@ -213,7 +213,7 @@ $ git checkout master
 
 接下来，我们要紧急修补。我们创建一个紧急修补分支`hotfix`来搞定：
 
-```
+```bash
 $ git checkout -b 'hotfix'
   $ vim index.html
     $ git commit -a -m 'fixed the broken email address'
@@ -247,7 +247,7 @@ $ git checkout master
  由于当前hotfix分支和master分支都指向相同的提交对象，所以hotfix已经完成了历史使命，可以删掉了。  
  使用`git branch -d`选项执行删除操作：
 
-```
+```bash
 $ git branch -d hotfix
 
 
@@ -298,7 +298,7 @@ $ git checkout master
  图（3-2）——Git自动创建一个包含了合并结果的提交对象。  
  之前工作成功已经合并到了master了，那么iss53也就没用了。你就可以就此删除它，并在问题追踪系统里关闭该问题。
 
-```
+```bash
 $ git branch -d iss53
 
 
@@ -354,7 +354,7 @@ Git做了合并，但是没有提交，它会停下来等你解决冲突。要�
 可以看到`=======`隔开的上半部分，是HEAD（即master分支，在运行merge命令时所切换到的分支）中的内容，下半部分是在iss53分支中的内容。  
  解决冲突的办法无非是二者选其一或者我们亲自整合到一起。比如你可以通过这段内容替换为先这样来解决：
 
-```
+```xml
 <div id="footer">
     please contact us at email.support@github.com
     </div>
@@ -382,7 +382,7 @@ $ git mergetool
 退出合并工具后，Git会询问你合并是否成功。如果回答是，它会为你把相关文件暂存起来，以表明状态为你解决。  
  再运行一次`git status`来确认所有冲突都已解决：
 
-```
+```bash
 $ git status
     # On branch master
     # Changes to be committed:

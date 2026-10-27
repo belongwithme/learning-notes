@@ -47,7 +47,7 @@ HashSet 的底层实现确实是基于 HashMap 的，但这并不意味着 HashS
 ![在这里插入图片描述](./assets/125951275/1973d1e4ee523389ae37ab9e.png)  
  代码实现如下：
 
-```
+```java
 public class HashSet<E>
     extends AbstractSet<E>
     implements Set<E>, Cloneable, java.io.Serializable
@@ -66,7 +66,7 @@ public class HashSet<E>
 
 ### javaDoc分析
 
-```
+```java
 /**
  * This class implements the <tt>Set</tt> interface, backed by a hash table
  * (actually a <tt>HashMap</tt> instance). 
@@ -140,7 +140,7 @@ public class HashSet<E>
 HashSet的构造方法有四种：  
  1：无参构造
 
-```
+```java
  /**
      * Constructs a new, empty set; the backing <tt>HashMap</tt> instance has
      * default initial capacity (16) and load factor (0.75).
@@ -164,7 +164,7 @@ HashSet的构造方法有四种：
 
 静态变量：
 
-```
+```java
 static final long serialVersionUID = -5024744406713321676L;//序列号
 
  private static final Object PRESENT = new Object();
@@ -175,7 +175,7 @@ static final long serialVersionUID = -5024744406713321676L;//序列号
 
 ### 有参构造（参数是集合）
 
-```
+```java
   /**
      * Constructs a new set containing the elements in the specified
      * collection.  The <tt>HashMap</tt> is created with default load factor
@@ -198,7 +198,7 @@ static final long serialVersionUID = -5024744406713321676L;//序列号
 
 3：有参构造（参数是初始容量和负载因子）
 
-```
+```java
    /**
      * Constructs a new, empty set; the backing <tt>HashMap</tt> instance has
      * the specified initial capacity and the specified load factor.
@@ -218,7 +218,7 @@ static final long serialVersionUID = -5024744406713321676L;//序列号
 
 4：有参（参数只有初始容量）
 
-```
+```java
  public HashSet(int initialCapacity) {
         map = new HashMap<>(initialCapacity);
     }
@@ -231,7 +231,7 @@ static final long serialVersionUID = -5024744406713321676L;//序列号
  以add方法举例  
  浅看一眼源码：
 
-```
+```java
    public boolean add(E e) {
         return map.put(e, PRESENT)==null;  
     }

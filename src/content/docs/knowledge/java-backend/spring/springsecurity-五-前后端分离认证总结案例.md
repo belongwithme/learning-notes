@@ -28,7 +28,7 @@ sidebar:
  所以我们要将请求中json格式转换为对象，提取用户数据，然后进行认证。  
  在web传统项目进行认证请求时，底层调用的是`FormLoginConfigurer`，里面用`UsernamePasswordAuthenticationFilter`过滤器中的`attempAuthentication`试图认证的方法进行处理。下面看一下关键代码：
 
-```
+```java
 	if (this.postOnly && !request.getMethod().equals("POST")) {
 			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 		}
@@ -58,7 +58,7 @@ sidebar:
 
 `TestController`方法：
 
-```
+```java
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -79,7 +79,7 @@ public class test {
 
 ### Role
 
-```
+```java
 public class Role {
     private Integer id;
     private String name;
@@ -116,7 +116,7 @@ public class Role {
 
 ### User
 
-```
+```java
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -226,7 +226,7 @@ public class User implements UserDetails {
 
 ## dao层
 
-```
+```java
 import com.wang.entity.Role;
 import com.wang.entity.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -247,7 +247,7 @@ public interface UserDao {
 
 ## service层
 
-```
+```java
 import com.wang.dao.UserDao;
 import com.wang.entity.Role;
 import com.wang.entity.User;
@@ -290,7 +290,7 @@ public class MyUserDetailService implements UserDetailsService {
 
 ### LoginFilter
 
-```
+```java
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -338,7 +338,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 ### SecurityConfig
 
-```
+```java
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wang.service.MyUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -469,7 +469,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 ### mapper
 
-```
+```sql
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -505,7 +505,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 ## properties
 
-```
+```properties
 server.port= 9092
 # 关闭thymeleaf 缓存
 spring.thymeleaf.cache= false
@@ -531,7 +531,7 @@ logging.level.com.example = debug
 
 ## pom.xml
 
-```
+```xml
     <dependencies>
         <dependency>
             <groupId>com.alibaba</groupId>

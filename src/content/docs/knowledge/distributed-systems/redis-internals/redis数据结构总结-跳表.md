@@ -55,7 +55,7 @@ sidebar:
 
 跳表节点是怎么实现多层级的呢？这就需要看「跳表节点」的数据结构了,如下:
 
-```
+```c
 typedef struct zskiplistNode {
     // 后退指针
     struct zskiplistNode *backward;
@@ -132,7 +132,7 @@ Zset 对象要同时保存「元素」和「元素的权重」.
  ![在这里插入图片描述](./assets/145731773/afa1d43ec6878f74dbe90732.png)  
  zskiplist结构的定义如下:
 
-```
+```c
 typedef struct zskiplist {
 
     // 表头节点和表尾节点

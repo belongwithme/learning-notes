@@ -35,7 +35,7 @@ sidebar:
 
 为了逐项验证索引的使用情况，我们先准备一张表t\_user：
 
-```
+```sql
 CREATE TABLE `t_user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `id_no` varchar(18) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '身份编号',
@@ -62,7 +62,7 @@ CREATE TABLE `t_user` (
 
 基础数据insert了4条数据，其中第4条数据的创建时间为未来的时间，用于后续特殊场景的验证：
 
-```
+```sql
 INSERT INTO `t_user` (`id`, `id_no`, `username`, `age`, `create_time`) VALUES (null, '1001', 'Tom1', 11, '2022-02-27 09:04:23');
 INSERT INTO `t_user` (`id`, `id_no`, `username`, `age`, `create_time`) VALUES (null, '1002', 'Tom2', 12, '2022-02-26 09:04:23');
 INSERT INTO `t_user` (`id`, `id_no`, `username`, `age`, `create_time`) VALUES (null, '1003', 'Tom3', 13, '2022-02-25 09:04:23');
@@ -75,7 +75,7 @@ INSERT INTO `t_user` (`id`, `id_no`, `username`, `age`, `create_time`) VALUES (n
 
 * 第一版
 
-```
+```sql
 -- 删除历史存储过程
 DROP PROCEDURE IF EXISTS `insert_t_user`
 
@@ -105,7 +105,7 @@ call insert_t_user(100);
 
 * 第二版
 
-```
+```sql
 -- 删除历史存储过程
 DROP PROCEDURE IF EXISTS `insert_t_user`
 
@@ -147,7 +147,7 @@ select version();
 
 #### 分析SQL示例
 
-```
+```sql
 explain select * from t_user where id = 1;
 
 
@@ -180,7 +180,7 @@ KEY `union_idx` (`id_no`,`username`,`age`)
 
 #### 成功示例一
 
-```
+```sql
 explain select * from t_user where id_no = '1002';
 
 
@@ -198,7 +198,7 @@ explain结果：
 
 #### 成功示例二
 
-```
+```sql
 explain select * from t_user where id_no = '1002' and username = 'Tom2';
 
 
@@ -210,7 +210,7 @@ explain结果：
 
 #### 成功示例三
 
-```
+```sql
 explain select * from t_user where id_no = '1002' and age = 12;
 
 
@@ -224,7 +224,7 @@ explain结果：
 
 #### 失效示例
 
-```
+```sql
 explain select * from t_user where username = 'Tom2' and age = 12;
 
 
@@ -236,7 +236,7 @@ explain结果：
  同样的，下面只要没出现最左条件的组合，索引也是失效的：  
  **在联合索引的场景下，查询条件不满足最左匹配原则**
 
-```
+```sql
 explain select * from t_user where age = 12;
 explain select * from t_user where username = 'Tom2';
 
@@ -258,7 +258,7 @@ explain select * from t_user where username = 'Tom2';
  在上面的联合索引中，如果查询条件是age或username，当使用了select \* ，肯定是不会走索引的。  
  但如果希望根据username查询出id\_no、username、age这三个结果（均为索引字段），明确查询结果字段，是可以走覆盖索引的：
 
-```
+```sql
 explain select id_no, username, age from t_user where username = 'Tom2';
 
 
@@ -267,7 +267,7 @@ explain select id_no, username, age from t_user where username = 'Tom2';
 explain结果：  
  ![在这里插入图片描述](./assets/145491524/9c15ef98ff6689f4291c7f98.png)
 
-```
+```sql
 explain select id_no, username, age from t_user where age = 12;
 
 
@@ -290,7 +290,7 @@ explain结果：
 
 我们按下面例子去解释:
 
-```
+```sql
 explain select id_no, username, age from t_user where age = 12;
 
 
@@ -320,7 +320,7 @@ explain select id_no, username, age from t_user where age = 12;
 
 直接来看示例：
 
-```
+```sql
 explain select * from t_user where id + 1 = 2 ;
 
 
@@ -333,7 +333,7 @@ explain select * from t_user where id + 1 = 2 ;
  建议的使用方式是：先在内存中进行计算好预期的值，或者在SQL语句条件的右侧进行参数值的计算。  
  那优化如下:
 
-```
+```sql
 -- 内存计算，得知要查询的id为1
 explain select * from t_user where id = 1 ;
 -- 参数侧计算
@@ -347,7 +347,7 @@ explain select * from t_user where id = 2 - 1 ;
 
 ### 索引列使用了函数
 
-```
+```sql
 explain select * from t_user where SUBSTR(id_no,1,3) = '100';
 
 
@@ -359,7 +359,7 @@ explain select * from t_user where SUBSTR(id_no,1,3) = '100';
 
 ### 错误的Like使用-模糊匹配占位符位于条件首部
 
-```
+```sql
 explain select * from t_user where id_no like '%00%';
 
 
@@ -379,7 +379,7 @@ explain结果:
 
 ### 类型隐式转换
 
-```
+```sql
 explain select * from t_user where id_no = 1002;
 
 
@@ -391,7 +391,7 @@ explain select * from t_user where id_no = 1002;
  解决方案就是将参数1002添加上单引号或双引号。  
  但是有个特例–字段是Int类型时,查询条件添加单引号或者双引号,MySQL会转换参数为Int类型(虽然使用了单引号或者双引号):
 
-```
+```sql
 explain select * from t_user where id = '2';
 
 
@@ -405,7 +405,7 @@ explain select * from t_user where id = '2';
 OR是日常使用最多的操作关键字了，但使用不当，也会导致索引失效。  
  示例：
 
-```
+```sql
 explain select * from t_user where id = 2 or username = 'Tom2';
 
 
@@ -422,7 +422,7 @@ explain结果：
 
 如果or两边同时使用“>”和“<”，则索引也会失效：
 
-```
+```sql
 explain select * from t_user where id  > 1 or id  < 80;
 
 
@@ -439,7 +439,7 @@ explain结果：
 
 **这里举个不恰当的示例**，比如age小于id这样的两列（真实场景可能是两列同维度的数据比较，这里迁就现有表结构,注意我这里是不恰当的,是不恰当的示例,仅仅是为了说明这种情况,不代表会有这样的业务场景!!!）：
 
-```
+```sql
 explain select * from t_user where id > age;
 
 
@@ -453,7 +453,7 @@ explain结果：
 
 示例：
 
-```
+```sql
 explain select * from t_user where id_no <> '1002';
 
 
@@ -464,7 +464,7 @@ explain结果：
  当**查询条件为字符串时**，使用”<>“或”!=“作为条件查询，**有可能不走索引，但也不全是。**  
  比如:
 
-```
+```sql
 explain select * from t_user where create_time != '2022-02-27 09:56:42';
 
 
@@ -475,7 +475,7 @@ explain select * from t_user where create_time != '2022-02-27 09:56:42';
 
 需要注意的是：上述语句如果是id进行不等操作，则正常走索引。
 
-```
+```sql
 explain select * from t_user where id != 2;
 
 
@@ -488,7 +488,7 @@ explain select * from t_user where id != 2;
 
 示例：
 
-```
+```sql
 explain select * from t_user where id_no is not null;
 
 
@@ -502,7 +502,7 @@ explain结果：
 
 下例:
 
-```
+```sql
 explain select * from t_user where id_no not in('1002' , '1003');
 
 
@@ -512,7 +512,7 @@ explain结果：
  ![在这里插入图片描述](./assets/145491524/42885a6d02230db9e4918228.png)  
  当使用not in时，不走索引？把条件列换成主键试试：
 
-```
+```sql
 explain select * from t_user where id not in (2,3);
 
 
@@ -526,7 +526,7 @@ explain结果：
 
 对于Not Exists 而言:
 
-```
+```sql
 explain select * from t_user u1 where not exists (select 1 from t_user u2 where u2.id  = 2 and u2.id = u1.id);
 
 
@@ -540,7 +540,7 @@ explain结果：
 
 示例：
 
-```
+```sql
 explain select * from t_user order by id_no ;
 
 
@@ -552,7 +552,7 @@ explain结果：
 
 那么，添加添加limit关键字是否就走索引了呢？
 
-```
+```sql
 explain select * from t_user order by id_no limit 10;
 
 
@@ -565,7 +565,7 @@ explain结果：
  **如果 ORDER BY 满足最左匹配，且排序方向一致，就能走索引，避免 filesort**  
  举例:
 
-```
+```sql
 explain SELECT * FROM t_user WHERE id_no = '123456' ORDER BY username, age;
 
 
@@ -577,7 +577,7 @@ explain如下:
 
 还有个特例,就是主键使用order by时，可以正常走索引。
 
-```
+```sql
 explain select * from t_user order by id desc;
 
 

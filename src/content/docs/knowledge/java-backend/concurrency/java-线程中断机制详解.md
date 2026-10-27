@@ -58,7 +58,7 @@ sidebar:
   5. **对 `Lock.lock()` 阻塞的影响**: 如果线程因为调用 `Lock.lock()` 而阻塞，调用 `interrupt()` **不会**唤醒线程，但中断状态会被设置。如果希望锁的获取可以被中断，应该使用 `Lock.lockInterruptibly()`。
 * **源码]**:
 
-  ```
+  ```java
   // java.lang.Thread
   public void interrupt() {
       if (this != Thread.currentThread()) // 检查权限
@@ -122,7 +122,7 @@ sidebar:
 * **使用场景**: 这是在线程内部检查自己是否被中断的最常用方式，特别是在循环任务中。
 * **源码浅析 (基于 OpenJDK)**:
 
-  ```
+  ```java
   // java.lang.Thread
   public boolean isInterrupted() {
       // isInterrupted(false) 表示不清除中断状态
@@ -157,7 +157,7 @@ sidebar:
 * **使用场景**: 通常在捕获 `InterruptedException` 后，如果想在处理异常的同时再次检查中断状态（虽然不常见，因为 `InterruptedException` 本身就表明了中断），或者在某些特定的中断处理逻辑中需要清除状态时使用。但大多数情况下，推荐使用 `isInterrupted()`。
 * **源码**:
 
-  ```
+  ```java
   // java.lang.Thread
   public static boolean interrupted() {
       // isInterrupted(true) 表示检查后清除中断状态
@@ -215,7 +215,7 @@ sidebar:
 
 如果你的线程执行的是一个循环任务或者包含多个步骤的计算，你应该在合适的时机（例如循环的开始处或耗时操作之前）检查中断状态。
 
-```
+```java
 class MyTask implements Runnable {
     @Override
     public void run() {
@@ -295,7 +295,7 @@ public class InterruptCheckExample {
 
 这是**最推荐**的做法，特别是当你的代码是一个库或框架的一部分，或者当前方法不是线程任务的顶层时。因为捕获 `InterruptedException` 时中断状态已被清除，如果不恢复它，上层调用栈就无法得知中断的发生。
 
-```
+```java
 public void someMethod() {
     try {
         while (!Thread.currentThread().isInterrupted()) {
@@ -338,7 +338,7 @@ private void cleanupResources() {
 
 如果当前方法不适合处理中断（例如，它只是一个工具方法或中间层），可以将异常直接向上抛给调用者处理。这需要你的方法签名包含 `throws InterruptedException`。
 
-```
+```java
 // 当前方法不知道如何处理中断，将责任交给上层
 public void processData() throws InterruptedException {
     // ... 一些准备工作 ...
@@ -378,7 +378,7 @@ public void run() {
 
 如果捕获 `InterruptedException` 的地方就是线程任务的最高层逻辑（例如 `Runnable` 的 `run()` 方法），并且你知道中断意味着整个任务应该结束，那么可以直接进行清理并终止。
 
-```
+```java
 @Override
 public void run() {
     try {
@@ -437,7 +437,7 @@ try {
 
 这是最基本、最直接的方式，适用于你持有目标线程 `Thread` 对象引用的情况。
 
-```
+```java
 Thread worker = new Thread(() -> {
     while (!Thread.currentThread().isInterrupted()) {
         System.out.println("工作...");
@@ -471,7 +471,7 @@ worker.interrupt();
 * **`ExecutorService.shutdown()`**: 启动有序关闭。不再接受新任务，但会等待已经提交的任务（包括正在运行和在队列中等待的）执行完成。**不会**主动中断正在运行的任务。
 * **`ExecutorService.shutdownNow()`**: 尝试立即停止所有活动执行的任务，暂停处理等待的任务，并返回等待执行的任务列表。为了停止活动任务，`shutdownNow()` 会**遍历线程池中的工作线程并调用每个线程的 `interrupt()` 方法**。因此，你的任务代码必须能正确响应中断才能被 `shutdownNow()` 有效停止。
 
-```
+```java
 import java.util.concurrent.*;
 
 public class FutureCancelExample {
@@ -523,7 +523,7 @@ public class FutureCancelExample {
 
 * **`thread.join(long millis)`**: 等待目标线程 `thread` 终止，但最多等待 `millis` 毫秒。如果超时，`join` 方法会返回，此时可以检查线程是否还在活动 (`isAlive()`)，如果是，则手动调用 `interrupt()`。
 
-  ```
+  ```java
   Thread longRunning = new Thread(() -> { /* ... 长时间任务 ... */ });
   longRunning.start();
   try {
@@ -627,7 +627,7 @@ public class FutureCancelExample {
 
 下面是一个简化的生产者-消费者示例，展示如何使用中断来请求生产者和消费者线程停止。
 
-```
+```java
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 

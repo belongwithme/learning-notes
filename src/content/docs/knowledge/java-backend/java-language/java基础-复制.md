@@ -34,7 +34,7 @@ sidebar:
  ![在这里插入图片描述](./assets/136745684/5c257aad78e572ae3080a6d8.png)  
  代码示例:
 
-```
+```java
 class Son {
     String name;
     int age;
@@ -89,7 +89,7 @@ true
    为什么要重写呢?  
    重写是为了扩大访问权限,如果不重写,Object的clone方法的修饰符是protected，除了与Object同包(java.lang)和直接子类能访问，其他类无权访问。
 
-```
+```java
 @Override
 protected Object clone() throws CloneNotSupportedException {
   return super.clone();
@@ -100,7 +100,7 @@ protected Object clone() throws CloneNotSupportedException {
 
 在使用的时候直接调用类的clone()方法即可.如下
 
-```
+```java
 class Father{
     String name;
     public Father(String name) {
@@ -182,7 +182,7 @@ public class test {
 
 如果要使用这种方法,那么就要将类中所有自定义引用变量的类也实现Cloneable接口实现clone()方法
 
-```
+```java
 //Father clone()方法
 @Override
 protected Father clone() throws CloneNotSupportedException {
@@ -228,7 +228,7 @@ Son{age=13, name='son1', father=Father{name='bigFather'}}
  具体实现上:  
  自定义类需要实现Serializable接口,在需要深拷贝的类(Son)中定义一个函数返回该类对象.
 
-```
+```java
 protected Son deepClone() throws IOException, ClassNotFoundException {
       Son son=null;
       //在内存中创建一个字节数组缓冲区，所有发送到输出流的数据保存在该字节数组中

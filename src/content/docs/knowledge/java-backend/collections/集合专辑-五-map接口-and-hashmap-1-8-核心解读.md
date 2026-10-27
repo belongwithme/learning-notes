@@ -36,7 +36,7 @@ sidebar:
 4. Map接口下的集合类都属于双列结合，元素都是键值对形式存在  
     二：简单方法例子
 
-```
+```java
         Map map = new HashMap();
         map.put("就是爱你", "陶喆");
         map.put("流沙", "陶喆");
@@ -84,7 +84,7 @@ Jdk1.8之后，采用的是数组+链表/红黑树，之所以改为**红黑树�
 ![在这里插入图片描述](./assets/125796898/feb781cdd4ef69d0f08df24f.png)  
  代码如下：
 
-```
+```java
 public class HashMap<K,V> extends AbstractMap<K,V>
     implements Map<K,V>, Cloneable, Serializable 
 
@@ -100,7 +100,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
 
 #### javaDoc分析
 
-```
+```java
 /**
  * Hash table based implementation of the <tt>Map</tt> interface.  This
  * implementation provides all of the optional map operations, and permits
@@ -392,7 +392,7 @@ HashMap的构造函数一共有四种：
 
 第三种.有参(参数为初始化容量和负载因子)
 
-```
+```java
  /**
      * Constructs an empty <tt>HashMap</tt> with the specified initial
      * capacity and load factor.
@@ -493,7 +493,7 @@ HashMap的构造函数一共有四种：
 
 Node是构成桶中链表的基本元素。
 
-```
+```java
   /**
      * Basic hash bin node, used for most entries.  (See below for
      * TreeNode subclass, and in LinkedHashMap for its Entry subclass.)
@@ -549,7 +549,7 @@ keySet是一个成员变量,它的类型是Set,用于存储HashMap中所有的�
  我们可以通过调用hashMap.KeySet()方法，将映射表中的所有键组织成Set结构。我们将这种结合内部的集合成为视图。  
  keyset并不是新的集合类，简单看做HashMap中部分数据的组织形式，方便迭代查找操作就可以了。
 
-```
+```java
   /**
      * Returns a {@link Set} view of the keys contained in this map.
      *  一个包含map全部key的视图
@@ -629,7 +629,7 @@ public interface Consumer<T> {
 这里深入分析一下，为什么在keyset中HashMap没有把键添加到Set集合中，那么它是通过什么样的逻辑方法添加键呢？  
  我们深入分析一下keyset的底层调用逻辑：
 
-```
+```java
     public Set<K> keySet() {   
         Set<K> ks = keySet;   // 这里的keySet是什么？
 
@@ -640,7 +640,7 @@ public interface Consumer<T> {
  可以看到，这是AbstractMap里面的一个成员变量（用transient修饰，返回值是一个set集合)，  
  我们看后面的代码：
 
-```
+```java
  if (ks == null) {                //如果发现ks的引用为null，则构建一个KetSet。
             ks = new KeySet();
             keySet = ks;
@@ -651,7 +651,7 @@ public interface Consumer<T> {
 
 这里的KetSet是构造函数里面的：
 
-```
+```java
 final class KeySet extends AbstractSet<K> {
         public final int size()                 { return size; }
         public final void clear()               { HashMap.this.clear(); }
@@ -663,7 +663,7 @@ final class KeySet extends AbstractSet<K> {
 
 我们继续看什么是KeyIterator：
 
-```
+```java
     final class KeyIterator extends HashIterator implements Iterator<K> {
         public final K next() { 
         return nextNode().key;
@@ -675,7 +675,7 @@ final class KeySet extends AbstractSet<K> {
 
 这就很明了，我们再去看什么是nextNode：
 
-```
+```java
   final Node<K,V> nextNode() {
             Node<K,V>[] t; 保存hash数组的table
             Node<K,V> e = next;   保存当前节点的下一个节点
@@ -739,7 +739,7 @@ t：保存hash数组的table
  Map中采用Entry内部类来表示一个映射项，映射项包含key和value（其实键值对就是Entry）  
  来看代码吧，你会发现和keySet很相似
 
-```
+```java
  final class EntrySet extends AbstractSet<Map.Entry<K,V>> {
         public final int size()                 { return size; }
         public final void clear()               { HashMap.this.clear(); }
@@ -792,7 +792,7 @@ t：保存hash数组的table
 和EntrySet与KeySet同理，只是accept中的参数是e.value而不是上面两个内部类的e.key  
  代码如下：
 
-```
+```java
 final class Values extends AbstractCollection<V> {
         public final int size()                 { return size; }
         public final void clear()               { HashMap.this.clear(); }
@@ -851,7 +851,7 @@ final class Values extends AbstractCollection<V> {
 
 首先我们来看一下put函数：
 
-```
+```java
   public V put(K key, V value) {
         return putVal(hash(key), key, value, false, true);
     }
@@ -960,7 +960,7 @@ final class Values extends AbstractCollection<V> {
 * newCap：新哈希表的容量
 * newThr： 新哈希表的阈值
 
-```
+```java
   final Node<K,V>[] resize() {
         Node<K,V>[] oldTab = table;
         //oldCap为table的size

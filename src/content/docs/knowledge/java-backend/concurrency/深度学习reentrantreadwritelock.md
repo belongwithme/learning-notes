@@ -78,7 +78,7 @@ sidebar:
 
 **示例：**
 
-```
+```java
 import java.util.concurrent.locks.*;
 
 public class ReentrancyDemo {
@@ -163,7 +163,7 @@ public class ReentrancyDemo {
 
 `ReentrantReadWriteLock` 允许你在创建时选择**公平模式**或**非公平模式**（默认）：
 
-```
+```java
 // 非公平模式 (默认)
 ReadWriteLock nonFairLock = new ReentrantReadWriteLock();
 ReadWriteLock nonFairLockExplicit = new ReentrantReadWriteLock(false);
@@ -312,7 +312,7 @@ try {
 
 **示例：**
 
-```
+```java
 ReadWriteLock lock = new ReentrantReadWriteLock();
 Lock readLock = lock.readLock();
 
@@ -360,7 +360,7 @@ try {
 
 **示例 (使用写锁的 Condition)：**
 
-```
+```java
 import java.util.concurrent.locks.*;
 
 public class ConditionDemo {
@@ -500,7 +500,7 @@ public class ConditionDemo {
 
 `ReentrantReadWriteLock` 内部定义了一个名为 `Sync` 的静态内部类，它继承自 `AQS`。`Sync` 有两个子类：`NonfairSync` 和 `FairSync`，分别对应非公平和公平模式。`ReadLock` 和 `WriteLock` 这两个外部可见的锁类，都持有对其关联的 `Sync` 对象的引用，并将锁操作委托给 `Sync` 对象。
 
-```
+```java
 // ReentrantReadWriteLock 结构简化示意
 public class ReentrantReadWriteLock implements ReadWriteLock, java.io.Serializable {
     private final ReentrantReadWriteLock.ReadLock readerLock; // 读锁实例
@@ -610,7 +610,7 @@ static int exclusiveCount(int c) { return c & EXCLUSIVE_MASK; }
 
 当调用 `writeLock().lock()` 时，内部会调用 AQS 的 `acquire(1)` 方法。`acquire` 是模板方法，它会调用子类实现的 `tryAcquire(1)`。我们来看 `Sync#tryAcquire` 的实现（这里展示的是非公平锁的逻辑核心，公平锁的逻辑类似，只是多了 `hasQueuedPredecessors` 的检查）：
 
-```
+```java
 // java.util.concurrent.locks.ReentrantReadWriteLock.Sync#tryAcquire
 protected final boolean tryAcquire(int acquires) {
     /*
@@ -678,7 +678,7 @@ protected final boolean tryAcquire(int acquires) {
 
 当调用 `writeLock().unlock()` 时，内部调用 AQS 的 `release(1)`，它会调用 `tryRelease(1)`。
 
-```
+```java
 // java.util.concurrent.locks.ReentrantReadWriteLock.Sync#tryRelease
 protected final boolean tryRelease(int releases) {
     // 检查调用 unlock 的线程是否是当前持有写锁的线程
@@ -713,7 +713,7 @@ protected final boolean tryRelease(int releases) {
 
 调用 `readLock().lock()` 时，内部调用 `acquireShared(1)`，它会调用 `tryAcquireShared(1)`。读锁的获取逻辑比写锁复杂，因为它需要处理共享、重入、锁降级以及与写锁的互斥。
 
-```
+```java
 // java.util.concurrent.locks.ReentrantReadWriteLock.Sync#tryAcquireShared
 protected final int tryAcquireShared(int unused) { // unused 参数通常是 1，但在这里没用到
     /*
@@ -806,7 +806,7 @@ protected final int tryAcquireShared(int unused) { // unused 参数通常是 1�
 
 调用 `readLock().unlock()` 时，内部调用 `releaseShared(1)`，它会调用 `tryReleaseShared(1)`。
 
-```
+```java
 // java.util.concurrent.locks.ReentrantReadWriteLock.Sync#tryReleaseShared
 protected final boolean tryReleaseShared(int unused) {
     Thread current = Thread.currentThread();
@@ -862,7 +862,7 @@ protected final boolean tryReleaseShared(int unused) {
 
 **NonfairSync:**
 
-```
+```java
 // 非公平同步器
 static final class NonfairSync extends Sync {
     // 写者是否应该阻塞？非公平模式下，只要 CAS 成功就不阻塞
@@ -889,7 +889,7 @@ static final class NonfairSync extends Sync {
 
 **FairSync:**
 
-```
+```java
 // 公平同步器
 static final class FairSync extends Sync {
     // 写者是否应该阻塞？公平模式下，检查队列是否有前驱节点
@@ -950,7 +950,7 @@ static final class FairSync extends Sync {
 
 我们来看一个稍微健壮一点的基于 `ReentrantReadWriteLock` 的缓存示例，重点关注 `computeIfAbsent` 的实现：
 
-```
+```java
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;

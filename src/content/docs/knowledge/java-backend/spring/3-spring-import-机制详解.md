@@ -28,7 +28,7 @@ Spring
 
 **位置:** `spring-context/src/main/java/org/springframework/context/annotation/Import.java:56`
 
-```
+```java
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -59,7 +59,7 @@ public @interface Import {
 
 **代码示例：**
 
-```
+```java
 // 步骤1：定义配置类
 @Configuration
 public class DatabaseConfig {
@@ -131,7 +131,7 @@ CacheManager: ConcurrentMapCacheManager (...)
 
 **位置:** ImportSelector.java:61
 
-```
+```java
 public interface ImportSelector {
     // 返回要导入的类名数组
     String[] selectImports(AnnotationMetadata importingClassMetadata);
@@ -155,7 +155,7 @@ public interface ImportSelector {
 
 **完整代码示例：**
 
-```
+```java
 // 步骤1：定义需要被导入的配置类
 @Configuration
 public class RedisConfig {
@@ -276,7 +276,7 @@ KafkaConfig 被导入，创建 KafkaTemplate Bean
 
 **Spring 实际使用示例:** `@EnableAsync`
 
-```
+```java
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -314,7 +314,7 @@ public class AsyncConfigurationSelector extends AdviceModeImportSelector<EnableA
 
 **位置:** DeferredImportSelector.java:38
 
-```
+```java
 public interface DeferredImportSelector extends ImportSelector {
 
     // 返回分组（可选）
@@ -341,7 +341,7 @@ public interface DeferredImportSelector extends ImportSelector {
 
 **完整代码示例：**
 
-```
+```java
 // 步骤1：定义配置类
 @Configuration
 public class MongoDBConfig {
@@ -415,7 +415,7 @@ DeferredImportSelector 执行：此时所有配置类都已处理完毕
 
 **Spring Boot 自动配置原理：**
 
-```
+```java
 // Spring Boot 的 @EnableAutoConfiguration 注解
 @Import(AutoConfigurationImportSelector.class)
 public @interface EnableAutoConfiguration {
@@ -447,7 +447,7 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector {
 
 **位置:** ImportBeanDefinitionRegistrar.java:61
 
-```
+```java
 public interface ImportBeanDefinitionRegistrar {
 
     // 注册BeanDefinition
@@ -478,7 +478,7 @@ public interface ImportBeanDefinitionRegistrar {
 
 **完整代码示例：**
 
-```
+```java
 // 步骤1：定义一个普通类（不需要任何注解）
 public class CustomService {
     private String name;
@@ -601,7 +601,7 @@ CustomService - Name: special, Version: 1.0.0
 
 **MyBatis 的 @MapperScan 实现原理：**
 
-```
+```java
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Import(MapperScannerRegistrar.class)
@@ -636,7 +636,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar {
 核心处理逻辑在 **ConfigurationClassParser.processImports()** 方法中  
  （ConfigurationClassParser.java:553-616）：
 
-```
+```java
 private void processImports(ConfigurationClass configClass,
                            SourceClass currentSourceClass,
                            Collection<SourceClass> importCandidates,
@@ -723,7 +723,7 @@ private void processImports(ConfigurationClass configClass,
 
 **处理流程图：**
 
-```
+```java
 @Import 注解
     ↓
 ConfigurationClassParser 解析
@@ -750,7 +750,7 @@ processImports() 方法
 
 **位置:** `ConfigurationClassParser.parse() - ConfigurationClassParser.java:170`
 
-```
+```java
 1. 解析 @PropertySource 注解
    ↓
 2. 解析 @ComponentScan 注解（扫描并注册组件）
@@ -774,7 +774,7 @@ processImports() 方法
 
 **代码示例展示执行顺序：**
 
-```
+```java
 // 定义各种 Selector 来观察执行顺序
 public class FirstImportSelector implements ImportSelector {
     @Override
@@ -833,7 +833,7 @@ public class AppConfig {
 
 **运行结果：**
 
-```
+```java
 1. FirstImportSelector 执行（立即执行）
 2. SecondImportSelector 执行（立即执行）
 3. AppConfig 构造函数执行
@@ -848,7 +848,7 @@ public class AppConfig {
 
 Spring 通过 **ImportStack** 跟踪导入链，防止循环依赖：
 
-```
+```java
 // 示例：循环导入会被检测
 @Configuration
 @Import(ConfigB.class)
@@ -874,7 +874,7 @@ public class ConfigB {
 
 根据不同环境或条件导入不同配置类。
 
-```
+```java
 public class EnvironmentImportSelector implements ImportSelector {
 
     @Override
@@ -899,7 +899,7 @@ public class EnvironmentImportSelector implements ImportSelector {
 
 模仿 Spring 的 `@EnableAsync`、`@EnableCaching` 等注解。
 
-```
+```java
 // 启用短信服务模块
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -931,7 +931,7 @@ public class Application {
 
 Spring Boot 的核心机制。
 
-```
+```java
 // spring.factories 文件内容：
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.example.autoconfigure.RedisAutoConfiguration,\
@@ -955,7 +955,7 @@ public class RedisAutoConfiguration {
 
 ### 4. 动态 Bean 注册 - MyBatis Mapper 扫描
 
-```
+```java
 @Configuration
 @MapperScan("com.example.mapper")  // 扫描 Mapper 接口
 public class MyBatisConfig {
@@ -1012,7 +1012,7 @@ public class MyBatisConfig {
    * 不会触发类的初始化
 6. **@Enable* 注解的通用模式*\*
 
-   ```
+   ```java
    @Target(ElementType.TYPE)
    @Retention(RetentionPolicy.RUNTIME)
    @Import(XXXSelector.class)  // 或 XXXConfiguration.class

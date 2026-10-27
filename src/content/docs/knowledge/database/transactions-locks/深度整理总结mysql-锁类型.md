@@ -95,7 +95,7 @@ UNLOCK TABLES;                -- 释放表锁
 
 读锁允许其他线程同时读取该表，但禁止写入。
 
-```
+```sql
 LOCK TABLES users READ;
 SELECT * FROM users; -- 允许查询
 INSERT INTO users (name) VALUES ('Alice'); -- 阻塞（不能写）
@@ -108,7 +108,7 @@ UNLOCK TABLES;
 
 写锁会阻塞所有其他线程，直到锁释放。
 
-```
+```sql
 LOCK TABLES users WRITE;
 SELECT * FROM users; -- 允许查询
 INSERT INTO users (name) VALUES ('Alice'); -- 允许写入
@@ -152,7 +152,7 @@ UNLOCK TABLES;
 读锁示例:  
  只要查询表，就会自动加MDL 读锁，防止表结构被修改。
 
-```
+```sql
 SELECT * FROM users;  -- 自动加 MDL 读锁
 -- 其他事务可以继续查询或修改 users 表，但不能执行 ALTER TABLE
 
@@ -162,7 +162,7 @@ SELECT * FROM users;  -- 自动加 MDL 读锁
 写锁示例:  
  ALTER TABLE 会加MDL 写锁，阻塞所有对 users 表的访问，直到 DDL 语句执行完毕。
 
-```
+```sql
 ALTER TABLE users ADD COLUMN age INT;  -- 自动加 MDL 写锁
 
 
@@ -173,7 +173,7 @@ ALTER TABLE users ADD COLUMN age INT;  -- 自动加 MDL 写锁
 MDL不会主动释放,当表上有长时间运行的查询(如大事务、慢 SQL),DDL语句会一直等待,导致死锁或阻塞所有查询.  
  举例
 
-```
+```sql
 -- 事务 1（长时间查询，持有 MDL 读锁）
 BEGIN;
 SELECT * FROM users;  -- 事务未提交，MDL 读锁一直持有
@@ -252,7 +252,7 @@ select ... for update;
 
 意向共享锁（IS）示例:
 
-```
+```sql
 -- 事务 1
 SELECT * FROM users WHERE age > 20;  -- 自动在表级加 IS 锁
 
@@ -264,7 +264,7 @@ SELECT * FROM users WHERE age > 20;  -- 自动在表级加 IS 锁
 意向排它锁(IX)示例:  
  当一个事务打算对表中的某些行加排他锁时，MySQL 会自动在表级别加上意向排他锁（IX）。
 
-```
+```sql
 -- 事务 2
 UPDATE users SET name = 'John' WHERE age > 30;  -- 自动在表级加 IX 锁
 
@@ -349,7 +349,7 @@ InnoDB 存储引擎中的 AUTO-INC 锁 只会在插入操作时使用，并且�
 
 ##### 案例
 
-```
+```sql
 select * from t_test where id = 1 for update;
 
 

@@ -137,7 +137,7 @@ JDK
 
 如果你的任务只是执行某些操作（例如修改共享数据结构、打印、初始化等），而不需要返回一个计算结果给调用者，就使用 `RecursiveAction`。你需要重写其 `compute()` 方法，该方法返回 `void`。
 
-```
+```java
 // 伪代码示例
 class MyAction extends RecursiveAction {
     // ... 任务所需数据
@@ -174,7 +174,7 @@ class MyAction extends RecursiveAction {
 
 如果你的任务需要进行计算，并将计算结果返回给调用者（通常是分解它的父任务），就使用 `RecursiveTask<V>`。你需要重写其 `compute()` 方法，该方法需要返回一个 `V` 类型的结果。
 
-```
+```java
 // 伪代码示例
 class MyTask extends RecursiveTask<ResultType> {
     // ... 任务所需数据
@@ -286,7 +286,7 @@ Helper
 
 #### `fork()` 的背后：任务入队
 
-```
+```java
 // ForkJoinTask.java
 public final ForkJoinTask<V> fork() {
     Thread t;
@@ -337,7 +337,7 @@ final void push(ForkJoinTask<?> task) {
 
 #### `join()` 的智慧：等待与“帮助”
 
-```
+```java
 // ForkJoinTask.java
 public final V join() {
     int s;
@@ -454,7 +454,7 @@ final int awaitJoin(WorkQueue w, ForkJoinTask<?> task, long deadline) {
 
 我们需要创建一个 `RecursiveTask<Long>`，因为计算结果是一个 `long` 类型的和。
 
-```
+```java
 import java.util.concurrent.RecursiveTask;
 
 public class SumTask extends RecursiveTask<Long> {
@@ -553,7 +553,7 @@ public class SumTask extends RecursiveTask<Long> {
 
 现在我们需要创建 `ForkJoinPool`，创建顶层的 `SumTask`，并使用 `invoke()` 方法来启动计算并获取最终结果。
 
-```
+```java
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.LongStream;
 
@@ -887,7 +887,7 @@ Profiler 是定位 `ForkJoinPool` 相关性能瓶颈的终极武器。
   + `boolean isReleasable();`: 检查阻塞状态是否可以解除（例如，锁是否可用、IO 是否就绪）。**此方法必须是非阻塞的**，并且要足够快。
 * **使用方式：**
 
-```
+```java
 ForkJoinPool.managedBlock(new ManagedBlocker() {
     @Override
     public boolean isReleasable() {
@@ -927,7 +927,7 @@ ForkJoinPool.managedBlock(new ManagedBlocker() {
 
 假设我们需要在一个 `ForkJoinTask` 中获取一个全局锁：
 
-```
+```java
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinPool.ManagedBlocker;
 import java.util.concurrent.locks.ReentrantLock;

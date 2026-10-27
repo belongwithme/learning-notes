@@ -29,7 +29,7 @@ sidebar:
 优化器分析出成本最小的执行计划后,执行器就按照执行计划开始进行更新操作.  
  假如目前有条记录:
 
-```
+```sql
 UPDATE t_user SET name = 'xiaolin' WHERE id = 1;
 
 
@@ -57,7 +57,7 @@ UPDATE t_user SET name = 'xiaolin' WHERE id = 1;
  举个例子:  
  假设 id = 1 这行数据的字段 name 的值原本是 ‘jay’,执行下面语句:
 
-```
+```sql
 UPDATE t_user SET name = 'xiaolin' WHERE id = 1;
 
 

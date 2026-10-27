@@ -90,7 +90,7 @@ DAO/Mapper 层
 
 这是最原始、最直接的方式。通过 new 一个目标对象，然后将源对象的属性通过 get() 方法取出，再通过 set() 方法赋给目标对象。
 
-```
+```java
 public CouponTemplateDO convertToCouponTemplateDO(CouponTemplateReqDTO reqDTO) {
     if (reqDTO == null) {
         return null;
@@ -151,7 +151,7 @@ MapStruct 作为一个注解处理器（`Annotation Processor`）集成在 `Java
 
 一. 定义 `Mapper` 接口: 创建一个接口，并使用 `@Mapper` 注解将其标记为 `MapStruct` 的映射接口。
 
-```
+```java
 @Mapper
 public interface CarMapper {
     // ...
@@ -201,7 +201,7 @@ CarDto dto = CarMapper.INSTANCE.carToCarDto(someCarObject);
 
 第一步：定义转换器接口
 
-```
+```java
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

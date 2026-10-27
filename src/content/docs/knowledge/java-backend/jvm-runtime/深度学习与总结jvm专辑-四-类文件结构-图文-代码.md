@@ -157,7 +157,7 @@ Class结构由于没有任何分隔符号，所以在上图中的数据项，无
 输入javap -verbose -p 类名.class查看输出内容  
  代码如下：
 
-```
+```java
 public class demo3 {
     private int m;
 
@@ -171,7 +171,7 @@ public class demo3 {
 
 反编译之后：
 
-```
+```java
 E:\JVMDEMO\src\main\java\demo2>javap -verbose -p demo3.class
 Classfile /E:/JVMDEMO/src/main/java/demo2/demo3.class
   Last modified 2022年11月28日; size 273 bytes
@@ -247,7 +247,7 @@ final
  举个栗子：  
  有一个类如下：
 
-```
+```java
 public class demo3 {
     private int m;
 
@@ -426,7 +426,7 @@ Code属性是Class文件中最重要的一个属性，如果把一个Java程序�
  我们依旧那demo3.class文件举例：  
  代码如下：
 
-```
+```java
 public class demo3 {
     private int m;
 
@@ -456,7 +456,7 @@ public class demo3 {
 
 原始Java代码：
 
-```
+```java
 public class TestClass {
     private int m;
 
@@ -470,7 +470,7 @@ public class TestClass {
 
 javap -verbose TestClass之后：
 
-```
+```java
 // 常量表部分的输出因版面原因这里省略掉
 public org.fenixsoft.clazz.TestClass();
     Code:
@@ -521,7 +521,7 @@ public int inc();
 我们展示一个异常表如何运作的例子：  
  源码：
 
-```
+```java
 public int inc() {
     int x;
     try {
@@ -540,7 +540,7 @@ public int inc() {
 
 编译后的ByteCode字节码及异常表：
 
-```
+```java
 public int inc();
     Code:
         Stack=1, Locals=5, Args_size=1

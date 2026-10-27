@@ -105,7 +105,7 @@ sidebar:
 
 ### 3.1 核心成员变量
 
-```
+```java
 /**
  * 底层存储元素的数组。被 volatile 修饰，保证其引用在多线程间的可见性。
  * 这是实现无锁读的关键。任何线程读取 array 时，都能看到最新被写入的数组引用。
@@ -212,7 +212,7 @@ final transient ReentrantLock lock = new ReentrantLock();
 
 读操作是 `CopyOnWriteArrayList` 的性能优势所在。它们非常简单直接，**完全不需要加锁**。
 
-```
+```java
 /**
  * 获取当前内部数组的引用。
  * 由于 array 是 volatile 的，此方法总能获取到最新的数组引用。
@@ -278,7 +278,7 @@ public boolean isEmpty() {
 
 #### 3.4.1 `add(E e)` - 添加元素到末尾
 
-```
+```java
 /**
  * 将指定元素追加到列表的末尾。
  * @param e 要追加到列表的元素
@@ -327,7 +327,7 @@ public boolean add(E e) {
 
 #### 3.4.2 `add(int index, E element)` - 在指定位置插入元素
 
-```
+```java
 /**
  * 在列表的指定位置插入指定元素。
  * 将当前位于该位置的元素（如果有）以及所有后续元素向右移动（索引加 1）。
@@ -395,7 +395,7 @@ public void add(int index, E element) {
 
 #### 3.4.3 `remove(int index)` - 删除指定位置的元素
 
-```
+```java
 /**
  * 移除列表中指定位置的元素。
  * 将所有后续元素向左移动（索引减 1）。
@@ -458,7 +458,7 @@ public E remove(int index) {
 
 #### 3.4.4 `set(int index, E element)` - 替换指定位置的元素
 
-```
+```java
 /**
  * 使用指定元素替换列表中指定位置的元素。
  * @param index 要替换元素的索引
@@ -523,7 +523,7 @@ public E set(int index, E element) {
 
 `CopyOnWriteArrayList` 的迭代器是其另一个显著特点，它提供了 **弱一致性 (Weak Consistency)** 或称为 **快照 (Snapshot) 迭代器**。
 
-```
+```java
 /**
  * 返回在此列表中的元素上进行迭代的迭代器。
  * 返回的迭代器提供列表状态的“快照”。不需要同步，并且 *不会* 抛出 ConcurrentModificationException。
@@ -771,7 +771,7 @@ static final class COWIterator<E> implements ListIterator<E> {
 3. **理解弱一致性**：确保业务逻辑能够容忍读取到稍微过时的数据。如果需要强一致性，不要使用 `CopyOnWriteArrayList`。例如，在一个需要精确统计在线用户数的场景中，用它存储在线用户列表可能就不合适，因为 `size()` 返回的可能不是实时的准确数量。
 4. **避免在循环中频繁写入**：绝对不要在循环（尤其是次数不确定的循环）中频繁调用 `CopyOnWriteArrayList` 的写方法。例如，下面的代码是灾难性的：
 
-   ```
+   ```java
    // 灾难性用法！不要这样做！
    CopyOnWriteArrayList<String> list = new CopyOnWriteArrayList<>();
    for (int i = 0; i < 100000; i++) {
@@ -783,7 +783,7 @@ static final class COWIterator<E> implements ListIterator<E> {
 
    如果需要批量添加，应该先收集到另一个临时列表（如 `ArrayList`）中，然后使用 `addAll()` 方法一次性添加，或者使用接受集合的构造函数。`addAll()` 内部有优化，会计算好最终大小，只进行一次数组复制。
 
-   ```
+   ```java
    // 正确的批量添加方式
    List<String> tempList = new ArrayList<>();
    for (int i = 0; i < 100000; i++) {

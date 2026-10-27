@@ -185,7 +185,7 @@ ConcurrentSkipListMap采用了多种无锁并发策略来保证线程安全，�
 1. **CAS(Compare-And-Swap)操作**：  
     CAS是无锁算法的核心，它是一种原子操作，比较内存位置的当前值与预期值，只有当它们相同时才将该位置更新为新值。
 
-   ```
+   ```java
    // 使用Unsafe类的CAS操作
    boolean casNext(Node<K,V> cmp, Node<K,V> val) {
        return UNSAFE.compareAndSwapObject(this, nextOffset, cmp, val);
@@ -215,7 +215,7 @@ ConcurrentSkipListMap采用了多种无锁并发策略来保证线程安全，�
 3. **版本标记(Versioned References)**：  
     ConcurrentSkipListMap使用引用对象地址的最低位作为标记位，标记节点是否已被删除。
 
-   ```
+   ```java
    // 标记节点已删除
    static <K,V> Node<K,V> markNode(Node<K,V> n) {
        return (n == null) ? null : new Node<K,V>(n.key, n.value, n, null);
@@ -231,7 +231,7 @@ ConcurrentSkipListMap采用了多种无锁并发策略来保证线程安全，�
 4. **读取-复制-写入模式**：  
     修改操作不直接修改现有结构，而是创建新节点，通过CAS操作将新节点链接到正确位置。
 
-   ```
+   ```java
    // 添加新节点的简化示例
    Node<K,V> newNode = new Node<K,V>(key, value, null);
    for (;;) {
@@ -282,7 +282,7 @@ ConcurrentSkipListMap采用了多种无锁并发策略来保证线程安全，�
 
 ConcurrentSkipListMap提供了多个构造方法，以适应不同的初始化需求：
 
-```
+```java
 // 默认构造方法
 public ConcurrentSkipListMap() {
     this.comparator = null;
@@ -330,7 +330,7 @@ private void initialize() {
 
 put方法是ConcurrentSkipListMap的核心写操作，它的实现体现了跳表的并发插入算法：
 
-```
+```java
 public V put(K key, V value) {
     if (value == null)
         throw new NullPointerException();
@@ -476,7 +476,7 @@ put操作的关键在于它的无锁设计和随机层级生成算法，这使�
 
 get方法是ConcurrentSkipListMap的核心读操作，它利用跳表的多层索引结构快速定位元素：
 
-```
+```java
 public V get(Object key) {
     return doGet(key);
 }
@@ -577,7 +577,7 @@ get操作充分利用了跳表的多层索引结构，使得查找操作的平�
 
 remove方法是ConcurrentSkipListMap的核心删除操作，它实现了无锁的并发删除算法：
 
-```
+```java
 public V remove(Object key) {
     return doRemove(key, null);
 }
@@ -664,7 +664,7 @@ remove操作的关键在于它的两阶段删除设计：先逻辑删除（标�
 
 ConcurrentSkipListMap的迭代器实现提供了弱一致性的保证，不会抛出ConcurrentModificationException：
 
-```
+```java
 public Set<K> keySet() {
     KeySet<K> ks = keySet;
     return (ks != null) ? ks : (keySet = new KeySet<K>(this));
@@ -843,7 +843,7 @@ ConcurrentSkipListMap的并发性能特点：
 
 1. **实时排行榜系统**：
 
-   ```
+   ```java
    private final ConcurrentSkipListMap<Score, User> rankingBoard = 
        new ConcurrentSkipListMap<>(Collections.reverseOrder());
 
@@ -874,7 +874,7 @@ ConcurrentSkipListMap的并发性能特点：
    ```
 2. **价格匹配系统**：
 
-   ```
+   ```java
    private final ConcurrentSkipListMap<Price, Order> buyOrders = 
        new ConcurrentSkipListMap<>(Collections.reverseOrder()); // 买单按价格降序
    private final ConcurrentSkipListMap<Price, Order> sellOrders = 
@@ -914,7 +914,7 @@ ConcurrentSkipListMap的并发性能特点：
    ```
 3. **时间序列数据处理**：
 
-   ```
+   ```java
    private final ConcurrentSkipListMap<Timestamp, Event> events = 
        new ConcurrentSkipListMap<>();
 

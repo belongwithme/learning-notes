@@ -43,7 +43,7 @@ MinIO安装非常的简单，在网上你很少会看到有关于MinIo的安装�
 
 #### 1. 查询MinIO的服务版本
 
-```
+```bash
 docker search minio
 
 
@@ -67,7 +67,7 @@ docker pull minio/minio
 **注意端口要起两个（一个9090，一个9000）！！！查了2个小时！！！**  
  下面的代码不能完全套用，关于用户名，密码，数据卷的绑定记得
 
-```
+```bash
 docker run -d -p 9000:9000 -p 9090:9090 --name=minio --restart=always -e "MINIO_ROOT_USER=xxx" -e "MINIO_ROOT_PASSWORD=xxx" -v /home/data:/data -v /home/config:/root/.minio  minio/minio server /data --console-address ":9000" --address ":9090"
 
 
@@ -127,7 +127,7 @@ See https://docs.docker.com/desktop/mac for more info.
 
 ### 依赖搭建
 
-```
+```xml
  <!-- minio依赖-->
     <dependency>
       <groupId>io.minio</groupId>
@@ -177,7 +177,7 @@ MinioClient minioClient =
 * boolean bucketExists(BucketExistsArgs args)：检查存储桶是否存在（注意里面的参数还需要创建）  
    代码如下：
 
-```
+```java
     public final static String endPoint = "xxx";
     public final static String accessKey = "xxxx";
     public final static String secretKey = "xxxx";
@@ -210,7 +210,7 @@ MinioClient minioClient =
 * public void makeBucket(MakeBucketArgs args）：创建一个启用给定区域和对象锁定功能的存储桶。  
    代码如下：
 
-```
+```java
    public static void uploadFile() throws InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException {
         // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
         MinioClient minoClient = MinioClient.builder()
@@ -240,7 +240,7 @@ MinioClient minioClient =
 * public List listBuckets()：列出所有桶的桶信息  
    代码如下：
 
-```
+```java
  public static void uploadFile() throws InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException {
         // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
         MinioClient minoClient = MinioClient.builder()
@@ -267,7 +267,7 @@ MinioClient minioClient =
    **注意，如果存储桶不是空桶，删除会报错**  
    代码如下：
 
-```
+```java
     public static void uploadFile() throws InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException {
         // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
         MinioClient minoClient = MinioClient.builder()
@@ -296,7 +296,7 @@ MinioClient minioClient =
 * public ObjectWriteResponse putObject(PutObjectArgs args)：将给定的流上传为存储桶的对象  
    InputStream上传：
 
-```
+```java
     public static void uploadFile() throws InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException {
         // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
         MinioClient minoClient = MinioClient.builder()
@@ -339,7 +339,7 @@ MinioClient minioClient =
 * public GetObjectResponse getObject(GetObjectArgs args)：获取对象的数据  
    代码如下：
 
-```
+```java
     public static void uploadFile() throws InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException {
         // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
         MinioClient minoClient = MinioClient.builder()
@@ -389,7 +389,7 @@ MinioClient minioClient =
    我们还可以对返回 URL，根据业务做一些参数验签等控制。  
    代码如下：
 
-```
+```java
     public static void uploadFile() throws InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException {
         // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
         MinioClient minoClient = MinioClient.builder()
@@ -427,7 +427,7 @@ MinioClient minioClient =
 
 代码如下：
 
-```
+```java
 public static void uploadFile() throws InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException {
         // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
         MinioClient minoClient = MinioClient.builder()
@@ -489,7 +489,7 @@ public static void uploadFile() throws InsufficientDataException, ErrorResponseE
 * public ObjectWriteResponse copyObject(CopyObjectArgs args)：通过服务器端从另一个对象复制数据来创建一个对象。  
    代码如下：
 
-```
+```java
   public static void uploadFile() throws InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException {
         // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
         MinioClient minoClient = MinioClient.builder()
@@ -522,7 +522,7 @@ public static void uploadFile() throws InsufficientDataException, ErrorResponseE
 * public void removeObject(RemoveObjectArgs args)：移除一个对象。  
    代码如下：
 
-```
+```java
     public static void uploadFile() throws InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException {
         // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
         MinioClient minoClient = MinioClient.builder()
@@ -547,7 +547,7 @@ public static void uploadFile() throws InsufficientDataException, ErrorResponseE
 * public Iterable removeObjects(RemoveObjectsArgs args)：懒惰地删除多个对象。它需要迭代返回的 Iterable 以执行删除。  
    代码如下：
 
-```
+```java
         //构建需要删除的对象
         List<DeleteObject> objects = new LinkedList<>();
         objects.add(new DeleteObject("2023/07/05/1189f7file01.jfif"));
@@ -572,7 +572,7 @@ public static void uploadFile() throws InsufficientDataException, ErrorResponseE
 * public Iterable listObjects(ListObjectsArgs args)：列出桶的对象信息。  
    代码如下：
 
-```
+```java
   public static void uploadFile() throws InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException {
         // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
         MinioClient minoClient = MinioClient.builder()
@@ -599,7 +599,7 @@ public static void uploadFile() throws InsufficientDataException, ErrorResponseE
 
 代码如下：
 
-```
+```java
   public static void uploadFile() throws InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException {
         // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
         MinioClient minoClient = MinioClient.builder()
@@ -628,7 +628,7 @@ public static void uploadFile() throws InsufficientDataException, ErrorResponseE
 
 代码如下：
 
-```
+```java
  public static void uploadFile() throws InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException {
         // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
         MinioClient minoClient = MinioClient.builder()

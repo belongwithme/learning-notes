@@ -59,7 +59,7 @@ sidebar:
 
 #### 注解定义
 
-```
+```java
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.SOURCE)
 public @interface Override {
@@ -76,7 +76,7 @@ public @interface Override {
 
 #### 注解定义
 
-```
+```java
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value={CONSTRUCTOR, FIELD, LOCAL_VARIABLE, METHOD, PACKAGE, PARAMETER, TYPE})
@@ -96,7 +96,7 @@ public @interface Deprecated {
 
 #### 注解定义
 
-```
+```java
 @Target({TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE})
 @Retention(RetentionPolicy.SOURCE)
 public @interface SuppressWarnings {
@@ -128,7 +128,7 @@ public @interface SuppressWarnings {
 
 #### 注解定义
 
-```
+```java
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
@@ -152,7 +152,7 @@ public @interface Target {
 
 #### ElementType
 
-```
+```java
 public enum ElementType {
  
     TYPE, // 类、接口、枚举类
@@ -186,7 +186,7 @@ public enum ElementType {
 
 #### 注解定义
 
-```
+```java
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
@@ -204,7 +204,7 @@ public @interface Retention {
 
 #### RetentionPolicy
 
-```
+```java
 public enum RetentionPolicy {
     SOURCE,    // 源文件保留
     CLASS,       // 编译期保留，默认值
@@ -216,7 +216,7 @@ public enum RetentionPolicy {
 
 我们可以通过执行`javap -verbose RetentionTest`获取到`RetentionTest`的class字节码内容如下.
 
-```
+```java
 {
   public retention.RetentionTest();
     flags: ACC_PUBLIC
@@ -271,7 +271,7 @@ public enum RetentionPolicy {
 
 #### 注解定义
 
-```
+```java
 @Documented
 @Target({ElementType.TYPE,ElementType.METHOD})
 public @interface TestDocAnnotation {
@@ -292,7 +292,7 @@ public @interface TestDocAnnotation {
 
 #### 注解定义
 
-```
+```java
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
@@ -310,7 +310,7 @@ public @interface Inherited {
 
 定义`@Inherited`注解
 
-```
+```java
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE,ElementType.METHOD})
@@ -324,7 +324,7 @@ public @interface TestInheritedAnnotation {
 
 使用这个注解
 
-```
+```java
 @TestInheritedAnnotation(values = {"value"}, number = 10)
 public class Person {
 }
@@ -359,7 +359,7 @@ xxxxxxx.TestInheritedAnnotation(values=[value], number=10)
 
 #### 注解定义
 
-```
+```java
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
@@ -379,7 +379,7 @@ public @interface Repeatable {
 JDK8之前有重复使用注解的解决方案,但是可读性不好  
  方案: 由另一个注解来存储重复注解,在使用的时候,用存储注解`Authorities`来扩展重复注解
 
-```
+```java
 public @interface Authority {
      String role();
 }
@@ -402,7 +402,7 @@ public class RepeatAnnotationUseOldVersion {
 
 方案: 创建重复注解时,加上`@Repeatable`,指向存储注解`Authorities`,在使用的时候,可以直接重复使用Authority注解.
 
-```
+```java
 @Repeatable(Authorities.class)
 public @interface Authority {
      String role();
@@ -433,7 +433,7 @@ public class RepeatAnnotationUseNewVersion {
 
 `AnnotatedElement`接口是所有程序元素(Class,Method,Constructor)的父接口.
 
-```
+```java
 Class类
 public final class Class<T> implements Serializable, GenericDeclaration, Type, AnnotatedElement, TypeDescriptor.OfField<Class<?>>, Constable {
 xxxx
@@ -487,7 +487,7 @@ xxx
 
 * 定义注解
 
-```
+```java
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MyMethodAnnotation {
@@ -503,7 +503,7 @@ public @interface MyMethodAnnotation {
 
 * 使用注解
 
-```
+```java
 public class TestMethodAnnotation {
 
     @Override
@@ -532,7 +532,7 @@ public class TestMethodAnnotation {
 
 * 用反射接口获取注解信息
 
-```
+```java
 public static void main(String[] args) {
     try {
         // 获取所有methods

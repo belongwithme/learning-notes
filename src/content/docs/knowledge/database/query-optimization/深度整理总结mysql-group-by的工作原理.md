@@ -30,7 +30,7 @@ group by 是用来对数据进行分组的，一般与聚合函数一起使用�
 
 我们创建一个表并填入数据
 
-```
+```sql
 create table t1(id int primary key, a int, b int, index(a));
 CREATE PROCEDURE idata()
 BEGIN
@@ -84,7 +84,7 @@ Using index，表示这个语句使用了覆盖索引，选择了索引 a，不�
 这个例子里由于临时表只有 10 行，内存可以放得下，因此全程只使用了内存临时表。但是，内存临时表的大小是有限制的，参数 tmp\_table\_size 就是控制这个内存大小的，默认是 16M。  
  那如果我执行下面的语句：
 
-```
+```sql
 set tmp_table_size=1024;
 select id%100 as m, count(*) as c from t1 group by m order by null limit 10;
 
@@ -119,7 +119,7 @@ select id%100 as m, count(*) as c from t1 group by m order by null limit 10;
 
 在 MySQL 5.7 版本支持了 generated column 机制，用来实现列数据的关联更新。你可以用下面的方法创建一个列 z，然后在 z 列上创建一个索引（如果是 MySQL 5.6 及之前的版本，你也可以创建普通列和索引，来解决这个问题）。
 
-```
+```sql
 alter table t1 add column z int generated always as(id % 100), add index(z);
 
 
@@ -127,7 +127,7 @@ alter table t1 add column z int generated always as(id % 100), add index(z);
 
 这样，索引 z 上的数据就有序了。上面的 group by 语句就可以改成：
 
-```
+```sql
 select z, count(*) as c from t1 group by z;
 
 
@@ -162,7 +162,7 @@ MySQL 的优化器一看，磁盘临时表是 B+ 树存储，存储效率不如�
 
 因此，下面这个语句
 
-```
+```sql
 select SQL_BIG_RESULT id%100 as m, count(*) as c from t1 group by m;
 
 

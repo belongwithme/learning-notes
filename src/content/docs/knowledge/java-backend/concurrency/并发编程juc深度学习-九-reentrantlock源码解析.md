@@ -35,7 +35,7 @@ ReentrantLock是java并发包下重要的同步工具，实现了可重入互斥
 ![在这里插入图片描述](./assets/126131210/a740be03238a45fa4cf8028e.png)  
 代码实现：
 
-```
+```java
 public class ReentrantLock implements Lock, java.io.Serializable 
 
 
@@ -45,7 +45,7 @@ public class ReentrantLock implements Lock, java.io.Serializable
 2.Lock：Java对锁的统一规范  
 我们之前已经看到Lock的代码了，这里再贴一遍吧，不多解释了，有疑问的可以去看看上篇AQS（强烈建议看玩AQS再来看ReetrantLock）
 
-```
+```java
 public interface Lock {
     void lock();
     void lockInterruptibly() throws InterruptedException;
@@ -63,7 +63,7 @@ public interface Lock {
 
 ## Doc注释解析
 
-```
+```java
 /**
  * A reentrant mutual exclusion {@link Lock} with the same basic
  * behavior and semantics as the implicit monitor lock accessed using
@@ -148,7 +148,7 @@ Only one
 构造函数：  
 1.
 
-```
+```java
   public ReentrantLock() {
         sync = new NonfairSync();
     }
@@ -159,7 +159,7 @@ Only one
 我们可以看到，默认情况下是非公平锁
 
 
-```
+```java
   public ReentrantLock(boolean fair) {
         sync = fair ? new FairSync() : new NonfairSync();
     }
@@ -178,7 +178,7 @@ false—非公平锁NonfairSync()
 ReentranLock的内部类有三种，抽象类Sync，公平锁与非公平锁。  
 一：抽象类Sync
 
-```
+```java
     abstract static class Sync extends AbstractQueuedSynchronizer {
         private static final long serialVersionUID = -5179523762034025860L;
 
@@ -240,7 +240,7 @@ ReentranLock的内部类有三种，抽象类Sync，公平锁与非公平锁。
 
 二：NonfairSync
 
-```
+```java
  static final class NonfairSync extends Sync {
         private static final long serialVersionUID = 7316153563782823691L;
 
@@ -265,7 +265,7 @@ ReentranLock的内部类有三种，抽象类Sync，公平锁与非公平锁。
 
 三：FairSync
 
-```
+```java
    static final class FairSync extends Sync {
         private static final long serialVersionUID = -3000897897090466540L;
 

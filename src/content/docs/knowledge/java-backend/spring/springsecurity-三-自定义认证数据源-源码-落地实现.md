@@ -45,7 +45,7 @@ sidebar:
 * `AuthenticationManager` 是⼀个认证管理器，它定义了 `Spring Security` 过滤  
    器要执⾏认证操作。
 
-```
+```java
 public interface AuthenticationManager {
 	Authentication authenticate(Authentication authentication) throws AuthenticationException;
 
@@ -57,7 +57,7 @@ public interface AuthenticationManager {
 * `ProviderManager`是`AuthenticationManager`接⼝的实现类。`Spring Security`  
    认证时默认使⽤就是 `ProviderManager`。
 
-```
+```java
 //代码太多，只列举较关键的代码
 public class ProviderManager implements AuthenticationManager, MessageSourceAware, InitializingBean {
 
@@ -134,7 +134,7 @@ public class ProviderManager implements AuthenticationManager, MessageSourceAwar
 
 * `AuthenticationProvider` 就是针对不同的身份类型执⾏的具体的身份认证。
 
-```
+```java
 public interface AuthenticationProvider {
 
 	Authentication authenticate(Authentication authentication) throws AuthenticationException;
@@ -226,7 +226,7 @@ ProviderManager 本身也可以有多个，多个ProviderManager 共⽤同⼀个
 springboot 对 security 进⾏⾃动配置时⾃动在⼯⼚中创建⼀个全局`AuthenticationManager`。  
  代码例子如下(不优化版本)：
 
-```
+```java
 @Configuration
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
@@ -250,7 +250,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
  `AuthenticationManagerBuilder`是默认配置对象，它默认找当前项目中是否存在自定义`UserDetailService`实例自动将当前项目`UserDetailService`实例设置为数据源。  
  我们看一下`UserDetailServiceAutoConfigutation`源码：
 
-```
+```java
 @AutoConfiguration
 @ConditionalOnClass(AuthenticationManager.class)
 @ConditionalOnBean(ObjectPostProcessor.class)
@@ -282,7 +282,7 @@ public class UserDetailsServiceAutoConfiguration {
 
 那么我们可以优化，代码如下：
 
-```
+```java
     @Bean
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager userDetailsService = new InMemoryUserDetailsManager();
@@ -311,7 +311,7 @@ public class UserDetailsServiceAutoConfiguration {
 
 自定义代码(错误版本)如下：
 
-```
+```java
     @Bean
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager userDetailsService = new InMemoryUserDetailsManager();
@@ -335,7 +335,7 @@ public class UserDetailsServiceAutoConfiguration {
 
 正确版本：
 
-```
+```java
   @Bean
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager userDetailsService = new InMemoryUserDetailsManager();
@@ -363,7 +363,7 @@ public class UserDetailsServiceAutoConfiguration {
 
 如果我们想让它在工厂中暴露，可以在任何位置注入，添加覆盖下面的方法即可：
 
-```
+```java
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -375,7 +375,7 @@ public class UserDetailsServiceAutoConfiguration {
 
 我们进去简单看看，它会调用父类的实现：
 
-```
+```java
 protected AuthenticationManager authenticationManager() throws Exception {
 
 		if (!this.authenticationManagerInitialized) {
@@ -412,7 +412,7 @@ protected AuthenticationManager authenticationManager() throws Exception {
 
 它的返回值是`UserDetails`，我们来看看它(注意，这是一个接口：
 
-```
+```java
 public interface UserDetails extends Serializable {
 
 	Collection<? extends GrantedAuthority> getAuthorities();
@@ -439,7 +439,7 @@ public interface UserDetails extends Serializable {
 
 因为我们后面数据源要切换为数据库实现，所以需要一张用户表，那么我们就参考User来设计表，User源码如下：
 
-```
+```java
 public class User implements UserDetails, CredentialsContainer {
 
 	private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
@@ -466,7 +466,7 @@ public class User implements UserDetails, CredentialsContainer {
 
 根据上面信息，设计出表结构，如下：
 
-```
+```sql
 // ⽤户表
 CREATE TABLE `user`
 (
@@ -538,7 +538,7 @@ COMMIT;
 
 ### 引入依赖
 
-```
+```xml
   <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
@@ -561,7 +561,7 @@ COMMIT;
 
 ### 配置 springboot 配置⽂件
 
-```
+```properties
 server.port= 9090
 
  # 关闭thymeleaf 缓存
@@ -589,7 +589,7 @@ logging.level.com.example = debug
 
 #### 创建User对象
 
-```
+```java
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -699,7 +699,7 @@ public class User implements UserDetails {
 
 #### 创建Role对象
 
-```
+```java
 public class Role {
     private Integer id;
     private String name;
@@ -736,7 +736,7 @@ public class Role {
 
 #### 创建UserDao接口
 
-```
+```java
 //注意这里引用的是我们自定义的类型
 import com.example.entity.Role;
 import com.example.entity.User;
@@ -757,7 +757,7 @@ public interface UserDao {
 
 #### 创建UserMapper实现
 
-```
+```sql
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -793,7 +793,7 @@ public interface UserDao {
 
 #### 创建 UserDetailService 实例
 
-```
+```java
 import com.example.dao.UserDao;
 import com.example.entity.Role;
 import com.example.entity.User;
@@ -835,7 +835,7 @@ public class MyUserDetailService implements UserDetailsService {
 
 #### 配置 authenticationManager 使⽤⾃定义UserDetailService
 
-```
+```java
    private final MyUserDetailService myUserDetailService;
 
 

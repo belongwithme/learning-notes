@@ -37,7 +37,7 @@ sidebar:
 ![在这里插入图片描述](./assets/127583745/0090a2cf4a36d1f9a38a874f.png)  
  代码如下：
 
-```
+```java
 public interface Resource extends InputStreamSource
 
 
@@ -45,7 +45,7 @@ public interface Resource extends InputStreamSource
 
 InputStreamSource接口：spring核心工具包输入流接口，该接口只有一个抽象方法，每次调用这个方法都会得到一个新的流。
 
-```
+```java
 public interface InputStreamSource {
     InputStream getInputStream() throws IOException;
 }
@@ -55,7 +55,7 @@ public interface InputStreamSource {
 
 ### DOC解释
 
-```
+```java
  * Interface for a resource descriptor that abstracts from the actual
  * type of underlying resource, such as a file or class path resource.
  *从实际类型的底层资源（例如文件或类路径资源）中抽象出来的资源描述符的接口
@@ -172,7 +172,7 @@ default boolean isOpen() {
 
 ### 源码分析
 
-```
+```java
 public interface ResourceLoader {
 
     //支持ClassPath：类型的路径匹配
@@ -193,7 +193,7 @@ public interface ResourceLoader {
 我们可以看到，ResourceLoader接口有默认实现类——DefaultResourceLoader类  
  DefaultResourceLoader类实现了ResourceLoader接口加载资源的方法，同时也扩展了一些通用的基本操作方法，其中最重要的就是实现了getResource（String location）方法，我们看一下里面重要的实现方法的源码，其他不是重点，有兴趣额外了解吧：
 
-```
+```java
 @Override
 	public Resource getResource(String location) {
 		Assert.notNull(location, "Location must not be null");
@@ -252,7 +252,7 @@ public interface ResourceLoader {
 
 对于ResourcePatternResolver接口来说，除了继承自Resource方法外，ResourcePatternResolver额外扩充了一个方法，就来批量加载Resource资源对象，源码如下：
 
-```
+```java
 public interface ResourcePatternResolver extends ResourceLoader {
 
 	//支持classpath*:形式路径匹配，即Ant风格
@@ -271,7 +271,7 @@ ResourcePatternResolver接口的默认实现类——PathMatchingResourcePattern
  对于PathMatchingResourcePatternResolver只负责实现处理ResourcePatternResolver中的方法，这里主要是实现getResources(String locationPattern)方法。  
  源码如下：
 
-```
+```java
 public class PathMatchingResourcePatternResolver implements ResourcePatternResolver {
 
 private final ResourceLoader resourceLoader;
@@ -301,7 +301,7 @@ public Resource[] getResources(String locationPattern) throws IOException //有�
  **在AbstractApplicationContext的构造函数源码中可以看到，在这里将ResourcePatternResolver接口的实例——PathMatchingResourcePatternResolver实例进行了初始化，并且传入的resourceLoader实例，就是容器本身（容器继承了DefaultResourceLoader），也就是容器进行了献祭，来实现资源解释器**。  
  我们看一下源码里面内容：
 
-```
+```java
 public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		implements ConfigurableApplicationContext {
 	/** ResourcePatternResolver used by this context. */

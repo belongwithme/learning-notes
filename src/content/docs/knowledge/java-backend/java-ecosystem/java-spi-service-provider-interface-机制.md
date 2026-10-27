@@ -61,7 +61,7 @@ sidebar:
 
 Java提供的工具类,用于加载服务提供者:
 
-```
+```java
 ServiceLoader<PaymentService> loader = ServiceLoader.load(PaymentService.class);
 
 
@@ -101,7 +101,7 @@ src/
 
 #### 1. SPI接口 (`PaymentService.java`)
 
-```
+```java
 public interface PaymentService {
     String getName();
     boolean pay(double amount, String orderId);
@@ -157,7 +157,7 @@ com.example.spi.impl.UnionPayService
 
 ### ServiceLoader源码解析
 
-```
+```java
 // ServiceLoader内部使用懒加载
 public final class ServiceLoader<S> implements Iterable<S> {
 
@@ -214,7 +214,7 @@ public final class ServiceLoader<S> implements Iterable<S> {
 
 **解决方案**:
 
-```
+```java
 // 确保实现类有public无参构造函数
 public class AlipayService implements PaymentService {
     public AlipayService() {  // 显式声明
@@ -241,7 +241,7 @@ public class AlipayService implements PaymentService {
 
 **优化建议**:
 
-```
+```java
 // 使用单例模式缓存ServiceLoader
 public class PaymentServiceFactory {
     private static final ServiceLoader<PaymentService> LOADER =

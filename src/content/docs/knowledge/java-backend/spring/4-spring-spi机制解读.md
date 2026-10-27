@@ -28,7 +28,7 @@ sidebar:
 
 **1. 无法按需加载**
 
-```
+```java
 // Java SPI: 必须遍历所有实现才能获取特定实现
 ServiceLoader<MyService> loader = ServiceLoader.load(MyService.class);
 for (MyService service : loader) {
@@ -58,7 +58,7 @@ META-INF/services/
 
 **3. 无法批量获取类名**
 
-```
+```java
 // Java SPI: 只能获取实例,无法只获取类名
 ServiceLoader<Driver> loader = ServiceLoader.load(Driver.class);
 // 没有直接的API获取所有类名列表
@@ -112,7 +112,7 @@ Spring SPI流程:
 
 **类签名:**
 
-```
+```java
 public final class SpringFactoriesLoader {
     // 工具类,私有构造器
     private SpringFactoriesLoader() {
@@ -124,7 +124,7 @@ public final class SpringFactoriesLoader {
 
 ### 核心常量和字段
 
-```
+```java
 public final class SpringFactoriesLoader {
 
     /**
@@ -175,7 +175,7 @@ cache (ConcurrentReferenceHashMap)
 
 **源码分析:**
 
-```
+```java
 /**
  * 加载指定工厂接口的所有实现类名
  *
@@ -199,7 +199,7 @@ public static List<String> loadFactoryNames(Class<?> factoryType,
 
 **调用示例:**
 
-```
+```java
 // 获取所有自动配置类的类名
 List<String> configNames = SpringFactoriesLoader.loadFactoryNames(
     EnableAutoConfiguration.class,
@@ -224,7 +224,7 @@ List<String> configNames = SpringFactoriesLoader.loadFactoryNames(
 
 **源码分析:**
 
-```
+```java
 /**
  * 加载并实例化指定工厂接口的所有实现类
  *
@@ -271,7 +271,7 @@ public static <T> List<T> loadFactories(Class<T> factoryType,
 
 **实例化方法:**
 
-```
+```java
 /**
  * 实例化单个工厂类
  */
@@ -314,7 +314,7 @@ private static <T> T instantiateFactory(String factoryImplementationName,
 
 **完整源码解析:**
 
-```
+```java
 /**
  * 加载所有spring.factories文件
  *
@@ -381,7 +381,7 @@ private static Map<String, List<String>> loadSpringFactories(
 
 **步骤1: 缓存检查**
 
-```
+```java
 MultiValueMap<String, String> result = cache.get(classLoader);
 if (result != null) {
     return result;  // 命中缓存
@@ -397,7 +397,7 @@ if (result != null) {
 
 **步骤2-3: 扫描所有jar包的spring.factories**
 
-```
+```java
 Enumeration<URL> urls = classLoader.getResources("META-INF/spring.factories");
 
 while (urls.hasMoreElements()) {
@@ -423,7 +423,7 @@ jar:file:/xxx/mybatis-spring-boot-starter-2.2.0.jar!/META-INF/spring.factories
 
 **步骤4-5: 加载Properties**
 
-```
+```java
 UrlResource resource = new UrlResource(url);
 Properties properties = PropertiesLoaderUtils.loadProperties(resource);
 
@@ -677,7 +677,7 @@ SpringApplication构造器
 
 代码路径: `SpringApplication.java`
 
-```
+```java
 public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySources) {
     // ...
     
@@ -712,7 +712,7 @@ private <T> Collection<T> getSpringFactoriesInstances(Class<T> type) {
 
 代码路径: `AutoConfigurationImportSelector.java`
 
-```
+```java
 protected List<String> getCandidateConfigurations(AnnotationMetadata metadata,
                                                   AnnotationAttributes attributes) {
     // 核心调用: 加载所有自动配置类
@@ -868,7 +868,7 @@ org.springframework.boot.context.logging.LoggingApplicationListener
 
 ### 时序调用关系
 
-```
+```java
 时间线 (Spring Boot启动过程)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -931,7 +931,7 @@ T5: 启动失败(如果有)
 **场景: 获取所有自动配置类**  
  **Java SPI方式:**
 
-```
+```java
 // 1. 必须实例化才能获取
 ServiceLoader<AutoConfiguration> loader =
     ServiceLoader.load(AutoConfiguration.class);
@@ -950,7 +950,7 @@ for (AutoConfiguration config : loader) {
 
 **Spring SPI方式:**
 
-```
+```java
 // 1. 只获取类名,不实例化
 List<String> classNames = SpringFactoriesLoader.loadFactoryNames(
     EnableAutoConfiguration.class,

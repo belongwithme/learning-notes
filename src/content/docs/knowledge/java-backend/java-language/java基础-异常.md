@@ -35,7 +35,7 @@ sidebar:
  • 能够将异常分组和区分  
  举例说明:
 
-```
+```java
 public class ExceptionBenefitsExample {
     public static void main(String[] args) {
         try {
@@ -110,7 +110,7 @@ Exception
 2. 想打开一个错误格式的URL
 3. 想根据字符串查找Class对象,而这个字符串表示的类不存在
 
-```
+```java
 public class CheckedExceptionExample {
     public static void main(String[] args) throws IOException {
         // 1. 想在文件尾部读取数据
@@ -154,7 +154,7 @@ public class CheckedExceptionExample {
 1. 空指针异常
 2. 栈溢出
 
-```
+```java
 public class UncheckedExceptionExample {
     public static void main(String[] args) {
         // 1. 空指针异常
@@ -211,7 +211,7 @@ public class UncheckedExceptionExample {
  应用场景:有时当我们调用一段处理时，需要同时捕获多个异常，但是我们对这些异常处理的代码是相同的  
  比如:
 
-```
+```java
 FileInputStream fis = new FileInputStream(file);
 try {
   // do something
@@ -224,7 +224,7 @@ try {
 
 可以等价为:
 
-```
+```java
 try (FileInputStream fis = new FileInputStream(file)) {
   // do something
 }
@@ -237,7 +237,7 @@ try (FileInputStream fis = new FileInputStream(file)) {
  当处理某些资源的时候，通常都会在finally里面做一些资源回收的工作。  
  比如:
 
-```
+```java
 try {
   // do something
 } catch (AException e) {
@@ -251,7 +251,7 @@ try {
 
 可以等价为:
 
-```
+```java
 try {
   // do something
 } catch (AException | BException e) {
@@ -273,7 +273,7 @@ try {
 3. 系统自动抛异常  
     **举例子**
 
-```
+```java
 public static void main(String[] args) { 
  String s = "abc"; 
  if(s.equals("abc")) { 
@@ -292,7 +292,7 @@ int div(int a,int b) throws Exception{
 * try catch 捕获异常针对性处理方式  
    举例子:
 
-```
+```java
 public static void main(String[] args) {
         // 1. 空指针异常
         String str = null;
@@ -412,7 +412,7 @@ public static void main(String[] args) {
 
 **案例四:finally 块中使用 return 字节码分析**
 
-```
+```java
 public int getInt() {
     int i = 0;
     try {
@@ -457,7 +457,7 @@ public int getInt2() {
 
 下面通过一个打包文件的代码来演示说明一下 try-with-resources 的本质：
 
-```
+```java
  /**
      * 打包多个文件为 zip 格式
      *
@@ -492,7 +492,7 @@ public int getInt2() {
 
 可以看到try()的括号中定义需要关闭的资源,实际上是Java的一种语法糖,查看编译后的代码就知道编译器为我们做了什么,下面是反编译的代码:
 
-```
+```java
     public static void zipFile(List<File> fileList) {
         String zipPath = "./打包附件.zip";
 
@@ -630,7 +630,7 @@ try{
 * 不必要的异常包装
 * 检查异常传递过程中不适用费检查异常包装,造成代码被throws污染
 
-```
+```java
 try{
     ……
 } catch (BIZException e){ 
@@ -728,7 +728,7 @@ try {
 
 对于回答1可能会有点没明白,我们举个例子就好了:
 
-```
+```java
 public class TestPrintStackTrace {
 
     public static void main(String[] args) {
@@ -794,7 +794,7 @@ printStackTrace()打印出的堆栈日志跟正常输出或者业务代码执行
 
 #### 案例三
 
-```
+```java
 public void readPreferences(String fileName){
    //...perform operations... 
   InputStream in = new FileInputStream(fileName);
@@ -824,7 +824,7 @@ if (obj != null) {...}
 2. 异常不要用来做流程控制,条件控制,因为异常的处理效率比条件分支低.  
     举例:
 
-```
+```java
 // 不推荐的做法：异常用于条件控制
 try {
     // 可能会抛出异常的代码
@@ -855,7 +855,7 @@ if (someCondition) {
     对于非稳定代码的catch尽可能的进行区分异常类型,再做对应的异常处理.  
     例子:
 
-```
+```java
 public class ExceptionHandlingExample {
     public static void main(String[] args) {
         // 稳定代码示例
@@ -894,7 +894,7 @@ public class ExceptionHandlingExample {
 4. 捕获异常是为了处理它，不要捕获了却什么都不处理而抛弃之，如果不想处理它，请将该异常抛给它的调用者。最外层的业务使用者，必须处理异常，将其转化为用户可以理解的内容。  
     举例:
 
-```
+```java
 public class ExceptionHandlingExample {
     public static void main(String[] args) {
         try {
@@ -954,7 +954,7 @@ class DataAccessException extends Exception {
 5. 有 try 块放到了事务代码中，catch 异常后，如果需要回滚事务，一定要注意手动回滚事务。  
     举例:
 
-```
+```java
 Connection connection = null;
 try {
     // 获取数据库连接并设置自动提交为false，开启事务
@@ -995,7 +995,7 @@ try {
     说明 : 如果预期对方抛的是绣球，实际接到的是铅球，就会产生意外情况。
 8. 定义时区分 unchecked / checked 异常，避免直接抛出 new RuntimeException()，更不允许抛出 Exception 或者 Throwable，应使用有业务含义的自定义异常。推荐业界已定义过的自定义异常，如: DAOException / ServiceException 等。
 
-```
+```java
 // 自定义DAOException
 public class DAOException extends Exception {
     public DAOException(String message) {
@@ -1115,7 +1115,7 @@ Java体系中定义了很多异常,但通常都是技术层面的异常,对于�
  首先定义一个描述异常信息的枚举类,对一些通用的异常信息可以在枚举中定义.  
  举例:
 
-```
+```java
 /**
  * 异常信息枚举类
  *
@@ -1196,7 +1196,7 @@ public enum ErrorCode {
 
 然后自定义系统异常类,其他类型的异常类似,只是异常的类名不同,如下:
 
-```
+```java
 /**
  * 系统异常类
  *
@@ -1323,7 +1323,7 @@ public class SystemException extends RuntimeException {
 首先我们需要知道 rpc 接口抛出异常还是返回的包含错误码的 Result 对象,通过实际观察知道 rpc 的返回基本都是包含错误码的 Result 对象，所以这里以返回错误码的情况进行说明。  
  首先需要明确 rpc 调用失败应该返回系统异常，所以我们可以定义一个继承 SystemException 的 rpc 异常 RpcException，代码如下所示：
 
-```
+```java
 /**
  * rpc 异常类
  */
@@ -1411,7 +1411,7 @@ public class RpcException extends SystemException {
  定义好了异常后接下来是处理 rpc 调用的异常处理逻辑，调用 rpc 服务可能会发生 ConnectException 等网络异常.  
  **我们并不需要在调用的时候捕获异常，而是应该在最上层捕获并处理异常**，调用 rpc 的处理demo代码如下：
 
-```
+```java
 private Object callRpc() {
     Result<Object> rpc = rpcDemo.rpc();
     log.info("调用第三方rpc返回结果为：{}", rpc);
@@ -1437,7 +1437,7 @@ private Object callRpc() {
  所以可以定义一个 aop 叫做 RpcGlobalExceptionAop，在 rpc 接口执行前后捕获异常，并将捕获的异常信息封装到 Result 对象中返回给调用者。  
  我们还要写一个RPC接口全局异常处理:
 
-```
+```java
 /**
  * Result 结果类
  *
@@ -1576,7 +1576,7 @@ public class Result<T> implements Serializable {
 
 在编写 aop 代码之前需要先导入 spring-boot-starter-aop 依赖：
 
-```
+```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-aop</artifactId>
@@ -1589,7 +1589,7 @@ public class Result<T> implements Serializable {
 
 代码如下:
 
-```
+```java
 /**
  * rpc 调用全局异常处理 aop 类
  *
@@ -1667,7 +1667,7 @@ execution(* com.test.spring.aop.pointcutexp…JoinPointObjP2.*(…)) 定义在po
  关于 http 接口的全局异常处理，这里重点介绍基于异常处理器的方式，其余的方式建议查阅相关文档学习。  
  在介绍基于异常处理器的方式之前需要导入 spring-boot-starter-web 依赖即可，如下所示：
 
-```
+```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-web</artifactId>
@@ -1678,7 +1678,7 @@ execution(* com.test.spring.aop.pointcutexp…JoinPointObjP2.*(…)) 定义在po
 
 通过 @ControllerAdvice+@ExceptionHandler 实现基于**异常处理器的http接口全局异常处理：**
 
-```
+```java
 /**
 * http 接口异常处理类
 */

@@ -266,7 +266,7 @@ Java是多线程的语言，线程数大于CPU数是很常见的现象，那么�
 我们实操看一看，来个糖炒栗子：  
  代码如下：
 
-```
+```java
 public class Two {
     public void a(){
         b();//调用b方法
@@ -284,7 +284,7 @@ public class Two {
 
 我们编译一下Class文件，它的文本表现形式如下：
 
-```
+```java
 public class demo1.Two
 
 Constant pool:

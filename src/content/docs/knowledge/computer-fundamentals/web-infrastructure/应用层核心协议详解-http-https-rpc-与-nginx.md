@@ -108,7 +108,7 @@ HTTP方法定义了客户端希望对服务器上的资源执行的操作类型�
 
 **伪代码示例 (Node.js/Express 风格):**
 
-```
+```javascript
 // 示例：处理不同HTTP方法的服务器端逻辑 (伪代码)
 
 // 获取用户信息 (GET - 安全, 幂等)
@@ -269,7 +269,7 @@ app.delete('/users/:id', (req, res) => {
 
 **【代码示例】JWT 生成与验证 (伪代码/概念)**
 
-```
+```javascript
 // --- JWT 生成 (服务器端，用户登录成功后) ---
 const jwt = require('jsonwebtoken'); // 假设使用 'jsonwebtoken' 库
 

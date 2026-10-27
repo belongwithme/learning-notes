@@ -35,7 +35,7 @@ sidebar:
 * /hello … 受保护资源  
    我们之前看过源码：
 
-```
+```java
 @Configuration(proxyBeanMethods = false)
 	@ConditionalOnDefaultWebSecurity
 	static class SecurityFilterChainConfiguration {
@@ -61,7 +61,7 @@ sidebar:
 
 看上面的注解：`@ConditionalOnDefaultWebSecurity`，找到里面的源码：
 
-```
+```java
 class DefaultWebSecurityCondition extends AllNestedConditions {
 
 	DefaultWebSecurityCondition() {
@@ -119,7 +119,7 @@ Spring Security
 
 这里我们看一个要被覆盖的configure方法去实现授权：
 
-```
+```java
 	protected void configure(HttpSecurity http) throws Exception {
 		this.logger.debug("Using default configure(HttpSecurity). "
 				+ "If subclassed this will potentially override subclass configure(HttpSecurity).");
@@ -142,7 +142,7 @@ Basic
  ![请添加图片描述](./assets/131230561/395929582670ecaded7b3d3f.png)  
  其中config包下的代码如下所示：
 
-```
+```java
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -177,7 +177,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 * 引入模版依赖
 
-```
+```xml
       <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -188,7 +188,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 * 定义登陆页面 controller
 
-```
+```java
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
@@ -205,7 +205,7 @@ public class LoginController {
 
 * 在templates 中定义登陆页面
 
-```
+```xml
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -230,7 +230,7 @@ public class LoginController {
 
 如果按上面这么写的话，就会出问题，为什么呢？我们来看看formLogin里面的源码。
 
-```
+```java
 	public FormLoginConfigurer<HttpSecurity> formLogin() throws Exception {
 		return getOrApply(new FormLoginConfigurer<>());
 	}
@@ -240,7 +240,7 @@ public class LoginController {
 
 进入到`getOrApply`方法参数中的`FormLoginConfigurer`里面去：
 
-```
+```java
 	public FormLoginConfigurer() {
 		super(new UsernamePasswordAuthenticationFilter(), null);
 		usernameParameter("username");
@@ -252,7 +252,7 @@ public class LoginController {
 
 在这里里面我们发现了一个过滤器为`UsernamePasswordAuthenticationFilter`,进去看看,关键代码如下：
 
-```
+```java
 public class UsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
 	public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
@@ -304,7 +304,7 @@ public class UsernamePasswordAuthenticationFilter extends AbstractAuthentication
 
 `obtainUsername`和`obtainPassword`方法如下：
 
-```
+```java
 //obtainUsername方法用于从HTTP请求中获取用户名，由上面的代码我们可以知道，usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY = "username";
 	protected String obtainUsername(HttpServletRequest request) {
 		return request.getParameter(this.usernameParameter);
@@ -321,7 +321,7 @@ public class UsernamePasswordAuthenticationFilter extends AbstractAuthentication
 
 1. 登陆表单method必须为post。
 
-```
+```java
 if (this.postOnly && !request.getMethod().equals("POST")) {
 			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 
@@ -330,7 +330,7 @@ if (this.postOnly && !request.getMethod().equals("POST")) {
 
 2. action的请求路径为/login.
 
-```
+```java
 	private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/login",
 			"POST");
 
@@ -357,7 +357,7 @@ password = (password != null) ? password : "";
 
 * 配置 Spring Security 配置类
 
-```
+```java
 @Configuration
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
@@ -387,7 +387,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 * 最终login页面：
 
-```
+```xml
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -418,7 +418,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 我们来看看这个它的代码：
 
-```
+```java
 	public final T successHandler(AuthenticationSuccessHandler successHandler) {
 		this.successHandler = successHandler;
 		return getSelf();
@@ -432,7 +432,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
  ![请添加图片描述](./assets/131230561/25743665d10fd6bb09cefe4c.png)  
  这里我们可以看到上面我们提到的`successForwardUrl`和`defaultSuccessUrl`分别是这里的`ForwardAuthenticationSuccessHandler`和`SavedRequestAwareAuthenticationSuccessHandler`。
 
-```
+```java
 public interface AuthenticationSuccessHandler {
 	default void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authentication) throws IOException, ServletException {
@@ -457,7 +457,7 @@ public interface AuthenticationSuccessHandler {
  只需要给前端返回⼀个 JSON 通知登录成功还是失败与否。这个时候可以通过⾃定义  
  `AuthenticationSucccessHandler`实现。
 
-```
+```java
 /**
 * 自定义认证成功之后处理
 */
@@ -479,7 +479,7 @@ public class MyAuthenticatioinSuccessHandler implements AuthenticationSuccessHan
 
 #### 配置AuthenticationSuccessHandler
 
-```
+```java
      protected void configure(HttpSecurity http) throws Exception {
          http.authorizeRequests()
                  .mvcMatchers("/login.html").permitAll()
@@ -511,7 +511,7 @@ public class MyAuthenticatioinSuccessHandler implements AuthenticationSuccessHan
  此时provider为：`AnonymousAuthenticationProvider`  
  解析一下这个方法：
 
-```
+```java
 public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 	// 获取待验证的Authentication对象的具体类
 	Class<? extends Authentication> toTest = authentication.getClass();
@@ -613,7 +613,7 @@ continue
  走到for循环的第一个if判断时，因为支持待验证的Authentication对象的类，所以不进去方法体，当走到下图时：![请添加图片描述](./assets/131230561/7cf9d1f05fad844d6951f5e1.png)  
  此时provider为`DaoAuthticationProvider`，进入验证方法，我们先解析方法：
 
-```
+```java
 public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 	// 验证传入的 authentication 参数是否为 UsernamePasswordAuthenticationToken 类型
 	Assert.isInstanceOf(UsernamePasswordAuthenticationToken.class, authentication,
@@ -727,7 +727,7 @@ public Authentication authenticate(Authentication authentication) throws Authent
  ![请添加图片描述](./assets/131230561/023a72cb6982e67116abadd7.png)  
  进入`unsuccessfulAuthentication`方法里面，我们来看看这里面的内容：
 
-```
+```java
 protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 		AuthenticationException failed) throws IOException, ServletException {
 	// 清除 SecurityContextHolder 中的身份验证信息
@@ -749,7 +749,7 @@ protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServle
  ![请添加图片描述](./assets/131230561/0d97d0f84f081e2eabfdae06.png)  
  进入`onAuthenticationFailure`方法，我们先看看里面的内容：
 
-```
+```java
 public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 		AuthenticationException exception) throws IOException, ServletException {
 	if (this.defaultFailureUrl == null) {
@@ -783,7 +783,7 @@ debug走一下里面的流程,刚进入时，注意里面的默认失败url，�
  ![请添加图片描述](./assets/131230561/6efe9ea08d3832e7428c6aaa.png)  
  它里面的内容如下：
 
-```
+```java
 protected final void saveException(HttpServletRequest request, AuthenticationException exception) {
 	if (this.forwardToDestination) {
 		// 如果配置为转发到目的地，则将异常保存到requset属性中
@@ -819,7 +819,7 @@ protected final void saveException(HttpServletRequest request, AuthenticationExc
 和自定义登陆成功的使用场景一样，在面对前后端分离时，上面`failureForwardUrl`和`failureUrl`两个方法就力不从心了，所以security提供了`failureHandler`方法用来自定义认证失败之后处理。  
  我们来看一看里面的内容：
 
-```
+```java
 	public final T failureHandler(AuthenticationFailureHandler authenticationFailureHandler) {
 		this.failureUrl = null;
 		this.failureHandler = authenticationFailureHandler;
@@ -836,7 +836,7 @@ protected final void saveException(HttpServletRequest request, AuthenticationExc
 
 我们来看看里面的内容：
 
-```
+```java
 public interface AuthenticationFailureHandler {
 
 	void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -853,7 +853,7 @@ public interface AuthenticationFailureHandler {
 
 代码如下：
 
-```
+```java
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -885,7 +885,7 @@ public class MyAuthenticationFailureHandler  implements AuthenticationFailureHan
 
 代码如下：
 
-```
+```java
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -924,7 +924,7 @@ Security提供默认的注销登录配置，开发时也可以按照自己的需
 
 * 开启注销登录 默认开启
 
-```
+```java
 @Configuration
 public class WebSecurityConfigurer extends
 WebSecurityConfigurerAdapter {
@@ -952,7 +952,7 @@ http.authorizeHttpRequests()
 
 * 配置多个注销登录请求
 
-```
+```java
  .logoutRequestMatcher(new OrRequestMatcher(
 new
 AntPathRequestMatcher("/aa","GET"),
@@ -970,7 +970,7 @@ AntPathRequestMatcher("/bb","POST")
 
 1. 创建`MyLogoutSuccessHandler`方法：
 
-```
+```java
 public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -988,7 +988,7 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
 
 2. 配置
 
-```
+```java
         .logoutSuccessHandler(new MyLogoutSuccessHandler())
 
 
@@ -998,7 +998,7 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
 
 这个方法如下
 
-```
+```java
 	public LogoutConfigurer<H> logoutSuccessHandler(LogoutSuccessHandler logoutSuccessHandler) {
 		this.logoutSuccessUrl = null;
 		this.customLogoutSuccess = true;
@@ -1011,7 +1011,7 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
 
 LogoutSuccessHandler内容如下所示：
 
-```
+```java
 public interface LogoutSuccessHandler {
 
 	void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
@@ -1067,7 +1067,7 @@ SecurityContextHolder 中的数据保存默认是通过ThreadLocal 来实现的�
    预初始化模式，要求在使用时先设置完整的 `SecurityContextHolderStrategy`实例。  
    基本没有业务场景（据我了解所知），欢迎评论区讨论。
 
-```
+```java
 public class SecurityContextHolder {
 
     // 不同的策略模式常量
@@ -1179,7 +1179,7 @@ public class SecurityContextHolder {
 上下文在获取时，并不是直接可以获取的，而是通过策略（strategy）来获取，我们来看一看这个strategy里面是什么内容，通过 SecurityContextHolder 可以得知，SecurityContextHolderStrategy 接⼝  
  ⽤来定义存储策略⽅法：
 
-```
+```java
 public interface SecurityContextHolderStrategy {
 //清除存储的 SecurityContext对象
 	void clearContext();
@@ -1207,7 +1207,7 @@ public interface SecurityContextHolderStrategy {
 
 * 代码中获取认证之后⽤户数据
 
-```
+```java
 @RestController
 public class HelloController {
 @RequestMapping("/hello")
@@ -1231,7 +1231,7 @@ return "hello security";
    添加-Dspring.security.strategy=MODE\_INHERITABLETHREADLOCAL  
    ![在这里插入图片描述](./assets/131230561/12e19ca89702f5721f95f34c.png)
 
-```
+```java
 @RestController
 public class HelloController {
 @RequestMapping("/hello")
@@ -1268,7 +1268,7 @@ return "hello security";
 
 * 引入依赖
 
-```
+```xml
   <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity5</artifactId>
@@ -1289,7 +1289,7 @@ xmlns:sec="http:!"www.thymeleaf.org/extras/spring-security">
 
 * ⻚⾯中使⽤
 
-```
+```xml
 <!--获取认证用户名-->
 <ul>
     <li sec:authentication="principal.username"></li>

@@ -52,7 +52,7 @@ Serializable接口是一个标记接口,不用实现任何方法.一旦实现了
 
 * 序列化
 
-```
+```java
 public class Student implements Serializable {
 
     private String name;
@@ -74,7 +74,7 @@ public class Student implements Serializable {
 
 ```
 
-```
+```java
 public static void serialize(  ) throws IOException {
 
     Student student = new Student();
@@ -125,7 +125,7 @@ public static void deserialize(  ) throws IOException, ClassNotFoundException {
 
 #### 普通序列化
 
-```
+```java
 public interface Externalizable extends java.io.Serializable {    
  void writeExternal(ObjectOutput out) throws IOException;    
  void readExternal(ObjectInput in) throws IOException, ClassNotFoundException;
@@ -136,7 +136,7 @@ public interface Externalizable extends java.io.Serializable {
 
 举个例子来看
 
-```
+```java
 public UserInfo() {
     userAge=20;//这个是在第二次测试使用，判断反序列化是否通过构造器
 }
@@ -160,7 +160,7 @@ public void readExternal(ObjectInput in) throws IOException, ClassNotFoundExcept
 在Java中基本类型（如int, double, boolean等）和String类型都是可序列化的.  
  所以如果一个可序列化类的成员不是基本类型,也不算String类型,那这个引用类型也必须是可序列化的;否则会导致此类不能序列化
 
-```
+```java
 public class Teacher implements Serializable {
 private String name;
 private Person person;
@@ -187,7 +187,7 @@ private Person person;
 
 同一对象序列化多次，会将这个对象序列化多次吗？答案是否定的。
 
-```
+```java
 public class WriteTeacher {   
  public static void main(String[] args) throws Exception { 
  try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("teacher.txt"))) {
@@ -209,7 +209,7 @@ public class WriteTeacher {
 依次将t1、t2、person、t2对象序列化到文件teacher.txt文件中。  
  注意：反序列化的顺序与序列化时的顺序一致。
 
-```
+```java
 public class ReadTeacher {
     public static void main(String[] args) {
      try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("teacher.txt"))) {           
@@ -278,7 +278,7 @@ public class ReadTeacher {
 
 java提供了一个`private static final long serialVersionUID`的序列化版本号,只要版本号相同,即使更改了序列化属性,对象也可以正确被反序列化回来.
 
-```
+```java
 public class Person implements Serializable {    
 //序列化版本号    
 private static final long serialVersionUID = 1111013L;   

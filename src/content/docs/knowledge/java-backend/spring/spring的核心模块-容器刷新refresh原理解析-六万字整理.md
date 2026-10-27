@@ -38,7 +38,7 @@ refresh() 方法是 Spring 框架中最为核心的方法之一，可以说整�
  1.数据访问对象（DAO）  
  假设我们需要访问数据库中的用户信息，我们可以定义一个UserDao接口和UserDaoImpl实现类，如下所示：
 
-```
+```java
 public interface UserDao {
     List<User> getAllUsers();
 }
@@ -63,7 +63,7 @@ public class UserDaoImpl implements UserDao {
 2. 业务对象（Service）  
     编写一个用户管理的业务逻辑，我们可以定义一个UserService接口和UserServiceImpl实现类，如下所示：
 
-```
+```java
 public interface UserService {
     List<User> getAllUsers();
 }
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
 3.控制器（Controller）  
  我们可以定义一个UserController控制器类，如下所示：
 
-```
+```java
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -139,7 +139,7 @@ public class UserController {
 
 ##### initPropertySources
 
-```
+```java
 java
    protected void prepareRefresh() {  
    // Switch to active.  
@@ -218,7 +218,7 @@ java
 
 下面我们再了解一下ConfigurableEnvironment类是什么,了解这个有助于下面的理解.emm稍微硬核一点,来读读英文文档吧,链接🔗给你们: [ConfigurableEnvironment文档](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/ConfigurableEnvironment.html)
 
-```
+```java
 //包的位置
 Package org.springframework.core.env
 
@@ -300,7 +300,7 @@ When an Environment is being used by an ApplicationContext, it is important that
 5. 其他配置选项  
     提供了其他一些配置选项，例如设置属性占位符的前缀和后缀，是否忽略未知的属性等。
 
-```
+```java
 public interface ConfigurableEnvironment extends Environment, ConfigurablePropertyResolver {
 
 	void setActiveProfiles(String... profiles);
@@ -322,7 +322,7 @@ public interface ConfigurableEnvironment extends Environment, ConfigurableProper
 
 再细节的内容就不展开了,还是尽快回到主题,有个大致的了解就好.
 
-```
+```java
 protected void initPropertySources() {  
    // For subclasses: do nothing by default.  
 }
@@ -333,7 +333,7 @@ protected void initPropertySources() {
 
 ###### AbstractRefreshableWebApplicationContext
 
-```
+```java
 @Override
 	protected void initPropertySources() {
 	/**
@@ -362,7 +362,7 @@ protected void initPropertySources() {
 
 ###### GenericWebApplicationContext
 
-```
+```java
 	@Override
 	protected void initPropertySources() {
 	/**
@@ -389,7 +389,7 @@ protected void initPropertySources() {
 
 ###### StaticWebApplicationContext
 
-```
+```java
 	@Override
 	protected void initPropertySources() {
 	/**
@@ -405,7 +405,7 @@ protected void initPropertySources() {
 我们进去initPropertySources方法里面看一看:  
  下面代码里的常量来源如下:
 
-```
+```java
  */
 public class StandardServletEnvironment extends StandardEnvironment implements ConfigurableWebEnvironment {
 
@@ -418,7 +418,7 @@ public class StandardServletEnvironment extends StandardEnvironment implements C
 
 ```
 
-```
+```java
 /**
 这个方法用于初始化属性源，它接收一个 MutablePropertySources 对象，以及一个可选的 ServletContext 和 ServletConfig 对象作为参数。
 MutablePropertySources 是Spring框架中用于管理属性源的接口。
@@ -453,7 +453,7 @@ MutablePropertySources 是Spring框架中用于管理属性源的接口。
 
 回顾一下上面initPropertySources的代码后半部分
 
-```
+```java
  // Store pre-refresh ApplicationListeners...  
  //代码检查是否已经存储了预刷新（pre-refresh）阶段的应用程序监听器。预刷新阶段是在应用程序上下文即将开始刷新之前执行的一部分。
    if (this.earlyApplicationListeners == null) {  
@@ -490,7 +490,7 @@ MutablePropertySources 是Spring框架中用于管理属性源的接口。
 
 ###### 英文文档
 
-```
+```java
 //包位置
 Package org.springframework.beans.factory.config
 //接口
@@ -521,7 +521,7 @@ This subinterface of BeanFactory is not meant to be used in normal application c
 
 看一下它的源代码,里面的方法就不细究了,大概知道这个类是干什么的就可以.
 
-```
+```java
 public interface ConfigurableListableBeanFactory
 		extends ListableBeanFactory, AutowireCapableBeanFactory, ConfigurableBeanFactory {
 		
@@ -567,7 +567,7 @@ obtainFreshBeanFactory：获取子类刷新后的内容
 
 代码如下：
 
-```
+```java
 protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
         //调用refreshBeanFactory方法来刷新当前Application的BeanFactory，
 		refreshBeanFactory();
@@ -582,7 +582,7 @@ protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 
 进入到refreshBeanFactory里
 
-```
+```java
 	protected abstract void refreshBeanFactory() 
 	throws BeansException, IllegalStateException;
 
@@ -600,7 +600,7 @@ protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 
 代码如下:
 
-```
+```java
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
 		//检查是否存在BeanFactory。
@@ -631,7 +631,7 @@ protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 
 代码如下:
 
-```
+```java
 /**
 refreshed 是一个 AtomicBoolean 类型的变量，用于记录应用程序上下文是否已经进行过刷新。AtomicBoolean 是一个线程安全的布尔类型变量，用于在多线程环境中进行原子操作。
 **/
@@ -658,7 +658,7 @@ refreshed 是一个 AtomicBoolean 类型的变量，用于记录应用程序上�
 我们深入里面setSerializationId方法简单看一看:  
  前置知识:setSerializationId是DefaultListableBeanFactory类的方法,serializableFactories是DefaultListableBeanFactory类中声明的Map集合,如下:
 
-```
+```java
 private static final Map<String, Reference<DefaultListableBeanFactory>> serializableFactories =
 			new ConcurrentHashMap<>(8);
 
@@ -684,7 +684,7 @@ WeakReference：用于创建弱引用。
 
 好的,前置知识把障碍扫清了,来看看里面setSerializationId的内容吧.
 
-```
+```java
         /**
 		serializableFactories 是一个 ConcurrentHashMap 类型的变量，
 		用于存储序列化 ID 和对应 BeanFactory 的弱引用（WeakReference）。
@@ -721,7 +721,7 @@ WeakReference：用于创建弱引用。
 
 代码如下:
 
-```
+```java
 	public abstract ConfigurableListableBeanFactory getBeanFactory() throws IllegalStateException;
 
 
@@ -734,7 +734,7 @@ WeakReference：用于创建弱引用。
 
 ###### AbstractRefreshableApplicationContext——getBeanFactory
 
-```
+```java
 	public final ConfigurableListableBeanFactory getBeanFactory() {
 		DefaultListableBeanFactory beanFactory = this.beanFactory;
 		// 如果 beanFactory 为 null，说明当前 BeanFactory 未初始化或已经关闭
@@ -757,7 +757,7 @@ WeakReference：用于创建弱引用。
 
 这个方法比较简单,一看就基本明白了:
 
-```
+```java
 	@Override
 	public final ConfigurableListableBeanFactory getBeanFactory() {
 		return this.beanFactory;
@@ -771,7 +771,7 @@ WeakReference：用于创建弱引用。
 它的作用是在创建完应用程序上下文的 BeanFactory 后对其进行进一步的准备工作和定制配置。  
  prepareBeanFactory() 方法为开发者提供了一个扩展点，在新的 BeanFactory 创建完成后，可以对其进行一些自定义的配置和准备工作，以满足特定的业务需求或场景。子类可以重写这个方法来添加自己的逻辑，从而实现对 BeanFactory 的定制和扩展。
 
-```
+```java
 protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {  
    // Tell the internal bean factory to use the context's class loader etc.  
    //告诉内部bean工厂使用容器的类加载器  
@@ -841,7 +841,7 @@ protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 允许容器的子类去注册postProcessor——钩子🪝方法  
  postProcessBeanFactory() 方法为开发者提供了一个扩展点，在新的 BeanFactory 创建和刷新完成后，可以对其进行进一步的后置处理。这使得开发者可以在应用程序上下文刷新完成后，对 BeanFactory 进行额外的自定义配置和功能扩展。子类可以重写这个方法来添加自己的逻辑，从而实现对 BeanFactory 的后置处理和扩展。
 
-```
+```java
 protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {  
 }
 
@@ -858,7 +858,7 @@ protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactor
 
 ###### AbstractRefreshableWebApplicationContext——postProcessBeanFactory
 
-```
+```java
 	/**
 	 * Register request/session scopes, a {@link ServletContextAwareProcessor}, etc.
 	 */
@@ -886,7 +886,7 @@ protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactor
 
 ###### GenericWebApplicationContext——postProcessBeanFactory
 
-```
+```java
 	@Override
 	protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		/**
@@ -916,7 +916,7 @@ protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactor
 
 ###### ResourceAdapterApplicationContext——postProcessBeanFactory
 
-```
+```java
 /**
 	 * ResourceAdapterApplicationContext类为IoC容器中的bean添加了一个BootstrapContextAwareProcessor后处理器
 	 * 它将BootstrapContext对象注入到容器中的特定bean中，
@@ -948,7 +948,7 @@ protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactor
 
 ###### StaticWebApplicationContext——postProcessBeanFactory
 
-```
+```java
 /**
 	 * Register request/session scopes, a {@link ServletContextAwareProcessor}, etc.
 	 */
@@ -980,7 +980,7 @@ protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactor
 
 代码如下:
 
-```
+```java
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
 		//这段代码的作用是在beanFactory中调用所有的BeanFactoryPostProcessor
 		//getBeanFactoryPostProcessors()：这个方法是 AbstractApplicationContext 类中的一个抽象方法，由子类实现。它用于获取所有注册的 BeanFactoryPostProcessor 实现类的列表。子类可以重写这个方法来返回自定义的 BeanFactoryPostProcessor 实例列表。
@@ -1008,7 +1008,7 @@ protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactor
 
 代码如下:
 
-```
+```java
 public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
@@ -1192,7 +1192,7 @@ public static void invokeBeanFactoryPostProcessors(
 这个方法的主要主要作用是注册拦截Bean创建过程中的BeanPostProcessor,其实你看方法名字也大概可以明白,很清楚.  
  如果你看过我之前总结的文章,那么你大概也会明白为什么会有BeanPostProcessor这个东西,那么这里根据大司马的假设性原则,我假设你会这个东西的话,这个方法就很容易理解了,直接看代码就好.
 
-```
+```java
 protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {  
    PostProcessorRegistrationDelegate.registerBeanPostProcessors(beanFactory, this);  
 }
@@ -1206,7 +1206,7 @@ protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFa
  在调用 registerBeanPostProcessors() 方法时，this 通常会指向一个继承自 AbstractApplicationContext 或其子类的实例。这是因为 registerBeanPostProcessors() 方法是在 AbstractApplicationContext 类中定义的，并且通常会在 Spring 容器的初始化和刷新过程中被调用。  
  举例来说，如果你创建了一个 ClassPathXmlApplicationContext 类的实例并调用其 refresh() 方法：
 
-```
+```java
 ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 context.refresh();
 
@@ -1222,7 +1222,7 @@ context.refresh();
  看到下面方法的参数,再看看上面的介绍,this代表的是什么应该不难看出了.  
  再次强调:this 关键字的具体含义取决于调用 registerBeanPostProcessors() 方法的类的实例，通常是继承自 AbstractApplicationContext 或其子类的实例。
 
-```
+```java
 public static void registerBeanPostProcessors(  
       ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext) {  
   	//获取所有实现了BeanPostProcessor接口的Bean的名称
@@ -1327,7 +1327,7 @@ public static void registerBeanPostProcessors(
  这种方法属于非重点方法,本身实现也不难,如果你上面都可以看明白,这里也就不必多说了.  
  这个方法的主要作用是:找到"messageSource"的Bean提供给ApplicationContext使用,使得ApplicationContext具有国际化能力
 
-```
+```java
 //列举方法里用到的静态变量
 
 	public static final String MESSAGE_SOURCE_BEAN_NAME = "messageSource";
@@ -1379,7 +1379,7 @@ protected void initMessageSource() {
 1. 初始化ApplicationEventMulticaster类作为事件发布者
 2. 存储所有事件监听者信息,并根据不同事件,通知不同的事件监听者
 
-```
+```java
 	public static final String APPLICATION_EVENT_MULTICASTER_BEAN_NAME = "applicationEventMulticaster";
 	
 protected void initApplicationEventMulticaster() {
@@ -1418,7 +1418,7 @@ protected void initApplicationEventMulticaster() {
 3. 比如Web容器就会去初始化一些和主题展示相关的Bean（ThemeSource）  
     看代码:
 
-```
+```java
 	protected void onRefresh() throws BeansException {
 		// 默认的空方法,已经见惯不怪了
 	}
@@ -1440,7 +1440,7 @@ protected void initApplicationEventMulticaster() {
 我们看一看这个类,代码不多,它是Spring 框架中的一个辅助工具类，用于支持与用户界面（UI）相关的应用程序上下文（ApplicationContext）操作。  
  主要功能是初始化和获取与主题（Theme）相关的内容。
 
-```
+```java
 public abstract class UiApplicationContextUtils {
 
 	/**
@@ -1520,7 +1520,7 @@ public abstract class UiApplicationContextUtils {
 
 代码如下:
 
-```
+```java
 	protected void onRefresh() {
 		this.themeSource = UiApplicationContextUtils.initThemeSource(this);
 	}
@@ -1532,7 +1532,7 @@ public abstract class UiApplicationContextUtils {
 
 代码如下
 
-```
+```java
 @Test
 public void testExpectedBehavior() {
 		// 创建一个 TestBean 实例作为目标对象
@@ -1560,7 +1560,7 @@ public void testExpectedBehavior() {
 
 代码如下:
 
-```
+```java
 	/**
 	 * 当Spring应用程序上下文创建完成后，
 	 * 会通过调用 registerListeners() 方法来注册应用程序事件监听器。
@@ -1608,7 +1608,7 @@ public void testExpectedBehavior() {
 
 核心代码:
 
-```
+```java
 public interface ConfigurableApplicationContext extends ApplicationContext, Lifecycle, Closeable {
 
 	String CONFIG_LOCATION_DELIMITERS = ",; \t\n";
@@ -1637,7 +1637,7 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 
 代码如下:
 
-```
+```java
 public interface ConfigurableApplicationContext extends ApplicationContext, Lifecycle, Closeable {
 	String CONVERSION_SERVICE_BEAN_NAME = "conversionService";
 }
@@ -1690,7 +1690,7 @@ protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory b
 
 这部分内容没有什么太重点的内容,给出注释一起看看就行
 
-```
+```java
 protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {  
    // Initialize conversion service for this context.  
    //初始化此容器的转换器。  
@@ -1736,7 +1736,7 @@ protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory b
 
 进入：preInstantiateSingletons（）
 
-```
+```java
 public void preInstantiateSingletons() throws BeansException {  
    if (logger.isTraceEnabled()) {  
       logger.trace("Pre-instantiating singletons in " + this);  

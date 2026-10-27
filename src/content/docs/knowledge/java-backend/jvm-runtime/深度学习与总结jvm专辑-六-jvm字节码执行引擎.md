@@ -65,7 +65,7 @@ sidebar:
 
 下面我们来举个常见的解析调用的例子：
 
-```
+```java
 /**
  * 方法静态解析演示
  */
@@ -86,7 +86,7 @@ public class StaticResolution {
 
 使用javap命令查看这段程序对应的字节码，会发现的确是通过invokestatic命令来调用sayHello()方法，而且其调用的方法版本已经在编译就明确以常量池项的形式固化在字节码指令的参数之中。
 
-```
+```java
 javap -verbose StaticResolution
 public static void main(java.lang.String[]);
     Code:
@@ -112,7 +112,7 @@ Java是一门面向对象的程序语言，因为Java具备面向对象的3个�
 
 我们先准备一段面试题代码：
 
-```
+```java
 /**
  * 方法静态分派演示
  */
@@ -159,7 +159,7 @@ public class StaticDispatch {
 
 我们先来共同确定一些概念：
 
-```
+```java
 Human man = new Man();
 
 
@@ -172,7 +172,7 @@ Human man = new Man();
  而实际类型变化的结果在运行期才可确定，编译器在编译程序的时候并不知道一个对象的实际类型是什么。  
  这么说有点不好理解，我们来举个栗子：
 
-```
+```java
 // 实际类型变化
 Human human = (new Random()).nextBoolean() ? new Man() : new Woman();
 
@@ -199,7 +199,7 @@ mian函数里面的两次sayHello()方法调用，在方法接受者已经确定
 注意Javac编译器虽然能确定出方法的重载版本，但是有些情况重载版本不是唯一，往往只能确定“相对更合适的版本”，这种模糊的结论在0和1的世界有点罕见，产生的原因是字面量天生的模糊性，它不需要定义，所以字面量就没有显示的静态类型，它的静态类型只能通过语言，语法的规则去理解和推断。  
  我们举个例子（重载方法匹配优先级）：
 
-```
+```java
 public class Overload {
 
     public static void sayHello(Object arg) {
@@ -261,7 +261,7 @@ hello int
 Java语言里动态分派的实现过程，它与Java语言多态性的另外一个重要体现——重写（Override）有着密切的关联。  
  我们还是用前面的例子来说动态分派：
 
-```
+```java
 public class DynamicDispatch {
 
     static abstract class Human {
@@ -313,7 +313,7 @@ JVM是如何判断应该调用哪个方法的？
 
 我们用javap命令来输出这段代码的字节码，来找一下答案：
 
-```
+```java
 public static void main(java.lang.String[]);
     Code:
         Stack=2, Locals=3, Args_size=1
@@ -342,7 +342,7 @@ public static void main(java.lang.String[]);
 
 0-15行：字节码准备动作，建立man和woman的内存空间，调用Man和Woman类型的实例构造器，将这两个实例的引用存放在第1,2个局部变量表的变量槽中，这些动作对应了Java源码中的这两行：
 
-```
+```java
 Human man = new Man();
 Human woman = new Woman();
 
@@ -374,7 +374,7 @@ invokevirtual指令的运行时解析过程大致分下面几步：
 
 来段代码品一品：
 
-```
+```java
 /**
  * 字段不参与多态
  */
@@ -437,7 +437,7 @@ public class FieldHasNoPolymorphic {
  多分派则是根据多于一个宗量对目标方法进行选择。  
  我们举个栗子来帮助理解：
 
-```
+```java
 /**
  * 单分派、多分派演示
  */

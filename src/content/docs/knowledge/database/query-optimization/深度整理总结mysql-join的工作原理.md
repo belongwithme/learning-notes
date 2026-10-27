@@ -39,7 +39,7 @@ sidebar:
 
 先建立两个表方便展示
 
-```
+```sql
  CREATE TABLE t1 (m1 int, n1 char(1));
  CREATE TABLE t2 (m2 int, n2 char(1));
  INSERT INTO t1 VALUES(1, 'a'), (2, 'b'), (3, 'c');
@@ -55,7 +55,7 @@ sidebar:
  这个过程看起来就是把t1表的记录和t2的记录连起来组成新的更大的记录，所以这个查询过程称之为连接查询。  
  查询sql如下:
 
-```
+```sql
 SELECT * FROM t1, t2;
 
 
@@ -76,7 +76,7 @@ SELECT * FROM t1, t2;
 
 下面我们举个例子来说明
 
-```
+```sql
 SELECT * FROM t1, t2 WHERE t1.m1 > 1 AND t1.m1 = t2.m2 AND t2.n2 < 'd';
 
 
@@ -109,7 +109,7 @@ SELECT * FROM t1, t2 WHERE t1.m1 > 1 AND t1.m1 = t2.m2 AND t2.n2 < 'd';
 
 ### 内连接AND外连接
 
-```
+```sql
 CREATE TABLE student (
     number INT NOT NULL AUTO_INCREMENT COMMENT '学号',
     name VARCHAR(5) COMMENT '姓名',
@@ -214,7 +214,7 @@ mysql> SELECT s1.number, s1.name, s2.subject, s2.score FROM student AS s1, score
 
 比如我们要把t1表和t2表进行左外连接查询可以这么写：
 
-```
+```sql
 SELECT * FROM t1 LEFT [OUTER] JOIN t2 ON 连接条件 [WHERE 普通过滤条件];
 
 
@@ -250,7 +250,7 @@ mysql> SELECT s1.number, s1.name, s2.subject, s2.score FROM student AS s1 LEFT J
 
 右（外）连接和左（外）连接的原理是一样一样的，语法也只是把LEFT换成RIGHT而已：
 
-```
+```sql
 SELECT * FROM t1 RIGHT [OUTER] JOIN t2 ON 连接条件 [WHERE 普通过滤条件];
 
 
@@ -263,7 +263,7 @@ SELECT * FROM t1 RIGHT [OUTER] JOIN t2 ON 连接条件 [WHERE 普通过滤条件
 内连接和外连接的根本区别就是**在驱动表中的记录不符合ON子句中的连接条件时不会把该记录加入到最后的结果集.**  
  我们最开始介绍的那些连接查询的类型都是内连接。
 
-```
+```sql
 SELECT * FROM t1 [INNER | CROSS] JOIN t2 [ON 连接条件] [WHERE 普通过滤条件];
 
 
@@ -271,7 +271,7 @@ SELECT * FROM t1 [INNER | CROSS] JOIN t2 [ON 连接条件] [WHERE 普通过滤�
 
 不过之前仅仅提到了一种最简单的内连接语法，就是直接把需要连接的多个表都放到FROM子句后边。其实针对内连接，MySQL提供了好多不同的语法，我们以t1和t2表为例看看：
 
-```
+```sql
 SELECT * FROM t1 [INNER | CROSS] JOIN t2 [ON 连接条件] [WHERE 普通过滤条件];
 
 
@@ -284,7 +284,7 @@ SELECT * FROM t1 [INNER | CROSS] JOIN t2 [ON 连接条件] [WHERE 普通过滤�
 * SELECT \* FROM t1 CROSS JOIN t2;  
    上面的这些写法和直接把需要连接的表名放到FROM语句之后，用逗号,分隔开的写法是等价的：
 
-```
+```sql
  SELECT * FROM t1, t2;
 
 
@@ -406,7 +406,7 @@ for each row in t1 {   #此处表示遍历满足对t1单表查询结果集中的
  但是别忘了，查询t2表其实就相当于一次单表扫描，我们可以利用索引来加快查询速度。  
  举个例子:
 
-```
+```sql
 SELECT * FROM t1, t2 WHERE t1.m1 > 1 AND t1.m1 = t2.m2 AND t2.n2 < 'd';
 
 
@@ -417,7 +417,7 @@ SELECT * FROM t1, t2 WHERE t1.m1 > 1 AND t1.m1 = t2.m2 AND t2.n2 < 'd';
 
 * 当t1.m1 = 2时，去查询一遍t2表，对t2表的查询语句相当于：
 
-```
+```sql
 SELECT * FROM t2 WHERE t2.m2 = 2 AND t2.n2 < 'd';
 
 
@@ -425,7 +425,7 @@ SELECT * FROM t2 WHERE t2.m2 = 2 AND t2.n2 < 'd';
 
 * 当t1.m1 = 3时，再去查询一遍t2表，此时对t2表的查询语句相当于：
 
-```
+```sql
 SELECT * FROM t2 WHERE t2.m2 = 3 AND t2.n2 < 'd';
 
 
@@ -498,7 +498,7 @@ Hash Join会扫描关联的两张表：
     Hash Join 选择驱动表和 Nested Loop Join 算法大致一样，都是较小的表作为驱动表。如果驱动表比较大，创建的哈希表超过了内存的大小，MySQL 会自动把结果转储到磁盘。  
     我们举个例子来说:
 
-```
+```sql
 SELECT 
 
     s_acctbal,
@@ -600,7 +600,7 @@ OLTP 业务是海量并发，要求响应非常及时，在毫秒级别返回结
 如果 OLTP 业务的 JOIN 带有 WHERE 过滤条件，并且是根据主键、索引进行过滤，那么驱动表只有一条或少量记录，这时进行 JOIN 的开销是非常小的。  
  比如在淘宝的电商业务中，用户要查看自己的订单情况，其本质是在数据库中执行类似如下的 SQL 语句：
 
-```
+```sql
 SELECT o_custkey, o_orderdate, o_totalprice, p_name FROM orders,lineitem, part
 
 WHERE o_orderkey = l_orderkey
@@ -618,7 +618,7 @@ LIMIT 30;
 
 有些开发人员会以为上述 SQL 语句的 JOIN 开销非常大，因此认为拆成 3 条简单 SQL 会好一些，比如：
 
-```
+```sql
 SELECT * FROM orders 
 
 WHERE o_custkey = ? 

@@ -148,7 +148,7 @@ sidebar:
 
 **文件:** `AutoConfigurationImportSelector.java:200-210`
 
-```
+```java
 protected List<String> getCandidateConfigurations(
     AnnotationMetadata metadata,
     @Nullable AnnotationAttributes attributes) {
@@ -176,7 +176,7 @@ protected List<String> getCandidateConfigurations(
 
 **文件:** `ImportCandidates.java:82-93`
 
-```
+```java
 public static ImportCandidates load(Class<?> annotation, @Nullable ClassLoader classLoader) {
     // 1. 确定类加载器
     ClassLoader classLoaderToUse = decideClassloader(classLoader);
@@ -205,7 +205,7 @@ public static ImportCandidates load(Class<?> annotation, @Nullable ClassLoader c
 
 **文件:** `ImportCandidates.java:111-129`
 
-```
+```java
 private static List<String> readCandidateConfigurations(URL url) {
     try (BufferedReader reader = new BufferedReader(
         new InputStreamReader(new UrlResource(url).getInputStream(), StandardCharsets.UTF_8))) {
@@ -238,7 +238,7 @@ private static List<String> readCandidateConfigurations(URL url) {
 
 **文件:** `ImportCandidates.java:131-137`
 
-```
+```java
 private static String stripComment(String line) {
     int commentStart = line.indexOf(COMMENT_START);
     if (commentStart == -1) {
@@ -418,7 +418,7 @@ private ImportCandidates(List<String> candidates) {
 
 ### 2. 迭代器支持
 
-```
+```java
 public final class ImportCandidates implements Iterable<String> {
 
     @Override
@@ -438,7 +438,7 @@ public final class ImportCandidates implements Iterable<String> {
 
 ### 3. 异常处理
 
-```
+```java
 // 文件路径查找失败
 private static Enumeration<URL> findUrlsInClasspath(ClassLoader classLoader, String location) {
     try {
@@ -466,7 +466,7 @@ private static List<String> readCandidateConfigurations(URL url) {
 
 ### 4. 静态工厂方法
 
-```
+```java
 // 使用静态工厂方法而非公共构造函数
 public static ImportCandidates load(Class<?> annotation, @Nullable ClassLoader classLoader) {
     // ... 加载逻辑
@@ -552,7 +552,7 @@ private ImportCandidates(List<String> candidates) {
 
 **步骤1: 创建自动配置类**
 
-```
+```java
 package com.example.myproject.autoconfigure;
 
 @AutoConfiguration
@@ -586,7 +586,7 @@ com.example.myproject.autoconfigure.MyServiceAutoConfiguration
 
 ### 2. 测试自动配置
 
-```
+```java
 package com.example.myproject.autoconfigure;
 
 @AutoConfiguration
@@ -664,7 +664,7 @@ com.example.processor.CustomEnvironmentPostProcessor
 
 ### 1. 查看加载的配置类
 
-```
+```java
 @SpringBootApplication
 public class Application {
 
@@ -701,7 +701,7 @@ debug=true
 
 添加日志配置:
 
-```
+```properties
 logging.level.org.springframework.boot.autoconfigure=DEBUG
 logging.level.org.springframework.boot.context.annotation=TRACE
 

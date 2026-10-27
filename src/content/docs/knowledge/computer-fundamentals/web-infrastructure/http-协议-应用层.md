@@ -132,7 +132,7 @@ HTTP 方法表达客户端对资源的操作意图，常用方法及特点如下
 
 #### GET 请求示例
 
-```
+```java
 // 使用 HttpURLConnection 实现 GET 请求
 HttpURLConnection conn = (HttpURLConnection) new URL("https://api.example.com/user?id=123").openConnection();
 conn.setRequestMethod("GET");
@@ -143,7 +143,7 @@ conn.setRequestMethod("GET");
 
 #### POST 请求示例
 
-```
+```java
 // 使用 HttpURLConnection 实现 POST 请求
 HttpURLConnection conn = (HttpURLConnection) new URL("https://api.example.com/login").openConnection();
 conn.setRequestMethod("POST");
@@ -222,7 +222,7 @@ conn.setRequestProperty("Connection", "keep-alive");
 * **Cookie + Session**  
    服务器生成一个唯一标识（sessionId），存入 Cookie，并在服务端保存与之对应的用户状态。
 
-  ```
+  ```java
   Cookie cookie = new Cookie("sessionId", "xyz123");
   cookie.setHttpOnly(true);
   cookie.setMaxAge(3600); // 一小时后过期
@@ -384,7 +384,7 @@ response.setDateHeader("Expires", System.currentTimeMillis() + 3600000);
 
 以下示例展示如何使用 Node.js 发起 HTTP 请求，供参考与对比。
 
-```
+```javascript
 const http = require('http');
 
 function getRequest(options, callback) {

@@ -95,7 +95,7 @@ sidebar:
  3：Java中，**线程作为操作系统的最小调度单位**，**进程作为操作系统的资源分配的最小单位**，也叫做轻量级进程(Light Weight Process),在windows里进程不活动，只是作为线程的容器。  
  我们可以举个例子看一下：
 
-```
+```java
 public class demo_1{
     public static void main(String[] args) {
         // 获取Java线程管理MXBean
@@ -210,7 +210,7 @@ Finalizer　　　　   // 调用对象finalize方法的线程
 优点：方便传参，可以在子类加成员变量，通过set方法设置参数或构造函数传参  
  缺点：Java不支持多继承
 
-```
+```java
 public static void main(String[] args){
 Thread th =new MyThread();
 th.start();
@@ -231,7 +231,7 @@ System.out.println("嘿嘿");
  有三种写法：  
  a：
 
-```
+```java
 public class Thread_1 {
     public static void main(String[] args) {
         //创建线程任务
@@ -252,7 +252,7 @@ public class Thread_1 {
 
 b：
 
-```
+```java
 public class Thread_2 {
     private static class MyRunnable implements Runnable{
         @Override
@@ -273,7 +273,7 @@ public class Thread_2 {
 
 c：
 
-```
+```java
 public class Thread_3 {
     public static void main(String[] args) {
         //创建线程任务
@@ -293,7 +293,7 @@ public class Thread_3 {
 
 优点：可以拿到返回结果
 
-```
+```java
 public class Thread_4 {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         FutureTask<String> futureTask = new FutureTask<>(new wang());

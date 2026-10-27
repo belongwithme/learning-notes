@@ -31,7 +31,7 @@ sidebar:
 
 还是那张表orders :
 
-```
+```sql
 CREATE TABLE `orders` (
 
   `O_ORDERKEY` int NOT NULL,
@@ -110,7 +110,7 @@ Cost  = Server Cost + Engine Cost
 
 我们再来看一下 10 讲的 GROUP BY SQL 语句，这时我们通过命令 EXPLAIN的FORMAT=json 来查看各成本的值，为的是让你进一步了解优化的工作原理。
 
-```
+```sql
 EXPLAIN FORMAT=json 
 
 SELECT o_custkey,SUM(o_totalprice) 
@@ -162,7 +162,7 @@ FROM orders GROUP BY o_custkey
 MySQL 优化器永远是根据成本，选择出最优的执行计划。哪怕是同一条 SQL 语句，只要范围不同，优化器的选择也可能不同。  
  如下面这两条 SQL：
 
-```
+```sql
 SELECT * FROM orders
 WHERE o_orderdate > '1994-01-01' and o_orderdate < '1994-12-31';
 
@@ -174,7 +174,7 @@ WHERE o_orderdate > '1994-02-01' and o_orderdate < '1994-12-31';
 
 上面这两条 SQL 都是通过索引字段 o\_orderdate 进行查询，然而第一条 SQL 语句的执行计划并未使用索引 idx\_orderdate，而是使用了如下的执行计划：
 
-```
+```sql
 EXPLAIN SELECT * FROM orders 
 
 WHERE o_orderdate > '1994-01-01' 
@@ -212,7 +212,7 @@ possible_keys: idx_orderdate
 
 从上述执行计划中可以发现，**优化器已经通过 possible\_keys 识别出可以使用索引 idx\_orderdate**，但最终却使用全表扫描的方式取出结果。 最为根本的原因在于：**优化器认为使用通过主键进行全表扫描的成本比通过二级索引 idx\_orderdate 的成本要低**，可以通过 FORMAT=tree 观察得到：
 
-```
+```sql
 EXPLAIN FORMAT=tree 
 
 SELECT * FROM orders 
@@ -249,7 +249,7 @@ EXPLAIN: -> Index range scan on orders using idx_orderdate, with index condition
 
 所以，第二条 SQL 语句，只是时间范围发生了变化，但是 MySQL 优化器就会自动使用二级索引 idx\_orderdate了，这时我们再观察执行计划：
 
-```
+```sql
 EXPLAIN SELECT * FROM orders 
 
 WHERE o_orderdate > '1994-02-01' 
@@ -299,7 +299,7 @@ B+ 树索引通常要建立在高选择性的字段或字段组合上，如性�
 通常订单状态绝大部分都是已完成，只有绝少部分因为系统故障原因，会在 15 分钟后还没有完成订单，**因此订单状态是存在数据倾斜的**。  
  这时，虽然订单状态是低选择性的，但是由于其有数据倾斜，且我们只是从索引查询少量数据，因此可以对订单状态创建索引：
 
-```
+```sql
 ALTER TABLE orders 
 ADD INDEX idx_orderstatus(o_orderstatus)
 
@@ -308,7 +308,7 @@ ADD INDEX idx_orderstatus(o_orderstatus)
 
 但这时根据下面的这条 SQL，优化器的选择可能如下：
 
-```
+```sql
 EXPLAIN SELECT * FROM orders 
 
 WHERE o_orderstatus = 'P'\G
@@ -344,7 +344,7 @@ possible_keys: NULL
 
 由于字段 o\_orderstatus 仅有三个值，分别为 ‘O’、’P’、’F’。但 MySQL 并不知道这三个列的分布情况，认为这三个值是平均分布的，但其实是这三个值存在严重倾斜：
 
-```
+```sql
 SELECT o_orderstatus,count(1) 
 
 FROM orders GROUP BY o_orderstatus;
@@ -379,7 +379,7 @@ UPDATE HISTOGRAM ON o_orderstatus;
 
 在创建完直方图后，MySQL会收集到字段 o\_orderstatus 的数值分布，可以通过下面的命令查询得到：
 
-```
+```sql
 SELECT 
 
 v value, 
@@ -411,7 +411,7 @@ WHERE column_name = 'o_orderstatus';
 
 可以看到，现在 MySQL 知道状态为 P 的订单只占 2.5%，因此再去查询状态为 P 的订单时，就会使用到索引 idx\_orderstatus了，如：
 
-```
+```sql
 EXPLAIN SELECT * FROM orders 
 
 WHERE o_orderstatus = 'P'\G

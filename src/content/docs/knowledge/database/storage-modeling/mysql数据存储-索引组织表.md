@@ -52,7 +52,7 @@ InnoDB 存储引擎的数据是根据主键索引排序存储的，**除了主�
  二级索引也是一颗 B+ 树索引，但它和主键索引不同的是**叶子节点存放的是索引键值、主键值**。  
  举个例子:
 
-```
+```sql
 CREATE TABLE User (
 
     id BIGINT AUTO_INCREMENT,
@@ -81,7 +81,7 @@ SELECT * FROM User WHERE name = 'David'，
  如果记录发生修改,其他索引无须进行维护,除非记录的主键发生修改.(因为二级索引存储的是主键，而不是数据的物理地址！)  
  举个例子:
 
-```
+```sql
 UPDATE employees SET salary = salary * 1.1 WHERE emp_id = 1001;
 
 
@@ -105,7 +105,7 @@ salary 发生了变化，但 emp\_id 没变，因此二级索引无需更新。
 
 我们给出一个业务的表User:
 
-```
+```sql
 CREATE TABLE User (
 
     id  BINARY(16) NOT NULL,

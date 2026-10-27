@@ -41,7 +41,7 @@ sidebar:
 
 1. 不加任何操作，直接去运行
 
-```
+```java
 public class CASdemo {
     public static void main(String[] args) {
         Account account =new AccountUnsafe(10000);
@@ -95,7 +95,7 @@ class AccountUnsafe implements Account{
  结果不为0，答案错误。  
  2：加锁
 
-```
+```java
 public class CASdemo {
 
     public static void main(String[] args) {
@@ -163,7 +163,7 @@ class AccountUnsafe implements Account{
 
 3：无锁实现
 
-```
+```java
 public class CASdemo {
     public static void main(String[] args) {
         Account account =new AccountCas(10000);
@@ -271,7 +271,7 @@ class AccountCas implements Account{
 
 举个上面的例子：
 
-```
+```java
  public void withdraw(Integer amount){
         while(true){
         //获取余额的最新值
@@ -330,7 +330,7 @@ Doc解析：
 
 内部类：
 
-```
+```java
  private static class Pair<T> {
         final T reference;  变量引用
         final int stamp;    修改戳记
@@ -375,7 +375,7 @@ Doc解析：
 
 重点方法：
 
-```
+```java
 //原子方式获取当前引用值
   1：public V getReference() {
         return pair.reference;
@@ -407,7 +407,7 @@ Doc解析：
 
 举个例子看一看：
 
-```
+```java
 public class aotimcCASdemo {
 
     static User one = new User("王力宏");
@@ -467,7 +467,7 @@ AtomicLong等其他传统atomic原子类对于数值的更改，通常是**在�
  ，一直处于自旋状态，占用CPU性能，浪费资源，降低并发性。  
  简单展示一个源码底层实现感受一下：
 
-```
+```java
     @HotSpotIntrinsicCandidate
     public final long getAndAddLong(Object o, long offset, long delta) {
         long v;
@@ -501,7 +501,7 @@ AtomicLong等其他传统atomic原子类对于数值的更改，通常是**在�
 ![在这里插入图片描述](./assets/126045364/ffb427bd67426379d909e76d.png)  
  代码实现：
 
-```
+```java
 public class LongAdder extends Striped64 
 implements Serializable 
 
@@ -550,7 +550,7 @@ implements Serializable
  一旦出现对base变量的CAS竞争，即高并发环境下某些线程CAS更新base失败，那么就初始化cells数组，并且以后都使用cells数组来进行统计计数（如果数组某一个索引位置的Cell更新时仍然出现了竞争。那么cells数组可能会扩容或者寻找新的Cell），在统计总和对base和cells数组中的值进行求和即可。  
  2. 内部类Cell
 
-```
+```java
   @jdk.internal.vm.annotation.Contended static final class Cell {
         volatile long value;
         Cell(long x) { value = x; }
@@ -624,7 +624,7 @@ Cell类中仅仅有一个value属性，实际上就是对value值的封装，封
 
 五：常用方法
 
-```
+```java
     public void add(long x) {
         Cell[] cs; cell数组的引用
         long b, v;  b：获取的base值，v：期望值

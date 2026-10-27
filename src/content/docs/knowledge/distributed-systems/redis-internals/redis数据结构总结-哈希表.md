@@ -66,7 +66,7 @@ typedef struct dictht{
 
 哈希表是由数组 table 组成，table 中每个元素都是指向 dict.h/dictEntry 结构，dictEntry 结构定义如下：
 
-```
+```c
 typedef struct dictEntry{
      //键
      void *key;

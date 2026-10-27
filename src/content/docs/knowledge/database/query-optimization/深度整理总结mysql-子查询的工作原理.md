@@ -29,7 +29,7 @@ sidebar:
 
 举一个简单的例子，如果让开发同学“找出1993年，没有下过订单的客户数量”，大部分开发人员会用子查询来写这个需求，比如：
 
-```
+```sql
 SELECT
 
     COUNT(c_custkey) cnt
@@ -65,7 +65,7 @@ WHERE
 
 不过上述查询是一个典型的 LEFT JOIN 问题（即在表 customer 存在，在表 orders 不存在的问题）。所以，这个问题如果用 LEFT JOIN 写，那么 SQL 如下所示：
 
-```
+```sql
 SELECT
 
     COUNT(c_custkey) cnt
@@ -147,7 +147,7 @@ WHERE
 * 使用主键等值匹配或者唯一二级索引列等值匹配作为搜索条件来查询某个表。  
    设计MySQL的大佬觉得这两种查询花费的时间特别少，少到可以忽略，所以也把通过这两种方式查询的表称之为常量表（英文名：constant tables）。优化器在分析一个查询语句时，先首先执行常量表查询，然后把查询中涉及到该表的条件全部替换成常数，最后再分析其余表的查询成本，比方说这个查询语句：
 
-```
+```sql
 SELECT * FROM table1 INNER JOIN table2
     ON table1.column1 = table2.column2 
     WHERE table1.primary_key = 1;
@@ -157,7 +157,7 @@ SELECT * FROM table1 INNER JOIN table2
 
 这个查询可以使用主键和常量值的等值匹配来查询table1表，也就是在这个查询中table1表相当于常量表，在分析对table2表的查询成本之前，就会执行对table1表的查询，并把查询中涉及table1表的条件都替换掉，也就是上面的语句会被转换成这样：
 
-```
+```sql
 SELECT table1表记录的各个字段的常量值, table2.* FROM table1 INNER JOIN table2 
     ON table1表column1列的常量值 = table2.column2;
 
@@ -173,7 +173,7 @@ SELECT table1表记录的各个字段的常量值, table2.* FROM table1 INNER JO
  **WHERE 会对子句的影响**  
  假设你有这样一个查询：
 
-```
+```sql
 SELECT a.*, b.*
 FROM A 
 LEFT JOIN B ON A.id = B.a_id
@@ -187,7 +187,7 @@ WHERE B.a_id IS NOT NULL;
 最终效果：  
  这条查询的结果集实际上和 INNER JOIN 没有区别，因为所有 NULL 值的记录都被 WHERE 过滤掉了，等效于：
 
-```
+```sql
 SELECT a.*, b.*
 FROM A 
 INNER JOIN B ON A.id = B.a_id;
@@ -225,7 +225,7 @@ mysql> SELECT (SELECT m1 FROM t1 LIMIT 1);
 
 * From子句中
 
-```
+```sql
 SELECT m, n FROM (SELECT m2 + 1 AS m, n2 AS n FROM t2 WHERE m2 > 2) AS t;
 +------+------+
 | m    | n    |
@@ -267,7 +267,7 @@ mysql> SELECT * FROM t1 WHERE m1 IN (SELECT m2 FROM t2);
 
 那些只返回一个单一值的子查询称之为标量子查询，比如这样：
 
-```
+```sql
 SELECT (SELECT m1 FROM t1 LIMIT 1);
  ```
 或者这样
@@ -283,7 +283,7 @@ SELECT * FROM t1 WHERE m1 = (SELECT MIN(m2) FROM t2);
 
 顾名思义，就是返回一条记录的子查询，不过这条记录需要包含多个列（只包含一个列就成了标量子查询了）。比如这样：
 
-```
+```sql
 SELECT * FROM t1 WHERE (m1, n1) = (SELECT m2, n2 FROM t2 LIMIT 1);
 
 
@@ -295,7 +295,7 @@ SELECT * FROM t1 WHERE (m1, n1) = (SELECT m2, n2 FROM t2 LIMIT 1);
 
 列子查询自然就是查询出一个列的数据喽，不过这个列的数据需要包含多条记录（只包含一条记录就成了标量子查询了）。比如这样：
 
-```
+```sql
 SELECT * FROM t1 WHERE m1 IN (SELECT m2 FROM t2);
 
 
@@ -307,7 +307,7 @@ SELECT * FROM t1 WHERE m1 IN (SELECT m2 FROM t2);
 
 顾名思义，就是子查询的结果既包含很多条记录，又包含很多个列，比如这样：
 
-```
+```sql
 SELECT * FROM t1 WHERE (m1, n1) IN (SELECT m2, n2 FROM t2);
 
 
@@ -325,7 +325,7 @@ SELECT * FROM t1 WHERE (m1, n1) IN (SELECT m2, n2 FROM t2);
 
 如果子查询的执行需要依赖于外层查询的值，我们就可以把这个子查询称之为相关子查询。比如：
 
-```
+```sql
 SELECT * FROM t1 WHERE m1 IN (SELECT m2 FROM t2 WHERE n1 = n2);
 
 
@@ -337,7 +337,7 @@ SELECT * FROM t1 WHERE m1 IN (SELECT m2 FROM t2 WHERE n1 = n2);
 
 你说写下面这样的子查询有什么意义：
 
-```
+```sql
 SELECT (SELECT m1 FROM t1 LIMIT 1);
 
 
@@ -350,7 +350,7 @@ SELECT (SELECT m1 FROM t1 LIMIT 1);
 `操作数 comparison_operator (子查询)`  
  这里的操作数可以是某个列名，或者是一个常量，或者是一个更复杂的表达式，甚至可以是另一个子查询。但是需要注意的是，这里的子查询只能是标量子查询或者行子查询，也就是子查询的结果只能返回一个单一的值或者只能是一条记录。比如这样（标量子查询）：
 
-```
+```sql
 SELECT * FROM t1 WHERE m1 < (SELECT MIN(m2) FROM t2);
 或者这样（行子查询）：
 SELECT * FROM t1 WHERE (m1, n1) = (SELECT m2, n2 FROM t2 LIMIT 1);
@@ -365,7 +365,7 @@ SELECT * FROM t1 WHERE (m1, n1) = (SELECT m2, n2 FROM t2 LIMIT 1);
 * IN或者NOT IN  
    具体语法格式如下:
 
-```
+```sql
 操作数 [NOT] IN (子查询)
 用来判断某个操作数在不在由子查询结果集组成的集合中
 SELECT * FROM t1 WHERE (m1, n2) IN (SELECT m2, n2 FROM t2);
@@ -377,7 +377,7 @@ SELECT * FROM t1 WHERE (m1, n2) IN (SELECT m2, n2 FROM t2);
    只要子查询结果集中存在某个值和给定的操作数做comparison\_operator比较结果为TRUE，那么整个表达式的结果就为TRUE，否则整个表达式的结果就为FALSE。  
    具体语法格式如下:
 
-```
+```sql
 操作数 comparison_operator ANY/SOME(子查询)
 SELECT * FROM t1 WHERE m1 > ANY(SELECT m2 FROM t2);
 
@@ -388,7 +388,7 @@ SELECT * FROM t1 WHERE m1 > ANY(SELECT m2 FROM t2);
    子查询结果集中所有的值和给定的操作数做comparison\_operator比较结果为TRUE，那么整个表达式的结果就为TRUE，否则整个表达式的结果就为FALSE。  
    具体语法格式如下:
 
-```
+```sql
 操作数 comparison_operator ALL(子查询)
 SELECT * FROM t1 WHERE m1 > ALL(SELECT m2 FROM t2);
 
@@ -399,7 +399,7 @@ SELECT * FROM t1 WHERE m1 > ALL(SELECT m2 FROM t2);
    有的时候我们仅仅需要判断子查询的结果集中是否有记录，而不在乎它的记录具体是什么，可以使用把EXISTS或者NOT EXISTS放在子查询语句前面，就像这样：  
    具体语法格式如下:
 
-```
+```sql
 [NOT] EXISTS (子查询)
 SELECT * FROM t1 WHERE EXISTS (SELECT 1 FROM t2);
 
@@ -418,7 +418,7 @@ SELECT * FROM t1 WHERE EXISTS (SELECT 1 FROM t2);
 
 创建一张表:
 
-```
+```sql
 CREATE TABLE single_table (
     id INT NOT NULL AUTO_INCREMENT,
     key1 VARCHAR(100),
@@ -462,7 +462,7 @@ CALL InsertTestData();
 
 * 如果该子查询是不相关子查询，比如下面这个查询
 
-```
+```sql
 SELECT * FROM s1 
     WHERE key1 IN (SELECT common_field FROM s2);
 
@@ -474,7 +474,7 @@ SELECT * FROM s1
 
 * 如果该子查询是相关子查询，比如下面这个查询：
 
-```
+```sql
 SELECT * FROM s1 
     WHERE key1 IN (SELECT common_field FROM s2 WHERE s1.key2 = s2.key2);
 
@@ -500,7 +500,7 @@ SELECT * FROM s1
 
 对于上述两种场景中的不相关标量子查询或者行子查询来说，它们的执行方式是简单的，比方说下面这个查询语句：
 
-```
+```sql
 SELECT * FROM s1 
     WHERE key1 = (SELECT common_field FROM s2 WHERE key3 = 'a' LIMIT 1);
 
@@ -515,7 +515,7 @@ SELECT * FROM s1
 
 ##### 相关的标量子查询或者行子查询
 
-```
+```sql
 SELECT * FROM s1 WHERE 
     key1 = (SELECT common_field FROM s2 WHERE s1.key3 = s2.key3 LIMIT 1);
 
@@ -533,7 +533,7 @@ SELECT * FROM s1 WHERE
 
 ##### 不相干的IN子查询
 
-```
+```sql
 SELECT * FROM s1 
     WHERE key1 IN (SELECT common_field FROM s2 WHERE key3 = 'a');
 
@@ -565,7 +565,7 @@ SELECT * FROM s1
 
 我们还得重新审视一下最开始的那个查询语句：
 
-```
+```sql
 SELECT * FROM s1 
     WHERE key1 IN (SELECT common_field FROM s2 WHERE key3 = 'a');
 
@@ -582,7 +582,7 @@ SELECT * FROM s1
    ![在这里插入图片描述](./assets/145467951/79abf6a2438e0ec2e8bd2680.png)  
    也就是说其实上面的查询就相当于表s1和子查询物化表materialized\_table进行内连接：
 
-```
+```sql
 SELECT s1.* FROM s1 INNER JOIN materialized_table ON key1 = m_val;
 
 
@@ -609,7 +609,7 @@ MySQL查询优化器会通过运算来选择上述成本更低的方案来执行
 虽然将子查询进行物化之后再执行查询都会有建立临时表的成本，但是不管怎么说，我们见识到了将子查询转换为连接的强大作用.  
  设计MySQL的大佬继续开脑洞：能不能不进行物化操作直接把子查询转换为连接呢？让我们重新审视一下上面的查询语句：
 
-```
+```sql
 SELECT * FROM s1 
     WHERE key1 IN (SELECT common_field FROM s2 WHERE key3 = 'a');
 
@@ -619,7 +619,7 @@ SELECT * FROM s1
 我们可以把这个查询理解为:  
  对于s1表中的某条记录，如果我们能在s2表（准确的说是执行完WHERE s2.key3 = 'a’之后的结果集）中找到一条或多条记录，这些记录的common\_field的值等于s1表记录的key1列的值，那么该条s1表的记录就会被加入到最终的结果集。这个过程其实和把s1和s2两个表连接起来的效果很像：
 
-```
+```sql
 SELECT s1.* FROM s1 INNER JOIN s2 
     ON s1.key1 = s2.common_field 
     WHERE s2.key3 = 'a';
@@ -643,7 +643,7 @@ SELECT s1.* FROM s1 INNER JOIN s2
 
 为了让大家有更直观的感受，我们假设MySQL内部是这么改写上面的子查询的：
 
-```
+```sql
 SELECT s1.* FROM s1 SEMI JOIN s2
     ON s1.key1 = s2.common_field
     WHERE key3 = 'a';
@@ -658,7 +658,7 @@ SELECT s1.* FROM s1 SEMI JOIN s2
 
 当子查询的查询列表处只有主键或者唯一索引列时，可以直接把子查询中的表上拉到外层查询的FROM子句中，并把子查询中的搜索条件合并到外层查询的搜索条件中，比如这个:
 
-```
+```sql
 SELECT * FROM s1 
     WHERE key2 IN (SELECT key2 FROM s2 WHERE key3 = 'a');
 
@@ -667,7 +667,7 @@ SELECT * FROM s1
 
 由于key2列是s2表的唯一二级索引列，所以我们可以直接把s2表上拉到外层查询的FROM子句中，并且把子查询中的搜索条件合并到外层查询的搜索条件中，上拉之后的查询就是这样的：
 
-```
+```sql
 SELECT s1.* FROM s1 INNER JOIN s2 
     ON s1.key2 = s2.key2 
     WHERE s2.key3 = 'a';
@@ -681,7 +681,7 @@ SELECT s1.* FROM s1 INNER JOIN s2
 
 对于这个查询来说：
 
-```
+```sql
 SELECT * FROM s1 
     WHERE key1 IN (SELECT common_field FROM s2 WHERE key3 = 'a');
 
@@ -690,7 +690,7 @@ SELECT * FROM s1
 
 转换为半连接查询后，s1表中的某条记录可能在s2表中有多条匹配的记录，所以该条记录可能多次被添加到最后的结果集中，为了消除重复，我们可以建立一个临时表，比方说这个临时表长这样：
 
-```
+```sql
 CREATE TABLE tmp (
     id PRIMARY KEY
 );
@@ -704,7 +704,7 @@ CREATE TABLE tmp (
 
 大家看这个查询：
 
-```
+```sql
 SELECT * FROM s1 
     WHERE key3 IN (SELECT key1 FROM s2 WHERE key1 > 'a' AND key1 < 'b');
 
@@ -724,7 +724,7 @@ SELECT * FROM s1
 FirstMatch是一种最原始的半连接执行方式，跟我们认为的相关子查询的执行方式是一样一样的，就是说先取一条外层查询的中的记录，然后到子查询的表中寻找符合匹配条件的记录，如果能找到一条，则将该外层查询的记录放入最终的结果集并且停止查找更多匹配的记录，如果找不到则把该外层查询的记录丢弃掉；然后再开始取下一条外层查询中的记录，重复上面这个过程。  
  对于某些使用IN语句的相关子查询，比方这个查询：
 
-```
+```sql
 SELECT * FROM s1 
   WHERE key1 IN (SELECT common_field FROM s2 WHERE s1.key3 = s2.key3);
 
@@ -733,7 +733,7 @@ SELECT * FROM s1
 
 它也可以很方便的转为半连接，转换后的语句类似这样：
 
-```
+```sql
 SELECT s1.* FROM s1 SEMI JOIN s2 
     ON s1.key1 = s2.common_field AND s1.key3 = s2.key3;
 
@@ -746,7 +746,7 @@ SELECT s1.* FROM s1 SEMI JOIN s2
 
 并不是所有包含IN子查询的查询语句都可以转换为semi-join，只有形如这样的查询才可以被转换为semi-join：
 
-```
+```sql
 SELECT ... FROM outer_tables 
     WHERE expr IN (SELECT ... FROM inner_tables ...) AND ...
 或
@@ -785,7 +785,7 @@ SELECT ... FROM outer_tables
 要回答这个问题，我们看一个例子。  
  针对开篇的 NOT IN 子查询，你可以改写为 NOT EXISTS 子查询，重写后的 SQL 如下所示：
 
-```
+```sql
 SELECT
 
     COUNT(c_custkey) cnt
@@ -833,7 +833,7 @@ WHERE
 如果你看到这样的提示，就要警惕， 因为 DEPENDENT SUBQUERY 执行速度可能非常慢，大部分时候需要你手动把它转化成两张表之间的连接。  
  我们以下面这条 SQL 为例：
 
-```
+```sql
 SELECT
 
     *
@@ -884,7 +884,7 @@ WHERE
 
 那么对于上面的这条 SQL ，可将其重写为：
 
-```
+```sql
 SELECT * FROM orders o1,
 
 (

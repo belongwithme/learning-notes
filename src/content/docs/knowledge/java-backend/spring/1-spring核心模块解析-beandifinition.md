@@ -78,7 +78,7 @@ BeanDefinition 它遵循了"配置与实例分离"的原则。,我可以从源�
 在源码 `BeanDefinitionOverrideFailureAnalyzerTests.java:73: context.setAllowBeanDefinitionOverriding(false);`  
  这说明 Spring 可以在 Bean 实例化之前就检测到定义冲突。
 
-```
+```java
 	private @Nullable BeanDefinitionOverrideException createFailure(Class<?> configuration) {
 		try {
 			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
@@ -100,7 +100,7 @@ BeanDefinition 它遵循了"配置与实例分离"的原则。,我可以从源�
 
 看 `AbstractDependsOnBeanFactoryPostProcessor.java:116` 的关键代码:
 
-```
+```java
   public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
      for (String beanName : getBeanNames(beanFactory)) {
          BeanDefinition definition = getBeanDefinition(beanName, beanFactory);
@@ -140,7 +140,7 @@ BeanDefinition 包含大量元数据,这些在 Bean 实例中没有:
 
 从源码 `SpringApplication.java:49-58` 可以看到这些导入:
 
-```
+```java
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -184,7 +184,7 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 
 ### 在 Spring 容器中的位置
 
-```
+```java
 ┌─────────────────────────────────────────────────────────┐
 │                    Spring IoC 容器                        │
 │                                                           │
@@ -236,7 +236,7 @@ BeanDefinition (接口)
 
 #### 上游：BeanDefinition 的来源
 
-```
+```java
 ┌──────────────────────────────────────────────────────┐
 │                 配置源                                 │
 │  • XML配置文件                                         │
@@ -261,7 +261,7 @@ BeanDefinition (接口)
 
 #### 中游：BeanDefinition 的注册和存储
 
-```
+```java
 // BeanDefinitionRegistry 接口（核心注册表）
 public interface BeanDefinitionRegistry {
     // 注册 BeanDefinition
@@ -285,7 +285,7 @@ public interface BeanDefinitionRegistry {
 
 **存储位置**：DefaultListableBeanFactory
 
-```
+```java
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory
         implements ConfigurableListableBeanFactory, BeanDefinitionRegistry {
 
@@ -308,7 +308,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 #### 下游：从 BeanDefinition 到 Bean 实例
 
-```
+```java
 BeanDefinition
       ↓
 BeanFactory.getBean()
@@ -342,7 +342,7 @@ AbstractAutowireCapableBeanFactory.createBean()
 
 ### BeanDifinition重点源码
 
-```
+```java
 package org.springframework.beans.factory.config;
 
 public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
@@ -398,7 +398,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
 #### 创建示例类
 
-```
+```java
 package com.example.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -446,7 +446,7 @@ class UserRepository {
 
 #### 查看 BeanDefinition 信息
 
-```
+```java
 package com.example.demo;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -528,7 +528,7 @@ Bean类名: com.example.demo.service.UserService
 
 #### 编程方式创建 BeanDefinition
 
-```
+```java
 package com.example.demo.config;
 
 import com.example.demo.service.CustomService;
@@ -598,7 +598,7 @@ class CustomService {
 
 Spring 允许在 Bean 实例化之前修改 BeanDefinition：
 
-```
+```java
 package com.example.demo.config;
 
 import org.springframework.beans.BeansException;
@@ -654,7 +654,7 @@ public class CustomBeanFactoryPostProcessor implements BeanFactoryPostProcessor 
 
 #### 注解扫描生成 BeanDefinition
 
-```
+```java
 // ClassPathBeanDefinitionScanner.doScan() 核心代码
 protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
     Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
@@ -697,7 +697,7 @@ protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
 
 #### 根据 BeanDefinition 创建实例
 
-```
+```java
 // AbstractAutowireCapableBeanFactory.createBean() 简化版
 protected Object doCreateBean(String beanName, RootBeanDefinition mbd, Object[] args) {
 
@@ -733,7 +733,7 @@ BeanDifinition初学时不容易，如果没有一个整体的理解，不太容
 
 #### 核心要点
 
-```
+```java
 1. 配置来源多样化
    ├── XML配置
    ├── 注解配置（@Component、@Bean）

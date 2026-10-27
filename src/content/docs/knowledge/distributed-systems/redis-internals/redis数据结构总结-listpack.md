@@ -43,7 +43,7 @@ Redis
 
 ### 结构
 
-```
+```c
 /* Each entry in the listpack is either a string or an integer. */
 typedef struct {
     /* When string is used, it is provided with the length (slen). */
@@ -100,7 +100,7 @@ typedef struct {
 
 当应用程序从左向右正向查询 listpack 时，我们可以先调用 lpFirst 函数。该函数的参数是指向 listpack 头的指针，它在执行时，会让指针向右偏移 LP\_HDR\_SIZE 大小，也就是跳过 listpack 头。你可以看下 lpFirst 函数的代码，如下所示：
 
-```
+```c
 unsigned char *lpFirst(unsigned char *lp) {
     lp += LP_HDR_SIZE; //跳过listpack头部6个字节
     if (lp[0] == LP_EOF) return NULL;  //如果已经是listpack的末尾结束字节，则返回NULL
@@ -112,7 +112,7 @@ unsigned char *lpFirst(unsigned char *lp) {
 
 再调用 lpNext 函数，该函数的参数包括了指向 listpack 某个列表项的指针。lpNext 函数会进一步调用 lpSkip 函数，并传入当前列表项的指针，如下所示：
 
-```
+```c
 unsigned char *lpNext(unsigned char *lp, unsigned char *p) {
     ...
     p = lpSkip(p);  //调用lpSkip函数，偏移指针指向下一个列表项

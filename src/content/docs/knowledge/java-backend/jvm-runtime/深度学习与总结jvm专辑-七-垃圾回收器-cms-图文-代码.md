@@ -514,7 +514,7 @@ void postWriteBarrier(Object obj, Field field, Object newValue) {
 
 **伪代码示例（增量更新逻辑）：**
 
-```
+```java
 // 增量更新记录列表
 List<ReferenceChange> incrementalUpdates = new CopyOnWriteArrayList<>(); // 线程安全列表
 

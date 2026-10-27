@@ -182,7 +182,7 @@ JUC 包提供了多种同步工具，有人可能会混淆 Semaphore、Reentrant
 1. **正确设置初始许可证数量 (permits)**: 这个值需要根据你的资源限制和性能需求仔细权衡。太小会限制并发度，影响吞吐量；太大则可能失去保护作用，导致资源耗尽。
 2. **务必在 `finally` 块中释放许可证 (`release()`)**: 这是极其重要的一点！如果在获取许可证后、释放许可证前的代码块中发生异常，而没有在 `finally` 中确保 `release()` 被调用，那么这个许可证就 **永久丢失** 了（称为“许可证泄漏”）。这会导致可用的许可证越来越少，最终可能导致所有线程都阻塞。
 
-```
+```java
 Semaphore semaphore = new Semaphore(3);
 Connection connection = null;
 try {
@@ -243,7 +243,7 @@ try {
 
 1. **初始化 Semaphore**: 创建一个 `Semaphore` 实例，其许可证数量 (permits) 设置为连接池允许的最大并发使用数（比如 10）。这个值应该小于等于数据库的最大连接数。
 
-   ```
+   ```java
    int maxConcurrentUsers = 10; // 允许同时最多10个线程使用连接
    Semaphore connectionPermits = new Semaphore(maxConcurrentUsers, true); // 使用公平模式
 
@@ -253,7 +253,7 @@ try {
    这里我们选择了公平模式，希望等待连接的线程能按顺序获取。
 2. **获取连接 (`getConnection`)**: 线程在从连接池获取连接之前，必须先调用 `connectionPermits.acquire()` 获取一个许可证。
 
-   ```
+   ```java
    public Connection getConnection() throws InterruptedException {
        connectionPermits.acquire(); // 获取许可，如果没许可会阻塞
        System.out.println(Thread.currentThread().getName() + " 成功获取信号量许可，准备获取连接...");
@@ -284,7 +284,7 @@ try {
    ```
 3. **释放连接 (`releaseConnection`)**: 线程使用完数据库连接后，在将连接归还给池的同时，必须调用 `connectionPermits.release()` 释放许可证。
 
-   ```
+   ```java
    public void releaseConnection(Connection conn) {
        if (conn != null) {
            System.out.println(Thread.currentThread().getName() + " 准备归还数据库连接: " + conn);
@@ -304,7 +304,7 @@ try {
 
 **简化版连接池示例代码:**
 
-```
+```java
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -492,7 +492,7 @@ Semaphore 在以下场景中特别适合，并且通常比 `ReentrantLock` 或 `
 
 1. **创建 Semaphore**: 初始化一个 Semaphore，其许可证数量 `permits` 就是你希望允许的最大并发请求数。
 
-   ```
+   ```java
    int maxConcurrentRequests = 100; // 最多允许100个请求同时处理
    Semaphore rateLimiter = new Semaphore(maxConcurrentRequests);
 
@@ -500,7 +500,7 @@ Semaphore 在以下场景中特别适合，并且通常比 `ReentrantLock` 或 `
    ```
 2. **请求处理前获取许可**: 在处理每个到来的请求之前，尝试获取一个许可证。这里通常使用 `tryAcquire()` 而不是 `acquire()`，因为对于限流场景，如果无法立即获取许可（表示系统已达到并发上限），我们通常希望 **快速失败** 或 **拒绝服务**，而不是让请求线程无限期阻塞。
 
-   ```
+   ```java
    public boolean handleRequest(Request request) {
        // 尝试非阻塞地获取许可
        if (rateLimiter.tryAcquire()) {
@@ -591,7 +591,7 @@ Semaphore 在以下场景中特别适合，并且通常比 `ReentrantLock` 或 `
 
 1. **继承结构**: `Semaphore` 内部定义了一个抽象静态内部类 `Sync`，它继承自 `AQS`。`Sync` 又有两个具体的子类：`NonfairSync` 和 `FairSync`，分别实现了非公平和公平的获取逻辑。
 
-   ```
+   ```java
    Semaphore
        -> Sync (abstract static class Sync extends AbstractQueuedSynchronizer)
            -> NonfairSync (static final class NonfairSync extends Sync)
@@ -601,7 +601,7 @@ Semaphore 在以下场景中特别适合，并且通常比 `ReentrantLock` 或 `
    ```
 2. **状态 (State)**: `Semaphore` 初始化时传入的 `permits` 数量，会被用来设置 AQS 的 `state` 初始值。
 
-   ```
+   ```java
    // Semaphore 构造函数 (非公平)
    public Semaphore(int permits) {
        // 创建一个 NonfairSync 实例，并将 permits 值传递给 Sync 的构造函数
@@ -663,7 +663,7 @@ Semaphore 在以下场景中特别适合，并且通常比 `ReentrantLock` 或 `
 
 1. **`Semaphore.acquire()`**: 调用内部 `sync` 对象的 `acquireSharedInterruptibly(1)` 方法。传入参数 `1` 表示尝试获取 1 个许可证。选择 `Interruptibly` 后缀表示该方法在等待过程中可以响应线程中断。
 
-   ```
+   ```java
    public void acquire() throws InterruptedException {
        // 调用 AQS 的模板方法，参数 1 表示获取 1 个许可
        sync.acquireSharedInterruptibly(1);
@@ -676,7 +676,7 @@ Semaphore 在以下场景中特别适合，并且通常比 `ReentrantLock` 或 `
    * 首先，调用子类实现的 `tryAcquireShared(arg)` 方法，尝试获取许可证。
    * 如果 `tryAcquireShared()` 返回值 `< 0`（表示获取失败），则调用 `doAcquireSharedInterruptibly(arg)` 将当前线程加入等待队列并挂起，直到被唤醒或中断。
 
-   ```
+   ```java
    // AQS.acquireSharedInterruptibly 简化逻辑
    public final void acquireSharedInterruptibly(int arg) throws InterruptedException {
        if (Thread.interrupted()) // 检查中断状态
@@ -691,7 +691,7 @@ Semaphore 在以下场景中特别适合，并且通常比 `ReentrantLock` 或 `
    ```
 3. **`NonfairSync.tryAcquireShared(int acquires)`**: 这是非公平模式下尝试获取许可证的核心逻辑。
 
-   ```
+   ```java
    // NonfairSync.tryAcquireShared (在 Semaphore 内部)
    protected int tryAcquireShared(int acquires) {
        // 调用父类 Sync 中的非公平获取方法
@@ -736,7 +736,7 @@ Semaphore 在以下场景中特别适合，并且通常比 `ReentrantLock` 或 `
 
 1. **`Semaphore.release()`**: 调用内部 `sync` 对象的 `releaseShared(1)` 方法。参数 `1` 表示释放 1 个许可证。
 
-   ```
+   ```java
    public void release() {
        // 调用 AQS 的模板方法，参数 1 表示释放 1 个许可
        sync.releaseShared(1);
@@ -749,7 +749,7 @@ Semaphore 在以下场景中特别适合，并且通常比 `ReentrantLock` 或 `
    * 调用子类实现的 `tryReleaseShared(arg)` 方法，尝试释放许可证。
    * 如果 `tryReleaseShared()` 返回 `true`（表示释放成功，并且可能导致状态变化允许其他线程获取），则调用 `doReleaseShared()` 唤醒等待队列中的后继线程。
 
-   ```
+   ```java
    // AQS.releaseShared 简化逻辑
    public final boolean releaseShared(int arg) {
        // 关键：调用子类（Sync）实现的 tryReleaseShared
@@ -765,7 +765,7 @@ Semaphore 在以下场景中特别适合，并且通常比 `ReentrantLock` 或 `
    ```
 3. **`Sync.tryReleaseShared(int releases)`**: 这是 `Semaphore` 中释放许可证的核心逻辑，由父类 `Sync` 实现，对公平和非公平模式都适用。
 
-   ```
+   ```java
    // Sync.tryReleaseShared (在 Semaphore 内部)
    protected final boolean tryReleaseShared(int releases) {
        for (;;) { // 无限循环，CAS 自旋
@@ -830,7 +830,7 @@ Semaphore 在以下场景中特别适合，并且通常比 `ReentrantLock` 或 `
 
 公平模式 (`FairSync`) 的 `tryAcquireShared` 方法在尝试 CAS 之前，会 **额外** 调用 `hasQueuedPredecessors()` 方法。
 
-```
+```java
 // FairSync.tryAcquireShared (在 Semaphore 内部)
 protected int tryAcquireShared(int acquires) {
     for (;;) {
@@ -886,7 +886,7 @@ Semaphore 本身功能强大，但与其他 JUC 工具结合使用，可以构�
      + 使用 `CountDownLatch(N)` 来等待所有任务完成。每个子任务完成后调用 `latch.countDown()`，主线程调用 `latch.await()` 等待。
    * **代码示例**:
 
-     ```
+     ```java
      import java.util.concurrent.CountDownLatch;
      import java.util.concurrent.ExecutorService;
      import java.util.concurrent.Executors;
@@ -986,7 +986,7 @@ Semaphore 本身功能强大，但与其他 JUC 工具结合使用，可以构�
      + 在提交给线程池的任务 (`Runnable` 或 `Callable`) 内部，在访问受限资源之前 `acquire()` 信号量，访问结束后 `release()`。
    * **代码示例**:
 
-     ```
+     ```java
      import java.util.concurrent.ExecutorService;
      import java.util.concurrent.Executors;
      import java.util.concurrent.Semaphore;
@@ -1096,7 +1096,7 @@ Semaphore 本身功能强大，但与其他 JUC 工具结合使用，可以构�
      + 在操作内部，当需要访问 **共享数据结构** 时，使用 `ReentrantLock` 对该数据结构进行加锁保护。
    * **代码示例**:
 
-     ```
+     ```java
      import java.util.HashMap;
      import java.util.Map;
      import java.util.concurrent.ExecutorService;
@@ -1255,7 +1255,7 @@ Semaphore 本身功能强大，但与其他 JUC 工具结合使用，可以构�
    * **原因**: 形成了经典的 **循环等待 (Circular Wait)** 条件。A 等待 B 释放 S2，B 等待 A 释放 S1，双方都无法继续执行。
    * **示例**:
 
-     ```
+     ```java
      Semaphore s1 = new Semaphore(1);
      Semaphore s2 = new Semaphore(1);
 
@@ -1334,7 +1334,7 @@ Semaphore 本身功能强大，但与其他 JUC 工具结合使用，可以构�
    * **原因**: 线程自己阻塞了自己。它需要更多许可证才能继续，但它持有的许可证又无法释放（因为阻塞了），导致无法满足自己的需求。如果 Semaphore 的总许可数有限，这很容易发生。
    * **示例**:
 
-     ```
+     ```java
      Semaphore s = new Semaphore(2); // 总共只有 2 个许可
 
      new Thread(() -> {
@@ -1498,7 +1498,7 @@ Semaphore 的性能通常被认为是 **相当不错** 的，尤其是在 **非�
 
 **简化代码骨架 (仅示意)**:
 
-```
+```java
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -1661,7 +1661,7 @@ class MyConnectionPool {
    * **实现库**: 很多 Redis 客户端库提供了分布式锁和信号量的实现，例如 **Redisson** 库就提供了 `RSemaphore` 接口，其 API 与 JUC 的 `Semaphore` 非常相似，但其状态是存储在 Redis 中的。
    * **示例 (使用 Redisson)**:
 
-     ```
+     ```java
      // 配置 Redisson 客户端 (连接到 Redis 服务器)
      Config config = new Config();
      config.useSingleServer().setAddress("redis://127.0.0.1:6379");

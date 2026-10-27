@@ -138,7 +138,7 @@ sidebar:
 
 **示例**：
 
-```
+```java
 public class MyClass {
     public static int value = 123; // 准备阶段后 value 的值是 0，而不是 123
     public static final int CONST_VALUE = 456; // 特殊情况！
@@ -205,7 +205,7 @@ public class MyClass {
 
 **示例**：
 
-```
+```java
 public class InitOrder {
     static {
         i = 0;  // 给变量 i 赋值可以正常编译通过
@@ -227,7 +227,7 @@ public class InitOrder {
 
 编译后生成的 `<clinit>()` 方法大致如下（伪代码）：
 
-```
+```java
 <clinit>() {
   i = 0;
   i = 1; // 静态变量赋值语句
@@ -265,7 +265,7 @@ Java 虚拟机规范严格规定了 **有且只有** 六种情况必须立即对
 
 * **通过子类引用父类的静态字段，不会导致子类初始化**。只会触发父类的初始化。
 
-  ```
+  ```java
   class Parent {
       static int value = 10;
       static { System.out.println("Parent init!"); }
@@ -295,7 +295,7 @@ Java 虚拟机规范严格规定了 **有且只有** 六种情况必须立即对
   ```
 * **通过数组定义来引用类，不会触发此类的初始化**。数组类本身不通过类加载器创建，它是由 Java 虚拟机直接在内存中动态构造出来的。
 
-  ```
+  ```java
   public class Test {
       public static void main(String[] args) {
           Parent[] parents = new Parent[10]; // 不会输出 "Parent init!"
@@ -311,7 +311,7 @@ Java 虚拟机规范严格规定了 **有且只有** 六种情况必须立即对
   ```
 * **常量在编译阶段会存入调用类的常量池中，本质上没有直接引用到定义常量的类，因此不会触发定义常量的类的初始化**。
 
-  ```
+  ```java
   class ConstClass {
       static final String HELLO = "hello world";
       static { System.out.println("ConstClass init!"); }
@@ -413,7 +413,7 @@ JVM 的实现方式通常是这样的：
 
 **示例**：尝试用不同的类加载器加载同一个类，然后进行类型转换或比较。
 
-```
+```java
 import java.io.*;
 import java.lang.reflect.Method;
 
@@ -530,7 +530,7 @@ public class ClassIdentityTest {
 
 双亲委派模型的核心逻辑实现在 `java.lang.ClassLoader` 的 `loadClass(String name, boolean resolve)` 方法中。以下是 JDK 8 中该方法的一个简化版本（去除了部分权限检查和非关键逻辑），并添加了中文注释：
 
-```
+```java
 protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
     // 同步块，确保类加载的线程安全
     synchronized (getClassLoadingLock(name)) {
@@ -670,7 +670,7 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 
 **示例（Tomcat 的 `WebAppClassLoader` 简化逻辑）**：
 
-```
+```java
 // 伪代码，仅示意 Tomcat 的部分逻辑
 public class WebAppClassLoader extends ClassLoader {
     // ... 省略其他代码 ...
@@ -769,7 +769,7 @@ Java 在 `java.lang.Thread` 类中提供了一个 `contextClassLoader` 字段，
 
 `ServiceLoader.load()` 方法内部的简化逻辑：
 
-```
+```java
 public static <S> ServiceLoader<S> load(Class<S> service) {
     // 关键点：获取当前线程的上下文类加载器
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -846,7 +846,7 @@ JNDI、JAXP (XML 解析)、JCE (加解密) 等许多 Java 基础服务都广泛�
 
 **示例：一个从指定目录加载类的简单自定义加载器**
 
-```
+```java
 import java.io.*;
 
 public class FileSystemClassLoader extends ClassLoader {
@@ -947,7 +947,7 @@ public class FileSystemClassLoader extends ClassLoader {
 
 `findClass(String name)` 方法在 `java.lang.ClassLoader` 中的默认实现非常简单：
 
-```
+```java
 protected Class<?> findClass(String name) throws ClassNotFoundException {
     // 直接抛出异常，强制子类必须重写此方法来实现自己的查找逻辑
     throw new ClassNotFoundException(name);

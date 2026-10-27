@@ -33,7 +33,7 @@ Aware翻译过来：“感知”，如果是XxxAware也就是对…感知的。
 
 ### 普通Bean(无感知,低耦合)
 
-```
+```java
 // 这是 Spring Boot 源码中的典型例子
   @Component
   public class MyComponent {
@@ -66,7 +66,7 @@ Aware翻译过来：“感知”，如果是XxxAware也就是对…感知的。
 
 ### 需要主动访问容器的 Bean（有感知）
 
-```
+```java
 // 如果你需要"主动获取容器中的信息"
   public class AdvancedComponent implements ApplicationContextAware {
 
@@ -108,7 +108,7 @@ Aware翻译过来：“感知”，如果是XxxAware也就是对…感知的。
 Aware接口是一种框架辅助属性注入的一种思想，其他框架中  
  瞧一眼源码：
 
-```
+```java
 /**
  * Marker superinterface indicating that a bean is eligible to be
  * notified by the Spring container of a particular framework object
@@ -155,7 +155,7 @@ Aware接口是回调，监听器和观察者设计模式的混合，它表示bea
 以BeanNameAware为例：  
  BeanNameAware：使对象能够知道容器中定义的bean名称。
 
-```
+```java
 public class MyBeanName implements BeanNameAware {
    @Override
    public void setBeanName(String beanName){
@@ -170,7 +170,7 @@ public class MyBeanName implements BeanNameAware {
 类 
 中注册这种类型的bean:
 
-```
+```java
 @Configuration
 public class Config{
   @Bean(name="WangBeanName")
@@ -185,7 +185,7 @@ public class Config{
 
 启动应用程序上下文并从中获取bean:
 
-```
+```java
 AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
 MyBeanName myBeanName = context.getBean(MyBeanName.class); 
 

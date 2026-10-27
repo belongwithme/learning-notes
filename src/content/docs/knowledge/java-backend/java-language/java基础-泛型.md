@@ -31,7 +31,7 @@ Java泛型是JDK5引入的一个新特性,它提供编译时类型安全检测�
 
 我们举个例子来看一下:
 
-```
+```java
 List arrayList = new ArrayList();
      arrayList.add("string");
      arrayList.add(1);
@@ -62,7 +62,7 @@ java.lang.Integer cannot be cast to java.lang.String
 
 我们再来一个例子来体验一下泛型的好处:
 
-```
+```java
 private static int add(int a, int b) {
     System.out.println(a + "+" + b + "=" + (a + b));
     return a + b;
@@ -84,7 +84,7 @@ private static double add(double a, double b) {
 如果没有泛型的话,要实现这种不同类型的加法,每种类型都需要重载一个add方法;  
  通过泛型,我们可以复用为一个方法:
 
-```
+```java
 private static <T extends Number> double add(T a, T b) {
     System.out.println(a + "+" + b + "=" + (a.doubleValue() + b.doubleValue()));
     return a.doubleValue() + b.doubleValue();
@@ -110,7 +110,7 @@ private static <T extends Number> double add(T a, T b) {
 
 #### 简单泛型类
 
-```
+```java
 class Point<T>{         // 此处可以随便写标识符号，T是type的简称  
     private T var ;     // var的类型由T指定，即：由外部指定  
     public T getVar(){  // 返回值的类型由外部决定  
@@ -133,7 +133,7 @@ public class GenericsDemo06{
 
 #### 多元泛型类
 
-```
+```java
 class Notepad<K,V>{       // 此处指定了两个泛型类型  
     private K key ;     // 此变量的类型由外部决定  
     private V value ;   // 此变量的类型由外部决定  
@@ -173,7 +173,7 @@ public class GenericsDemo09{
  常被用在各种类的生产器中.  
  举个例子来说:
 
-```
+```java
 interface Info<T>{        // 在接口上定义泛型  
     public T getVar() ; // 定义抽象方法，抽象方法的返回值就是泛型类型  
 }  
@@ -210,7 +210,7 @@ public class GenericsDemo24{
 
 * 泛型类
 
-```
+```java
 public class Box<T> {  
     private T t;  
       
@@ -237,7 +237,7 @@ String value2 = stringBox.get(); // 获取时类型已经确定为String
 
 * 泛型方法
 
-```
+```java
 public class Utility {  
     // 泛型方法，可以在调用时指定类型  
     public static <T> T echo(T input) {  
@@ -260,7 +260,7 @@ String strValue = Utility.<String>echo("Hello"); // 这里显式指定了T为Str
  只有声明了 的方法才是泛型方法,在泛型类中使用了泛型的成员方法并不是泛型方法.  
  举个例子来说明基本语法:
 
-```
+```java
 /**
  * 泛型方法介绍
  * @param url
@@ -287,7 +287,7 @@ public static <T> T doGetRequst(String url,Result<T> result){
 
 看一个简单的实例帮助理解:
 
-```
+```java
 public class GenericMethodExample {  
   
     public static <T> void printArray(T[] array) {  
@@ -323,7 +323,7 @@ public class GenericMethodExample {
  所以它也称为上界通配符,它定义了泛型类型的上界,在泛型方法或泛型类中使用上限时,可以确保类型安全,并且只允许在泛型容器中添加符合约束条件的对象.  
  **上限例子**
 
-```
+```java
 class Info<T extends Number>{    // 此处泛型只能是数字类型
     private T var ;        // 定义泛型变量
     public void setVar(T var){
@@ -358,7 +358,7 @@ public class demo1{
  这样可以确保类型兼容性并避免不必要的类型转换错误。  
  **下限例子**
 
-```
+```java
 class Info<T>{
     private T var ;        // 定义泛型变量
     public void setVar(T var){
@@ -392,7 +392,7 @@ public class GenericsDemo21{
 
 ##### 例子一
 
-```
+```java
 class A{}
 class B extends A {}
 
@@ -423,7 +423,7 @@ public static void funD(List<B> listB) {
 
 那么如果我们想实现上面的情况,希望`funD`可以调用`funC`
 
-```
+```java
 public static void funC(List<? extends A> listA) {  
     // ...            
 }
@@ -435,7 +435,7 @@ public static void funC(List<? extends A> listA) {
 
 ##### 例子二
 
-```
+```java
 private  <E extends Comparable<? super E>> E max(List<? extends E> e1) {
     if (e1 == null){
         return null;
@@ -467,7 +467,7 @@ private  <E extends Comparable<? super E>> E max(List<? extends E> e1) {
 
 ##### 例子三
 
-```
+```java
 public class Client {
     //工资低于2500元的上班族并且站立的乘客车票打8折
     public static <T extends Staff & Passenger> void discount(T t){
@@ -507,7 +507,7 @@ List<String>[] list6 = new ArrayList[10]; //OK，但是会有警告
 
 举两个使用场景的例子
 
-```
+```java
 public class GenericsDemo30{  
     public static void main(String args[]){  
         Integer i[] = fun1(1,2,3,4,5,6) ;   // 返回泛型数组  
@@ -546,7 +546,7 @@ public ArrayWithTypeToken(Class<T> type, int size) {
  举个例子  
  Pair的范型情况:
 
-```
+```java
 class Pair<T> {  
     private T value;  
     public T getValue() {  
@@ -562,7 +562,7 @@ class Pair<T> {
 
 Pair的原始类型为
 
-```
+```java
 class Pair {  
     private Object value;  
     public Object getValue() {  
@@ -615,7 +615,7 @@ class Pair {
 
 * 如果存在类型擦除,则原始类型肯定相等
 
-```
+```java
 public class Test {
 
     public static void main(String[] args) {
@@ -637,7 +637,7 @@ public class Test {
 
 * 通过反射添加其他类型元素
 
-```
+```java
 public class Test {
 
     public static void main(String[] args) throws Exception {
@@ -671,7 +671,7 @@ public class Test {
 
 举个例子:
 
-```
+```java
 public static  void main(String[] args) {  
     ArrayList<String> list = new ArrayList<String>();  
     list.add("123");  
@@ -686,7 +686,7 @@ public static  void main(String[] args) {
  我们再举个例子来看,先看一下参数话类型和原始类型的兼容.  
  以ArrayList为例子,以前的写法
 
-```
+```java
 ArrayList list = new ArrayList();  
 
 
@@ -694,7 +694,7 @@ ArrayList list = new ArrayList();
 
 现在的写法:
 
-```
+```java
 ArrayList<String> list = new ArrayList<String>(); 
 
 
@@ -702,7 +702,7 @@ ArrayList<String> list = new ArrayList<String>();
 
 我们兼容一下以前的代码,则会出现下面的情况:
 
-```
+```java
 ArrayList<String> list1 = new ArrayList(); //第一种 情况
 ArrayList list2 = new ArrayList<String>(); //第二种 情况
 
@@ -722,7 +722,7 @@ ArrayList list2 = new ArrayList<String>(); //第二种 情况
 
 如果考虑继承的话,会有两种情况出现
 
-```
+```java
 ArrayList<String> list1 = new ArrayList<Object>(); //编译错误  
 ArrayList<Object> list2 = new ArrayList<String>(); //编译错误
 
@@ -731,7 +731,7 @@ ArrayList<Object> list2 = new ArrayList<String>(); //编译错误
 
 * 第一种情况,我们扩展成下面的形式
 
-```
+```java
 ArrayList<Object> list1 = new ArrayList<Object>();  
 list1.add(new Object());  
 list1.add(new Object());  
@@ -746,7 +746,7 @@ ArrayList<String> list2 = list1; //编译错误
 
 * 第二种情况,我们拓展成下面的形式
 
-```
+```java
 ArrayList<String> list1 = new ArrayList<String>();  
 list1.add(new String());  
 list1.add(new String());
@@ -765,7 +765,7 @@ ArrayList<Object> list2 = list1; //编译错误
 我们举个例子来说明  
  有一个泛型类如下
 
-```
+```java
 class Pair<T> {  
 
     private T value;  
@@ -801,7 +801,7 @@ class DateInter extends Pair<Date> {
  所以,在子类重写这两个方法一点问题都没有吗?我们分析一下  
  类型擦除后,父类的泛型类型全部变为了原始类型Object,所以父类编译之后会变成下面的样子:
 
-```
+```java
 class Pair {  
     private Object value;  
 
@@ -819,7 +819,7 @@ class Pair {
 
 再看子类的两个重写的方法的类型:
 
-```
+```java
 @Override  
 public void setValue(Date value) {  
     super.setValue(value);  
@@ -839,7 +839,7 @@ public Date getValue() {
 **为什么会这样呢?**  
  我们传入的父类泛型是Date,Pair,本意是将泛型类变为如下:
 
-```
+```java
 class Pair {  
     private Date value;  
     public Date getValue() {  
@@ -861,7 +861,7 @@ class Pair {
  **JVM采用了一个特殊的方法来完成这项功能,那就是桥方法.**  
  首先,我们用`javap -c className`的方式反编译下DateInter子类的字节码,结果如下:
 
-```
+```java
 class com.tao.test.DateInter extends com.tao.test.Pair<java.util.Date> {  
   com.tao.test.DateInter();  
     Code:  
@@ -969,7 +969,7 @@ static <T> T newTclass (Class < T > clazz) throws InstantiationException, Illega
 **泛型类重的静态方法和静态变量不可以使用泛型类所声明的泛型类型参数**  
  举例如下:
 
-```
+```java
 public class Test2<T> {    
     public static T one;   //编译错误    
     public static  T show(T one){ //编译错误    
@@ -984,7 +984,7 @@ public class Test2<T> {
  对象都没有创建,无法确定这个泛型参数是何种类型,所以当然是错误的.  
  但是要区分下面这一种情况:
 
-```
+```java
 public class Test2<T> {    
 
     public static <T >T show(T one){ //这是正确的    
@@ -1004,7 +1004,7 @@ public class Test2<T> {
 * 不能抛出也不能捕获泛型类的对象  
    范型类扩展Throwable都不合法,比如:
 
-```
+```java
 public class Problem<T> extends Exception {
 
 }
@@ -1016,7 +1016,7 @@ public class Problem<T> extends Exception {
 
 * 不能在catch子句中使用泛型变量
 
-```
+```java
 public static <T extends Throwable> void doWork(Class<T> t) {
     try {
         ...
@@ -1030,7 +1030,7 @@ public static <T extends Throwable> void doWork(Class<T> t) {
 
 因为泛型信息在编译的时候已经变为原始类型,那么上面的T会变成原始类型的Throwable,那么如果允许可以在catch子句中使用泛型变量,那么下面的定义:
 
-```
+```java
 public static <T extends Throwable> void doWork(Class<T> t){
     try {
 
@@ -1049,7 +1049,7 @@ public static <T extends Throwable> void doWork(Class<T> t){
 
 * 异常声明中可以使用类型变量,
 
-```
+```java
 public static<T extends Throwable> void doWork(T t) throws T {
     try{
         ...
@@ -1071,7 +1071,7 @@ public static<T extends Throwable> void doWork(T t) throws T {
 
 举个例子来说:
 
-```
+```java
 public class GenericType<T> {
     private T data;
 
@@ -1097,7 +1097,7 @@ public class GenericType<T> {
 
 其中`ParameterizedType`
 
-```
+```java
 public interface ParameterizedType extends Type {
     // 返回确切的泛型参数, 如Map<String, Integer>返回[String, Integer]
     Type[] getActualTypeArguments();

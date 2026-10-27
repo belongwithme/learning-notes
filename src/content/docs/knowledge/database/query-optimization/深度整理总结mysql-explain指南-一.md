@@ -34,7 +34,7 @@ sidebar:
 
 ### 查询执行计划
 
-```
+```sql
 explain + sql语句
 
 

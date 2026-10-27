@@ -30,7 +30,7 @@ sidebar:
 ![在这里插入图片描述](./assets/125781311/369a93a76aa8d410d9fb12ad.png)  
 代码实现：
 
-```
+```java
 public class Vector<E>
     extends AbstractList<E>
     implements List<E>, RandomAccess, Cloneable, java.io.Serializable
@@ -48,7 +48,7 @@ public class Vector<E>
 三：源码分析  
 (1)：doc解读
 
-```
+```java
 /**
  * The {@code Vector} class implements a growable array of
  * objects.
@@ -194,7 +194,7 @@ The {@link Enumeration Enumerations} returned by the {@link #elements() elements
 
 第三个：有参，指定初始容量和扩容时的增长系数
 
-```
+```java
   /**
      * Constructs an empty vector with the specified initial capacity and
      * capacity increment.
@@ -240,7 +240,7 @@ The {@link Enumeration Enumerations} returned by the {@link #elements() elements
 
 a：ensureCapacity(int minCapacity)方法：
 
-```
+```java
   public synchronized void ensureCapacity(int minCapacity) {
         if (minCapacity > 0) {
             modCount++;
@@ -254,7 +254,7 @@ a：ensureCapacity(int minCapacity)方法：
 目的是确定Vector容量  
 b： ensureCapacityHelper(int minCapacity)方法： 确定Vector容量的帮助方法
 
-```
+```java
 private void ensureCapacityHelper(int minCapacity) {
        // overflow-conscious code
        if (minCapacity - elementData.length > 0)       要扩容的大小是否大于现在数组大小
@@ -266,7 +266,7 @@ private void ensureCapacityHelper(int minCapacity) {
 
 c：grow(int minCapacity)方法：核心扩容方法
 
-```
+```java
 private void grow(int minCapacity) {
         // overflow-conscious code
         int oldCapacity = elementData.length;
@@ -285,7 +285,7 @@ private void grow(int minCapacity) {
 
 d：
 
-```
+```java
 private static int hugeCapacity(int minCapacity) {
        if (minCapacity < 0) // overflow
            throw new OutOfMemoryError();
@@ -307,7 +307,7 @@ private static int hugeCapacity(int minCapacity) {
 (6)：add方法例子  
 例子代码：
 
-```
+```java
  public static void main(String[] args) {
         Vector vector = new Vector<>(10);
         for(int i=0;i<10;i++){
@@ -325,7 +325,7 @@ private static int hugeCapacity(int minCapacity) {
 ![在这里插入图片描述](./assets/125781311/6be6019c2b62845bfdc00e46.png)  
 进入add代码里：
 
-```
+```java
    public synchronized boolean add(E e) {
         modCount++;
         ensureCapacityHelper(elementCount + 1);

@@ -125,7 +125,7 @@ MySQL 服务端是允许多个客户端连接的，这意味着 MySQL 会出现�
 
 * 小黎正在处理财务，她在 **事务A** 里执行：
 
-  ```
+  ```sql
   SELECT COUNT(*) FROM employees WHERE department = '技术部';
 
 
@@ -137,7 +137,7 @@ MySQL 服务端是允许多个客户端连接的，这意味着 MySQL 会出现�
 📝 **步骤 2：事务B（小王新增员工）**  
  小黎在 事务A 中 再次查询 技术部的员工数：
 
-```
+```sql
 SELECT COUNT(*) FROM employees WHERE department = '技术部';
 
 
@@ -248,7 +248,7 @@ UPDATE、INSERT、DELETE等操作需要先读取最新数据版本，因此也�
 
 快照读通过MVCC机制读取数据的历史版本(快照),无需加锁,例如:
 
-```
+```sql
 SELECT * FROM table WHERE ...; -- 普通SELECT语句（默认快照读）
 
 
@@ -422,7 +422,7 @@ Read View就是事务进行快照读操作的时候生产的读视图(Read View)
 
 假如有这样的sql:
 
-```
+```sql
 BEGIN;
 SELECT COUNT(*) FROM users WHERE age > 18;  -- 结果是 10
 

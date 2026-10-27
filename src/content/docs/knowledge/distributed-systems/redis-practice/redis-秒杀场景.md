@@ -173,7 +173,7 @@ return -1;
 * 在数据库层面，我们使用乐观锁机制（版本号或条件更新），避免并发更新冲突。  
    例如，库存扣减SQL使用条件更新：
 
-```
+```sql
 UPDATE stock SET quantity = quantity - 1, version = version + 1 WHERE id = ? AND quantity >= 1 AND version = ?
 
 

@@ -81,7 +81,7 @@ fill取负数时，必须大于等于-5。可以通过Redis修改参数list-max-
 
 ### quickListNode
 
-```
+```c
 typedef struct quicklistNode {
     struct quicklistNode *prev;     //前一个quicklistNode
     struct quicklistNode *next;     //后一个quicklistNode

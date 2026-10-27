@@ -62,7 +62,7 @@ sidebar:
 
 先写一个接口：
 
-```
+```java
 public interface ILock {
     /**
      * 尝试获取锁
@@ -80,7 +80,7 @@ public interface ILock {
 
 再用redis实现一个锁：
 
-```
+```java
 import com.wang.Base.ILock;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
@@ -137,7 +137,7 @@ public class SimpleRedisLock implements ILock {
 
 优化如下代码所示：
 
-```
+```java
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -265,7 +265,7 @@ idea
  ![请添加图片描述](./assets/130828424/4fc996336a697701bd7d2280.png)  
  对锁的实现进行改造：
 
-```
+```java
     private static final String KEY_PRIFIX = "lock";
     private static  final String ID_PREFIX = UUID.randomUUID().toString()+"-";
 
@@ -339,7 +339,7 @@ idea
 
 1. 引入依赖
 
-```
+```xml
     <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
@@ -351,7 +351,7 @@ idea
 
 2. 配置Redisson客户端：
 
-```
+```java
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -375,7 +375,7 @@ public class RedisConfig {
 ```
 
 
-```
+```java
    @Resource
     private RedissonClient redissonClient;
     
@@ -402,7 +402,7 @@ public class RedisConfig {
 
 我们先举一个场景，代码如下：
 
-```
+```java
 @Slf4j
 @SpringBootTest
 class RedissonTest {

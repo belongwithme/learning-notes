@@ -63,7 +63,7 @@ JVM没有明确说使用哪种垃圾回收算法，但是任何一种垃圾回�
  所以因为有循环引用存在，JVM不使用引用计数算法（经典白雪）。  
  代码如下：
 
-```
+```java
 public class ReferenceCountingGC {
 
     public Object instance = null;
