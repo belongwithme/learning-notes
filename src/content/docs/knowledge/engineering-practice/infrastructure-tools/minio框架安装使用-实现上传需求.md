@@ -459,7 +459,7 @@ public static void uploadFile() throws InsufficientDataException, ErrorResponseE
 
         multipartBuilder.addFormDataPart("key",objectName);
         multipartBuilder.addFormDataPart("Content-Type","image/webp");
-        //todo
+        //本地待上传的文件，路径按自己的环境修改
        File uploadFile =new File("D:\\testUploadFile\\test2.webp");
        multipartBuilder.addFormDataPart("file",objectName, RequestBody.create(uploadFile,null));
        Request request =

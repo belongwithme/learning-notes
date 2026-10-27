@@ -232,7 +232,72 @@ public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegi
 
 ##### 使用Spring的BeanFactoryPostProcessor扩展点完成自定义注解扫描
 
-——todo晚上回宿舍补上
+需求：自定义一个 `@MyComponent` 注解，凡是标注了它的类，都自动注册成 Spring 的 Bean，效果类似 `@Component`。
+
+思路：
+
+* 注册 BeanDefinition 需要 `BeanDefinitionRegistry`，所以实现它的子接口 `BeanDefinitionRegistryPostProcessor`。
+* 扫描类路径不用自己遍历 class 文件，直接复用 Spring 的 `ClassPathBeanDefinitionScanner`，只要告诉它“认哪个注解”。
+
+1.定义注解：
+
+```java
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MyComponent {
+}
+```
+
+2.在后处理器中扫描并注册：
+
+```java
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+
+public class MyComponentScanPostProcessor implements BeanDefinitionRegistryPostProcessor {
+
+    @Override
+    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+        // false：不使用默认过滤器，否则 @Component 等注解也会被扫描进来
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(registry, false);
+        // 只认 @MyComponent
+        scanner.addIncludeFilter(new AnnotationTypeFilter(MyComponent.class));
+        // 扫描指定包，符合条件的类会被直接注册成 BeanDefinition
+        scanner.scan("com.example.service");
+    }
+
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        // 这里不需要再做处理
+    }
+}
+```
+
+3.使用：
+
+```java
+@MyComponent
+public class UserService {
+    public void hello() {
+        System.out.println("UserService 被自定义注解扫描注册了");
+    }
+}
+```
+
+```xml
+<bean class="com.example.MyComponentScanPostProcessor"/>
+```
+
+容器启动后调用 `getBean(UserService.class)` 就能拿到实例。整个过程发生在 Bean 实例化之前，只是往注册表里多放了几个 BeanDefinition，后面的实例化、依赖注入都走 Spring 的正常流程。MyBatis 的 `MapperScannerConfigurer` 用的就是同一个扩展点。
 
 ### BeanPostPrecessor (后处理器）
 
@@ -276,7 +341,70 @@ Bean实例化之后，到最终缓存到名为singletonObjects的单例池之前
 * 由于Bean方法不确定，所以使用动态代理在运行期间执行增强操作
 * 在Bean实例创建完毕后，进入到单例池之前，使用Proxy代替真正的目标Bean。
 
-——todo晚上回宿舍补上
+所以增强逻辑要写在 `postProcessAfterInitialization` 中：此时 Bean 已经完成属性填充和初始化，返回代理对象后，放进单例池的就是代理。
+
+```java
+import java.lang.reflect.Proxy;
+import java.time.LocalDateTime;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+
+public class TimeLogBeanPostProcessor implements BeanPostProcessor {
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        Class<?>[] interfaces = bean.getClass().getInterfaces();
+        // JDK 动态代理要求目标类实现接口，没有接口的 Bean 原样返回
+        if (interfaces.length == 0) {
+            return bean;
+        }
+        return Proxy.newProxyInstance(
+                bean.getClass().getClassLoader(),
+                interfaces,
+                (proxy, method, args) -> {
+                    System.out.println(method.getName() + " 开始时间：" + LocalDateTime.now());
+                    Object result = method.invoke(bean, args);
+                    System.out.println(method.getName() + " 结束时间：" + LocalDateTime.now());
+                    return result;
+                });
+    }
+}
+```
+
+测试用的 Bean：
+
+```java
+public interface UserService {
+    void show();
+}
+
+public class UserServiceImpl implements UserService {
+    @Override
+    public void show() {
+        System.out.println("执行 show 方法");
+    }
+}
+```
+
+```xml
+<bean id="userService" class="com.example.UserServiceImpl"/>
+<bean class="com.example.TimeLogBeanPostProcessor"/>
+```
+
+```java
+ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+UserService userService = context.getBean(UserService.class);
+userService.show();
+// show 开始时间：2023-02-22T21:10:01.123
+// 执行 show 方法
+// show 结束时间：2023-02-22T21:10:01.124
+```
+
+注意两点：
+
+* 代理对象只实现了接口，所以要按接口类型 `UserService` 获取，按 `UserServiceImpl` 获取会报类型不匹配。
+* 实际项目中不用自己写：Spring AOP 的 `AbstractAutoProxyCreator` 本身就是一个 `BeanPostProcessor`，也是在 `postProcessAfterInitialization` 中为 Bean 生成代理（有接口用 JDK 代理，没有接口用 CGLIB）。
 
 最后梳理一下，如果你前面耐心看完，这张图不用多解释了，一看就明白了🫡：  
  ![请添加图片描述](./assets/129154666/706254fca1e8a72da9dd6f46.png)
