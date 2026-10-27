@@ -5,11 +5,8 @@ status: draft
 sidebar:
   order: 147478619
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147478619)
 
-## Redis-ZSet
 ## 引言
 
 有序集合（Sorted Set，简称 ZSet）是一种非常强大且常用的数据结构。它既像集合（Set）一样保证成员（member）的唯一性，又允许为每个成员关联一个分数（score），并能根据分数对成员进行高效排序。
@@ -19,7 +16,7 @@ sidebar:
 ### 1.1 什么是 ZSet？
 
 ZSet 是 Redis 提供的一种**有序集合**数据结构。你可以把它想象成一个集合，但这个集合里的每个元素（我们称之为**成员 member**）都额外绑定了一个浮点数
-类 
+类
 型的**分数 score**。ZSet 最重要的特性就是它会**根据 score 对 member 进行排序**。
 
 **核心特性总结：**
@@ -563,10 +560,9 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ```
     ZADD scores 10 user1
     ZINCRBY scores 5 user1  # user1 的分数变为 15
-    # 返回: "15"
+    # 返回："15"
     ZINCRBY scores 3 user_new # user_new 不存在，添加，分数为 3
-    # 返回: "3"
-
+    # 返回："3"
 
     - 1
     - 2
@@ -589,8 +585,7 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ```
     ZADD myzset 1 one 2 two 3 three
     ZREM myzset one four # 移除 one 和 four (four 不存在)
-    # 返回: 1
-
+    # 返回：1
 
     - 1
     - 2
@@ -609,13 +604,12 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ZADD myzset 1 a 2 b 3 c 4 d 5 e
     # 移除排名 0 到 1 的成员 (a, b)
     ZREMRANGEBYRANK myzset 0 1
-    # 返回: 2
-    # 剩余: c, d, e
+    # 返回：2
+    # 剩余：c, d, e
     # 移除排名最后 2 位的成员 (d, e)
     ZREMRANGEBYRANK myzset -2 -1
-    # 返回: 2
-    # 剩余: c
-
+    # 返回：2
+    # 剩余：c
 
     - 1
     - 2
@@ -640,13 +634,12 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ZADD myzset 10 a 20 b 30 c 40 d 50 e
     # 移除分数在 [20, 40] 之间的成员 (b, c, d)
     ZREMRANGEBYSCORE myzset 20 40
-    # 返回: 3
-    # 剩余: a, e
+    # 返回：3
+    # 剩余：a, e
     # 移除分数 > 45 的成员 (e)
     ZREMRANGEBYSCORE myzset (45 +inf
-    # 返回: 1
-    # 剩余: a
-
+    # 返回：1
+    # 剩余：a
 
     - 1
     - 2
@@ -671,8 +664,7 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ```
     ZADD myzset 1 a 2 b
     ZCARD myzset
-    # 返回: 2
-
+    # 返回：2
 
     - 1
     - 2
@@ -688,10 +680,9 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ```
     ZADD myzset 1 a
     ZSCORE myzset a
-    # 返回: "1"
+    # 返回："1"
     ZSCORE myzset non_exist
-    # 返回: nil
-
+    # 返回：nil
 
     - 1
     - 2
@@ -709,8 +700,7 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ```
     ZADD myzset 10 a 20 b 30 c
     ZRANK myzset b
-    # 返回: 1 (因为 a 是 0, b 是 1)
-
+    # 返回：1 (因为 a 是 0, b 是 1)
 
     - 1
     - 2
@@ -726,8 +716,7 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ```
     ZADD myzset 10 a 20 b 30 c
     ZREVRANK myzset b
-    # 返回: 1 (因为 c 是 0, b 是 1)
-
+    # 返回：1 (因为 c 是 0, b 是 1)
 
     - 1
     - 2
@@ -745,10 +734,9 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ```
     ZADD myzset 10 a 20 b 30 c 40 d 50 e
     ZCOUNT myzset 20 40
-    # 返回: 3 (b, c, d)
+    # 返回：3 (b, c, d)
     ZCOUNT myzset (20 +inf
-    # 返回: 3 (c, d, e)
-
+    # 返回：3 (c, d, e)
 
     - 1
     - 2
@@ -770,11 +758,10 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ZADD myzset 10 a 20 b 30 c 40 d
     # 获取排名 0 到 1 的成员 (a, b)
     ZRANGE myzset 0 1
-    # 返回: 1) "a" 2) "b"
+    # 返回：1) "a" 2) "b"
     # 获取排名 1 到 -1 (最后一个) 的成员及其分数 (b, c, d)
     ZRANGE myzset 1 -1 WITHSCORES
-    # 返回: 1) "b" 2) "20" 3) "c" 4) "30" 5) "d" 6) "40"
-
+    # 返回：1) "b" 2) "20" 3) "c" 4) "30" 5) "d" 6) "40"
 
     - 1
     - 2
@@ -796,11 +783,10 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ZADD myzset 10 a 20 b 30 c 40 d
     # 获取排名 0 到 1 的成员 (按分数从高到低，即 d, c)
     ZREVRANGE myzset 0 1
-    # 返回: 1) "d" 2) "c"
+    # 返回：1) "d" 2) "c"
     # 获取所有成员及其分数 (按分数从高到低)
     ZREVRANGE myzset 0 -1 WITHSCORES
-    # 返回: 1) "d" 2) "40" 3) "c" 4) "30" 5) "b" 6) "20" 7) "a" 8) "10"
-
+    # 返回：1) "d" 2) "40" 3) "c" 4) "30" 5) "b" 6) "20" 7) "a" 8) "10"
 
     - 1
     - 2
@@ -825,11 +811,10 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ZADD myzset 10 a 20 b 30 c 40 d 50 e
     # 获取分数在 [20, 40] 之间的成员及其分数 (b, c, d)
     ZRANGEBYSCORE myzset 20 40 WITHSCORES
-    # 返回: 1) "b" 2) "20" 3) "c" 4) "30" 5) "d" 6) "40"
+    # 返回：1) "b" 2) "20" 3) "c" 4) "30" 5) "d" 6) "40"
     # 获取分数 > 25 的成员，跳过 1 个，取 2 个 (d, e)
     ZRANGEBYSCORE myzset (25 +inf WITHSCORES LIMIT 1 2
-    # 返回: 1) "d" 2) "40" 3) "e" 4) "50"
-
+    # 返回：1) "d" 2) "40" 3) "e" 4) "50"
 
     - 1
     - 2
@@ -851,11 +836,10 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ZADD myzset 10 a 20 b 30 c 40 d 50 e
     # 获取分数在 [40, 20] 之间的成员及其分数 (按分数从高到低，即 d, c, b)
     ZREVRANGEBYSCORE myzset 40 20 WITHSCORES
-    # 返回: 1) "d" 2) "40" 3) "c" 4) "30" 5) "b" 6) "20"
+    # 返回：1) "d" 2) "40" 3) "c" 4) "30" 5) "b" 6) "20"
     # 获取分数 <= 35 的成员，按分数从高到低，取前 2 个 (c, b)
     ZREVRANGEBYSCORE myzset 35 -inf WITHSCORES LIMIT 0 2
-    # 返回: 1) "c" 2) "30" 3) "b" 4) "20"
-
+    # 返回：1) "c" 2) "30" 3) "b" 4) "20"
 
     - 1
     - 2
@@ -877,9 +861,8 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ```
     ZADD myzset 10 a 20 b 30 c
     ZPOPMIN myzset 2 # 移除并返回 a 和 b
-    # 返回: 1) "a" 2) "10" 3) "b" 4) "20"
-    # 集合剩余: c
-
+    # 返回：1) "a" 2) "10" 3) "b" 4) "20"
+    # 集合剩余：c
 
     - 1
     - 2
@@ -897,9 +880,8 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ```
     ZADD myzset 10 a 20 b 30 c
     ZPOPMAX myzset 1 # 移除并返回 c
-    # 返回: 1) "c" 2) "30"
-    # 集合剩余: a, b
-
+    # 返回：1) "c" 2) "30"
+    # 集合剩余：a, b
 
     - 1
     - 2
@@ -916,7 +898,6 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ```
     # 阻塞等待从 queue1 或 queue2 中弹出分数最低的元素，最多等 10 秒
     BZPOPMIN queue1 queue2 10
-
 
     - 1
     - 2
@@ -940,12 +921,11 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ```
     # 第一次迭代
     ZSCAN myzset 0 MATCH user:* COUNT 10
-    # 返回: 1) "17"  (下次的 cursor)
+    # 返回：1) "17"  (下次的 cursor)
     #      2) 1) "user:1" 2) "100" 3) "user:3" 4) "150" ... (最多 10 对)
 
     # 后续迭代
     ZSCAN myzset 17 MATCH user:* COUNT 10
-
 
     - 1
     - 2
@@ -976,17 +956,16 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ZADD zset2 1 one 2 two 3 three
     # 计算 zset1 和 zset2 的交集，分数相加，存入 zset_inter
     ZINTERSTORE zset_inter 2 zset1 zset2 WEIGHTS 1 1 AGGREGATE SUM
-    # 返回: 2 (交集有 one, two)
+    # 返回：2 (交集有 one, two)
     ZRANGE zset_inter 0 -1 WITHSCORES
-    # 返回: 1) "one" 2) "2" (1*1 + 1*1) 3) "two" 4) "4" (2*1 + 2*1)
+    # 返回：1) "one" 2) "2" (1*1 + 1*1) 3) "two" 4) "4" (2*1 + 2*1)
 
     ZADD zset3 5 one 1 two 10 four
     # 计算 zset1 和 zset3 交集，zset1 权重 2，zset3 权重 3，取最大分数
     ZINTERSTORE zset_inter2 2 zset1 zset3 WEIGHTS 2 3 AGGREGATE MAX
-    # 返回: 2 (交集有 one, two)
+    # 返回：2 (交集有 one, two)
     ZRANGE zset_inter2 0 -1 WITHSCORES
-    # 返回: 1) "one" 2) "15" (max(1*2, 5*3)) 2) "two" 4) "4" (max(2*2, 1*3))
-
+    # 返回：1) "one" 2) "15" (max(1*2, 5*3)) 2) "two" 4) "4" (max(2*2, 1*3))
 
     - 1
     - 2
@@ -1016,10 +995,9 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
     ZADD zset2 1 one 2 two 3 three
     # 计算 zset1 和 zset2 的并集，分数相加，存入 zset_union
     ZUNIONSTORE zset_union 2 zset1 zset2 AGGREGATE SUM
-    # 返回: 3 (并集有 one, two, three)
+    # 返回：3 (并集有 one, two, three)
     ZRANGE zset_union 0 -1 WITHSCORES
-    # 返回: 1) "one" 2) "2" (1+1) 3) "three" 4) "3" 5) "two" 6) "4" (2+2)
-
+    # 返回：1) "one" 2) "2" (1+1) 3) "three" 4) "3" 5) "two" 6) "4" (2+2)
 
     - 1
     - 2

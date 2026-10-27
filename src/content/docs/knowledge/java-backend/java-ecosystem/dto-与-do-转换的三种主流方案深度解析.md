@@ -5,15 +5,9 @@ status: draft
 sidebar:
   order: 150551730
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/150551730)
 
-## 前言
-
-日常开发中，多数人都会遵循分层架构的最佳实践，不同层之间的数据流转离不开对象的转换。  
- 最常见的场景之一便是将前端传入的 `DTO (Data Transfer Object)` 转换为数据库持久化操作的 `DO (Domain Object)`。  
- 在我实习的时候负责过优惠券模块的开发,这里我就拿一个常见的业务场景为例子: **“新增优惠券模板”**
+日常开发中，多数人都会遵循分层架构的最佳实践，不同层之间的数据流转离不开对象的转换。最常见的场景之一便是将前端传入的 `DTO (Data Transfer Object)` 转换为数据库持久化操作的 `DO (Domain Object)`。在我实习的时候负责过优惠券模块的开发，这里我就拿一个常见的业务场景为例子：**“新增优惠券模板”**
 
 本文将深入探讨并比较实现这一转换过程的三种主流方式：
 
@@ -21,63 +15,48 @@ sidebar:
 * MapStruct
 * 基于反射的工具（如 Hutool、Dozer）
 
-看完文章后你会获得:
+看完文章后你会获得：
 
 1. 根据不同场景选择最优方案
 2. 提供给你的官方文档的链接
-3. 官方文档中核心内容的解释.
+3. 官方文档中核心内容的解释。
 
-### 业务背景介绍
+## 业务背景介绍
 
 `Controller` 层接收到的是 `CouponTemplateReqDTO`，而在 `Service` 层经过业务逻辑处理后，最终需要将数据持久化到数据库，这时就需要将其转换为 `CouponTemplateDO` 实体。
 
 数据存储 (Data Storage)
 
-
 应用服务器 (Application Server)
-
 
 用户端 (Client)
 
-
 1. 发送HTTP请求 (携带JSON)
-
 
 2. 封装为 CouponTemplateReqDTO
 
-
-3. 业务处理后, 转换为 CouponTemplateDO
-
+3. 业务处理后，转换为 CouponTemplateDO
 
 4. 将DO持久化
 
-
 数据库
-
 
 Controller 层
 
-
 Service 层
-
 
 DAO/Mapper 层
 
-
 浏览器/App
 
-流程图说明:
+流程图说明：
 
-* 客户端 -> `Controller` 层:  
-   用户通过浏览器或 `App` 发起一个 `HTTP` 请求（例如，提交一个表单），请求体中通常包含 `JSON`格式的数据。
-* Controller 层 -> Service 层:  
-   `Controller` 接收到请求后，框架（如 `Spring MVC`）会自动将 JSON 数据封装成 `CouponTemplateReqDTO` 对象。`Controller` 随后调用 `Service` 层的方法，并将这个 `DTO` 对象作为参数传递过去。
-* `Service` 层 -> `DAO` 层:  
-   `Service` 层是业务逻辑的核心。在执行完必要的业务校验和处理后，它会创建一个 `CouponTemplateDO` 对象，并将 `DTO` 中的数据复制到 `DO` 中。这个 转换 的步骤是本文讨论的重点。然后，`Service` 层调用 `DAO` 层的方法，传入这个准备好持久化的 `DO` 对象。
-* `DAO` 层 -> 数据库:  
-   `DAO (Data Access Object)` 层负责与数据库直接交互。它接收到 `Service` 层传来的 `DO` 对象，并将其通过 `SQL` 语句（例如，`INSERT`）保存到数据库的对应表中。
+* 客户端 -> `Controller` 层：用户通过浏览器或 `App` 发起一个 `HTTP` 请求（例如，提交一个表单），请求体中通常包含 `JSON`格式的数据。
+* Controller 层 -> Service 层：`Controller` 接收到请求后，框架（如 `Spring MVC`）会自动将 JSON 数据封装成 `CouponTemplateReqDTO` 对象。`Controller` 随后调用 `Service` 层的方法，并将这个 `DTO` 对象作为参数传递过去。
+* `Service` 层 -> `DAO` 层：`Service` 层是业务逻辑的核心。在执行完必要的业务校验和处理后，它会创建一个 `CouponTemplateDO` 对象，并将 `DTO` 中的数据复制到 `DO` 中。这个 转换 的步骤是本文讨论的重点。然后，`Service` 层调用 `DAO` 层的方法，传入这个准备好持久化的 `DO` 对象。
+* `DAO` 层 -> 数据库：`DAO (Data Access Object)` 层负责与数据库直接交互。它接收到 `Service` 层传来的 `DO` 对象，并将其通过 `SQL` 语句（例如，`INSERT`）保存到数据库的对应表中。
 
-### 手动get/set
+## 手动get/set
 
 这是最原始、最直接的方式。通过 new 一个目标对象，然后将源对象的属性通过 get() 方法取出，再通过 set() 方法赋给目标对象。
 
@@ -114,33 +93,33 @@ public CouponTemplateDO convertToCouponTemplateDO(CouponTemplateReqDTO reqDTO) {
  4. 代码冗余繁琐：当对象字段数量众多时，`get/set` 代码会变得非常长，形成所谓的“胶水代码”，缺乏美感。  
  5. 可维护性差：如果后续`DTO 或 DO` 新增或修改了字段，开发者必须手动同步修改转换代码，非常容易遗漏，导致 `bug`。
 
-### 编译期操作-MapStruct
+## 编译期操作-MapStruct
 
 `MapStruct` 是一个广受欢迎的 `Java` 注解处理器，它在 编译期 自动生成类型安全、高性能的对象映射代码。开发者只需定义一个接口，`MapStruct` 就会自动实现它。
 
 官方网址：[mapstruct](https://mapstruct.org)
 
-#### 官方文档核心内容(翻译后提炼总结)
+### 官方文档核心内容(翻译后提炼总结)
 
-##### MapStruct 是什么？
+#### MapStruct 是什么？
 
 `MapStruct` 是一个 `Java Bean` 映射的代码生成器。它基于“约定优于配置”的原则，能极大地简化不同 `Java Bean` 类型之间的转换实现。
 
-##### 为什么使用它？
+#### 为什么使用它？
 
 * **自动化，省时省力**：在多层应用程序中（例如：实体类 `Entity` 和数据传输对象 `DTO` 之间），手动编写映射代码既繁琐又容易出错。`MapStruct` 可以自动完成这项工作。
 * **高性能**：它在编译时生成普通的 `Java` 方法调用代码，而非在运行时使用反射，因此执行速度非常快。
 * **类型安全且易于理解**：生成的代码是类型安全的，便于开发者在编译阶段就发现问题，并且代码逻辑清晰易懂。
 
-##### 它是如何工作的？
+#### 它是如何工作的？
 
 MapStruct 作为一个注解处理器（`Annotation Processor`）集成在 `Java` 编译器中。你只需要通过注解来声明映射规则，它就会在编译项目时（无论是通过 `Maven、Gradle 还是 IDE`）自动生成具体的实现类。
 
-##### 如何使用(核心步骤)
+#### 如何使用(核心步骤)
 
 以下是一个简单的两分钟入门示例的核心流程：
 
-一. 定义 `Mapper` 接口: 创建一个接口，并使用 `@Mapper` 注解将其标记为 `MapStruct` 的映射接口。
+一。定义 `Mapper` 接口：创建一个接口，并使用 `@Mapper` 注解将其标记为 `MapStruct` 的映射接口。
 
 ```java
 @Mapper
@@ -151,7 +130,7 @@ public interface CarMapper {
 
 ```
 
-二. 声明映射方法: 在接口中定义一个方法，该方法接受源对象（`Source`）作为参数，并返回目标对象（`Target`）。
+二。声明映射方法：在接口中定义一个方法，该方法接受源对象（`Source`）作为参数，并返回目标对象（`Target`）。
 
 ```
 // 将 Car 对象转换为 CarDto 对象
@@ -160,7 +139,7 @@ CarDto carToCarDto(Car car);
 
 ```
 
-三. 处理不匹配的字段: 如果源对象和目标对象的字段名称不同，可以使用 `@Mapping` 注解来指定映射关系。
+三。处理不匹配的字段：如果源对象和目标对象的字段名称不同，可以使用 `@Mapping` 注解来指定映射关系。
 
 ```
 // 将源对象的 numberOfSeats 字段映射到目标对象的 seatCount 字段
@@ -170,7 +149,7 @@ CarDto carToCarDto(Car car);
 
 ```
 
-四.获取 `Mapper` 实例: 通过 `Mappers.getMapper()` 方法获取 `Mapper` 接口的实例，通常的做法是在接口中定义一个静态的 `INSTANCE` 字段以便于全局访问。
+四。获取 `Mapper` 实例：通过 `Mappers.getMapper()` 方法获取 `Mapper` 接口的实例，通常的做法是在接口中定义一个静态的 `INSTANCE` 字段以便于全局访问。
 
 ```
 CarMapper INSTANCE = Mappers.getMapper(CarMapper.class);
@@ -178,7 +157,7 @@ CarMapper INSTANCE = Mappers.getMapper(CarMapper.class);
 
 ```
 
-五. **调用方法进行映射**: 直接使用获取到的实例来执行对象映射。
+五。**调用方法进行映射**: 直接使用获取到的实例来执行对象映射。
 
 ```
 CarDto dto = CarMapper.INSTANCE.carToCarDto(someCarObject);
@@ -188,7 +167,7 @@ CarDto dto = CarMapper.INSTANCE.carToCarDto(someCarObject);
 
 **总结来说，MapStruct 通过简单的注解就能自动生成高性能、类型安全的 Bean 映射代码，将开发者从繁琐的手动编码中解放出来。**
 
-#### 业务例子
+### 业务例子
 
 第一步：定义转换器接口
 
@@ -221,44 +200,37 @@ CouponTemplateDO couponTemplateDO = CouponTemplateMapper.INSTANCE.toDataObject(r
 
 ```
 
-#### 底层原理
+### 底层原理
 
-你可能会好奇 `MapStruct` 是如何工作的。当你编译项目时，`MapStruct` 会自动为你生成 `CouponTemplateMapper` 接口的实现类，其内容本质上就是我们手写的 `get/set` 代码.  
+你可能会好奇 `MapStruct` 是如何工作的。当你编译项目时，`MapStruct` 会自动为你生成 `CouponTemplateMapper` 接口的实现类，其内容本质上就是我们手写的 `get/set` 代码。  
  **拿图说明一下(这张图的核心是展示 MapStruct 如何在 编译期 (Compile Time) 将开发者编写的接口自动转换成具体的实现类。)**
 
 自动生成 (Generated Code)
 
-
 Java 编译过程 (Compile Time)
-
 
 开发者编写 (Development)
 
-
 1. 输入到编译器
-
 
 2. 处理注解并生成代码
 
-
 **PersonMapperImpl.java** (实现类)
-  
-// ...
-  
-personDTO.setName(person.getName());
-  
-personDTO.setAge(person.getAge());
-  
+
 // ...
 
+personDTO.setName(person.getName());
+
+personDTO.setAge(person.getAge());
+
+// ...
 
 javac + MapStruct 注解处理器
 
-
 **PersonMapper.java** (接口)
-  
+
 @Mapper
-  
+
 PersonDTO personToPersonDTO(Person person);
 
 **流程图说明**
@@ -280,15 +252,15 @@ PersonDTO personToPersonDTO(Person person);
 5. 需要引入依赖和配置：需要在 `pom.xml` 中添加 `mapstruct` 和 `mapstruct-processor` 的依赖。
 6. 轻微增加学习成本：需要了解 `@Mapper、@Mapping` 等注解的用法。
 
-### 运行时操作-Hutool/Dozer
+## 运行时操作-Hutool/Dozer
 
 这类工具库基于 `Java` 的 **反射机制**，在 运行时 动态地读取对象的属性并进行赋值。以 `Hutool 的 BeanUtil` 为例，它提供了极致的便利性。  
- **Hutool 官方网址**： [Hutool](https://hutool.cn)   
+ **Hutool 官方网址**：[Hutool](https://hutool.cn)   
  **Dozer Github 地址**：[Dozer](https://github.com/DozerMapper/dozer)
 
-这里一般用都会用Hutool,Dozer类似,Hutool中文文档写的很全面,想了解这块的直接去看里面关于属性注入的介绍即可.
+这里一般用都会用Hutool,Dozer类似，Hutool中文文档写的很全面，想了解这块的直接去看里面关于属性注入的介绍即可。
 
-#### 实现方式
+### 实现方式
 
 使用 Hutool，对象转换真的只是一行代码的事。
 
@@ -305,41 +277,32 @@ CouponTemplateDO couponTemplateDO = BeanUtil.toBean(requestParam, CouponTemplate
 
 输出 (Output)
 
-
 运行时处理 (Runtime)
-
 
 输入 (Inputs)
 
-
 **新创建的目标对象 (Target Object)**
-  
-couponTemplateDO
-  
-{name: '优惠券A', type: 1, ...}
 
+couponTemplateDO
+
+{name: '优惠券A', type: 1, ...}
 
 调用 BeanUtil.toBean(source, targetClass)
 
+1. 反射：创建目标对象实例 (new CouponTemplateDO())
 
-1. 反射: 创建目标对象实例 (new CouponTemplateDO())
+2. 反射：遍历源对象所有 'get' 方法或字段
 
-
-2. 反射: 遍历源对象所有 'get' 方法或字段
-
-
-3. 反射: 在目标对象中查找同名的 'set' 方法或字段并调用
-
+3. 反射：在目标对象中查找同名的 'set' 方法或字段并调用
 
 **源对象 (Source Object)**
-  
+
 requestParam
-  
+
 {name: '优惠券A', type: 1, ...}
 
-
 **目标对象的 Class**
-  
+
 CouponTemplateDO.class
 
 **流程图说明**
@@ -363,7 +326,7 @@ CouponTemplateDO.class
 3. 性能较差：反射是 Java 中一种性能开销较大的操作。与 get/set 或 MapStruct 相比，其性能可能有数量级的差距。对于高并发、性能敏感的核心业务，这可能成为瓶颈。
 4. **“黑盒”操作**：转换过程是一个“黑盒”，**如果出现字段名拼写错误或类型不匹配的问题，只会在运行时抛出异常，编译器无法提前发现**。
 
-### 方案对比
+## 方案对比
 
 | 特性维度 | 手动 get/set | MapStruct | Hutool/Dozer (反射) |
 | --- | --- | --- | --- |

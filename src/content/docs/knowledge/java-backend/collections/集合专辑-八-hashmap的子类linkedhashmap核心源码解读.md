@@ -5,20 +5,16 @@ status: draft
 sidebar:
   order: 125979672
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125979672)
 
-## 前言
+在我们刚学习LInkedList的时候我们知道，LinkedList实际上性能不会比ArrayList高很多，因为LinkedList只有在前向插入的时候性能才会比ArrayList高。LinkedList虽然在remove和insert操作不需要拷贝数据，但是寻址需要时间（从链表中找到需要操作的节点），只能挨个遍历。
 
-在我们刚学习LInkedList的时候我们知道，LinkedList实际上性能不会比ArrayList高很多，因为LinkedList只有在前向插入的时候性能才会比ArrayList高。  
-LinkedList虽然在remove和insert操作不需要拷贝数据，但是寻址需要时间（从链表中找到需要操作的节点），只能挨个遍历。  
-那么有没有一种数据结构，能够把查询链表某一个元素所需要的时间复杂度O(n)变为O(1)呢？  
-LInkedHashMap就是这样的一种数据结构，综合了HashMap和链表的有点，虽然数据结构相对来说比较复杂，但是在某些场景下，性能要更好一些。
+那么有没有一种数据结构，能够把查询链表某一个元素所需要的时间复杂度O(n)变为O(1)呢？LInkedHashMap就是这样的一种数据结构，综合了HashMap和链表的有点，虽然数据结构相对来说比较复杂，但是在某些场景下，性能要更好一些。
 
-### 继承结构关系
+## 继承结构关系
 
-![](./assets/125979672/8af7884a29dee650bd9f304a.png)  
+![](./assets/125979672/8af7884a29dee650bd9f304a.png)
+
 代码实现：
 
 ```java
@@ -31,7 +27,7 @@ public class LinkedHashMap<K,V>
 
 这个我觉得不必多说了。
 
-### Doc解析
+## Doc解析
 
 ```java
 /**
@@ -156,15 +152,18 @@ The {@code replace} methods only result in an access of the entry if the value i
 
 ```
 
-### 数据结构
+## 数据结构
 
-![](./assets/125979672/a03c2eb28afb13701b11df85.png)  
-我们需要注意，LinkedHashMap实际上是一个Entry节点链入双向链表的HashMap,通过维护一个Entry的双向链表，保证了插入Entry中顺序
+![](./assets/125979672/a03c2eb28afb13701b11df85.png)
 
-### Entry内部类
+我们需要注意，LinkedHashMap实际上是一个Entry节点链入双向链表的HashMap，通过维护一个Entry的双向链表，保证了插入Entry中顺序
 
-(1)：Entry的继承结构  
-![](./assets/125979672/7f5451df5c2badf7c3485c1b.png)  
+## Entry内部类
+
+(1)：Entry的继承结构
+
+![](./assets/125979672/7f5451df5c2badf7c3485c1b.png)
+
 代码实现：
 
 ```java
@@ -181,12 +180,9 @@ The {@code replace} methods only result in an access of the entry if the value i
 
 ```
 
-Entry主要作用是实现对Node节点的链表化。  
-构建一个新的双向链表来作为HashMap的扩展。  
-之后LinkedHashMap可以作为链表使用。  
-Entry抓哟增加了before和after两个指针，以将HashMap的全部Entry转成成双向链表
+Entry主要作用是实现对Node节点的链表化。构建一个新的双向链表来作为HashMap的扩展。之后LinkedHashMap可以作为链表使用。Entry抓哟增加了before和after两个指针，以将HashMap的全部Entry转成成双向链表
 
-### 成员变量&&静态变量
+## 成员变量&&静态变量
 
 成员变量：
 
@@ -222,7 +218,7 @@ Entry抓哟增加了before和after两个指针，以将HashMap的全部Entry转�
 
 ```
 
-### 构造函数
+## 构造函数
 
 五种构造方法：  
 1：无参构造
@@ -319,7 +315,7 @@ public LinkedHashMap(int initialCapacity) {
 
 ```
 
-### LinkedHashMap存取
+## LinkedHashMap存取
 
 我们先来看存储  
 你在LinkedHashMap的源码中找不到put方法，因为它完美继承了HashMap的put(Key,Value)的方法  
@@ -403,9 +399,7 @@ public LinkedHashMap(int initialCapacity) {
 
 ```
 
-我们回头去看HashMap中的put方法，可以发现，putVal是final修饰的，这意味着LinkedHashMap无法重写这个方法。  
-由于putVal中全部都是对HashMap是否需要树化的操作，HashMap是否考虑到put之后链表的关系如何维护呢？  
-实际上在HashMap中的putVal中，已经预留了后处理的方法：
+我们回头去看HashMap中的put方法，可以发现，putVal是final修饰的，这意味着LinkedHashMap无法重写这个方法。由于putVal中全部都是对HashMap是否需要树化的操作，HashMap是否考虑到put之后链表的关系如何维护呢？实际上在HashMap中的putVal中，已经预留了后处理的方法：
 
 ```
    // Callbacks to allow LinkedHashMap post-actions
@@ -540,6 +534,6 @@ public LinkedHashMap(int initialCapacity) {
 
 get方法中核心的就是根据hash值，从链表或者红黑树中搜索结果。如果为红黑树，则通过红黑树的方式查找。因为红黑树是颗排序的树，红黑树的效率会比链表全表扫描有显著提高。
 
-### 结束语
+## 结束语
 
 LinkedHashMap可以理解为HashMap又维护了一个双向链表，所以我们理解了HashMap，LinkedHashMap就很容易理解，本文把比较核心的内容解析了一下，还有一些零碎的用法，如果你有需要去看一下源码，有了这些铺垫，相信理解起来就很容易了。

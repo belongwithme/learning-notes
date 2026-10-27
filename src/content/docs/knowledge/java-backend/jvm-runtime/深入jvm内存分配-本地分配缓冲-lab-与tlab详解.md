@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 147445092
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147445092)
 
 ## 一、 引言：为何需要本地分配缓冲？
@@ -140,7 +138,7 @@ if (top + size <= end) {
 * **新 TLAB 大小：** 新 TLAB 的大小不是固定的。JVM 会根据**动态策略**来调整：
   + **初始大小：** 可能有一个默认的初始 TLAB 大小。
   + **动态调整：** JVM 会监控每个线程的分配速率。如果一个线程很快就用完了 TLAB，下次可能会给它分配一个更大的 TLAB；反之，如果一个 TLAB 用了很久才用完，或者退休时浪费了很多空间，下次可能会分配一个较小的 TLAB。目标是在减少 Refill 次数（增大 TLAB）和减少空间浪费（减小 TLAB）之间取得平衡。相关 JVM 参数如 `-XX:TLABSize` (固定大小或初始大小) 和 `-XX:+ResizeTLAB` (是否允许动态调整)。
-* **更新指针：** Refill 成功后，线程的 `start`, `top`, `end` 指针会被更新为指向新的 TLAB 区域。 `top` 通常会初始化为新的 `start`。
+* **更新指针：** Refill 成功后，线程的 `start`, `top`, `end` 指针会被更新为指向新的 TLAB 区域。`top` 通常会初始化为新的 `start`。
 
 ### 3. TLAB 浪费与填充对象 (Filler Object)
 
@@ -358,5 +356,5 @@ void ThreadLocalAllocBuffer::retire() {
    * **慢速路径：** TLAB 耗尽时进行同步的 Refill 操作，或对于大对象进行同步的 Eden/Old Gen 直接分配。
    * **动态调整：** TLAB 大小通常会根据线程分配行为动态调整。
    * **填充对象：** TLAB 退休时会用填充对象填满浪费空间，以方便 GC。
-5. **相关参数：** `-XX:+UseTLAB` (总开关), `-XX:+ResizeTLAB` (动态调整), `-XX:TLABSize`, `-XX:TLABWasteTargetPercent` 等可用于监控和微调。
+5. **相关参数：** `-XX:+UseTLAB` (总开关)，`-XX:+ResizeTLAB` (动态调整)，`-XX:TLABSize`, `-XX:TLABWasteTargetPercent` 等可用于监控和微调。
 6. **GCLAB/PLAB：** 将 LAB 思想应用于 GC 线程，加速并行 GC 中的对象复制和晋升。

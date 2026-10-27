@@ -6,19 +6,13 @@ sidebar:
   label: "Explain指南(一)"
   order: 145592540
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145592540)
 
-## Expalin指南
-## 前言
-
-前面我们聊mysql的一些内容时,或多或少也用到了explain,相信也有一定的了解,本章旨在进一步的解释explain基本内容.
+前面我们聊mysql的一些内容时，或多或少也用到了explain，相信也有一定的了解，本章旨在进一步的解释explain基本内容。
 
 ## 什么是expalin
 
-一条查询语句在经过MySQL查询优化器的各种基于成本和规则的优化会后生成一个执行计划,这个执行计划展示了接下来具体执行查询的方式，比如多表连接的顺序是什么，对于每个表采用什么访问方法来具体执行查询等等。  
- 我们可以使用EXPLAIN语句来帮助我们查看某个查询语句的具体执行计划.
+一条查询语句在经过MySQL查询优化器的各种基于成本和规则的优化会后生成一个执行计划，这个执行计划展示了接下来具体执行查询的方式，比如多表连接的顺序是什么，对于每个表采用什么访问方法来具体执行查询等等。我们可以使用EXPLAIN语句来帮助我们查看某个查询语句的具体执行计划。
 
 ## 语法
 
@@ -30,8 +24,7 @@ explain + sql语句
 
 ```
 
-执行后会输出一些列,它们分别是什么意思呢?  
- 这里列一个表格,方便展示:
+执行后会输出一些列，它们分别是什么意思呢？这里列一个表格，方便展示：
 
 | 列名 | 描述 |
 | --- | --- |
@@ -48,14 +41,14 @@ explain + sql语句
 | filtered | 某个表经过搜索条件过滤后剩余记录条数的百分比 |
 | Extra | 一些额外的信息 |
 
-我在这里把它们都列出来只是为了描述一个轮廓，让大家有一个大致的印象，下面会细细道来.
+我在这里把它们都列出来只是为了描述一个轮廓，让大家有一个大致的印象，下面会细细道来。
 
 ## 执行计划输出中各列详解
 
 ### table
 
 EXPLAIN语句输出的每条记录都对应着某个单表的访问方法，该条记录的table列代表着该表的表名  
- 举例:
+ 举例：
 
 ```
 mysql> EXPLAIN SELECT * FROM s1 INNER JOIN s2;
@@ -109,7 +102,7 @@ mysql> EXPLAIN SELECT * FROM s1 WHERE key1 IN (SELECT key1 FROM s2) OR key3 = 'a
 
 > 但是这里大家需要特别注意，查询优化器可能对涉及子查询的查询语句进行重写，从而转换为连接查询。
 
-举例:
+举例：
 
 ```
 mysql> EXPLAIN SELECT * FROM s1 WHERE key1 IN (SELECT key3 FROM s2 WHERE common_field = 'a');
@@ -128,7 +121,7 @@ mysql> EXPLAIN SELECT * FROM s1 WHERE key1 IN (SELECT key3 FROM s2 WHERE common_
 
 #### id为null-临时表
 
-举例:
+举例：
 
 ```
 mysql> EXPLAIN SELECT * FROM s1  UNION SELECT * FROM s2;
@@ -144,16 +137,13 @@ mysql> EXPLAIN SELECT * FROM s1  UNION SELECT * FROM s2;
 
 ```
 
-union语句中,它会把多个查询的结果集合并起来并对结果集中的记录进行去重，怎么去重呢？  
- MySQL使用的是内部的临时表.  
- id为NULL表明这个临时表是为了合并两个查询的结果集而创建的。
+union语句中，它会把多个查询的结果集合并起来并对结果集中的记录进行去重，怎么去重呢？MySQL使用的是内部的临时表。id为NULL表明这个临时表是为了合并两个查询的结果集而创建的。
 
 ### select\_type
 
-每一个SELECT关键字代表的小查询都定义了一个称之为select\_type的属性.  
- 我们只要知道了某个小查询的select\_type属性，就知道了这个小查询在整个大查询中扮演了一个什么角色.
+每一个SELECT关键字代表的小查询都定义了一个称之为select\_type的属性。我们只要知道了某个小查询的select\_type属性，就知道了这个小查询在整个大查询中扮演了一个什么角色。
 
-那这个参数都有哪些值呢?看下面表格吧.
+那这个参数都有哪些值呢？看下面表格吧。
 
 | 名称 | 描述 |
 | --- | --- |
@@ -169,12 +159,12 @@ union语句中,它会把多个查询的结果集合并起来并对结果集中�
 
 #### simple
 
-不包含UNION或者子查询的查询都算作是SIMPLE类型.当然，连接查询也算是SIMPLE类型
+不包含UNION或者子查询的查询都算作是SIMPLE类型。当然，连接查询也算是SIMPLE类型
 
 #### primary
 
-对于包含UNION、UNION ALL或者子查询的大查询来说，它是由几个小查询组成的，其中最左边的那个查询的select\_type值就是PRIMARY.  
- 举例:
+对于包含UNION、UNION ALL或者子查询的大查询来说，它是由几个小查询组成的，其中最左边的那个查询的select\_type值就是PRIMARY。  
+ 举例：
 
 ```
 mysql> EXPLAIN SELECT * FROM s1 UNION SELECT * FROM s2;
@@ -198,7 +188,7 @@ mysql> EXPLAIN SELECT * FROM s1 UNION SELECT * FROM s2;
 
 #### union result
 
-MySQL选择使用临时表来完成UNION查询的去重工作，针对该临时表的查询的select\_type就是UNION RESULT.
+MySQL选择使用临时表来完成UNION查询的去重工作，针对该临时表的查询的select\_type就是UNION RESULT。
 
 #### subquery
 
@@ -207,14 +197,14 @@ MySQL选择使用临时表来完成UNION查询的去重工作，针对该临时�
 
 #### dependent subquery
 
-如果包含子查询的查询语句不能够转为对应的semi-join的形式，并且该子查询是相关子查询，则该子查询的第一个SELECT关键字代表的那个查询的select\_type就是DEPENDENT SUBQUERY.  
+如果包含子查询的查询语句不能够转为对应的semi-join的形式，并且该子查询是相关子查询，则该子查询的第一个SELECT关键字代表的那个查询的select\_type就是DEPENDENT SUBQUERY。  
  **select\_type为DEPENDENT SUBQUERY的查询可能会被执行多次。**
 
 #### dependent union
 
-在包含UNION或者UNION ALL的大查询中，如果各个小查询都依赖于外层查询的话，那除了最左边的那个小查询之外，其余的小查询的select\_type的值就是DEPENDENT UNION.
+在包含UNION或者UNION ALL的大查询中，如果各个小查询都依赖于外层查询的话，那除了最左边的那个小查询之外，其余的小查询的select\_type的值就是DEPENDENT UNION。
 
-举例来说:
+举例来说：
 
 ```
 mysql> EXPLAIN SELECT * FROM s1 WHERE key1 IN (SELECT key1 FROM s2 WHERE key1 = 'a' UNION SELECT key1 FROM s1 WHERE key1 = 'b');
@@ -231,9 +221,7 @@ mysql> EXPLAIN SELECT * FROM s1 WHERE key1 IN (SELECT key1 FROM s2 WHERE key1 = 
 
 ```
 
-看的出来:  
- 大查询里包含了一个子查询，子查询里又是由UNION连起来的两个小查询。  
- SELECT key1 FROM s2 WHERE key1 = 'a’这个小查询由于是子查询中第一个查询，所以它的select\_type是DEPENDENT SUBQUERY，而SELECT key1 FROM s1 WHERE key1 = 'b’这个查询的select\_type就是DEPENDENT UNION。
+看的出来：大查询里包含了一个子查询，子查询里又是由UNION连起来的两个小查询。SELECT key1 FROM s2 WHERE key1 = 'a’这个小查询由于是子查询中第一个查询，所以它的select\_type是DEPENDENT SUBQUERY，而SELECT key1 FROM s1 WHERE key1 = 'b’这个查询的select\_type就是DEPENDENT UNION。
 
 #### derived
 
@@ -272,17 +260,15 @@ mysql> EXPLAIN SELECT * FROM s1 WHERE key1 IN (SELECT key1 FROM s2);
 
 ```
 
-执行计划的第三条记录的id值为2，说明该条记录对应的是一个单表查询，从它的select\_type值为MATERIALIZED可以看出，查询优化器是要把子查询先转换成物化表。  
- 然后看执行计划的前两条记录的id值都为1，说明这两条记录对应的表进行连接查询，需要注意的是第二条记录的table列的值是，说明该表其实就是id为2对应的子查询执行之后产生的物化表，然后将s1和该物化表进行连接查询。
+执行计划的第三条记录的id值为2，说明该条记录对应的是一个单表查询，从它的select\_type值为MATERIALIZED可以看出，查询优化器是要把子查询先转换成物化表。然后看执行计划的前两条记录的id值都为1，说明这两条记录对应的表进行连接查询，需要注意的是第二条记录的table列的值是，说明该表其实就是id为2对应的子查询执行之后产生的物化表，然后将s1和该物化表进行连接查询。
 
 ### partitions
 
-一般都是NULL.
+一般都是NULL。
 
 ### type
 
-type列就表明了这个访问方法是什么.  
- 它有下面这些参数,下面都是最基础的参数数据:
+type列就表明了这个访问方法是什么。它有下面这些参数，下面都是最基础的参数数据：
 
 | 类型 | 描述 |
 | --- | --- |
@@ -295,11 +281,11 @@ type列就表明了这个访问方法是什么.
 | system | 表中只有一行数据，优化器认为这是一个系统表（比如表只有一个行） |
 | NULL | 表没有使用任何索引，且结果集为空 |
 
-有些有难度的下面一个个介绍.
+有些有难度的下面一个个介绍。
 
 #### index\_merge
 
-某些场景下可以使用Intersection、Union、Sort-Union这三种索引合并的方式来执行查询.
+某些场景下可以使用Intersection、Union、Sort-Union这三种索引合并的方式来执行查询。
 
 ```
 mysql> EXPLAIN SELECT * FROM s1 WHERE key1 = 'a' OR key3 = 'a';
@@ -317,7 +303,7 @@ mysql> EXPLAIN SELECT * FROM s1 WHERE key1 = 'a' OR key3 = 'a';
 
 #### unique\_subquery
 
-类似于两表连接中被驱动表的eq\_ref访问方法，unique\_subquery是针对在一些包含IN子查询的查询语句中，如果查询优化器决定将IN子查询转换为EXISTS子查询，而且子查询可以使用到主键进行等值匹配的话，那么该子查询执行计划的type列的值就是unique\_subquery.
+类似于两表连接中被驱动表的eq\_ref访问方法，unique\_subquery是针对在一些包含IN子查询的查询语句中，如果查询优化器决定将IN子查询转换为EXISTS子查询，而且子查询可以使用到主键进行等值匹配的话，那么该子查询执行计划的type列的值就是unique\_subquery。
 
 ```
 mysql> EXPLAIN SELECT * FROM s1 WHERE key2 IN (SELECT id FROM s2 where s1.key1 = s2.key1) OR key3 = 'a';
@@ -381,9 +367,8 @@ mysql> EXPLAIN SELECT * FROM s1 WHERE key1 > 'a' AND key1 < 'b';
 
 #### possible\_keys和key
 
-possible\_keys列表示在某个查询语句中，对某个表执行单表查询时可能用到的索引有哪些.  
- key列表示实际用到的索引有哪些.  
- 举例:
+possible\_keys列表示在某个查询语句中，对某个表执行单表查询时可能用到的索引有哪些。key列表示实际用到的索引有哪些。  
+ 举例：
 
 ```
 mysql> EXPLAIN SELECT * FROM s1 WHERE key1 > 'z' AND key3 = 'a';
@@ -405,11 +390,11 @@ mysql> EXPLAIN SELECT * FROM s1 WHERE key1 > 'z' AND key3 = 'a';
 
 * 存储空间
   + 固定长度类型索引列-实际占用的存储空间的最大长度就是该固定值
-  + 指定字符集的变长类型的索引列- 要通过字符集\*字符数, VARCHAR(100)，使用的字符集是utf8，那么该列实际占用的最大存储空间就是100 × 3 = 300个字节。
+  + 指定字符集的变长类型的索引列- 要通过字符集\*字符数，VARCHAR(100)，使用的字符集是utf8，那么该列实际占用的最大存储空间就是100 × 3 = 300个字节。
 * 对于变长字段来说，都会有2个字节的空间来存储该变长列的实际长度。
 * 如果该索引列可以存储NULL值，则key\_len比不可以存储NULL值时多1个字节。
 
-举例:
+举例：
 
 ```
 mysql> EXPLAIN SELECT * FROM s1 WHERE id = 5;
@@ -437,7 +422,7 @@ ref列展示的就是与索引列作等值匹配的内容是什么
 
 ### filtered
 
-MySQL在计算驱动表扇出时采用的一个策略.
+MySQL在计算驱动表扇出时采用的一个策略。
 
 * 全表扫描(单表)  
    计算驱动表扇出时需要估计出满足搜索条件的记录到底有多少条。
@@ -456,9 +441,7 @@ mysql> EXPLAIN SELECT * FROM s1 WHERE key1 > 'z' AND common_field = 'a';
 
 ```
 
-从执行计划的key列中可以看出来，该查询使用idx\_key1索引来执行查询，从rows列可以看出满足key1 > 'z’的记录有266条。  
- 执行计划的filtered列就代表查询优化器预测在这266条记录中，有多少条记录满足其余的搜索条件，也就是common\_field = 'a’这个条件的百分比。  
- 此处filtered列的值是10.00，说明查询优化器预测在266条记录中有10.00%的记录满足common\_field = 'a’这个条件。
+从执行计划的key列中可以看出来，该查询使用idx\_key1索引来执行查询，从rows列可以看出满足key1 > 'z’的记录有266条。执行计划的filtered列就代表查询优化器预测在这266条记录中，有多少条记录满足其余的搜索条件，也就是common\_field = 'a’这个条件的百分比。此处filtered列的值是10.00，说明查询优化器预测在266条记录中有10.00%的记录满足common\_field = 'a’这个条件。
 
 对于单表查询来说，这个filtered列的值没什么意义，我们更关注在连接查询中驱动表对应的执行计划记录的filtered值，比方说下面这个查询：
 
@@ -475,4 +458,4 @@ mysql> EXPLAIN SELECT * FROM s1 INNER JOIN s2 ON s1.key1 = s2.key1 WHERE s1.comm
 
 ```
 
-从执行计划中可以看出来，查询优化器打算把s1当作驱动表，s2当作被驱动表。我们可以看到驱动表s1表的执行计划的rows列为9688， filtered列为10.00，这意味着驱动表s1的扇出值就是9688 × 10.00% = 968.8，这说明还要对被驱动表执行大约968次查询。
+从执行计划中可以看出来，查询优化器打算把s1当作驱动表，s2当作被驱动表。我们可以看到驱动表s1表的执行计划的rows列为9688，filtered列为10.00，这意味着驱动表s1的扇出值就是9688 × 10.00% = 968.8，这说明还要对被驱动表执行大约968次查询。

@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 147445862
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147445862)
 
 ## 一、 引言：G1 GC 的基石
@@ -135,7 +133,7 @@ RSet 解决了“如何找到指向特定 Region 的引用”的问题，使得 
 ### 1. CSet 的构成：年轻代 vs. 混合收集
 
 CSet 的具体内容取决于触发的是哪种
-类 
+类
 型的 GC：
 
 **(a) 年轻代收集 (Young Collection) 的 CSet**
@@ -159,10 +157,10 @@ CSet 的具体内容取决于触发的是哪种
    * 计算出每个 Old Region 中**存活对象的数量（Liveness）**以及**可以回收的空间大小（Garbage Ratio）**。这为后续 CSet 选择提供了依据。
 2. **候选 Old Region：** 经过并发标记后，那些被标记为“有垃圾可回收”的 Old Region 就成为了加入 CSet 的**候选者**。
 3. **筛选与优先级排序：** G1 会根据以下条件从候选者中选择 Old Region 加入本次 Mixed GC 的 CSet：
-   * **活跃度阈值过滤 (`-XX:G1MixedGCLiveThresholdPercent`, 默认 85%)：** 如果一个 Old Region 的存活对象比例过高（例如超过 85%），回收它需要复制大量存活对象，耗时长且收益低。G1 会**跳过**这些 Region，不将它们加入 CSet。
+   * **活跃度阈值过滤 (`-XX:G1MixedGCLiveThresholdPercent`，默认 85%)：** 如果一个 Old Region 的存活对象比例过高（例如超过 85%），回收它需要复制大量存活对象，耗时长且收益低。G1 会**跳过**这些 Region，不将它们加入 CSet。
    * **回收收益排序：** 对于通过活跃度阈值检查的候选 Region，G1 会根据它们的\*\*可回收空间比例（Garbage Ratio）\*\*进行排序，优先选择那些垃圾最多、回收收益最高的 Region。这就是“Garbage First”的核心体现。
    * **暂停时间目标约束：** G1 会根据用户设定的暂停时间目标 (`-XX:MaxGCPauseMillis`) 和之前 GC 的统计数据，预测本次回收能处理多少个 Old Region 而不超时。它会从排序好的高收益 Region 中选取一部分，直到预测的暂停时间接近目标值。
-   * **CSet 大小上限 (`-XX:G1OldCSetRegionThresholdPercent`, 默认 10%)：** 为了避免单次 Mixed GC 回收过多的 Old Region 导致暂停时间过长或 RSet 更新压力过大，G1 限制了单次 Mixed GC 中可以包含的 Old Region 数量，不能超过堆总大小的一定百分比。
+   * **CSet 大小上限 (`-XX:G1OldCSetRegionThresholdPercent`，默认 10%)：** 为了避免单次 Mixed GC 回收过多的 Old Region 导致暂停时间过长或 RSet 更新压力过大，G1 限制了单次 Mixed GC 中可以包含的 Old Region 数量，不能超过堆总大小的一定百分比。
 
 通过这些步骤，G1 精心挑选出一组 Old Region 加入到本次 Mixed GC 的 CSet 中，力求在满足暂停时间目标的前提下，最大化垃圾回收量。
 
@@ -172,7 +170,7 @@ CSet 的具体内容取决于触发的是哪种
 * **Young GC Pause：** CSet 只包含 Young Region，是一次独立的、短暂的 STW。
 * **Mixed GC Cycle：** 是一个更长的过程，包含：
   + 初始标记 (Initial Mark, STW, piggybacked on a Young GC)
-  + 并发标记 (Concurrent Marking, 并发)
+  + 并发标记 (Concurrent Marking，并发)
   + 最终标记 (Remark, STW)
   + 清理 (Cleanup, STW + 并发)
   + **多次 Mixed GC Pause (STW):** **每一次** Mixed GC 暂停都会确定一个 CSet (All Young + Selected Old)。一个 Mixed GC Cycle 可能包含多次这样的 Mixed GC Pause。
@@ -198,7 +196,7 @@ CSet 的具体内容取决于触发的是哪种
      + **使用 PLAB/GCLAB：** GC 线程使用自己的 PLAB (晋升到 Old) 或 GCLAB (复制到 Survivor) 来快速分配空间放置这些对象，避免同步。
      + **更新对象年龄：** 复制到 To Survivor 区的对象年龄加 1。
    * **计算晋升阈值：** 根据 To Survivor 区的大小、期望占用率 (`-XX:TargetSurvivorRatio`) 和对象的年龄分布，动态计算本次 GC 的晋升年龄阈值 (`-XX:MaxTenuringThreshold` 是上限)。
-   * **处理引用：** 更新被移动对象的引用（例如，如果 Old Region A 中的对象之前引用 Eden 中的对象 X，现在 X 被移动到 Survivor 区 S，需要更新 A 中对应 Card 的 RSet 信息，指向 S）。 RSet 的更新也可能利用 GCLAB/PLAB 中的信息或专门的日志。
+   * **处理引用：** 更新被移动对象的引用（例如，如果 Old Region A 中的对象之前引用 Eden 中的对象 X，现在 X 被移动到 Survivor 区 S，需要更新 A 中对应 Card 的 RSet 信息，指向 S）。RSet 的更新也可能利用 GCLAB/PLAB 中的信息或专门的日志。
 6. **STW 结束。**
 7. **CSet Region 清空：** 原 Eden 和 From Survivor Region 变为空闲 Region。To Survivor 成为新的 From Survivor。
 
@@ -208,7 +206,7 @@ CSet 的具体内容取决于触发的是哪种
 
 1. **触发：** Old Region 占用率 > `IHOP` 阈值。
 2. **(可选) Young GC 捎带初始标记 (Initial Mark, STW):** 触发一次 Young GC，并在这次 STW 中完成初始标记（标记 GC Roots 直接可达的对象）。这次 Young GC 的 CSet 只包含 Young Region。
-3. **并发标记 (Concurrent Marking, 并发):**
+3. **并发标记 (Concurrent Marking，并发):**
    * G1 启动并发标记线程，从初始标记的对象出发，遍历整个堆的对象引用图，查找所有存活对象。
    * **依赖 RSet (间接)：** 虽然并发标记的主要目的是全局存活性分析，但 RSet 提供的跨 Region 引用信息对标记过程的高效进行是必要的补充。
    * **记录存活信息：** 标记过程会计算每个 Region 的存活字节数。
@@ -249,7 +247,7 @@ CSet 的具体内容取决于触发的是哪种
 
 ## 五、 源码片段探索 (概念性)
 
-直接展示 HotSpot 中 G1 的 RSet 和 CSet 源码对于我们可能过于复杂和深入。这里提供一些概念性的 C++ 伪代码片段，帮助理解核心逻辑，并附上中文注释。(AI生成,我看不懂这块的源代码,只能借助AI生成几个场景了,不保证绝对正确,但是我看下来没什么问题= = )
+直接展示 HotSpot 中 G1 的 RSet 和 CSet 源码对于我们可能过于复杂和深入。这里提供一些概念性的 C++ 伪代码片段，帮助理解核心逻辑，并附上中文注释。(AI生成，我看不懂这块的源代码，只能借助AI生成几个场景了，不保证绝对正确，但是我看下来没什么问题= = )
 
 **注意：** 这些是高度简化的示意代码，与真实源码有很大差异。
 

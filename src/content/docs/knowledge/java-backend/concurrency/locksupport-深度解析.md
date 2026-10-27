@@ -5,14 +5,11 @@ status: draft
 sidebar:
   order: 11
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251274)
 
 ## 1. 引言：为什么需要 LockSupport？
 
-在 Java 的并发世界中，线程同步是保证数据一致性和程序正确性的核心。  
- 我们熟悉的 `synchronized` 关键字和 `Object` 类提供的 `wait()`, `notify()`, `notifyAll()` 方法，是 Java 内建的线程同步和通信机制。然而，它们在使用上存在一些固有的限制和不便之处：
+在 Java 的并发世界中，线程同步是保证数据一致性和程序正确性的核心。我们熟悉的 `synchronized` 关键字和 `Object` 类提供的 `wait()`, `notify()`, `notifyAll()` 方法，是 Java 内建的线程同步和通信机制。然而，它们在使用上存在一些固有的限制和不便之处：
 
 1. **强依赖 `synchronized`**: `wait/notify/notifyAll` 必须在 `synchronized` 同步块或方法内部调用，这意味着线程在等待或唤醒前，必须先获取对象的监视器锁（Monitor Lock）。这增加了编码的复杂性，并且将线程的等待/唤醒与锁的获取/释放紧密耦合。
 2. **唤醒目标不精确**: `notify()` 方法只能随机唤醒一个在该对象监视器上等待的线程，开发者无法指定唤醒哪个线程。`notifyAll()` 虽然能唤醒所有等待线程，但这可能导致“惊群效应”（Thundering Herd），大量线程被唤醒后争抢同一个锁，造成不必要的性能开销。
@@ -850,7 +847,6 @@ if (Thread.interrupted()) { // interrupted() 会检查并清除中断状态
      } else {
          // 被正常唤醒
      }
-
 
      + 1
      + 2

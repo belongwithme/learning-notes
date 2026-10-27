@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 35
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146907780)
 
 ## Java Fork/Join框架详解
@@ -1345,7 +1343,6 @@ class ProcessTask extends CountedCompleter<Void> {
          rightTask = new MyTask(array, mid, end);
      }
 
-
      + 1
      + 2
      + 3
@@ -1368,7 +1365,6 @@ class ProcessTask extends CountedCompleter<Void> {
              tasks[i] = new MyTask(array, partStart, partEnd);
          }
      }
-
 
      + 1
      + 2
@@ -1393,7 +1389,6 @@ class ProcessTask extends CountedCompleter<Void> {
          leftTask = new MyTask(array, start, splitPoint);
          rightTask = new MyTask(array, splitPoint, end);
      }
-
 
      + 1
      + 2
@@ -1422,7 +1417,6 @@ class ProcessTask extends CountedCompleter<Void> {
          return computeDirectly();
      }
 
-
      + 1
      + 2
      + 3
@@ -1440,7 +1434,6 @@ class ProcessTask extends CountedCompleter<Void> {
          return computeDirectly();
      }
 
-
      + 1
      + 2
      + 3
@@ -1457,7 +1450,6 @@ class ProcessTask extends CountedCompleter<Void> {
          // 直接计算
          return computeDirectly();
      }
-
 
      + 1
      + 2
@@ -1664,7 +1656,6 @@ fork()和invoke()方法在执行原理上有本质区别：
          return this;
      }
 
-
      + 1
      + 2
      + 3
@@ -1695,7 +1686,6 @@ fork()和invoke()方法在执行原理上有本质区别：
          else
              return externalInvoke();
      }
-
 
      + 1
      + 2
@@ -1736,7 +1726,6 @@ fork()和invoke()方法在执行原理上有本质区别：
      leftResult = leftTask.join();
      return leftResult + rightResult;
 
-
      + 1
      + 2
      + 3
@@ -1755,7 +1744,6 @@ fork()和invoke()方法在执行原理上有本质区别：
      resultA = taskA.join();
      resultB = taskB.join();
      resultC = computeC(resultA, resultB);
-
 
      + 1
      + 2
@@ -1776,7 +1764,6 @@ fork()和invoke()方法在执行原理上有本质区别：
      rightTask.fork();
      leftResult = leftTask.join();
      rightResult = rightTask.join();
-
 
      + 1
      + 2
@@ -4106,6 +4093,4 @@ Fork/Join框架在并行计算领域有其独特价值。它比低级线程API�
 
 ## 结语
 
-Fork/Join框架代表了Java并发编程的一个重要里程碑，它将复杂的并行算法封装在简洁的API背后，使得开发者能够轻松地利用多核处理器的能力。  
- 从个人理解来看，Fork/Join框架的价值不仅在于其技术实现，更体现并行编程思想：  
- 分解问题、并行处理、动态平衡。这些思想超越了特定的框架和语言，是构建高效并行系统的普遍原则。
+Fork/Join框架代表了Java并发编程的一个重要里程碑，它将复杂的并行算法封装在简洁的API背后，使得开发者能够轻松地利用多核处理器的能力。从个人理解来看，Fork/Join框架的价值不仅在于其技术实现，更体现并行编程思想：分解问题、并行处理、动态平衡。这些思想超越了特定的框架和语言，是构建高效并行系统的普遍原则。

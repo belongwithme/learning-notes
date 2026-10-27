@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 2
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125993672)
 
 ## Thread源码解析
@@ -14,8 +12,9 @@ sidebar:
 
 ## 继承结构
 
-![](./assets/125993672/ce9f706fb0418d00519d9ad1.png)  
- 代码实现：
+![](./assets/125993672/ce9f706fb0418d00519d9ad1.png)
+
+代码实现：
 
 ```java
 public
@@ -251,8 +250,9 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-传入Runnable同时也可以指定AccessControlContext（根据其封装的上下文做出系统资源访问决策。）  
- ![](./assets/125993672/632d4c5c338699fab3dbec67.png)
+传入Runnable同时也可以指定AccessControlContext（根据其封装的上下文做出系统资源访问决策。）
+
+![](./assets/125993672/632d4c5c338699fab3dbec67.png)
 
 ### Thread(ThreadGroup group, Runnable target)
 
@@ -264,10 +264,9 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-![](./assets/125993672/0d1055e10f0cf6d29678d5c4.png)  
- 使用线程组。  
- 如果有安全管理器，则线程由安全管理器返回SecurityManager.getThreadGroup()。  
- 如果没有安全管理器或者SecurityManager.getThreadGroup()返回为空，则返回当前的线程组。
+![](./assets/125993672/0d1055e10f0cf6d29678d5c4.png)
+
+使用线程组。如果有安全管理器，则线程由安全管理器返回SecurityManager.getThreadGroup()。如果没有安全管理器或者SecurityManager.getThreadGroup()返回为空，则返回当前的线程组。
 
 ### Thread(String name)
 
@@ -341,8 +340,9 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-![](./assets/125993672/3d78534ab7b0835ffe4b1b1f.png)  
- 我们来详细的介绍一下最后一个构造方法，因为前面所有的构造方法中的this，最后指向的都是最后一个构造方法  
+![](./assets/125993672/3d78534ab7b0835ffe4b1b1f.png)
+
+我们来详细的介绍一下最后一个构造方法，因为前面所有的构造方法中的this，最后指向的都是最后一个构造方法  
  我们看看this里面的代码：
 
 ```java

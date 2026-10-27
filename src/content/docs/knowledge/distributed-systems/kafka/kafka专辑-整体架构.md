@@ -5,11 +5,7 @@ status: draft
 sidebar:
   order: 156466401
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156466401)
-
-## 前言
 
 Kafka 的架构设计核心目标只有两个：**极高的吞吐量**（High Throughput）和 **极高的可靠性**（High Availability）。
 
@@ -25,7 +21,7 @@ Kafka 的架构设计核心目标只有两个：**极高的吞吐量**（High Th
 
 ### 1.2 Partition (分区) —— 并行分拣车道
 
-* **概念**：**Partition 是 Kafka 扩容和高吞吐的物理基础**。一个 Topic 可以被拆分成多个 Partition（分区 0, 分区 1, 分区 2…）。
+* **概念**：**Partition 是 Kafka 扩容和高吞吐的物理基础**。一个 Topic 可以被拆分成多个 Partition（分区 0，分区 1，分区 2…）。
 * **类比**：
 
   + 如果发往“北京”的包裹实在太多了，一条传送带（单线程）根本处理不过来。
@@ -40,18 +36,13 @@ Kafka 的架构设计核心目标只有两个：**极高的吞吐量**（High Th
 
 Topic: orders
 
-
 Producer
-
 
 Partitioner
 
-
 Partition 0
 
-
 Partition 1
-
 
 Partition 2
 
@@ -59,18 +50,13 @@ Partition 2
 
 Partition Log
 
-
 segment-000.log\nindex/timeindex
-
 
 segment-001.log\nindex/timeindex
 
-
 segment-002.log\nactive segment
 
-
 Retention\n(delete by time/size)
-
 
 Compaction\n(keep latest by key)
 
@@ -100,27 +86,19 @@ Compaction\n(keep latest by key)
 
 Broker 3
 
-
 Broker 2
-
 
 Broker 1
 
-
 P0 Leader
-
 
 P1 Follower
 
-
 P0 Follower
-
 
 P1 Leader
 
-
 P0 Follower
-
 
 P1 Follower
 
@@ -135,47 +113,31 @@ P1 Follower
 
 Follower 2
 
-
 Follower 1
-
 
 Leader
 
-
 Producer
-
 
 Follower 2
 
-
 Follower 1
-
 
 Leader
 
-
 Producer
 
-
 ISR 副本全部追上
-
 
 HW 向前推进
 
 Produce(batch)
 
-
 Replicate
-
-
-Replicate
-
 
 Ack
 
-
 Ack
-
 
 Ack (acks=all)
 
@@ -200,33 +162,23 @@ Ack (acks=all)
 
 Consumer Group B
 
-
 Consumer Group A
-
 
 Topic: orders
 
-
 Partition 0
-
 
 Partition 1
 
-
 Partition 2
-
 
 Consumer 1
 
-
 Consumer 2
-
 
 Consumer 3
 
-
 Consumer 4
-
 
 Consumer 5
 
@@ -234,38 +186,21 @@ Consumer 5
 
 GroupCoordinator
 
-
 Consumer 2
 
-
 Consumer 1
-
 
 GroupCoordinator
 
-
 Consumer 2
 
-
 Consumer 1
-
 
 成员变化或超时触发 Rebalance
 
 JoinGroup
 
-
-JoinGroup
-
-
 SyncGroup (assignment)
-
-
-SyncGroup (assignment)
-
-
-Heartbeat
-
 
 Heartbeat
 
@@ -283,21 +218,15 @@ Heartbeat
 
 Producer
 
-
 Partitioner
-
 
 Leader Partition
 
-
 Follower Partition
-
 
 Consumer
 
-
 Controller
-
 
 GroupCoordinator
 

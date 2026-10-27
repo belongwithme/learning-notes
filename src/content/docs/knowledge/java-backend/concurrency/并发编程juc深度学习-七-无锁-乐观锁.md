@@ -5,11 +5,7 @@ status: draft
 sidebar:
   order: 9
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126045364)
-
-## 前言
 
 **乐观锁总是假设最好的情况，每次去拿数据的时候都认为数据不会被修改**，所以不会上锁，只是在更新的时候会判断一下在这期间别人有没有去更新这个数据，主要是由**版本号机制和CAS算法**实现，这里我们主要介绍CAS算法实现。
 
@@ -79,9 +75,11 @@ class AccountUnsafe implements Account{
 
 ```
 
-运行结果：  
- ![](./assets/126045364/c6ab2c709a3787459642ccbf.png)  
- 结果不为0，答案错误。  
+运行结果：
+
+![](./assets/126045364/c6ab2c709a3787459642ccbf.png)
+
+结果不为0，答案错误。  
  2：加锁
 
 ```java
@@ -146,9 +144,11 @@ class AccountUnsafe implements Account{
 
 ```
 
-结果：  
- ![](./assets/126045364/3fbfe9282c0ccd04fd29c2fc.png)  
- 我们可以看到结果正确。
+结果：
+
+![](./assets/126045364/3fbfe9282c0ccd04fd29c2fc.png)
+
+我们可以看到结果正确。
 
 3：无锁实现
 
@@ -210,23 +210,28 @@ class AccountCas implements Account{
 
 ```
 
-运行结果：  
- ![](./assets/126045364/0fc5d76889b703035f2f8fc0.png)  
- 可以看到结果正确。  
- 那么让我们debug进去看看cas到底是什么，进入compareAndSet方法：  
- ![](./assets/126045364/dae0ddefb0874b69786743d4.png)  
- 再进入compareAndSetInt方法：  
- ![](./assets/126045364/478da97153f769d965efeb7c.png)  
- 这个方法是哪个类里面的呢？我们来看看：  
- ![](./assets/126045364/eeed34544f9835c87bd58039.png)
+运行结果：
+
+![](./assets/126045364/0fc5d76889b703035f2f8fc0.png)
+
+可以看到结果正确。那么让我们debug进去看看cas到底是什么，进入compareAndSet方法：
+
+![](./assets/126045364/dae0ddefb0874b69786743d4.png)
+
+再进入compareAndSetInt方法：
+
+![](./assets/126045364/478da97153f769d965efeb7c.png)
+
+这个方法是哪个类里面的呢？我们来看看：
+
+![](./assets/126045364/eeed34544f9835c87bd58039.png)
 
 1. 由此我们可以看到，**CAS是一种系统原语，由若干条指令组成，在执行过程中不允许被中断，是一条CPU的原子指令，不会造成所谓数据不一致问题。**
 2. 由于Java方法无法直接访问底层系统，需要通过本地(native)方法来访问，Unsafe相当于一个后门，基于该类可以直接操作特定内存数据。
 3. Unsafe类其内部方法操作可以像c语言中指针一样，直接操作内存，因此Java中CAS操作的执行依赖于Unsafe类的方法。
 4. Unsafe（不是指线程不安全，是指过于底层，不建议编程人员直接使用）  
     Unsafe对象提供了非常底层，操作内存，线程的方法，Unsafe对象不能直接调用  
-    只能通过反射获得。  
-    LockSupport的park方法，cas相关的方法底层都是通过Unsafe类实现的。
+    只能通过反射获得。LockSupport的park方法，cas相关的方法底层都是通过Unsafe类实现的。
 
 ## 实现了CAS机制的JUC工具类
 
@@ -280,20 +285,16 @@ class AccountCas implements Account{
 
 ### 只能保证一个共享变量的原子操作
 
-我们可以采取一个简单的方法：  
- 把多个共享变量合并成一个共享变量来操作，  
- JDK提供了AtomicReference类来保证引用对象之间的原子性，可以把多个变量放在一个AtomicReference实例后进行CAS操作。  
+我们可以采取一个简单的方法：把多个共享变量合并成一个共享变量来操作，JDK提供了AtomicReference类来保证引用对象之间的原子性，可以把多个变量放在一个AtomicReference实例后进行CAS操作。  
  举个栗子：有4个共享变量，可以把这四个合并成一个对象，然后用CAS来操作该合并对象的AtomicReference引用。
 
 ### ABA问题
 
-CAS需要在操作值的时候检查值有没有发生变化，如果没有发生就更新。  
- 如果一个值原来是A，变成了B，后面又变成了A，那么CAS进行检查时会发现它的值没有发生变化，但是实际上却发生变化了。
+CAS需要在操作值的时候检查值有没有发生变化，如果没有发生就更新。如果一个值原来是A，变成了B，后面又变成了A，那么CAS进行检查时会发现它的值没有发生变化，但是实际上却发生变化了。
 
-JDK提供了两个类AtomicStampedReference，AtomicMarkableReference来解决ABA问题。  
- 这两个类的区别在于，AtomicStampedReference是通过int类型的版本号，而AtomicMarkableReference是通过boolean类型的标识来判断数据是否更改过。  
- 既然有了 AtomicStampedReference 为啥还需要再提供 AtomicMarkableReference 呢，在现实业务场景中，不关心引用变量被修改了几次，只是关心是否被更改过。  
- 下面我们来分析一下AtomicStampedReference重点源码。至于AtomicMarkableReference和它相似度一致：
+JDK提供了两个类AtomicStampedReference，AtomicMarkableReference来解决ABA问题。这两个类的区别在于，AtomicStampedReference是通过int类型的版本号，而AtomicMarkableReference是通过boolean类型的标识来判断数据是否更改过。
+
+既然有了 AtomicStampedReference 为啥还需要再提供 AtomicMarkableReference 呢，在现实业务场景中，不关心引用变量被修改了几次，只是关心是否被更改过。下面我们来分析一下AtomicStampedReference重点源码。至于AtomicMarkableReference和它相似度一致：
 
 #### AtomicStampReference源码
 
@@ -439,22 +440,20 @@ public class aotimcCASdemo {
 
 ```
 
-这里结果为：  
- ![](./assets/126045364/be64d52b95057f830faee301.png)
+这里结果为：
+
+![](./assets/126045364/be64d52b95057f830faee301.png)
 
 ## LongAdder原理
 
 ### 简单了解AtomicLong
 
-JDK1.8之后，新增了LongAdder原子类：long类型的数值累加器，从0开始累加，累加规则为加法运算。  
- 自从原子类之后，多线程环境下如果用于统计计数操作，一般可以使用AtomicLong来代替锁作为计数器，AtomicLong通过CAS提供了非阻塞的原子性操作，相比于使用阻塞算法的同步器来说性能已经很好了，那为什么我们要用LongAdder不用它，它有什么缺点呢？
+JDK1.8之后，新增了LongAdder原子类：long类型的数值累加器，从0开始累加，累加规则为加法运算。自从原子类之后，多线程环境下如果用于统计计数操作，一般可以使用AtomicLong来代替锁作为计数器，AtomicLong通过CAS提供了非阻塞的原子性操作，相比于使用阻塞算法的同步器来说性能已经很好了，那为什么我们要用LongAdder不用它，它有什么缺点呢？
 
 ### AtomicLong的缺点
 
 AtomicLong等其他传统atomic原子类对于数值的更改，通常是**在一个无限循环(自旋)中不断尝试CAS的修改操作，一旦CAS失败则循环重试，这样来保证最终CAS操作成功过。**  
- 如果竞争不激烈修改成功的概率很高，但是如果在超高并发下会导致大量线程频繁竞争修改计数器，  
- ，一直处于自旋状态，占用CPU性能，浪费资源，降低并发性。  
- 简单展示一个源码底层实现感受一下：
+ 如果竞争不激烈修改成功的概率很高，但是如果在超高并发下会导致大量线程频繁竞争修改计数器，，一直处于自旋状态，占用CPU性能，浪费资源，降低并发性。简单展示一个源码底层实现感受一下：
 
 ```java
     @HotSpotIntrinsicCandidate
@@ -473,22 +472,28 @@ AtomicLong等其他传统atomic原子类对于数值的更改，通常是**在�
 
 1. JDK1.8下的LongAdder，是一个long类型的数值累加器，用来**克服在高并发下使用AtomicLong可能由于线程频繁自旋而浪费CPU的缺点。**
 2. 解决方式  
-    采用了“**热点数据分离**”思想：  
-    传统原子类内部维护了一个对象类型的value属性值，多个线程之间的cas竞争实际上是争夺这个value属性的更新权，但是CAS操作只会保证同时只有一个线程能够更新成功，**如果把一个变量分解为多个变量，让同样多的线程去竞争多个资源，最后统计总和**，这样能缓解线程竞争导致的性能问题。  
-    这种思想在高并发环境下非常有用。  
-    无并发：  
-    ![](./assets/126045364/e4326845928b517dfcd624c9.png)  
-    多并发AtomicLong：  
-    ![](./assets/126045364/123c61c086b40a94e0a1daa8.png)  
-    高并发LongAdder：  
-    ![](./assets/126045364/616ae0a494ecdd803ad1f425.png)
+    采用了“**热点数据分离**”思想：传统原子类内部维护了一个对象类型的value属性值，多个线程之间的cas竞争实际上是争夺这个value属性的更新权，但是CAS操作只会保证同时只有一个线程能够更新成功，**如果把一个变量分解为多个变量，让同样多的线程去竞争多个资源，最后统计总和**，这样能缓解线程竞争导致的性能问题。
+
+这种思想在高并发环境下非常有用。  
+    无并发：
+
+![](./assets/126045364/e4326845928b517dfcd624c9.png)
+
+多并发AtomicLong：
+
+![](./assets/126045364/123c61c086b40a94e0a1daa8.png)
+
+高并发LongAdder：
+
+![](./assets/126045364/616ae0a494ecdd803ad1f425.png)
 
 ### LongAdder源码解读
 
 #### 继承关系结构图
 
-![](./assets/126045364/ffb427bd67426379d909e76d.png)  
- 代码实现：
+![](./assets/126045364/ffb427bd67426379d909e76d.png)
+
+代码实现：
 
 ```java
 public class LongAdder extends Striped64 
@@ -531,12 +536,8 @@ implements Serializable
 ```
 
 我们可以看出，LongAdder的热点分离思想具体实现是将value分散为一个base变量和一个cell数组。  
- 数组的用途为：并发下的线程随机分配到数组的不同索引位置，并对该位置进行更新。  
- 理论上采用一个数组就行，那么为什么还要加一个变量呢？  
- 原因在于：  
- 在没有竞争的情况下，如果初始化一个数组，更新数组某个索引有点大材小用了，而且空间被占的更多，更新效率也没有单独更新一个变量那么快。  
- 所以综合考虑下,在更新计数的时候如果没有CAS竞争，即并发度较低时就一直使用base变量来统计计数，此时cells数组是null，即没有初始化或者锁延迟初始化。  
- 一旦出现对base变量的CAS竞争，即高并发环境下某些线程CAS更新base失败，那么就初始化cells数组，并且以后都使用cells数组来进行统计计数（如果数组某一个索引位置的Cell更新时仍然出现了竞争。那么cells数组可能会扩容或者寻找新的Cell），在统计总和对base和cells数组中的值进行求和即可。  
+ 数组的用途为：并发下的线程随机分配到数组的不同索引位置，并对该位置进行更新。理论上采用一个数组就行，那么为什么还要加一个变量呢？  
+ 原因在于：在没有竞争的情况下，如果初始化一个数组，更新数组某个索引有点大材小用了，而且空间被占的更多，更新效率也没有单独更新一个变量那么快。所以综合考虑下，在更新计数的时候如果没有CAS竞争，即并发度较低时就一直使用base变量来统计计数，此时cells数组是null，即没有初始化或者锁延迟初始化。一旦出现对base变量的CAS竞争，即高并发环境下某些线程CAS更新base失败，那么就初始化cells数组，并且以后都使用cells数组来进行统计计数（如果数组某一个索引位置的Cell更新时仍然出现了竞争。那么cells数组可能会扩容或者寻找新的Cell），在统计总和对base和cells数组中的值进行求和即可。  
  2. 内部类Cell
 
 ```java
@@ -572,10 +573,10 @@ implements Serializable
 
 Cell类中仅仅有一个value属性，实际上就是对value值的封装，封装成类的原因主要是方便调用方法对某个位置的value进行CAS更新，以及做缓存填充操作。
 
-**注意伪共享问题**：  
- 因为数组的内存空间必需是连续的，一个cell内部只有一个value属性，非常有可能多个cell对象存放在同一个缓存行中，当CAS更新某一个Cell值时会将该Cell所属的缓存行失效，因此会同时造成其他位于同一个缓存行的相邻Cell缓存也同时失效，这样后续线程必需从主存获取相邻的Cell，这就会导致“伪共享”问题，但是两个Cell的访问应该是互不影响的，但是由于在同一个缓存行，造成了“共享”的现象，所以成为“伪共享”。  
- 我们可以看到Cell类使用了`@jdk.internal.vm.annotation.Contended`注解修饰，这是JDK1.8缓存填充的新方式，这样一个Cell对象就占据一个缓存行的大小，解决了伪共享的问题，近一步提升了性能。  
- 3.常用方法
+**注意伪共享问题**：因为数组的内存空间必需是连续的，一个cell内部只有一个value属性，非常有可能多个cell对象存放在同一个缓存行中，当CAS更新某一个Cell值时会将该Cell所属的缓存行失效，因此会同时造成其他位于同一个缓存行的相邻Cell缓存也同时失效，这样后续线程必需从主存获取相邻的Cell，这就会导致“伪共享”问题，但是两个Cell的访问应该是互不影响的，但是由于在同一个缓存行，造成了“共享”的现象，所以成为“伪共享”。
+
+我们可以看到Cell类使用了`@jdk.internal.vm.annotation.Contended`注解修饰，这是JDK1.8缓存填充的新方式，这样一个Cell对象就占据一个缓存行的大小，解决了伪共享的问题，近一步提升了性能。  
+ 3。常用方法
 
 ```
    //通过CAS的方式更新cell中的数据

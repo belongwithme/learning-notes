@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 22
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147238691)
 
 ## 一、Exchanger 基础概念
@@ -98,8 +96,7 @@ Exchanger 的设计理念可抽象为：**一个线程写入数据并等待，�
 
 ### 2.3 超过两个线程会怎样？
 
-Exchanger 本质上是**两个线程一对一配对**的工具。  
- 当超过两个线程调用 `exchange()` 方法时：
+Exchanger 本质上是**两个线程一对一配对**的工具。当超过两个线程调用 `exchange()` 方法时：
 
 * 系统只会让两个线程完成交换
 * 其余线程只能等待，造成性能瓶颈或饥饿

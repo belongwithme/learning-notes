@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 156488501
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156488501)
 
 ## 必要前置知识
@@ -26,45 +24,31 @@ Kafka Producer 是典型的 **“主线程-子线程”** 异步架构，将“�
 
 Sender I/O 线程
 
-
 内存缓冲区域
-
 
 业务主线程
 
-
 producer.send
-
 
 Interceptor
 
-
 Serializer
-
 
 Partitioner
 
-
 RecordAccumulator
-
 
 Batch P0
 
-
 Batch P1
-
 
 BufferPool (内存池)
 
-
 构建 Request
-
 
 NIO Selector
 
-
 Broker1
-
 
 Broker2
 
@@ -109,9 +93,9 @@ Sender 是一个单线程 loop。
 
 | 参数 | 含义 | 调优建议 |
 | --- | --- | --- |
-| **batch.size** | 单个批次大小上限（默认 16KB） | 建议调大到 32KB 或 64KB。太小会导致频繁网络请求；太大主要影响内存占用。 |
-| **linger.ms** | **等待时间**（默认 0ms） | **最关键参数**。建议设为 `5-10ms`。让 Producer “等一等”以便凑出更大的 Batch。微小的延迟代价通常能换来 10 倍的吞吐提升。 |
-| **compression.type** | 压缩算法 | 推荐 **lz4**（极快）或 **zstd**（高压缩比）。压缩发生在 Batch 级别，Batch 越大，压缩效果越好。 |
+| **batch.size** | 单个批次大小上限（默认 16KB） | 建议调大到 32KB 或 64KB。太小会导致频繁网络请求；太大主要影响内存占用。|
+| **linger.ms** | **等待时间**（默认 0ms） | **最关键参数**。建议设为 `5-10ms`。让 Producer “等一等”以便凑出更大的 Batch。微小的延迟代价通常能换来 10 倍的吞吐提升。|
+| **compression.type** | 压缩算法 | 推荐 **lz4**（极快）或 **zstd**（高压缩比）。压缩发生在 Batch 级别，Batch 越大，压缩效果越好。|
 
 ---
 

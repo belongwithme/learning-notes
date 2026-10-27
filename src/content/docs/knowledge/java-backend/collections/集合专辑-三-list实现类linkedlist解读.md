@@ -5,13 +5,9 @@ status: draft
 sidebar:
   order: 125743610
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125743610)
 
-## 前言
-
-我们之前了解过了ArrayList,现在再来看LinkedList就已经很简单了，但值得一提的是，两者的数据结构不同导致了他们在使用场景注定是有区别的。
+我们之前了解过了ArrayList，现在再来看LinkedList就已经很简单了，但值得一提的是，两者的数据结构不同导致了他们在使用场景注定是有区别的。
 
 ## 简介
 
@@ -36,17 +32,19 @@ sidebar:
 
 ### 继承和实现的方法和接口
 
-代码：  
- ![](./assets/125743610/bb6a3303375363a2eb8d73c1.png)
+代码：
 
-1. AbstractSequentialList：继承AbstractList抽象类，使用实现的公共方法。  
-    这个建议去看ArrayList那篇，已经解读过了，在这不多说了。
+![](./assets/125743610/bb6a3303375363a2eb8d73c1.png)
+
+1. AbstractSequentialList：继承AbstractList抽象类，使用实现的公共方法。这个建议去看ArrayList那篇，已经解读过了，在这不多说了。
 2. List：实现List接口操作规范，增删遍历等操作。
-3. Cloneable：提供可拷贝功能.
-4. Deque：继承自Queue，在Queue的增删查基础上，增加了双端操作对应的接口，外加push/pop的栈操作  
-    ![](./assets/125743610/f557220a7f53ac1ef4d9bd63.png)  
-    定义线性Collection，它实际是双端队列的简称(double ended queue)，大多数Deque接口的实现不会限制元素数量，但是这里有限制，最大容量为Integer.MAX\_VALUE
-5. Serializable 接口： 实现了该接口标示了类可以被序列化和反序列化。
+3. Cloneable：提供可拷贝功能。
+4. Deque：继承自Queue，在Queue的增删查基础上，增加了双端操作对应的接口，外加push/pop的栈操作
+
+![](./assets/125743610/f557220a7f53ac1ef4d9bd63.png)
+
+定义线性Collection，它实际是双端队列的简称(double ended queue)，大多数Deque接口的实现不会限制元素数量，但是这里有限制，最大容量为Integer.MAX\_VALUE
+5. Serializable 接口：实现了该接口标示了类可以被序列化和反序列化。
 
 ## 源码分析
 
@@ -123,12 +121,10 @@ sidebar:
 
 ```
 
-中文翻译如下：  
- 双向链表实现了List和Deque接口，实现了所有list操作，**并且允许有null元素**，所有的操作都和双向链表是一样的，索引到列表的操作将会从列表开始或结束位置（以距离索引更新的位置为准）去遍历列表。  
- 注意它并没有采用synchronized锁实现，如果多线程并发的访问一个链表，并且至少有一个线程修改了链表的结构，  
- 那么它必需采用同步的方式，（结构修改是指添加或删除一个或多个元素的任何操作。仅仅改变元素的值不算结构的修改）。  
- 那么它必需采用同步的方式，（结构修改是指添加或删除一个或多个元素的任何操作。仅仅改变元素的值不算结构的修改），这通常是通过自然封装列表对象进行同步实现。  
- 如果这样的对象不存在，list应该使用Collections.synchronizedList方法，最好是用在创建时，防止意外无锁进入到list中，例子： `List list = Collections.synchronizedList(new LinkedList(...))`  
+中文翻译如下：双向链表实现了List和Deque接口，实现了所有list操作，**并且允许有null元素**，所有的操作都和双向链表是一样的，索引到列表的操作将会从列表开始或结束位置（以距离索引更新的位置为准）去遍历列表。  
+ 注意它并没有采用synchronized锁实现，如果多线程并发的访问一个链表，并且至少有一个线程修改了链表的结构，那么它必需采用同步的方式，（结构修改是指添加或删除一个或多个元素的任何操作。仅仅改变元素的值不算结构的修改）。那么它必需采用同步的方式，（结构修改是指添加或删除一个或多个元素的任何操作。仅仅改变元素的值不算结构的修改），这通常是通过自然封装列表对象进行同步实现。
+
+如果这样的对象不存在，list应该使用Collections.synchronizedList方法，最好是用在创建时，防止意外无锁进入到list中，例子：`List list = Collections.synchronizedList(new LinkedList(...))`  
  当一个线程进行iterators操作时，如果有其他线程对ArrayList进行修改，会触发fail-fast机制，抛出ConcurrentModificationException异常，通常是ListIterator#remove() remove或ListIterator#add(Object) add这两种情况，因此。在这种并行修改情况下，线程会明确快速的触发失败fail-fast，而不是在未来不确定的时间里冒着武断、不确定性行为的风险。但是在非同步的情况下，fail-fast并不确保每次都会触发，因此依赖此异常的代码都是错误的，这个异常仅仅只是为了发现代码bug而已。
 
 ### 成员变量

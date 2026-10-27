@@ -5,15 +5,13 @@ status: draft
 sidebar:
   order: 17
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147238294)
 
 ## 一、引言
 
-并发编程 
+并发编程
 是Java开发中的一大难点，而同步工具
-类 
+类
 则是并发控制的重要武器。`CountDownLatch` 是 `java.util.concurrent` 包中最经典的同步器之一，它通过一个计数器让线程间实现灵活的协作机制。
 
 > 📌 本文目标：全面、系统、深入理解 CountDownLatch 的使用与实现原理，掌握高质量并发编程技术。

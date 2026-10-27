@@ -5,25 +5,22 @@ status: draft
 sidebar:
   order: 37
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147392232)
 
-## Java ForkJoinPool
 ## 引言：为何需要 ForkJoinPool？
 
 在探讨 `ForkJoinPool` 之前，我们先思考一个问题：对于某些特定
-类 
+类
 型的计算任务，传统的 `ThreadPoolExecutor` 是否是最佳选择？
 
 ### 传统线程池的局限性
 
-`ThreadPoolExecutor` 是 
-Java 
+`ThreadPoolExecutor` 是
+Java
  并发包（JUC）提供的通用线程池实现，它非常适合处理大量独立的、异步的任务。其典型的模式是：生产者将任务（`Runnable` 或 `Callable`）放入一个共享的阻塞队列中，多个工作线程作为消费者从队列中取出任务并执行。
 
 然而，当任务之间存在**依赖关系**，特别是**递归分解**的场景时，`ThreadPoolExecutor` 就可能遇到麻烦。考虑一个典型的分治算法，比如计算一个大
-数组 
+数组
 的和：
 
 1. 一个父任务负责计算整个数组的和。
@@ -40,8 +37,8 @@ Java
 
 ### ForkJoinPool 的设计哲学：分治与工作窃取
 
-正是为了解决上述问题，`ForkJoinPool` (自 
-JDK 
+正是为了解决上述问题，`ForkJoinPool` (自
+JDK
  7 引入) 应运而生。它专为**计算密集型**且**可递归分解**（遵循分治思想）的任务而设计。其核心设计哲学包含两大支柱：
 
 1. **分治任务模型 (Fork/Join Task Model):**
@@ -672,7 +669,7 @@ Results match: true
 
 ### 不适合的场景
 
-1. **I/O 密集型任务:** 如前所述，如果任务大部分时间在等待 I/O，工作线程会被阻塞。虽然 `ManagedBlocker` 可以缓解，但 `ForkJoinPool`（尤其是 `commonPool`，其线程数通常等于 CPU 核心数）不是为大量 I/O 阻塞设计的。这种场景下，使用一个可以配置**更多线程**（远超 CPU 核心数）的普通 `ThreadPoolExecutor`，或者专门的异步 I/O 框架（如 Netty, Vert.x, 或者 `CompletableFuture` 结合自定义的 I/O 线程池）通常更合适。
+1. **I/O 密集型任务:** 如前所述，如果任务大部分时间在等待 I/O，工作线程会被阻塞。虽然 `ManagedBlocker` 可以缓解，但 `ForkJoinPool`（尤其是 `commonPool`，其线程数通常等于 CPU 核心数）不是为大量 I/O 阻塞设计的。这种场景下，使用一个可以配置**更多线程**（远超 CPU 核心数）的普通 `ThreadPoolExecutor`，或者专门的异步 I/O 框架（如 Netty, Vert.x，或者 `CompletableFuture` 结合自定义的 I/O 线程池）通常更合适。
 2. **任务无法有效分解:** 如果问题本质上是顺序的，或者分解带来的通信/合并开销过大，强行使用 `ForkJoinPool` 可能效果不佳。
 3. **任务之间存在大量共享可变状态且同步开销高:** 如果无法避免高强度的锁竞争，并行化可能得不偿失。
 4. **任务粒度极小且总量不大:** “杀鸡焉用牛刀”。
@@ -728,7 +725,7 @@ Results match: true
 
 **=> 解决方案：**  
  \* **避免阻塞：** 尽量在 `ForkJoinTask` 中只做纯计算。将 I/O 等操作移到任务分解之前或
-合并 
+合并
 之后，或者使用异步 I/O。  
  \* **使用 `ManagedBlocker`:** 如果阻塞不可避免，必须使用 `ForkJoinPool.managedBlock()` 将其包装起来，告知池需要补偿。  
  \* **使用自定义池：** 对于可能包含阻塞操作的任务，使用独立的 `ForkJoinPool` 实例，避免污染 `commonPool`。
@@ -792,7 +789,7 @@ Results match: true
 
 如果指标显示异常（如 CPU 低、窃取少、线程阻塞多）或性能不达预期，就需要使用性能分析工具（Profiler）进行深入诊断。
 
-* **常用工具：** JProfiler, YourKit, VisualVM (自带采样 Profiler), Arthas (阿里巴巴开源的在线诊断工具)。
+* **常用工具：** JProfiler, YourKit, VisualVM (自带采样 Profiler)，Arthas (阿里巴巴开源的在线诊断工具)。
 * **分析重点：**
   + **CPU 热点 (CPU Hotspots):** 查看哪个方法消耗了最多的 CPU 时间。是你的 `compute` 逻辑本身，还是 `fork`/`join` 开销，或者是 GC？
   + **线程状态 (Thread States):** 查看 `ForkJoinWorkerThread` 的状态。有多少处于 RUNNABLE（正常运行）？多少处于 BLOCKED（等待锁）？多少处于 WAITING/TIMED\_WAITING（等待 `join` 或 `ManagedBlocker`）？是否存在大量线程长时间处于非 RUNNABLE 状态？
@@ -1039,7 +1036,7 @@ public class ManagedBlockerExample {
 回顾 Java 并发框架的演进，`ForkJoinPool` 扮演了重要的角色：
 
 1. **早期 (JDK < 5):** 基本的 `Thread`, `synchronized`, `wait/notify`。并发编程困难且易错。
-2. **JUC 诞生 (JDK 5):** 引入 `java.util.concurrent` 包，提供 `ExecutorService` (`ThreadPoolExecutor`), `Lock`, `BlockingQueue`, `Atomic*`, 并发集合等。这是巨大的进步，提供了通用的并发工具。`ThreadPoolExecutor` 成为处理大多数并发任务的标准。
+2. **JUC 诞生 (JDK 5):** 引入 `java.util.concurrent` 包，提供 `ExecutorService` (`ThreadPoolExecutor`)，`Lock`, `BlockingQueue`, `Atomic*`，并发集合等。这是巨大的进步，提供了通用的并发工具。`ThreadPoolExecutor` 成为处理大多数并发任务的标准。
 3. **ForkJoinPool (JDK 7):** 认识到 `ThreadPoolExecutor` 在**递归分治**型 CPU 密集任务上的局限性，引入 `ForkJoinPool` 作为**特化**的高性能解决方案。它通过**工作窃取**机制，专门优化了这类场景，旨在榨干多核 CPU 的性能。它**补充**而非取代 `ThreadPoolExecutor`。
 4. **高层抽象 (JDK 8+):** 在 `ForkJoinPool` 等底层机制之上，提供了更易用的并行和异步 API，如**并行流**和 **`CompletableFuture`**。它们默认利用 `commonPool`，让开发者能更方便地利用多核能力，而无需直接操作 `ForkJoinTask`。
 

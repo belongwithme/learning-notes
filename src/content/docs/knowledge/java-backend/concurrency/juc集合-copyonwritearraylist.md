@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 25
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147248147)
 
 ## 1. 引言：并发环境中的 List 缺点
@@ -40,8 +38,7 @@ sidebar:
 
 ## 2. 核心思想：写时复制（Copy-On-Write）机制
 
-要理解 `CopyOnWriteArrayList`，首先必须掌握其核心机制——**写时复制（Copy-On-Write, COW）**。  
- 这是一种在计算机科学中广泛应用的优化策略(真的很广泛!!!)，尤其在处理并发读写和资源共享时非常有效。
+要理解 `CopyOnWriteArrayList`，首先必须掌握其核心机制——**写时复制（Copy-On-Write, COW）**。这是一种在计算机科学中广泛应用的优化策略(真的很广泛!!!)，尤其在处理并发读写和资源共享时非常有效。
 
 **COW 的基本概念**
 
@@ -707,7 +704,7 @@ static final class COWIterator<E> implements ListIterator<E> {
 | --- | --- | --- | --- | --- | --- |
 | **线程安全** | 是 | 否 | 是 | 是 | 是 |
 | **读性能 (并发)** | 极高 (无锁) | N/A (不安全) | 低 (锁竞争) | 低 (锁竞争) | 高 (无锁 CAS) |
-| **写性能 (并发)** | 低 (O(n)复制 + 锁) | N/A (不安全) | 低 (锁竞争, 均摊 O(1)) | 低 (锁竞争, 均摊 O(1)) | 高 (无锁 CAS, O(1)) |
+| **写性能 (并发)** | 低 (O(n)复制 + 锁) | N/A (不安全) | 低 (锁竞争，均摊 O(1)) | 低 (锁竞争，均摊 O(1)) | 高 (无锁 CAS, O(1)) |
 | **迭代器** | 快照 (弱一致) | Fail-fast | Fail-fast | Fail-fast | 快照 (弱一致) |
 | **迭代时并发修改** | 安全 (不抛异常) | 抛 CME | 抛 CME | 抛 CME | 安全 (不抛异常) |
 | **内存消耗** | 高 (写时复制) | 低 | 中 (扩容) | 中 (扩容) | 中 (节点对象开销) |
@@ -809,8 +806,7 @@ static final class COWIterator<E> implements ListIterator<E> {
 
 然而，它的**缺点**也同样明显：**写操作性能差**、**内存消耗相对较高**、**数据非实时一致**。因此，在写操作频繁、列表规模巨大、或需要强一致性的场景下，应避免使用 `CopyOnWriteArrayList`，考虑其他并发集合（如 `ConcurrentHashMap`, `ConcurrentLinkedQueue`）或同步机制（如 `ReadWriteLock` + `ArrayList`）。
 
-掌握 `CopyOnWriteArrayList` 的关键在于深刻理解其 **COW 核心机制**、**性能特点（读快写慢）**、**内存模型（volatile + lock）**以及**迭代器的快照行为**。  
- 只有这样，才能在实际开发中扬长避短，将其用在最合适的场景，编写出健壮、高效的并发程序。
+掌握 `CopyOnWriteArrayList` 的关键在于深刻理解其 **COW 核心机制**、**性能特点（读快写慢）**、**内存模型（volatile + lock）**以及**迭代器的快照行为**。只有这样，才能在实际开发中扬长避短，将其用在最合适的场景，编写出健壮、高效的并发程序。
 
 希望这篇文章能够帮助你理解 `CopyOnWriteArrayList`.
 

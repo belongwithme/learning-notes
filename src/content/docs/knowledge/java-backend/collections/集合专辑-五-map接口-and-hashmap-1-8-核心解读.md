@@ -5,15 +5,12 @@ status: draft
 sidebar:
   order: 125796898
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125796898)
 
-## Map与HashMap一文解决
 ## 前言：
 
 本来按顺序来解读的话呢，这节应该分享的是Collection接口下Set接口下的HashSet实现
-类 
+类
 ，但是HashSet的本质实际上是HashMap，我觉得不如先把本质分析一下，到时候回头看HashSet就简单很多了，也避免了HashSet和HashMap分不清的问题。
 
 ## Map实现类
@@ -60,19 +57,21 @@ hash表是一种数据结构（关联数组抽象数据类型），**在hash表�
 
 JDK1.8之前，采用的是数组+链表，链表主要是解决hash碰撞（两个对象调用HashCode()的哈希码值一致导致数组索引相同）而存在的，链表的优点在于增加，删除速度快，但是查询效率低。
 
-Jdk1.8之后，采用的是数组+链表/红黑树，之所以改为**红黑树，是为了提高查询效率，因为遍历链表的时间复杂度是O(n)，而遍历红黑树的时间复杂度是O(logn)**,顺便一提，对于HashMap根据key来查找的时间复杂度则取决于桶里的数据结构
+Jdk1.8之后，采用的是数组+链表/红黑树，之所以改为**红黑树，是为了提高查询效率，因为遍历链表的时间复杂度是O(n)，而遍历红黑树的时间复杂度是O(logn)**，顺便一提，对于HashMap根据key来查找的时间复杂度则取决于桶里的数据结构
 
 #### HashMap的基本结构
 
 我们需要理解几个概念，以便我们更好的了解HashMap。  
  bucket：HashMap中数组对应的索引位置（槽位）。  
- bin：在HashMap中，有多个元素的key都计算到同一个bucket中，我们会通过链表或红黑树的方式来存储，这个链表或者红黑树就是bin。  
- ![](./assets/125796898/7d2746549717d547153d3a31.png)
+ bin：在HashMap中，有多个元素的key都计算到同一个bucket中，我们会通过链表或红黑树的方式来存储，这个链表或者红黑树就是bin。
+
+![](./assets/125796898/7d2746549717d547153d3a31.png)
 
 ### 继承关系
 
-![](./assets/125796898/feb781cdd4ef69d0f08df24f.png)  
- 代码如下：
+![](./assets/125796898/feb781cdd4ef69d0f08df24f.png)
+
+代码如下：
 
 ```java
 public class HashMap<K,V> extends AbstractMap<K,V>
@@ -83,8 +82,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
 
 1：AbstractMap：此类提供了Map接口的骨干实现，从而最大限度地减少了实现此接口所需的工作，子类可以继承该抽象类来决定具体如何实现键值对的映射。它和ArrayList的AbstractList是一样的作用。  
  2:Cloneable：提供可拷贝功能  
- 3:Serializable: 提供可序列化功能。  
- 在这里的描述都不细致，因为在ArrayList那节都已经解读过了，感兴趣可以去看看前面的ArrayList解读。
+ 3:Serializable: 提供可序列化功能。在这里的描述都不细致，因为在ArrayList那节都已经解读过了，感兴趣可以去看看前面的ArrayList解读。
 
 ### 源码分析
 
@@ -345,7 +343,7 @@ Thus, in the face of concurrent  modification, the iterator fails quickly and cl
 #### 构造函数
 
 HashMap的构造函数一共有四种：  
- 1.无参
+ 1。无参
 
 ```
    /**
@@ -360,8 +358,8 @@ HashMap的构造函数一共有四种：
 
 ```
 
-第二种.有参（参数为
-初始化 
+第二种。有参（参数为
+初始化
 容量）
 
 ```
@@ -380,7 +378,7 @@ HashMap的构造函数一共有四种：
 
 ```
 
-第三种.有参(参数为初始化容量和负载因子)
+第三种。有参(参数为初始化容量和负载因子)
 
 ```java
  /**
@@ -527,17 +525,14 @@ Node是构成桶中链表的基本元素。
 
 ##### TreeNode
 
-TreeNode是hashMap树化后组成树的基本节点，继承了LInkedHashMap.Entry，而LInkedHashMap.Entry又继承Node。  
- 它里面方法主要是红黑树的各种该操作，代码量很大，难度较高，后面我们整体分析玩集合后单开一节去说它，这里有个概念就行。
+TreeNode是hashMap树化后组成树的基本节点，继承了LInkedHashMap.Entry，而LInkedHashMap.Entry又继承Node。它里面方法主要是红黑树的各种该操作，代码量很大，难度较高，后面我们整体分析玩集合后单开一节去说它，这里有个概念就行。
 
 ##### keySet
 
-keySet是一个成员变量,它的类型是Set,用于存储HashMap中所有的键.  
- 它继承于AbstractSet，里面的元素还是Map.Entry<K,V>.  
- 这个keySet变量并不是在hashMap实例化时就立刻填充了所有的键,而是使用了一种延迟初始化的策略,也就是懒加载.  
- 它实现了Set接口，但是没有组织数据的功能，外部也无法直接获取一个KeySet对象。  
- 我们可以通过调用hashMap.KeySet()方法，将映射表中的所有键组织成Set结构。我们将这种结合内部的集合成为视图。  
- keyset并不是新的集合类，简单看做HashMap中部分数据的组织形式，方便迭代查找操作就可以了。
+keySet是一个成员变量，它的类型是Set，用于存储HashMap中所有的键。它继承于AbstractSet，里面的元素还是Map.Entry<K,V>.  
+ 这个keySet变量并不是在hashMap实例化时就立刻填充了所有的键，而是使用了一种延迟初始化的策略，也就是懒加载。它实现了Set接口，但是没有组织数据的功能，外部也无法直接获取一个KeySet对象。我们可以通过调用hashMap.KeySet()方法，将映射表中的所有键组织成Set结构。我们将这种结合内部的集合成为视图。
+
+keyset并不是新的集合类，简单看做HashMap中部分数据的组织形式，方便迭代查找操作就可以了。
 
 ```java
   /**
@@ -616,8 +611,7 @@ public interface Consumer<T> {
 
 ```
 
-这里深入分析一下，为什么在keyset中HashMap没有把键添加到Set集合中，那么它是通过什么样的逻辑方法添加键呢？  
- 我们深入分析一下keyset的底层调用逻辑：
+这里深入分析一下，为什么在keyset中HashMap没有把键添加到Set集合中，那么它是通过什么样的逻辑方法添加键呢？我们深入分析一下keyset的底层调用逻辑：
 
 ```java
     public Set<K> keySet() {   
@@ -626,8 +620,9 @@ public interface Consumer<T> {
 
 ```
 
-![](./assets/125796898/5da27bcfc690aa27587eeacd.png)  
- 可以看到，这是AbstractMap里面的一个成员变量（用transient修饰，返回值是一个set集合)，  
+![](./assets/125796898/5da27bcfc690aa27587eeacd.png)
+
+可以看到，这是AbstractMap里面的一个成员变量（用transient修饰，返回值是一个set集合)，  
  我们看后面的代码：
 
 ```java
@@ -688,9 +683,11 @@ final class KeySet extends AbstractSet<K> {
 
 ```
 
-t：保存hash数组的table  
- ![](./assets/125796898/1fd3c629a456d74b42a1ac6d.png)  
- index：数组的索引
+t：保存hash数组的table
+
+![](./assets/125796898/1fd3c629a456d74b42a1ac6d.png)
+
+index：数组的索引
 
 进一步解释一下这两行代码：
 
@@ -702,31 +699,31 @@ t：保存hash数组的table
 
 ```
 
-因为hashmap的结构是数组加链表，索引我们不光要判断链表，还要去判断数组，if里面是判断链表返回不为空的节点，while里是数组的判断。  
- 现在我们分析过了keyset的底层调用逻辑.  
+因为hashmap的结构是数组加链表，索引我们不光要判断链表，还要去判断数组，if里面是判断链表返回不为空的节点，while里是数组的判断。现在我们分析过了keyset的底层调用逻辑。  
  **有个问题还需要思考：它到底怎么把键加入到keyset里面的？**  
- 我们上面一路分析下来，发现事情并不简单，我们并没有发现keyset返回了一个集合（集合里保存了HashMap所有的Key），它只是创建了一个KeySet类的对象，并没有把HashMap的key都加入进来，之后方法就返回了。  
- ![](./assets/125796898/c2b9a55baecb1dbec10bcce1.png)  
- 而我们在调试代码的时候，可以明显的看出，执行完`ks=new KeySet()`后，ks中就已经有元素了.  
+ 我们上面一路分析下来，发现事情并不简单，我们并没有发现keyset返回了一个集合（集合里保存了HashMap所有的Key），它只是创建了一个KeySet类的对象，并没有把HashMap的key都加入进来，之后方法就返回了。
+
+![](./assets/125796898/c2b9a55baecb1dbec10bcce1.png)
+
+而我们在调试代码的时候，可以明显的看出，执行完`ks=new KeySet()`后，ks中就已经有元素了。  
  **那么到底是什么时候HashMap的key加入到KeySet集合中的呢？**
 
-我们之前看keySet类的构造函数，发现只有默认构造函数，如果不是在keySet构造函数里把HashMap的可以加入进来，那么可能是KeySet的父类构造函数中加入进来：  
- ![](./assets/125796898/2ba4dd41e28d97b8183c8d52.png)  
- ![](./assets/125796898/c64bd5cc4b6975279f434756.png)然而我们通过上图可以看到，都是空实现。。。  
- 这部分真的卡了我好久= =！  
- 当我们调用HashMap的keySet方法时，我们得到一个Set视图，这个视图代表了HashMap中所有的键，这个Set视图并不是通过复制HashMap中所有的键来创建的，而是提供了一个窗口或接口来直接访问HashMap中的键。  
+我们之前看keySet类的构造函数，发现只有默认构造函数，如果不是在keySet构造函数里把HashMap的可以加入进来，那么可能是KeySet的父类构造函数中加入进来：
+
+![](./assets/125796898/2ba4dd41e28d97b8183c8d52.png)
+
+![](./assets/125796898/c64bd5cc4b6975279f434756.png)然而我们通过上图可以看到，都是空实现。。。这部分真的卡了我好久= =！当我们调用HashMap的keySet方法时，我们得到一个Set视图，这个视图代表了HashMap中所有的键，这个Set视图并不是通过复制HashMap中所有的键来创建的，而是提供了一个窗口或接口来直接访问HashMap中的键。  
  **所以关键点在于：keySet返回的Set对象并不包含实际的键数据，它只是提供了一种方式来遍历和查看HashMap中的键。当你使用迭代器或for-each循环遍历这个set时，它会在内部访问HashMap的数据结构，并逐个返回键。**
 
 **细心的你可能发现了：调试代码中，key没有加入到set中，idea是如何显示出ks有元素的？**  
  原因在于:idea显示对象信息时，会调用对象的toString方法。。。。  
- 注意：这个调用是隐式的！！！  
- AbstractMap中的toString方法：  
- ![](./assets/125796898/36ea30c0ddd05875c8773322.png)
+ 注意：这个调用是隐式的！！！AbstractMap中的toString方法：
+
+![](./assets/125796898/36ea30c0ddd05875c8773322.png)
 
 #### EntrySet
 
-这个和keySet很相似。  
- Map中采用Entry内部类来表示一个映射项，映射项包含key和value（其实键值对就是Entry）  
+这个和keySet很相似。Map中采用Entry内部类来表示一个映射项，映射项包含key和value（其实键值对就是Entry）  
  来看代码吧，你会发现和keySet很相似
 
 ```java
@@ -812,12 +809,10 @@ final class Values extends AbstractCollection<V> {
 
 ### HashMap 的扩容。☆☆☆☆☆
 
-现在我们来解读这里面最最最重要的内容了！  
- 看到这我们再明确HashMap的几个名词：
+现在我们来解读这里面最最最重要的内容了！看到这我们再明确HashMap的几个名词：
 
 1. `static final float DEFAULT_LOAD_FACTOR = 0.75f;`负载因子，扩容时使用
-2. 一个桶树化的阈值。  
-    当桶中元素个数超过这个值时，需要使用红黑树节点替换链表节点。  
+2. 一个桶树化的阈值。当桶中元素个数超过这个值时，需要使用红黑树节点替换链表节点。  
     `static final int TREEIFY_THRESHOLD = 8;`
 3. 哈希表的最小树形化容量  
     当哈希表中的容量>这个值时，表中的桶才能进行树化  
@@ -829,9 +824,7 @@ final class Values extends AbstractCollection<V> {
     `transient int size;`
 5. 负载因子  
     `final float loadFactor;`
-6. table是Nodes数组，在第一次使用的时候才初始化，并调整为必要的大小。  
-    当分配的时候，长度总是2的幂次方。  
-    在某些操作时，长度可能是0（通常不需要这样）  
+6. table是Nodes数组，在第一次使用的时候才初始化，并调整为必要的大小。当分配的时候，长度总是2的幂次方。在某些操作时，长度可能是0（通常不需要这样）  
     注意transient修饰符，HashMap本身有特别的序列化操作，不是传统的序列化方式  
     `transient Node<K,V>[] table;`
 
@@ -934,21 +927,21 @@ final class Values extends AbstractCollection<V> {
 2. 根据键key计算hash值得到了插入数组的索引i，如果tab[i]==null则直接插入，执行第6条逻辑，否则执行第三条逻辑
 3. 判断tab[i]的第一个元素与插入元素的key的hashcode&equals是否相等，相等则覆盖，否则执行第四步逻辑
 4. 判断tab[i]是否是红黑树节点TreeNode，是则在红黑树插入节点，否则执行第五步。
-5. 遍历tab[i]判断链表是否>8.大于8则可能转成红黑树（当然必需数组要>64），满足则在红黑树插入节点；  
-    否则在链表中插入；在遍历链表的过程中如果存在key的hashCode&Equals相等则替换即可。
-6. 插入成功，判断hashmap的size是否超过threshold的值，超过则扩容。  
-    ![](./assets/125796898/be3a39423726db1d4c50c6a5.png)
+5. 遍历tab[i]判断链表是否>8。大于8则可能转成红黑树（当然必需数组要>64），满足则在红黑树插入节点；否则在链表中插入；在遍历链表的过程中如果存在key的hashCode&Equals相等则替换即可。
+6. 插入成功，判断hashmap的size是否超过threshold的值，超过则扩容。
+
+![](./assets/125796898/be3a39423726db1d4c50c6a5.png)
 
 #### resize扩容方法
 
-接下来我们解析resize核心扩容方法,如果触发了阈值threshold，则会调用resize方法进行扩容，容量规则为2的幂次：  
+接下来我们解析resize核心扩容方法，如果触发了阈值threshold，则会调用resize方法进行扩容，容量规则为2的幂次：  
  变量定义：
 
-* oldTab： 指向当前的哈希表
-* lodCap： 当前哈希表的容量
-* oldThr： 当前的阈值（元素数量超过此值时，哈希表会进行扩容）
+* oldTab：指向当前的哈希表
+* lodCap：当前哈希表的容量
+* oldThr：当前的阈值（元素数量超过此值时，哈希表会进行扩容）
 * newCap：新哈希表的容量
-* newThr： 新哈希表的阈值
+* newThr：新哈希表的阈值
 
 ```java
   final Node<K,V>[] resize() {

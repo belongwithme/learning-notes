@@ -5,11 +5,8 @@ status: draft
 sidebar:
   order: 153633467
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153633467)
 
-## Launcher 类解读
 ## sun.misc.Launcher 类解读
 
 ### 前置知识铺垫
@@ -152,7 +149,7 @@ public class String {
 
 #### 核心设计模式
 
-这个类里面我们可以学习到很多设计模式的使用,整体看下来感觉挺受用的.
+这个类里面我们可以学习到很多设计模式的使用，整体看下来感觉挺受用的。
 
 ```java
 public class Launcher {

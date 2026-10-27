@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 147441821
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147441821)
 
 ## 一、 引言：为什么我们需要关心卡表？

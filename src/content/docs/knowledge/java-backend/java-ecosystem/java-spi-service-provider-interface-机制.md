@@ -5,11 +5,8 @@ status: draft
 sidebar:
   order: 153400057
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153400057)
 
-## Java SPI机制
 ## 什么是SPI
 
 **SPI (Service Provider Interface)** 是Java提供的一种**服务发现机制**，允许第三方为接口提供实现。它是一种**基于接口的编程 + 策略模式 + 配置文件**的设计模式。
@@ -19,7 +16,7 @@ sidebar:
 * **面向接口编程**: 定义标准接口
 * **实现与接口分离**: 多个实现可以独立存在
 * **运行时动态加载**: 通过配置文件在运行时发现和加载实现
-* **无需修改代码**: 添加新实现只需增加配置,无需修改现有代码
+* **无需修改代码**: 添加新实现只需增加配置，无需修改现有代码
 
 ### 与普通接口的区别
 
@@ -36,11 +33,11 @@ sidebar:
 
 ### 1. 服务接口 (Service Interface)
 
-定义服务的标准规范,如本例中的 `PaymentService`
+定义服务的标准规范，如本例中的 `PaymentService`
 
 ### 2. 服务提供者 (Service Provider)
 
-服务接口的具体实现类,如:
+服务接口的具体实现类，如：
 
 * `AlipayService`
 * `WeChatPayService`
@@ -48,7 +45,7 @@ sidebar:
 
 ### 3. 服务加载器 (ServiceLoader)
 
-Java提供的工具类,用于加载服务提供者:
+Java提供的工具类，用于加载服务提供者：
 
 ```java
 ServiceLoader<PaymentService> loader = ServiceLoader.load(PaymentService.class);
@@ -58,7 +55,7 @@ ServiceLoader<PaymentService> loader = ServiceLoader.load(PaymentService.class);
 
 ### 4. 配置文件
 
-位于 `META-INF/services/` 目录下,文件名为**接口的全限定名**,内容为**实现类的全限定名**
+位于 `META-INF/services/` 目录下，文件名为**接口的全限定名**，内容为**实现类的全限定名**
 
 ---
 
@@ -170,11 +167,11 @@ public final class ServiceLoader<S> implements Iterable<S> {
 
 ```
 
-### 为什么使用懒加载?
+### 为什么使用懒加载？
 
-* 节省内存: 只有在迭代时才加载实例
-* 提高性能: 避免一次性加载所有实现
-* 容错性: 某个实现加载失败不影响其他实现
+* 节省内存：只有在迭代时才加载实例
+* 提高性能：避免一次性加载所有实现
+* 容错性：某个实现加载失败不影响其他实现
 
 ---
 
@@ -216,9 +213,9 @@ public class AlipayService implements PaymentService {
 
 ### Q3: 多个jar包中有相同服务
 
-**问题**: 如果多个jar都提供 `PaymentService` 的实现怎么办?
+**问题**: 如果多个jar都提供 `PaymentService` 的实现怎么办？
 
-**答案**: ServiceLoader会加载**所有**实现,包括不同jar包中的。应用可以:
+**答案**: ServiceLoader会加载**所有**实现，包括不同jar包中的。应用可以：
 
 * 通过优先级排序选择
 * 通过名称选择特定实现
@@ -226,7 +223,7 @@ public class AlipayService implements PaymentService {
 
 ### Q4: SPI的性能问题
 
-**问题**: 每次调用 `ServiceLoader.load()` 都会重新加载吗?
+**问题**: 每次调用 `ServiceLoader.load()` 都会重新加载吗？
 
 **优化建议**:
 
@@ -270,7 +267,7 @@ SLF4J通过SPI机制绑定实际的日志实现(Logback, Log4j等)
 
 ### 4. Dubbo的扩展机制
 
-Dubbo改进了JDK的SPI,增加了依赖注入、AOP等特性
+Dubbo改进了JDK的SPI，增加了依赖注入、AOP等特性
 
 ---
 
@@ -285,8 +282,8 @@ Dubbo改进了JDK的SPI,增加了依赖注入、AOP等特性
 
 ### SPI的缺点
 
-❌ **性能开销**: 使用反射,性能略低于直接实例化  
- ❌ **不够灵活**: 只能通过迭代获取,不支持按需获取  
+❌ **性能开销**: 使用反射，性能略低于直接实例化  
+ ❌ **不够灵活**: 只能通过迭代获取，不支持按需获取  
  ❌ **并发问题**: ServiceLoader不是线程安全的  
  ❌ **无法管理**: 缺少依赖注入、AOP等高级特性
 

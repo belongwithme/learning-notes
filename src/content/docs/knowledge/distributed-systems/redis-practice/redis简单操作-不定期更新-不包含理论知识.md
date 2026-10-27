@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 127291307
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/127291307)
 
 ## 启动Redis
@@ -73,8 +71,9 @@ systemctl enable redis.service
 
 ```
 
-![](./assets/127291307/22324127c3601c429931ee69.png)  
- 重启后查询管程redis线程是否运行
+![](./assets/127291307/22324127c3601c429931ee69.png)
+
+重启后查询管程redis线程是否运行
 
 ![](./assets/127291307/39f869d952f195a220102bb3.png)
 

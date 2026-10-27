@@ -5,13 +5,11 @@ status: draft
 sidebar:
   order: 153470947
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153470947)
 
 ## 介绍
 
-`ImportCandidates` 是 **Spring Boot 2.7+ 版本引入的自动配置类加载器**,用于替代旧版 `SpringFactoriesLoader` 的部分功能。
+`ImportCandidates` 是 **Spring Boot 2.7+ 版本引入的自动配置类加载器**，用于替代旧版 `SpringFactoriesLoader` 的部分功能。
 
 **主要职责:**
 
@@ -24,7 +22,7 @@ sidebar:
 
 ---
 
-## 一、为什么会出现这个类?
+## 一、为什么会出现这个类？
 
 ### 背景原因
 
@@ -41,9 +39,9 @@ sidebar:
 
 **旧机制的缺陷:**
 
-* 文件格式复杂,需要使用反斜杠续行
-* 所有配置混在一个文件中,难以维护
-* 不同 jar 包的配置会合并,容易冲突
+* 文件格式复杂，需要使用反斜杠续行
+* 所有配置混在一个文件中，难以维护
+* 不同 jar 包的配置会合并，容易冲突
 * 不利于模块化管理
 
 #### 2. 新机制的优势 (Spring Boot 2.7+)
@@ -60,9 +58,9 @@ sidebar:
 
 **新机制的优点:**
 
-* 文件格式简单,每行一个类名
-* 按注解分类,文件职责单一
-* 支持注释,便于文档说明
+* 文件格式简单，每行一个类名
+* 按注解分类，文件职责单一
+* 支持注释，便于文档说明
 * 更好的模块化和可维护性
 
 ---
@@ -298,7 +296,7 @@ org.springframework.boot.jdbc.autoconfigure.metrics.DataSourcePoolMetricsAutoCon
 | 对比项 | 旧机制 (spring.factories) | 新机制 (.imports) |
 | --- | --- | --- |
 | **配置路径** | `META-INF/spring.factories` | `META-INF/spring/注解名.imports` |
-| **文件格式** | Properties 格式,需要续行符 `\` | 纯文本,每行一个类名 |
+| **文件格式** | Properties 格式，需要续行符 `\` | 纯文本，每行一个类名 |
 | **注释支持** | ❌ 不支持 | ✅ 支持 # 注释 |
 | **模块化** | ❌ 所有配置混在一起 | ✅ 按注解分类管理 |
 | **可维护性** | ⭐⭐ | ⭐⭐⭐⭐⭐ |
@@ -560,7 +558,7 @@ public class MyServiceAutoConfiguration {
 
 **步骤2: 创建配置文件**
 
-创建文件: `src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`
+创建文件：`src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`
 
 ```
 # 我的自定义服务自动配置
@@ -571,7 +569,7 @@ com.example.myproject.autoconfigure.MyServiceAutoConfiguration
 
 **步骤3: 打包为 jar**
 
-其他项目引入该 jar 后,`MyServiceAutoConfiguration` 会自动生效。
+其他项目引入该 jar 后，`MyServiceAutoConfiguration` 会自动生效。
 
 ### 2. 测试自动配置
 
@@ -590,7 +588,7 @@ public class TestAutoConfiguration {
 
 ```
 
-创建测试配置文件: `src/test/resources/META-INF/spring/org.springframework.boot.test.autoconfigure.MyTest.imports`
+创建测试配置文件：`src/test/resources/META-INF/spring/org.springframework.boot.test.autoconfigure.MyTest.imports`
 
 ```
 com.example.myproject.autoconfigure.TestAutoConfiguration
@@ -641,7 +639,7 @@ com.example.processor.CustomEnvironmentPostProcessor
 ### 迁移注意事项
 
 1. ✅ **保持向后兼容**: Spring Boot 2.7+ 同时支持两种方式
-2. ✅ **逐步迁移**: 可以先保留 spring.factories,新配置使用 .imports
+2. ✅ **逐步迁移**: 可以先保留 spring.factories，新配置使用 .imports
 3. ✅ **按类型拆分**: 将不同类型的配置拆分到不同的 .imports 文件
 4. ⚠️ **文件名规则**: 文件名必须是注解的完全限定名 + `.imports`
 5. ⚠️ **编码格式**: 使用 UTF-8 编码
@@ -668,7 +666,7 @@ public class Application {
 
 ```
 
-在 `application.properties` 中添加:
+在 `application.properties` 中添加：
 
 ```
 # 启用自动配置报告
@@ -679,7 +677,7 @@ debug=true
 
 ### 2. 断点调试
 
-在以下位置设置断点:
+在以下位置设置断点：
 
 * `ImportCandidates.load()` - 查看加载过程
 * `ImportCandidates.readCandidateConfigurations()` - 查看文件解析
@@ -688,7 +686,7 @@ debug=true
 
 ### 3. 日志输出
 
-添加日志配置:
+添加日志配置：
 
 ```properties
 logging.level.org.springframework.boot.autoconfigure=DEBUG
