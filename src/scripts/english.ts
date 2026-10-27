@@ -600,7 +600,7 @@ function render() {
   renderToday();
   if (!["today", "analysis", "words"].includes(view)) renderCollection();
 }
-function changeView(next: string) {
+function changeView(next: string, scroll = true) {
   if (view === "words" && (busy || pending)) {
     notify("请先确认本次自评的保存结果，再离开学词。", true);
     return;
@@ -635,6 +635,7 @@ function changeView(next: string) {
   if (view === "words") renderToday();
   else if (!["today", "analysis"].includes(view)) renderCollection();
   renderPlan();
+  if (!scroll) return;
   el(
     view === "words"
       ? "today-view"
@@ -974,5 +975,6 @@ changeView(
   new URL(location.href).searchParams.get("view") === "analysis"
     ? "analysis"
     : "today",
+  false,
 );
 void refresh();
