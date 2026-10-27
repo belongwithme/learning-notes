@@ -1,5 +1,4 @@
-import catalog from "../data/english.json";
-import dialogues from "../data/english-dialogues.json";
+import { catalog, dialogues } from "./english-data";
 import { initAnalysis } from "./english-analysis";
 import { clozeFor, normalize, target } from "../lib/english/cloze";
 import { dailyPlan, indexReviews, studyOrderFor } from "../lib/english/plan";
@@ -352,7 +351,7 @@ function editForm(p: Progress) {
     <form class="edit-form" id="edit-form"><h3>留给下次学习的安排</h3><div class="edit-grid">
     <label>优先级<select name="priority">${options(priorities, p.priority)}</select></label><label>掌握状态<select name="status">${options(statuses, p.status)}</select></label>
     <label>计划学习日期<input name="plannedDate" type="date" value="${p.plannedDate}" /></label><label>下次复习日期<input name="dueDate" type="date" value="${p.dueDate}" /></label></div>
-    <label class="note-field">我的例句（摘一句自己读的代码或文档，或用 <span lang="en">${escape(entriesById.get(p.wordId)?.term ?? "")}</span> 造一句）<textarea name="note" rows="3" maxlength="2000" placeholder="例如：从你正在读的文档里抄一句用到它的话，并写下它的出处…">${escape(p.note)}</textarea></label>
+    <label class="note-field"><span>我的例句（摘一句自己读的代码或文档，或用 <span lang="en">${escape(entriesById.get(p.wordId)?.term ?? "")}</span> 造一句）</span><textarea name="note" rows="3" maxlength="2000" placeholder="例如：从你正在读的文档里抄一句用到它的话，并写下它的出处…">${escape(p.note)}</textarea></label>
     <button id="save-word" type="submit" class="primary">${authenticated ? "保存安排与笔记" : "解锁后保存"}</button></form>
     <section class="word-history"><h3>学习足迹 · ${reviews.length} 次</h3>${
       !authenticated
@@ -476,16 +475,12 @@ function matches(e: Entry, history?: Review) {
   if (input("kind") && e.kind !== input("kind")) return false;
   if (input("priority") && p.priority !== input("priority")) return false;
   if (input("status") && p.status !== input("status")) return false;
-  if (input("mastery")) {
-    // Reviews are ordered newest first by the API and after each save.
-    if (input("mastery") === "remembered") {
-      if (p.status !== "mastered") return false;
-    } else if (
-      p.status !== "learning" ||
-      data.reviews.find((r) => r.wordId === e.id)?.result !== input("mastery")
-    )
-      return false;
-  }
+  // Reviews are ordered newest first by the API and after each save.
+  if (
+    input("last-result") &&
+    data.reviews.find((r) => r.wordId === e.id)?.result !== input("last-result")
+  )
+    return false;
   if (input("date-from") || input("date-to")) {
     if (input("date-type") === "planned") return dateMatches(p.plannedDate);
     if (input("date-type") === "due") return dateMatches(p.dueDate);
@@ -505,8 +500,8 @@ function renderCollection() {
     ? "学过的，都留在这里。"
     : "每个词，都有它的语境。";
   el("list-note").textContent = historyMode
-    ? "日期按北京时间 · 状态、掌握程度与优先级为当前值"
-    : "点击词条查看释义与安排 · 模糊/忘记按最近一次学习记录筛选";
+    ? "日期按北京时间 · 状态与优先级为当前值"
+    : "点击词条查看释义与安排";
   let rows: (Entry | Review)[] = historyMode
     ? data.reviews.filter((r) => matches(entriesById.get(r.wordId)!, r))
     : catalog.entries.filter((e) => matches(e));
@@ -555,7 +550,7 @@ function renderCollection() {
     (historyMode ||
       input("priority") ||
       input("status") ||
-      input("mastery") ||
+      input("last-result") ||
       input("date-from") ||
       input("date-to"))
   ) {

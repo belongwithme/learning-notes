@@ -48,12 +48,14 @@ const phraseCount = catalog.entries.filter(entry => entry.kind === 'phrases').le
         <div class="section-heading"><div><p class="eyebrow" id="collection-kicker">YOUR WORD COLLECTION</p><h2 id="collection-heading">每个词，都有它的语境。</h2></div><div class="backup-actions"><button id="export" type="button">导出备份</button><button id="import" type="button">导入记录</button><input id="import-file" type="file" accept="application/json,.json" hidden /></div></div>
         <form id="filters" class="filters" role="search">
           <label class="search-field"><span class="sr-only">搜索英文、中文或用法</span><input id="query" type="search" placeholder="搜索英文、中文、例句或用法…" /></label>
-          <label>主题<select id="album"><option value="">全部主题</option>{catalog.albums.map(a => <option value={a.id}>{String(a.id).padStart(2,'0')} · {a.title}</option>)}</select></label>
+          <label class="album-field">主题<select id="album"><option value="">全部主题</option>{catalog.albums.map(a => <option value={a.id}>{String(a.id).padStart(2,'0')} · {a.title}</option>)}</select></label>
+          <details class="more-filters"><summary>更多筛选</summary><div class="more-filters-grid">
           <label>内容<select id="kind"><option value="">词汇与表达</option><option value="words">词汇</option><option value="phrases">表达</option></select></label>
           <label>优先级<select id="priority"><option value="">全部优先级</option><option value="high">高优先级</option><option value="medium">中优先级</option><option value="low">低优先级</option></select></label>
           <label>当前状态<select id="status"><option value="">全部状态</option><option value="new">未学</option><option value="learning">学习中</option><option value="mastered">已掌握</option></select></label>
-          <label>掌握程度<select id="mastery"><option value="">全部程度</option><option value="remembered">已掌握</option><option value="vague">模糊</option><option value="forgot">忘记</option></select></label>
+          <label>最近自评<select id="last-result"><option value="">全部</option><option value="remembered">记得</option><option value="vague">模糊</option><option value="forgot">忘了</option></select></label>
           <div class="date-filters"><label>日期类型<select id="date-type"><option value="studied">实际学习日期</option><option value="planned">计划学习日期</option><option value="due">下次复习日期</option></select></label><label>开始日期<input id="date-from" type="date" /></label><label>结束日期<input id="date-to" type="date" /></label><label>排序<select id="sort"><option value="default">主题顺序</option><option value="priority">优先级从高到低</option><option value="recent">最近学习优先</option></select></label><button id="clear-filters" type="button">清除筛选</button></div>
+          </div></details>
         </form>
         <div class="list-heading"><p id="result-count" role="status"></p><span id="list-note">点击词条查看释义与安排</span></div>
         <div id="entries"></div>

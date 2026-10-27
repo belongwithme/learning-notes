@@ -5,7 +5,7 @@ import {
   dateTime,
 } from "./english-journey-view";
 import type { PracticeData } from "../lib/english/practice-server";
-import dialogues from "../data/english-dialogues.json";
+import { dialogues } from "./english-data";
 import { learningDay } from "../lib/english/model";
 import { addDays } from "../lib/english/practice-model";
 import { clozeFor, target } from "../lib/english/cloze";
