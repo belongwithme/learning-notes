@@ -1,0 +1,74 @@
+<p class="path-progress" data-path-progress hidden>
+	<span data-path-count></span>
+	<span class="path-progress-bar" aria-hidden="true"><span data-path-bar></span></span>
+</p>
+
+<script>
+	import { isRead, setRead } from '../scripts/path-progress';
+
+	// Each numbered note link on a learning path gets a "read" checkbox; progress lives in this browser.
+	const content = document.querySelector('.sl-markdown-content');
+	const summary = document.querySelector<HTMLElement>('[data-path-progress]');
+	const items = [...(content?.querySelectorAll<HTMLAnchorElement>('ol > li > a[href^="/knowledge/"]:first-child') ?? [])];
+	if (content && summary && items.length) {
+		const boxes = items.map(link => {
+			const box = document.createElement('input');
+			box.type = 'checkbox';
+			box.className = 'path-check';
+			box.setAttribute('aria-label', `已读：${link.textContent}`);
+			box.checked = isRead(link.pathname);
+			box.addEventListener('change', () => {
+				setRead(link.pathname, box.checked);
+				render();
+			});
+			link.before(box);
+			return box;
+		});
+		const render = () => {
+			const done = boxes.filter(box => box.checked).length;
+			summary.querySelector('[data-path-count]')!.textContent = `已读 ${done} / ${boxes.length}`;
+			summary.querySelector<HTMLElement>('[data-path-bar]')!.style.width = `${(done / boxes.length) * 100}%`;
+		};
+		render();
+		content.prepend(summary);
+		summary.hidden = false;
+	}
+</script>
+
+<style>
+	.path-progress {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin: 0 0 2rem;
+		font-size: 0.85rem;
+		font-variant-numeric: tabular-nums;
+		color: var(--archive-muted, var(--sl-color-gray-3));
+	}
+	.path-progress-bar {
+		flex: 1;
+		max-width: 16rem;
+		height: 0.35rem;
+		border-radius: 999px;
+		background: var(--archive-line, var(--sl-color-hairline));
+		overflow: hidden;
+	}
+	.path-progress-bar span {
+		display: block;
+		width: 0;
+		height: 100%;
+		background: var(--archive-accent, var(--sl-color-accent));
+		transition: width 200ms ease;
+	}
+	:global(.path-check) {
+		margin: 0 0.5rem 0 0;
+		vertical-align: -0.1em;
+		accent-color: var(--archive-accent, var(--sl-color-accent));
+		cursor: pointer;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.path-progress-bar span {
+			transition: none;
+		}
+	}
+</style>

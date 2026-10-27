@@ -1,20 +1,23 @@
 ---
 title: "JUC- CompletableFuture"
 description: "Java 从早期就提供了 Thread 和 Runnable 来支持并发，后来引入了 ExecutorService 和 Future 来简化线程管理和获取异步结果。然而，Future 接口本身存在一些局限性，例如 get() 方法的阻塞性、缺乏方便的回调机制以及组合多个任务能力的不足。"
-status: draft
+status: curated
 sidebar:
   order: 34
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147267695)
+
+:::tip[要点]
+- `CompletableFuture` 用回调代替阻塞的 `get()`，可以链式组合：`thenApply` 转换、`thenCompose` 串联、`thenCombine` 合并、`allOf` / `anyOf` 聚合。
+- 不指定线程池时异步方法使用 `ForkJoinPool.commonPool()`，有阻塞 IO 的业务应传入自定义线程池。
+- 异常沿链传递，用 `exceptionally`、`handle` 或 `whenComplete` 处理，否则会被吞掉。
+:::
 
 ## 引言
 
 Java 从早期就提供了 `Thread` 和 `Runnable` 来支持并发，后来引入了 `ExecutorService` 和 `Future` 来简化线程管理和获取异步结果。然而，`Future` 接口本身存在一些局限性，例如 `get()` 方法的阻塞性、缺乏方便的回调机制以及组合多个任务能力的不足。
 
-为了解决这些痛点，Java 8 引入了 `CompletableFuture`，它不仅实现了 `Future` 接口，还实现了 `CompletionStage` 接口，带来了函数式编程、流式API、非阻塞操作以及强大的任务编排能力。  
- `CompletableFuture` 极大地简化了异步编程的复杂性，让开发者能够以更声明式、更流畅的方式构建复杂的异步工作流。
+为了解决这些痛点，Java 8 引入了 `CompletableFuture`，它不仅实现了 `Future` 接口，还实现了 `CompletionStage` 接口，带来了函数式编程、流式API、非阻塞操作以及强大的任务编排能力。`CompletableFuture` 极大地简化了异步编程的复杂性，让开发者能够以更声明式、更流畅的方式构建复杂的异步工作流。
 
 ## 一、基础概念与核心原理
 
@@ -154,10 +157,7 @@ void postComplete() {
 
 **理解辅助：**
 
-整个机制就像一个“发布-订阅”系统。  
- `CompletableFuture` 是事件源（发布者），`thenApply` 等方法是订阅操作，注册的 `Completion` 对象是订阅者。  
- 当 `CompletableFuture` 状态改变（事件发生）时，它会通知所有订阅者去执行它们预设的动作。  
- 而 CAS 和 `volatile` 保证了在多线程环境下，状态更新和订阅者列表的维护都是安全且高效的（避免了重量级锁的开销）。异步执行的能力则来自于将回调任务提交给 `Executor`。
+整个机制就像一个“发布-订阅”系统。`CompletableFuture` 是事件源（发布者），`thenApply` 等方法是订阅操作，注册的 `Completion` 对象是订阅者。当 `CompletableFuture` 状态改变（事件发生）时，它会通知所有订阅者去执行它们预设的动作。而 CAS 和 `volatile` 保证了在多线程环境下，状态更新和订阅者列表的维护都是安全且高效的（避免了重量级锁的开销）。异步执行的能力则来自于将回调任务提交给 `Executor`。
 
 ### 1.3 线程调度：默认与自定义
 
@@ -231,7 +231,6 @@ void postComplete() {
      future2.join();
      myExecutor.shutdown(); // 关闭自定义线程池
 
-
      + 1
      + 2
      + 3
@@ -281,7 +280,6 @@ void postComplete() {
      System.out.println("结果2: " + result2);
      myExecutor.shutdown();
 
-
      + 1
      + 2
      + 3
@@ -316,9 +314,8 @@ void postComplete() {
 
      ```java
      CompletableFuture<String> future = CompletableFuture.completedFuture("这是一个已知结果");
-     System.out.println("Future 是否完成? " + future.isDone()); // 输出 true
-     System.out.println("结果: " + future.join()); // 不会阻塞，立即返回
-
+     System.out.println("Future 是否完成？" + future.isDone()); // 输出 true
+     System.out.println("结果：" + future.join()); // 不会阻塞，立即返回
 
      + 1
      + 2
@@ -336,14 +333,13 @@ void postComplete() {
      ```java
      // Java 9+
      // CompletableFuture<Object> future = CompletableFuture.failedFuture(new RuntimeException("模拟任务失败"));
-     // System.out.println("Future 是否完成? " + future.isDone()); // 输出 true
-     // System.out.println("Future 是否异常完成? " + future.isCompletedExceptionally()); // 输出 true
+     // System.out.println("Future 是否完成？" + future.isDone()); // 输出 true
+     // System.out.println("Future 是否异常完成？" + future.isCompletedExceptionally()); // 输出 true
      // try {
      //     future.join();
      // } catch (CompletionException e) {
-     //     System.out.println("捕获到异常: " + e.getCause()); // 输出 RuntimeException
+     //     System.out.println("捕获到异常：" + e.getCause()); // 输出 RuntimeException
      // }
-
 
      + 1
      + 2
@@ -659,15 +655,15 @@ runAfterBothFuture.join();
 
 **组合两个 Future 的方法小结：**
 
-* 需要合并两个结果产生新结果？ -> `thenCombine` / `thenCombineAsync`
-* 需要消费两个结果执行动作？ -> `thenAcceptBoth` / `thenAcceptBothAsync`
-* 只需要等两个都完成再执行动作（不关心结果）？ -> `runAfterBoth` / `runAfterBothAsync`
+* 需要合并两个结果产生新结果？-> `thenCombine` / `thenCombineAsync`
+* 需要消费两个结果执行动作？-> `thenAcceptBoth` / `thenAcceptBothAsync`
+* 只需要等两个都完成再执行动作（不关心结果）？-> `runAfterBoth` / `runAfterBothAsync`
 
 ### 2.4 并行与聚合：`allOf` 与 `anyOf`
 
 当需要处理 **两个以上** 的 `CompletableFuture` 时，可以使用 `allOf` 和 `anyOf` 这两个静态方法。
 
-**1. 等待所有任务完成: `allOf(CompletableFuture<?>... cfs)`**
+**1. 等待所有任务完成：`allOf(CompletableFuture<?>... cfs)`**
 
 * **作用:** 创建一个新的 `CompletableFuture`，它会在 **所有** 传入的 `CompletableFuture` 都 **完成**（无论是正常完成还是异常完成）之后才完成。
 * **返回:** `CompletableFuture<Void>`。
@@ -730,7 +726,7 @@ System.out.println("聚合后的结果: " + results);
 
 ```
 
-**2. 等待任一任务完成: `anyOf(CompletableFuture<?>... cfs)`**
+**2. 等待任一任务完成：`anyOf(CompletableFuture<?>... cfs)`**
 
 * **作用:** 创建一个新的 `CompletableFuture`，它会在 **任何一个** 传入的 `CompletableFuture` **完成** 时就 **立即完成**。
 * **返回:** `CompletableFuture<Object>`。该 Future 的结果就是 **第一个** 完成的那个 Future 的结果。
@@ -907,9 +903,9 @@ try {
 
 **异常处理方法选择：**
 
-* 只想在 **出错时** 提供一个 **替代值** 让流程继续？ -> `exceptionally`
-* 想在 **任何情况下** 都介入，根据成功/失败状态 **计算出一个新的、统一的结果**？ -> `handle`
-* 想在 **任何情况下** 都执行一个 **副作用**（如日志），但 **不改变** 传递下去的结果/异常？ -> `whenComplete`
+* 只想在 **出错时** 提供一个 **替代值** 让流程继续？-> `exceptionally`
+* 想在 **任何情况下** 都介入，根据成功/失败状态 **计算出一个新的、统一的结果**？-> `handle`
+* 想在 **任何情况下** 都执行一个 **副作用**（如日志），但 **不改变** 传递下去的结果/异常？-> `whenComplete`
 
 **重要提示:** 在 `CompletableFuture` 链中，如果任何一个阶段抛出异常，而没有被后续的 `exceptionally` 或 `handle` 捕获和处理，那么这个异常会沿着链一直传递下去，导致后续的所有回调（除了 `whenComplete` 和 `handle`）都不会执行。最终，如果你对链末端的 `CompletableFuture` 调用 `join()` 或 `get()`，就会收到这个未处理的异常（包裹在 `CompletionException` 或 `ExecutionException` 中）。因此，**务必确保在适当的位置处理可能发生的异常**。
 
@@ -955,7 +951,7 @@ try {
 
 ### 3.2 与框架集成
 
-`CompletableFuture` 可以很好地与主流 Java 框架（如 
+`CompletableFuture` 可以很好地与主流 Java 框架（如
 Spring
 、Spring Boot、WebFlux 等）集成，以构建异步、响应式的应用。
 
@@ -1317,11 +1313,11 @@ Spring
 * **核心原理:** 基于事件驱动、CAS 原子更新状态、`volatile` 保证可见性、无锁回调链（Completion Stack）和 `Executor` 委托执行。
 * **线程调度:** 区分同步回调（不带 `Async`，需谨慎使用）和异步回调（带 `Async`，推荐使用），理解默认 `commonPool` 的风险，掌握自定义 `Executor` 的重要性。
 * **常用 API:**
-  + 创建: `runAsync`, `supplyAsync`, `completedFuture`, `failedFuture`。
-  + 回调: `thenApply` (转换), `thenAccept` (消费), `thenRun` (执行动作), `thenCompose` (链式异步)。
-  + 组合: `thenCombine` (合并结果), `thenAcceptBoth` (消费两者), `runAfterBoth` (两者完成后)。
-  + 并行聚合: `allOf` (等待所有), `anyOf` (等待任一)。
-  + 异常处理: `exceptionally` (恢复), `handle` (统一处理), `whenComplete` (副作用)。
+  + 创建：`runAsync`, `supplyAsync`, `completedFuture`, `failedFuture`。
+  + 回调：`thenApply` (转换)，`thenAccept` (消费)，`thenRun` (执行动作)，`thenCompose` (链式异步)。
+  + 组合：`thenCombine` (合并结果)，`thenAcceptBoth` (消费两者)，`runAfterBoth` (两者完成后)。
+  + 并行聚合：`allOf` (等待所有)，`anyOf` (等待任一)。
+  + 异常处理：`exceptionally` (恢复)，`handle` (统一处理)，`whenComplete` (副作用)。
 * **实战注意事项:**
   + **线程池隔离是关键！** 避免 `commonPool` 滥用，为不同任务类型配置独立线程池。
   + **异常处理必须到位！** 使用 `exceptionally` 或 `handle` 避免异常丢失。

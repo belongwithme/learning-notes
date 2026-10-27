@@ -5,17 +5,11 @@ status: draft
 sidebar:
   order: 153398956
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153398956)
 
-## 前言
-
-如果可以理解SPI,无论是学习
-Java 
- SPI还是Spring SPI或者xxx SPI都有很大的帮助,最近想深究了一下,看了看源码的部分,觉得挺有帮助.  
- 项目就整了一个很简单了,能跑就行,代码什么的不用纠结,用AI随便生成一个就能跑.  
- 本篇文章不太适合纯新手阅读,最好有读源码的经验,不然可能会比较懵.
+如果可以理解SPI，无论是学习
+Java
+ SPI还是Spring SPI或者xxx SPI都有很大的帮助，最近想深究了一下，看了看源码的部分，觉得挺有帮助。项目就整了一个很简单了，能跑就行，代码什么的不用纠结，用AI随便生成一个就能跑。本篇文章不太适合纯新手阅读，最好有读源码的经验，不然可能会比较懵。
 
 ## 一、项目结构示例
 
@@ -699,20 +693,20 @@ java -cp app.jar:service-api.jar:provider1.jar:provider2.jar com.example.App
      + 返回 2 个 URL:
        - `jar:file:/.../provider1.jar!/META-INF/services/com.example.spi.MyService`
        - `jar:file:/.../provider2.jar!/META-INF/services/com.example.spi.MyService`
-   * 打开第一个 URL，读取内容: `com.example.spi.impl.Provider1`
+   * 打开第一个 URL，读取内容：`com.example.spi.impl.Provider1`
    * `Class.forName("com.example.spi.impl.Provider1")`
 
      + 从 provider1.jar 加载 Provider1.class
    * `new Provider1()` → 返回实例
-   * 输出: “Provider1 执行”
+   * 输出：“Provider1 执行”
 5. **第二次迭代**
 
    * 读取第二个配置文件
-   * 内容: `com.example.spi.impl.Provider2`
+   * 内容：`com.example.spi.impl.Provider2`
    * `Class.forName("com.example.spi.impl.Provider2")`
      + 从 provider2.jar 加载 Provider2.class
    * `new Provider2()` → 返回实例
-   * 输出: “Provider2 执行”
+   * 输出：“Provider2 执行”
 6. **结束**
 
    * 没有更多配置文件

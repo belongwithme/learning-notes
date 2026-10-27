@@ -36,6 +36,9 @@ export default defineConfig({
 			description: '记录、验证和沉淀可复用的技术知识',
 			components: {
 				Head: './src/components/Head.astro',
+				Footer: './src/components/Footer.astro',
+				Pagination: './src/components/Pagination.astro',
+				SocialIcons: './src/components/TopNav.astro',
 				PageTitle: './src/components/CustomPageTitle.astro',
 				ThemeProvider: './src/components/LightThemeProvider.astro',
 				ThemeSelect: './src/components/LightThemeSelect.astro',
@@ -45,6 +48,11 @@ export default defineConfig({
 			},
 			customCss: ['./src/styles/custom.css'],
 			credits: false,
+			head: [
+				{ tag: 'meta', attrs: { property: 'og:image', content: 'https://notes.ian2000.xyz/og.png' } },
+				{ tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
+				{ tag: 'link', attrs: { rel: 'alternate', type: 'application/rss+xml', title: '学习档案', href: '/rss.xml' } },
+			],
 			lastUpdated: true,
 			sidebar: [
 				{

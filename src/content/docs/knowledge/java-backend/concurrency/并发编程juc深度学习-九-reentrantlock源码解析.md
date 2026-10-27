@@ -1,28 +1,30 @@
 ---
 title: "并发编程JUC深度学习(九）ReentrantLock源码解析"
 description: "上一篇文章我们细说了AQS，如果我们搞明白了一些AQS，再来学习ReentrantLock就很容易了，相对来说简单了许多，核心还是AQS的那些东西，本篇我们敞开了聊聊ReentrantLock细节内容。"
-status: draft
+status: curated
 sidebar:
   order: 14
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126131210)
 
-## 前言
+:::tip[要点]
+- `ReentrantLock` 的内部类 `Sync` 继承 AQS，`FairSync` 和 `NonfairSync` 分别实现公平和非公平获取。
+- 非公平锁获取时先直接 CAS 抢锁，不看队列里是否有人排队；公平锁会先检查 `hasQueuedPredecessors()`。
+- 默认是非公平锁，吞吐量更高，代价是可能出现线程饥饿。
+:::
 
 上一篇文章我们细说了AQS，如果我们搞明白了一些AQS，再来学习ReentrantLock就很容易了，相对来说简单了许多，核心还是AQS的那些东西，本篇我们敞开了聊聊ReentrantLock细节内容。
 
 ## ReentrantLock出现的原因
 
-ReentrantLock是java并发包下重要的同步工具，实现了可重入互斥锁，它的设计和synchronized作用相同。  
-早期因为synchronized效率较低，大量使用了 系统调用的重量级锁，导致用户态与内核态来回不断的
-切换 
+ReentrantLock是java并发包下重要的同步工具，实现了可重入互斥锁，它的设计和synchronized作用相同。早期因为synchronized效率较低，大量使用了 系统调用的重量级锁，导致用户态与内核态来回不断的
+切换
 ，影响系统效率，所以产生了基于Unsafe并发同步框架AQS设计出了ReentranLock。
 
 ## 继承结构
 
-![](./assets/126131210/a740be03238a45fa4cf8028e.png)  
+![](./assets/126131210/a740be03238a45fa4cf8028e.png)
+
 代码实现：
 
 ```java
@@ -148,7 +150,6 @@ Only one
 
 我们可以看到，默认情况下是非公平锁
 
-
 ```java
   public ReentrantLock(boolean fair) {
         sync = fair ? new FairSync() : new NonfairSync();
@@ -158,7 +159,7 @@ Only one
 ```
 
 我们可以通过构造函数里的fair参数来判断为哪种
-类 
+类
 型的锁实现  
 true----公平锁 FairSync()  
 false—非公平锁NonfairSync()
@@ -302,8 +303,10 @@ ReentranLock的内部类有三种，抽象类Sync，公平锁与非公平锁。
 
 ## 形象总结一下ReentrantLock
 
-这里引用阿星大佬的一个图  
-![](./assets/126131210/77a4248fd0e34f7ebf292b0c.png)  
+这里引用阿星大佬的一个图
+
+![](./assets/126131210/77a4248fd0e34f7ebf292b0c.png)
+
 可以对着这个图看一看源码，很清晰
 
 ## 总结
@@ -319,8 +322,7 @@ https://blog.csdn.net/m0\_37199770/article/details/116011641?spm=1001.2014.3001.
 
 ### 0. 前言：为什么需要 ReentrantLock？
 
-在并发编程的世界里，"锁"是一个无法回避的核心概念。当多个线程需要访问共享资源时，如果没有适当的同步机制，就可能导致数据竞争、状态不一致等严重问题。  
- Java 提供了多种同步机制，其中最基础、最常用的就是 `synchronized` 关键字。
+在并发编程的世界里，"锁"是一个无法回避的核心概念。当多个线程需要访问共享资源时，如果没有适当的同步机制，就可能导致数据竞争、状态不一致等严重问题。Java 提供了多种同步机制，其中最基础、最常用的就是 `synchronized` 关键字。
 
 `synchronized` 凭借其简单易用、虚拟机层面优化的特点，在许多场景下都是不错的选择。然而，随着业务场景的日益复杂，`synchronized` 的局限性也逐渐显现：
 
@@ -330,8 +332,7 @@ https://blog.csdn.net/m0\_37199770/article/details/116011641?spm=1001.2014.3001.
 
 为了弥补 `synchronized` 的不足，Java 并发大师 Doug Lea 在 `java.util.concurrent` (JUC) 包中设计了 `Lock` 接口及其实现类，其中 `ReentrantLock` 就是最重要、最常用的实现之一。
 
-`ReentrantLock`，顾名思义，是一个**可重入的互斥锁**。  
- 它提供了与 `synchronized` 类似的独占访问控制，但赋予了我们更强大的能力和更灵活的控制权。
+`ReentrantLock`，顾名思义，是一个**可重入的互斥锁**。它提供了与 `synchronized` 类似的独占访问控制，但赋予了我们更强大的能力和更灵活的控制权。
 
 ### 1. 基础概念与核心特性
 
@@ -1237,7 +1238,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
    * 检查当前线程是否是持有者。
    * 将 `state` 减 1。
    * 如果 `state` 变为 0，表示锁已完全释放，清除持有者信息 (`setExclusiveOwnerThread(null)`)，并返回 `true`。AQS 的 `release()` 方法在 `tryRelease` 返回 `true` 时会负责唤醒等待队列中的后继节点。
-7. **`tryLock()` 的非公平性：** 值得注意的是，即使你创建的是**公平锁** (`new ReentrantLock(true)`), 调用 `tryLock()` 方法（无参数版本）仍然是**非公平**的 (`sync.nonfairTryAcquire(1)`)。这是因为 `tryLock` 的语义是“尝试一次，不行就拉倒”，如果它还需要检查队列，就违背了这种“快速尝试”的意图。而带超时的 `tryLock(timeout, unit)` (`sync.tryAcquireNanos`) 内部会考虑公平性设置。
+7. **`tryLock()` 的非公平性：** 值得注意的是，即使你创建的是**公平锁** (`new ReentrantLock(true)`)，调用 `tryLock()` 方法（无参数版本）仍然是**非公平**的 (`sync.nonfairTryAcquire(1)`)。这是因为 `tryLock` 的语义是“尝试一次，不行就拉倒”，如果它还需要检查队列，就违背了这种“快速尝试”的意图。而带超时的 `tryLock(timeout, unit)` (`sync.tryAcquireNanos`) 内部会考虑公平性设置。
 8. **其他方法：** `lockInterruptibly()`, `tryLock(timeout, unit)`, `unlock()`, `newCondition()` 等都直接调用了 AQS 提供的对应模板方法或功能。
 
 ##### 2.3.2 `acquire(1)` 源码分析 (独占模式获取流程)
@@ -1998,8 +1999,7 @@ public void put(String key, String value) {
 
 ### 4. 总结
 
-`ReentrantLock` 作为 Java 并发包 (JUC) 中的核心同步组件，为开发者提供了比内置 `synchronized` 关键字更强大、更灵活的锁机制。  
- 通过深入理解其核心特性——可重入性、公平性选择、可中断获取、超时获取、条件变量以及锁状态查询——我们可以在复杂的并发场景中实现更精细、更高效的线程同步和协作。
+`ReentrantLock` 作为 Java 并发包 (JUC) 中的核心同步组件，为开发者提供了比内置 `synchronized` 关键字更强大、更灵活的锁机制。通过深入理解其核心特性——可重入性、公平性选择、可中断获取、超时获取、条件变量以及锁状态查询——我们可以在复杂的并发场景中实现更精细、更高效的线程同步和协作。
 
 核心要点回顾：
 

@@ -6,7 +6,6 @@ sidebar:
   label: 可靠消息与最终一致
   order: 2
 ---
-
 [系统设计](/knowledge/system-design/) / 系统设计基础 / 可靠消息与最终一致
 
 **前置阅读：** [幂等设计](/knowledge/system-design/foundations/幂等设计-重复请求与重试/) · [BASE 理论](/knowledge/distributed-systems/consistency/base理论/) · [Kafka 专辑：生产者写入路径](/knowledge/distributed-systems/kafka/kafka专辑-生产者写入路径/) · [MySQL binlog 工作原理](/knowledge/database/logs-replication/深度整理总结mysql-bin-log日志工作原理/)

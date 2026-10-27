@@ -1,15 +1,17 @@
 ---
 title: "阻塞队列-ArrayBlockingQueue"
 description: "java.util.concurrent (JUC) 包提供了多种阻塞队列的实现，其中 ArrayBlockingQueue 以其有界、基于数组和线程安全的特性，在需要精确控制资源和流量的场景中扮演着重要角色。"
-status: draft
+status: curated
 sidebar:
   order: 30
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147398714)
 
-## ArrayBlockingQueue 深度解析：从入门到原理
+:::tip[要点]
+- `ArrayBlockingQueue` 是基于环形数组的有界阻塞队列，容量创建时固定。
+- 入队出队共用一把 `ReentrantLock`，用 `notEmpty` 和 `notFull` 两个条件实现阻塞。
+- 和 `LinkedBlockingQueue` 相比：内存连续、不产生节点对象，但生产和消费不能同时进行。
+:::
 
 ## 1. 前言
 
@@ -72,7 +74,7 @@ sidebar:
 
    * 可以在构造 `ArrayBlockingQueue` 时选择锁的公平策略。
    * **公平策略 (`fair = true`):** 等待时间最长的线程将优先获得锁和队列的访问权。这可以防止线程饥饿，保证每个等待的线程最终都能得到服务。实现上通常基于某种排队机制。
-   * **非公平策略 (`fair = false`, 默认):** 锁的获取顺序是不确定的，新请求锁的线程可能“插队”到等待队列的前面。这可能导致某些线程长时间等待，但通常能提供更高的整体吞吐量，因为它减少了线程上下文切换和管理的开销。
+   * **非公平策略 (`fair = false`，默认):** 锁的获取顺序是不确定的，新请求锁的线程可能“插队”到等待队列的前面。这可能导致某些线程长时间等待，但通常能提供更高的整体吞吐量，因为它减少了线程上下文切换和管理的开销。
    * **选择依据:** 如果业务场景对公平性有严格要求（例如，保证任务处理的顺序性与请求到达顺序一致），则选择公平模式。如果更看重整体性能和吞吐量，并且能接受一定程度的饥饿风险，则选择默认的非公平模式。
 
 **个人理解小结:**
@@ -132,7 +134,7 @@ sidebar:
   + 当你需要一个有界队列且希望获得比 `ArrayBlockingQueue` 更高的吞吐量时，可以创建一个指定容量的 `LinkedBlockingQueue`。
 
 **总结:** `LinkedBlockingQueue` 通常在高并发场景下提供更好的吞吐量（因为锁分离），而 `ArrayBlockingQueue` 则在需要严格有界和可选公平性时更具优势，且其
-内存 
+内存
 模型更简单。
 
 ## 5. ArrayBlockingQueue 快速上手：构造与基本操作
@@ -150,7 +152,6 @@ sidebar:
      ```java
      BlockingQueue<String> queue = new ArrayBlockingQueue<>(10); // 容量为10，非公平
 
-
      + 1
      ```
 2. **`public ArrayBlockingQueue(int capacity, boolean fair)`**
@@ -164,7 +165,6 @@ sidebar:
      ```java
      BlockingQueue<Integer> fairQueue = new ArrayBlockingQueue<>(100, true); // 容量为100，公平
      BlockingQueue<Integer> nonFairQueue = new ArrayBlockingQueue<>(50, false); // 容量为50，非公平
-
 
      + 1
      + 2
@@ -184,7 +184,6 @@ sidebar:
      BlockingQueue<String> initializedQueue = new ArrayBlockingQueue<>(10, false, initialElements);
      // initializedQueue 现在包含 "Apple", "Banana", "Cherry"，容量为 10
      System.out.println(initializedQueue.size()); // 输出 3
-
 
      + 1
      + 2
@@ -463,7 +462,7 @@ public class ArrayBlockingQueueExample {
 前面提到，`ArrayBlockingQueue` 的公平性指的是线程获取**锁 (`ReentrantLock`)** 的顺序。
 
 * **公平模式 (Fair):** 当多个线程都在等待获取锁时（比如都在 `lock.lock()` 或 `lock.lockInterruptibly()` 处阻塞），锁会倾向于授予那个**已经等待了最长时间**的线程。这就像排队买票，先来的先买。它保证了**先来先服务 (FIFO)** 的锁获取顺序，可以有效**防止线程饥饿**（即某个线程一直抢不到锁）。
-* **非公平模式 (Non-Fair, 默认):** 当锁被释放时，任何一个正在尝试获取锁的线程（无论是刚到达的，还是已经在等待队列中等了很久的）都有机会获得锁。特别是，刚到达的线程可能会尝试一次“插队”（通常通过 CAS 尝试直接获取锁），如果成功，它就跳过了在等待队列中排队的线程。这可能导致等待队列中的线程等待更长时间，甚至饿死。但是，非公平模式通常具有**更高的吞吐量**，因为它减少了线程挂起和唤醒的次数（如果能直接抢到锁，就不用进入等待队列再被唤醒了），上下文切换开销较小。
+* **非公平模式 (Non-Fair，默认):** 当锁被释放时，任何一个正在尝试获取锁的线程（无论是刚到达的，还是已经在等待队列中等了很久的）都有机会获得锁。特别是，刚到达的线程可能会尝试一次“插队”（通常通过 CAS 尝试直接获取锁），如果成功，它就跳过了在等待队列中排队的线程。这可能导致等待队列中的线程等待更长时间，甚至饿死。但是，非公平模式通常具有**更高的吞吐量**，因为它减少了线程挂起和唤醒的次数（如果能直接抢到锁，就不用进入等待队列再被唤醒了），上下文切换开销较小。
 
 **实现方式:**
 
@@ -498,8 +497,8 @@ public ArrayBlockingQueue(int capacity, boolean fair) {
 
 ## 7. 源码剖析：`put()` 和 `take()` 的实现细节
 
-理解了核心原理后，让我们深入 `ArrayBlockingQueue` 的源码（基于 
-OpenJDK 
+理解了核心原理后，让我们深入 `ArrayBlockingQueue` 的源码（基于
+OpenJDK
  8 / 11 常见版本，核心逻辑相似），重点分析 `put()` 和 `take()` 这两个最能体现其阻塞特性的方法。
 
 **核心成员变量回顾:**
@@ -878,8 +877,7 @@ public class ProducerConsumerDemo {
 
 **运行观察:**
 
-当你运行这个示例时，你会看到生产者和消费者交替打印信息。如果生产者速度快，队列会很快填满到 5 个，然后生产者在 `put()` 处阻塞，等待消费者消费。如果消费者速度快，队列会变空，消费者会在 `take()` 处阻塞，等待生产者生产。  
- `ArrayBlockingQueue` 在它们之间起到了缓冲和协调作用。
+当你运行这个示例时，你会看到生产者和消费者交替打印信息。如果生产者速度快，队列会很快填满到 5 个，然后生产者在 `put()` 处阻塞，等待消费者消费。如果消费者速度快，队列会变空，消费者会在 `take()` 处阻塞，等待生产者生产。`ArrayBlockingQueue` 在它们之间起到了缓冲和协调作用。
 
 ## 9. 总结与关键要点回顾
 

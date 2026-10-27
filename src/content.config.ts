@@ -1,6 +1,6 @@
 import { defineCollection } from 'astro:content';
-import { docsLoader } from '@astrojs/starlight/loaders';
-import { docsSchema } from '@astrojs/starlight/schema';
+import { docsLoader, i18nLoader } from '@astrojs/starlight/loaders';
+import { docsSchema, i18nSchema } from '@astrojs/starlight/schema';
 import { z } from 'astro/zod';
 
 export const collections = {
@@ -8,9 +8,10 @@ export const collections = {
 		loader: docsLoader(),
 		schema: docsSchema({
 			extend: z.object({
-				// Shown next to the title for every value except `draft`.
-				status: z.enum(['draft', 'verified', 'evergreen', 'outdated']).optional(),
+				// Shown under the title of every note; see the about page for what each one means.
+				status: z.enum(['draft', 'curated', 'evergreen', 'outdated']).optional(),
 			}),
 		}),
 	}),
+	i18n: defineCollection({ loader: i18nLoader(), schema: i18nSchema() }),
 };

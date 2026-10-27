@@ -1,15 +1,17 @@
 ---
 title: "Fork/Join - ForkJoinTask"
 description: "Fork/Join框架是Java 7引入的一个强大的并行处理框架，专为可以递归分解的问题设计。在这个框架中，ForkJoinTask是核心组件，它提供了支持分治算法的任务抽象。"
-status: draft
+status: curated
 sidebar:
   order: 36
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147397422)
 
-## Fork/Join框架核心组件：ForkJoinTask详解
+:::tip[要点]
+- `fork()` 把子任务放进当前线程的工作队列异步执行，`join()` 等待并取回结果。
+- `RecursiveTask` 有返回值，`RecursiveAction` 没有返回值，任务逻辑写在 `compute()` 里。
+- 常见写法是一个子任务 `fork()`、另一个当前线程直接 `compute()`，再 `join()` 前者，避免浪费当前线程。
+:::
 
 ## 1. 引言
 
@@ -20,7 +22,7 @@ Fork/Join框架是Java 7引入的一个强大的并行处理框架，专为可�
 ### 2.1 ForkJoinTask的本质
 
 ForkJoinTask本质上是Java
-并发编程 
+并发编程
 中的一种轻量级任务抽象，是Fork/Join框架的核心组件。它是一个抽象类，代表在ForkJoinPool中执行的任务单元。与常规任务不同，ForkJoinTask特别适用于可以分解为更小子任务的工作。
 
 ```java
@@ -46,7 +48,7 @@ ForkJoinTask与传统的Thread有本质区别，了解这些区别有助于我�
 5. **调度方式**：Thread由操作系统调度，ForkJoinTask由ForkJoinPool基于工作窃取算法调度
 
 理解
-类 
+类
 比：Thread就像是厨师(执行者)，而ForkJoinTask则像是菜谱(任务描述)。更准确地说，ForkJoinTask是一种特殊的"分步骤菜谱"，它能够说"如果这道菜太复杂，可以先把它分解成几个小菜，各自完成后再组合起来"。
 
 ### 2.3 为什么需要ForkJoinTask？
@@ -58,7 +60,7 @@ ForkJoinTask与传统的Thread有本质区别，了解这些区别有助于我�
 3. 手动管理任务间依赖关系复杂
 
 而ForkJoinTask作为普通Java对象，创建成本低，且框架自动处理任务调度和结果
-合并 
+合并
 ，让开发者专注于业务逻辑而非并发控制。
 
 ## 3. ForkJoinTask的核心API
@@ -125,7 +127,7 @@ private int doJoin() {
 **关键点**：
 
 * join()是阻塞操作，但不同于Thread.join()
-* 在等待过程中，工作线程不会闲置，而是会:
+* 在等待过程中，工作线程不会闲置，而是会：
   + 尝试执行队列中其他任务
   + 尝试帮助完成当前等待的任务
   + 尝试窃取其他队列的任务
@@ -540,7 +542,7 @@ ForkJoinPool是ForkJoinTask的执行环境，其核心组件包括：
    * 自己队列为空时，尝试从其他队列尾部窃取任务(FIFO)
 3. **任务等待**：
 
-   * 调用join()时，如果任务未完成，线程会尝试:
+   * 调用join()时，如果任务未完成，线程会尝试：
      + 执行该任务(如果可能)
      + 执行其他任务
      + 帮助完成依赖的任务
@@ -2480,7 +2482,7 @@ public class ParallelIndexBuilder extends RecursiveTask<Map<String, List<DocOccu
 
 ## 13. 总结
 
-ForkJoinTask作为Java并发编程的核心组件，为解决可分解的并行计算问题提供了强大的支持。它通过轻量级任务抽象和工作窃取算法，有效解决了传统并发编程中的资源利用和负载均衡问题。  
- 我们了解到，合理使用ForkJoinTask需要掌握任务分割粒度、正确的fork-join模式和异常处理技巧。通过与CompletableFuture和传统线程池的对比，明确ForkJoinTask的适用场景和选择依据。  
- ForkJoinTask不仅是一个API，更是一种并行思维模式的体现。  
+ForkJoinTask作为Java并发编程的核心组件，为解决可分解的并行计算问题提供了强大的支持。它通过轻量级任务抽象和工作窃取算法，有效解决了传统并发编程中的资源利用和负载均衡问题。我们了解到，合理使用ForkJoinTask需要掌握任务分割粒度、正确的fork-join模式和异常处理技巧。通过与CompletableFuture和传统线程池的对比，明确ForkJoinTask的适用场景和选择依据。
+
+ForkJoinTask不仅是一个API，更是一种并行思维模式的体现。  
  Happy coding!

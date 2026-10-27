@@ -5,26 +5,19 @@ status: draft
 sidebar:
   order: 129447982
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/129447982)
 
-## 前言
+前面我们聊过bean的生命周期，也涉及到了一些容器的初始化，那么现在我们就来一起聊聊Spring框架中当之无愧的炸子鸡之一的`AbstractApplicationContext`类下的Refresh方法。其难度之大，逻辑之复杂，写这篇文章的时候很头大：经常会有盲目深入导致自己理解不了，逻辑盘不明白；简单的浅入又觉得有点遗憾，本篇结合原理和源码，由宏观到细微之处，尽自己全力来发现refresh里面的巧妙。
 
-前面我们聊过bean的生命周期，也涉及到了一些容器的初始化，那么现在我们就来一起聊聊Spring框架中当之无愧的炸子鸡之一的`AbstractApplicationContext`类下的Refresh方法。  
- 其难度之大，逻辑之复杂，写这篇文章的时候很头大：经常会有盲目深入导致自己理解不了，逻辑盘不明白；简单的浅入又觉得有点遗憾，本篇结合原理和源码，由宏观到细微之处，尽自己全力来发现refresh里面的巧妙。  
- 如果你觉得看完本篇有帮助，可以点个关注交个朋友，以后也希望为你带来更多有益的文章。
+如果你觉得看完本篇有帮助，可以点个关注交个朋友，以后也希望为你带来更多有益的文章。
 
-### 简单介绍
+## 简单介绍
 
-refresh() 方法是 Spring 框架中最为核心的方法之一，可以说整个 Spring 容器的运作机制就是围绕着这个方法来展开的，在Spring框架中，ApplicationContext是容器的核心接口，负责管理和维护Spring应用程序中的所有bean。  
- 当应用程序启动时，Spring容器会自动创建并加载所有的bean定义，并将其实例化为bean对象。随着应用程序的运行，这些bean对象可能需要被修改、替换、删除等操作，这时就需要刷新ApplicationContext来更新bean的状态。
+refresh() 方法是 Spring 框架中最为核心的方法之一，可以说整个 Spring 容器的运作机制就是围绕着这个方法来展开的，在Spring框架中，ApplicationContext是容器的核心接口，负责管理和维护Spring应用程序中的所有bean。当应用程序启动时，Spring容器会自动创建并加载所有的bean定义，并将其实例化为bean对象。随着应用程序的运行，这些bean对象可能需要被修改、替换、删除等操作，这时就需要刷新ApplicationContext来更新bean的状态。
 
-#### 为什么会有这个方法的存在
+### 为什么会有这个方法的存在
 
-当一个应用程序启动时，Spring IoC容器会初始化并创建所有的bean实例，这些bean实例通常包括数据访问对象、业务对象、控制器等。  
- 举个例子来分别展示一下这三个是什么：  
- 1.数据访问对象（DAO）  
+当一个应用程序启动时，Spring IoC容器会初始化并创建所有的bean实例，这些bean实例通常包括数据访问对象、业务对象、控制器等。举个例子来分别展示一下这三个是什么：1。数据访问对象（DAO）  
  假设我们需要访问数据库中的用户信息，我们可以定义一个UserDao接口和UserDaoImpl实现类，如下所示：
 
 ```java
@@ -73,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
 ```
 
-3.控制器（Controller）  
+3。控制器（Controller）  
  我们可以定义一个UserController控制器类，如下所示：
 
 ```java
@@ -95,16 +88,13 @@ public class UserController {
 
 ```
 
-在应用程序运行期间，如果需要更改bean的属性或者添加新的bean，就需要将这些变化更新到IoC容器中。  
- 这时候，就需要使用Spring框架中提供的refresh()方法来重新加载配置文件、更新bean的定义、实例化和注册bean，**以保证容器中的bean与最新的配置文件保持一致**。  
- 当我们调用refresh()方法时，IoC容器会先销毁容器中的所有bean，然后重新读取配置文件，更新容器中的bean定义信息，并重新实例化和注册bean。  
- 这个过程可以保证应用程序运行期间，容器中的bean信息都是最新的，同时也可以保证容器中的bean的状态与配置文件保持一致。  
- 这个过程也被称为IoC容器的刷新过程。
+在应用程序运行期间，如果需要更改bean的属性或者添加新的bean，就需要将这些变化更新到IoC容器中。这时候，就需要使用Spring框架中提供的refresh()方法来重新加载配置文件、更新bean的定义、实例化和注册bean，**以保证容器中的bean与最新的配置文件保持一致**。当我们调用refresh()方法时，IoC容器会先销毁容器中的所有bean，然后重新读取配置文件，更新容器中的bean定义信息，并重新实例化和注册bean。
 
-### 框架介绍（宏观介绍）
+这个过程可以保证应用程序运行期间，容器中的bean信息都是最新的，同时也可以保证容器中的bean的状态与配置文件保持一致。这个过程也被称为IoC容器的刷新过程。
 
-介绍的思路是：主要的方法+文字解释，一些太难的方法因本人能力有限，会做个预埋，后面有能力的再来补上。  
- 整个refresh方法的重点方法：
+## 框架介绍（宏观介绍）
+
+介绍的思路是：主要的方法+文字解释，一些太难的方法因本人能力有限，会做个预埋，后面有能力的再来补上。整个refresh方法的重点方法：
 
 ```
 1.preareRefresh————刷新前的工作准备
@@ -124,9 +114,9 @@ public class UserController {
 
 ```
 
-#### preareRefresh：刷新前的工作准备
+### preareRefresh：刷新前的工作准备
 
-##### initPropertySources
+#### initPropertySources
 
 ```java
 java
@@ -176,36 +166,33 @@ java
 
 ```
 
-* 首先我们进入到第一个方法initPropertySources里面：  
-   initPropertySources是一个空方法,但是它有三个实现方法,为什么有三个呢?  
-   当然是为了满足Spring在Web应用程序场景下的需求和灵活性,我先大致在这里解释一下:
+* 首先我们进入到第一个方法initPropertySources里面：initPropertySources是一个空方法，但是它有三个实现方法，为什么有三个呢？当然是为了满足Spring在Web应用程序场景下的需求和灵活性，我先大致在这里解释一下：
 * AbstractRefreshableWebApplicationContext  
-   这个子类是为了支持**可刷新**的Web应用程序上下文,即在**运行时可以动态地**重新加载和刷新Bean定义.  
-   所以显然它适用于那些需要动态更新Bean定义的Web应用程序(比如:热部署技术,无需重新启动应用程序即可应用新的Bean配置)  
-   因为有它提供了动态刷新的功能,所以我们可以在程序不停止的情况下进行部分的更新和修改.
+   这个子类是为了支持**可刷新**的Web应用程序上下文，即在**运行时可以动态地**重新加载和刷新Bean定义。所以显然它适用于那些需要动态更新Bean定义的Web应用程序(比如：热部署技术，无需重新启动应用程序即可应用新的Bean配置)  
+   因为有它提供了动态刷新的功能，所以我们可以在程序不停止的情况下进行部分的更新和修改。
 * GenericWebApplicationContext  
-   这个子类为了支持通用的Web应用程序上下文,它的主要作用:
+   这个子类为了支持通用的Web应用程序上下文，它的主要作用：
 
-1. Java配置类的支持: 是允许我们使用Java代码来配置和管理应用程序的Bean,通过Java配置类,开发者可以使用编程方式配置Bean的依赖关系,作用域,初始化和销毁方法等.
-2. 类型安全: 使用Java配置类配置Bean带来更好的安全性.Java 编译器可以在编译时捕获一些错误，例如类型不匹配或不存在的 Bean 引用，从而减少在运行时可能出现的错误。
-3. 解耦和模块化: 很显然,使用Java配置类,可以将应用程序的配置逻辑和具体的Bean分开.
+1. Java配置类的支持：是允许我们使用Java代码来配置和管理应用程序的Bean，通过Java配置类，开发者可以使用编程方式配置Bean的依赖关系，作用域，初始化和销毁方法等。
+2. 类型安全：使用Java配置类配置Bean带来更好的安全性.Java 编译器可以在编译时捕获一些错误，例如类型不匹配或不存在的 Bean 引用，从而减少在运行时可能出现的错误。
+3. 解耦和模块化：很显然，使用Java配置类，可以将应用程序的配置逻辑和具体的Bean分开。
 4. 注解的支持:J ava 配置类可以使用 Spring 的注解来简化配置，如 @ComponentScan、@Autowired、@Bean 等，这些注解可以更轻松地定义 Bean 和处理依赖关系。
-5. 支持Web环境: 并不局限于只能用于Web应用程序，也可以用于非Web应用程序。不过，它确实支持Web环境，可以在Web应用程序中使用，并且与其他Spring Web相关组件结合使用，如Spring MVC。
+5. 支持Web环境：并不局限于只能用于Web应用程序，也可以用于非Web应用程序。不过，它确实支持Web环境，可以在Web应用程序中使用，并且与其他Spring Web相关组件结合使用，如Spring MVC。
 
 * StaticWebApplicationContext  
-   通过名字我们也能看出来,相比于其他可刷新的应用程序上下文，静态上下文在初始化后不能对 Bean 定义进行动态刷新。它主要用于那些在应用程序生命周期内不需要或不允许动态修改 Bean 定义的场景。  
-   主要用途有:
+   通过名字我们也能看出来，相比于其他可刷新的应用程序上下文，静态上下文在初始化后不能对 Bean 定义进行动态刷新。它主要用于那些在应用程序生命周期内不需要或不允许动态修改 Bean 定义的场景。  
+   主要用途有：
 
 1. 轻量级应用程序：适用于那些较为简单、轻量级的应用程序，这些应用程序在初始化时确定了所有的 Bean 定义，并且不需要在运行时对它们进行修改。这样可以减少应用程序上下文的初始化开销和内存占用。
-2. 资源有限的环境: 由于静态上下文不支持动态刷新，它的资源消耗通常较低。因此，在资源有限的环境下（如嵌入式设备、移动设备等），使用静态上下文可以更好地管理资源，并减少不必要的开销。
+2. 资源有限的环境：由于静态上下文不支持动态刷新，它的资源消耗通常较低。因此，在资源有限的环境下（如嵌入式设备、移动设备等），使用静态上下文可以更好地管理资源，并减少不必要的开销。
 3. 应用程序生命周期内不需要动态修改 Bean 定义：对于某些应用程序，一旦 Bean 定义确定并加载后，它们在运行时不需要动态地修改或重新加载。例如，一些简单的应用程序只需要在启动时加载配置，然后保持不变，这种情况下使用静态上下文是合适的。
-4. 预防 Bean 定义被篡改: 某些安全敏感的环境中，可能希望确保应用程序上下文的内容在初始化后不会被篡改。使用静态上下文可以防止在运行时对 Bean 定义进行修改，从而增加应用程序的安全性。
+4. 预防 Bean 定义被篡改：某些安全敏感的环境中，可能希望确保应用程序上下文的内容在初始化后不会被篡改。使用静态上下文可以防止在运行时对 Bean 定义进行修改，从而增加应用程序的安全性。
 
-所以我们能大致看出来,对于不同的场景,Spring给我们提供了灵活子类实现供我们选择.
+所以我们能大致看出来，对于不同的场景，Spring给我们提供了灵活子类实现供我们选择。
 
-###### ConfigurableEnvironment
+##### ConfigurableEnvironment
 
-下面我们再了解一下ConfigurableEnvironment类是什么,了解这个有助于下面的理解.emm稍微硬核一点,来读读英文文档吧,链接🔗给你们: [ConfigurableEnvironment文档](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/ConfigurableEnvironment.html)
+下面我们再了解一下ConfigurableEnvironment类是什么，了解这个有助于下面的理解.emm稍微硬核一点，来读读英文文档吧，链接🔗给你们：[ConfigurableEnvironment文档](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/ConfigurableEnvironment.html)
 
 ```java
 //包的位置
@@ -275,8 +262,7 @@ When an Environment is being used by an ApplicationContext, it is important that
 
 ```
 
-那么总结来说,ConfigurableEnvironment在Spring框架中提供了作用如下:  
- 提供了对应用程序环境的配置能力。它是Environment接口的子接口，提供了更多的灵活性和配置选项。
+那么总结来说，ConfigurableEnvironment在Spring框架中提供了作用如下：提供了对应用程序环境的配置能力。它是Environment接口的子接口，提供了更多的灵活性和配置选项。
 
 1. 设置活动和默认配置文件  
     您可以设置应用程序的活动配置文件和默认配置文件。配置文件是Spring中用于根据不同的环境或需求来加载不同配置的一种机制。通过设置不同的配置文件，您可以轻松地切换应用程序的配置，从而实现不同环境下的应用程序行为。
@@ -309,7 +295,7 @@ public interface ConfigurableEnvironment extends Environment, ConfigurableProper
 
 ```
 
-再细节的内容就不展开了,还是尽快回到主题,有个大致的了解就好.
+再细节的内容就不展开了，还是尽快回到主题，有个大致的了解就好。
 
 ```java
 protected void initPropertySources() {  
@@ -320,7 +306,7 @@ protected void initPropertySources() {
 
 ```
 
-###### AbstractRefreshableWebApplicationContext
+##### AbstractRefreshableWebApplicationContext
 
 ```java
 @Override
@@ -349,7 +335,7 @@ protected void initPropertySources() {
 
 ```
 
-###### GenericWebApplicationContext
+##### GenericWebApplicationContext
 
 ```java
 	@Override
@@ -376,7 +362,7 @@ protected void initPropertySources() {
 
 ```
 
-###### StaticWebApplicationContext
+##### StaticWebApplicationContext
 
 ```java
 	@Override
@@ -391,8 +377,7 @@ protected void initPropertySources() {
 
 ```
 
-我们进去initPropertySources方法里面看一看:  
- 下面代码里的常量来源如下:
+我们进去initPropertySources方法里面看一看：下面代码里的常量来源如下：
 
 ```java
  */
@@ -436,9 +421,9 @@ MutablePropertySources 是Spring框架中用于管理属性源的接口。
 
 ```
 
-那么总的来说,这段代码的作用是在给定的 MutablePropertySources 中初始化属性源，如果存在 StubPropertySource，则用对应的 ServletContextPropertySource 和 ServletConfigPropertySource 替换它们，以便在后续的上下文初始化过程中，可以使用Servlet上下文和Servlet配置中的初始化参数。这样，应用程序可以从Spring的属性源中获取到这些初始化参数并在应用程序中进行使用。
+那么总的来说，这段代码的作用是在给定的 MutablePropertySources 中初始化属性源，如果存在 StubPropertySource，则用对应的 ServletContextPropertySource 和 ServletConfigPropertySource 替换它们，以便在后续的上下文初始化过程中，可以使用Servlet上下文和Servlet配置中的初始化参数。这样，应用程序可以从Spring的属性源中获取到这些初始化参数并在应用程序中进行使用。
 
-###### 收集监听器和事件
+##### 收集监听器和事件
 
 回顾一下上面initPropertySources的代码后半部分
 
@@ -468,16 +453,15 @@ MutablePropertySources 是Spring框架中用于管理属性源的接口。
 
 这样的设计允许在刷新过程中对应用程序监听器和事件进行灵活的处理，以确保应用程序在刷新完整个上下文后，再发布早期应用程序事件，从而优化应用程序上下文的初始化和事件处理。
 
-##### obtainFreshBeanFactory
+#### obtainFreshBeanFactory
 
-这个方法大致功能:用于获取一个刷新后的新 BeanFactory，并将其返回给调用者，以便后续对 beans 的访问和管理。  
- 为了让我们好理解,我们来看看什么是ConfigurableListableBeanFactoty,然后再去看obtainFreshBeanFactory会更好一点
+这个方法大致功能：用于获取一个刷新后的新 BeanFactory，并将其返回给调用者，以便后续对 beans 的访问和管理。为了让我们好理解，我们来看看什么是ConfigurableListableBeanFactoty，然后再去看obtainFreshBeanFactory会更好一点
 
-###### 前置知识:ConfigurableListableBeanFactory实例
+##### 前置知识:ConfigurableListableBeanFactory实例
 
-老样子,先瞅一眼文档开开胃
+老样子，先瞅一眼文档开开胃
 
-###### 英文文档
+##### 英文文档
 
 ```java
 //包位置
@@ -508,7 +492,7 @@ This subinterface of BeanFactory is not meant to be used in normal application c
 
 简而言之，ConfigurableListableBeanFactory 接口为可列举的 Bean 工厂提供了更多的功能，包括分析和修改 Bean 定义以及预实例化单例 Bean。但对于普通的应用程序代码来说，通常使用 BeanFactory 或 ListableBeanFactory 就足够了。这个接口主要为了支持框架内部的插件式开发和访问 Bean 工厂的配置方法。
 
-看一下它的源代码,里面的方法就不细究了,大概知道这个类是干什么的就可以.
+看一下它的源代码，里面的方法就不细究了，大概知道这个类是干什么的就可以。
 
 ```java
 public interface ConfigurableListableBeanFactory
@@ -567,7 +551,7 @@ protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 
 ```
 
-###### refreshBeanFactory
+##### refreshBeanFactory
 
 进入到refreshBeanFactory里
 
@@ -578,16 +562,16 @@ protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 
 ```
 
-我们发现这个一个抽象方法,它有两个实现类:
+我们发现这个一个抽象方法，它有两个实现类：
 
 1. AbstractRefreshableApplicationContext
 2. GenericApplicationContext
 
 我们逐个来看
 
-###### AbstractRefreshableApplicationContext——refreshBeanFactory
+##### AbstractRefreshableApplicationContext——refreshBeanFactory
 
-代码如下:
+代码如下：
 
 ```java
 	@Override
@@ -614,11 +598,11 @@ protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 
 ```
 
-看完代码后应该很容易理解Spring想做什么,综上所述，这段代码的作用是在刷新应用程序上下文时，销毁现有的 BeanFactory 和 Bean，并创建一个新的 BeanFactory，加载 Bean 的定义信息，并将新的 BeanFactory 设置为当前应用程序上下文的 BeanFactory。这样，应用程序上下文就准备好进行后续的 Bean 初始化和依赖注入工作了。
+看完代码后应该很容易理解Spring想做什么，综上所述，这段代码的作用是在刷新应用程序上下文时，销毁现有的 BeanFactory 和 Bean，并创建一个新的 BeanFactory，加载 Bean 的定义信息，并将新的 BeanFactory 设置为当前应用程序上下文的 BeanFactory。这样，应用程序上下文就准备好进行后续的 Bean 初始化和依赖注入工作了。
 
-###### GenericApplicationContext——refreshBeanFactory
+##### GenericApplicationContext——refreshBeanFactory
 
-代码如下:
+代码如下：
 
 ```java
 /**
@@ -644,8 +628,8 @@ refreshed 是一个 AtomicBoolean 类型的变量，用于记录应用程序上�
 
 ```
 
-我们深入里面setSerializationId方法简单看一看:  
- 前置知识:setSerializationId是DefaultListableBeanFactory类的方法,serializableFactories是DefaultListableBeanFactory类中声明的Map集合,如下:
+我们深入里面setSerializationId方法简单看一看：  
+ 前置知识:setSerializationId是DefaultListableBeanFactory类的方法，serializableFactories是DefaultListableBeanFactory类中声明的Map集合，如下：
 
 ```java
 private static final Map<String, Reference<DefaultListableBeanFactory>> serializableFactories =
@@ -654,7 +638,7 @@ private static final Map<String, Reference<DefaultListableBeanFactory>> serializ
 
 ```
 
-你可能会好奇,什么是Reference,这里不挖太深了,在虚拟机引用篇幅中还会拿出来细说的(这里牵扯到JVM垃圾回收部分),大致解释一下:
+你可能会好奇，什么是Reference，这里不挖太深了，在虚拟机引用篇幅中还会拿出来细说的(这里牵扯到JVM垃圾回收部分)，大致解释一下：
 
 Reference 类是 Java 中用于建立弱引用（Weak Reference）或软引用（Soft Reference）的抽象类。弱引用和软引用是 Java 中用于垃圾回收的引用类型，它们允许对象在没有强引用（Strong Reference）时被垃圾回收器回收。
 
@@ -666,12 +650,9 @@ Reference 类是 Java 中用于建立弱引用（Weak Reference）或软引用�
 
 Reference 类的子类有以下几种：
 
-WeakReference：用于创建弱引用。  
- SoftReference：用于创建软引用。  
- PhantomReference：用于创建虚引用（Phantom Reference），虚引用的主要作用是跟踪对象被垃圾回收的状态，但不能通过虚引用来获取对象本身。  
- 这些引用类型可以帮助解决内存泄漏和优化内存使用的问题，特别适用于需要缓存数据或跟踪对象生命周期的场景。通过使用不同类型的引用，我们可以在内存有限的情况下更加灵活地管理对象的生命周期。
+WeakReference：用于创建弱引用。SoftReference：用于创建软引用。PhantomReference：用于创建虚引用（Phantom Reference），虚引用的主要作用是跟踪对象被垃圾回收的状态，但不能通过虚引用来获取对象本身。这些引用类型可以帮助解决内存泄漏和优化内存使用的问题，特别适用于需要缓存数据或跟踪对象生命周期的场景。通过使用不同类型的引用，我们可以在内存有限的情况下更加灵活地管理对象的生命周期。
 
-好的,前置知识把障碍扫清了,来看看里面setSerializationId的内容吧.
+好的，前置知识把障碍扫清了，来看看里面setSerializationId的内容吧。
 
 ```java
         /**
@@ -704,11 +685,11 @@ WeakReference：用于创建弱引用。
 
 ```
 
-相信看到这里你应该比较清楚了.
+相信看到这里你应该比较清楚了。
 
-###### getBeanFactory
+##### getBeanFactory
 
-代码如下:
+代码如下：
 
 ```java
 	public abstract ConfigurableListableBeanFactory getBeanFactory() throws IllegalStateException;
@@ -716,12 +697,12 @@ WeakReference：用于创建弱引用。
 
 ```
 
-可以看到这也是一个抽象方法,它也是有两个实现类:
+可以看到这也是一个抽象方法，它也是有两个实现类：
 
 1. AbstractRefreshableApplicationContext
 2. GenericApplicationContext
 
-###### AbstractRefreshableApplicationContext——getBeanFactory
+##### AbstractRefreshableApplicationContext——getBeanFactory
 
 ```java
 	public final ConfigurableListableBeanFactory getBeanFactory() {
@@ -742,9 +723,9 @@ WeakReference：用于创建弱引用。
 
 ```
 
-###### GenericApplicationContext——getBeanFactory
+##### GenericApplicationContext——getBeanFactory
 
-这个方法比较简单,一看就基本明白了:
+这个方法比较简单，一看就基本明白了：
 
 ```java
 	@Override
@@ -755,10 +736,9 @@ WeakReference：用于创建弱引用。
 
 ```
 
-##### prepareBeanFactory方法
+#### prepareBeanFactory方法
 
-它的作用是在创建完应用程序上下文的 BeanFactory 后对其进行进一步的准备工作和定制配置。  
- prepareBeanFactory() 方法为开发者提供了一个扩展点，在新的 BeanFactory 创建完成后，可以对其进行一些自定义的配置和准备工作，以满足特定的业务需求或场景。子类可以重写这个方法来添加自己的逻辑，从而实现对 BeanFactory 的定制和扩展。
+它的作用是在创建完应用程序上下文的 BeanFactory 后对其进行进一步的准备工作和定制配置。prepareBeanFactory() 方法为开发者提供了一个扩展点，在新的 BeanFactory 创建完成后，可以对其进行一些自定义的配置和准备工作，以满足特定的业务需求或场景。子类可以重写这个方法来添加自己的逻辑，从而实现对 BeanFactory 的定制和扩展。
 
 ```java
 protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {  
@@ -825,7 +805,7 @@ protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 
 ```
 
-##### postProcessBeanFactory
+#### postProcessBeanFactory
 
 允许容器的子类去注册postProcessor——钩子🪝方法  
  postProcessBeanFactory() 方法为开发者提供了一个扩展点，在新的 BeanFactory 创建和刷新完成后，可以对其进行进一步的后置处理。这使得开发者可以在应用程序上下文刷新完成后，对 BeanFactory 进行额外的自定义配置和功能扩展。子类可以重写这个方法来添加自己的逻辑，从而实现对 BeanFactory 的后置处理和扩展。
@@ -837,15 +817,15 @@ protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactor
 
 ```
 
-明显看出这是一个空实现,参数传进来一个BeanFactory对象.  
- 它有四个实现类:
+明显看出这是一个空实现，参数传进来一个BeanFactory对象。  
+ 它有四个实现类：
 
 1. AbstractRefreshableWebApplicationContext
 2. GenericWebApplicationContext
 3. ResourceAdapterApplicationContext
 4. StaticWebApplicationContext
 
-###### AbstractRefreshableWebApplicationContext——postProcessBeanFactory
+##### AbstractRefreshableWebApplicationContext——postProcessBeanFactory
 
 ```java
 	/**
@@ -873,7 +853,7 @@ protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactor
 
 ```
 
-###### GenericWebApplicationContext——postProcessBeanFactory
+##### GenericWebApplicationContext——postProcessBeanFactory
 
 ```java
 	@Override
@@ -903,7 +883,7 @@ protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactor
 
 ```
 
-###### ResourceAdapterApplicationContext——postProcessBeanFactory
+##### ResourceAdapterApplicationContext——postProcessBeanFactory
 
 ```java
 /**
@@ -935,7 +915,7 @@ protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactor
 
 ```
 
-###### StaticWebApplicationContext——postProcessBeanFactory
+##### StaticWebApplicationContext——postProcessBeanFactory
 
 ```java
 /**
@@ -962,12 +942,12 @@ protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactor
 
 ```
 
-##### invokeBeanFactoryPostProcessors
+#### invokeBeanFactoryPostProcessors
 
 激活容器中注册为bean的BeanFactoryPostProcessors  
  对于注解容器，ConfigurationClassPostProcessor方法扫描应用中所有BeanDefinition并注册到容器之中。
 
-代码如下:
+代码如下：
 
 ```java
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
@@ -989,13 +969,13 @@ protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactor
 
 总结起来，这段代码的主要作用是在 BeanFactory 创建完成后，调用所有注册的 BeanFactoryPostProcessor 接口的实现类。它是在应用程序上下文刷新的过程中的一个重要步骤，用于处理 BeanFactoryPostProcessor 的定制逻辑，同时也提供了对 LoadTimeWeaver 的支持。
 
-###### invokeBeanFactoryPostProcessors
+##### invokeBeanFactoryPostProcessors
 
-或许你以为结束了,但是真正的困难才刚刚开始,你是否会好奇,到底是如何调用所有的BeanFactoryPostProcessor呢?  
- 我们来进入到invokeBeanFactoryPostProcessors方法中看一看就明白了,下面这个方法比较繁琐,所以我花了一些时间做了个图,希望能帮助理解:  
- ![](./assets/129447982/a22ad92c257d9abb2ee75264.png)
+或许你以为结束了，但是真正的困难才刚刚开始，你是否会好奇，到底是如何调用所有的BeanFactoryPostProcessor呢？我们来进入到invokeBeanFactoryPostProcessors方法中看一看就明白了，下面这个方法比较繁琐，所以我花了一些时间做了个图，希望能帮助理解：
 
-代码如下:
+![](./assets/129447982/a22ad92c257d9abb2ee75264.png)
+
+代码如下：
 
 ```java
 public static void invokeBeanFactoryPostProcessors(
@@ -1174,12 +1154,11 @@ public static void invokeBeanFactoryPostProcessors(
 
 ```
 
-相信根据上面的图和代码注释,你已经大概理解这个方法大致是做什么的了.
+相信根据上面的图和代码注释，你已经大概理解这个方法大致是做什么的了。
 
-##### registerBeanPostProcessors
+#### registerBeanPostProcessors
 
-这个方法的主要主要作用是注册拦截Bean创建过程中的BeanPostProcessor,其实你看方法名字也大概可以明白,很清楚.  
- 如果你看过我之前总结的文章,那么你大概也会明白为什么会有BeanPostProcessor这个东西,那么这里根据大司马的假设性原则,我假设你会这个东西的话,这个方法就很容易理解了,直接看代码就好.
+这个方法的主要主要作用是注册拦截Bean创建过程中的BeanPostProcessor，其实你看方法名字也大概可以明白，很清楚。如果你看过我之前总结的文章，那么你大概也会明白为什么会有BeanPostProcessor这个东西，那么这里根据大司马的假设性原则，我假设你会这个东西的话，这个方法就很容易理解了，直接看代码就好。
 
 ```java
 protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {  
@@ -1189,11 +1168,10 @@ protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFa
 
 ```
 
-这个方法可以看到,参数是一个Bean工厂,如果你仔细看上面的内容的话,你会发现它是一个可配置的可列举的 BeanFactory;  
- 这个this指的是这个关键字代表当前的对象，即调用 registerBeanPostProcessors() 方法的对象，通常是一个继承自 AbstractApplicationContext 的子类。这么说估计也不太清楚,那么换种方式.  
- 谁会调用这个方法呢?  
- 在调用 registerBeanPostProcessors() 方法时，this 通常会指向一个继承自 AbstractApplicationContext 或其子类的实例。这是因为 registerBeanPostProcessors() 方法是在 AbstractApplicationContext 类中定义的，并且通常会在 Spring 容器的初始化和刷新过程中被调用。  
- 举例来说，如果你创建了一个 ClassPathXmlApplicationContext 类的实例并调用其 refresh() 方法：
+这个方法可以看到，参数是一个Bean工厂，如果你仔细看上面的内容的话，你会发现它是一个可配置的可列举的 BeanFactory;  
+ 这个this指的是这个关键字代表当前的对象，即调用 registerBeanPostProcessors() 方法的对象，通常是一个继承自 AbstractApplicationContext 的子类。这么说估计也不太清楚，那么换种方式。谁会调用这个方法呢？在调用 registerBeanPostProcessors() 方法时，this 通常会指向一个继承自 AbstractApplicationContext 或其子类的实例。这是因为 registerBeanPostProcessors() 方法是在 AbstractApplicationContext 类中定义的，并且通常会在 Spring 容器的初始化和刷新过程中被调用。
+
+举例来说，如果你创建了一个 ClassPathXmlApplicationContext 类的实例并调用其 refresh() 方法：
 
 ```java
 ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
@@ -1203,12 +1181,10 @@ context.refresh();
 ```
 
 那么在 registerBeanPostProcessors() 方法中的 this 就会指向 context 这个 ClassPathXmlApplicationContext 类的实例。  
- 谨记:this 关键字的具体含义取决于调用 registerBeanPostProcessors() 方法的类的实例，通常是继承自 AbstractApplicationContext 或其子类的实例。  
- 相信聪明的你已经理解了.  
- 如果你还是不太理解,那么再看看下面的代码.
+ 谨记:this 关键字的具体含义取决于调用 registerBeanPostProcessors() 方法的类的实例，通常是继承自 AbstractApplicationContext 或其子类的实例。相信聪明的你已经理解了。如果你还是不太理解，那么再看看下面的代码。
 
 **进入到registerBeanPostProcessors里面：**  
- 看到下面方法的参数,再看看上面的介绍,this代表的是什么应该不难看出了.  
+ 看到下面方法的参数，再看看上面的介绍，this代表的是什么应该不难看出了。  
  再次强调:this 关键字的具体含义取决于调用 registerBeanPostProcessors() 方法的类的实例，通常是继承自 AbstractApplicationContext 或其子类的实例。
 
 ```java
@@ -1313,8 +1289,7 @@ public static void registerBeanPostProcessors(
 ```
 
 七：initMessageSource——初始化国际化配置  
- 这种方法属于非重点方法,本身实现也不难,如果你上面都可以看明白,这里也就不必多说了.  
- 这个方法的主要作用是:找到"messageSource"的Bean提供给ApplicationContext使用,使得ApplicationContext具有国际化能力
+ 这种方法属于非重点方法，本身实现也不难，如果你上面都可以看明白，这里也就不必多说了。这个方法的主要作用是：找到"messageSource"的Bean提供给ApplicationContext使用，使得ApplicationContext具有国际化能力
 
 ```java
 //列举方法里用到的静态变量
@@ -1361,12 +1336,12 @@ protected void initMessageSource() {
 
 ```
 
-##### initApplicationEventMulticaster
+#### initApplicationEventMulticaster
 
-这个方法主要作用为:
+这个方法主要作用为：
 
 1. 初始化ApplicationEventMulticaster类作为事件发布者
-2. 存储所有事件监听者信息,并根据不同事件,通知不同的事件监听者
+2. 存储所有事件监听者信息，并根据不同事件，通知不同的事件监听者
 
 ```java
 	public static final String APPLICATION_EVENT_MULTICASTER_BEAN_NAME = "applicationEventMulticaster";
@@ -1398,14 +1373,14 @@ protected void initApplicationEventMulticaster() {
 
 ```
 
-##### onRefresh
+#### onRefresh
 
-方法的主要作用:
+方法的主要作用：
 
 1. 预留给AbstractApplicationContext的子类用于初始化其他特殊的Bean
 2. 该方法需要在所有单例bean初始化之前调用
 3. 比如Web容器就会去初始化一些和主题展示相关的Bean（ThemeSource）  
-    看代码:
+    看代码：
 
 ```java
 	protected void onRefresh() throws BeansException {
@@ -1415,19 +1390,18 @@ protected void initApplicationEventMulticaster() {
 
 ```
 
-它有四个子类:
+它有四个子类：
 
 1. AbstractRefreshableWebApplicationContext
 2. GenericWebApplicationContext
 3. StaticWebApplicationContext
 4. EventPublicationInterceptorTests
 
-前置知识:
+前置知识：
 
-###### UiApplicationContextUtils
+##### UiApplicationContextUtils
 
-我们看一看这个类,代码不多,它是Spring 框架中的一个辅助工具类，用于支持与用户界面（UI）相关的应用程序上下文（ApplicationContext）操作。  
- 主要功能是初始化和获取与主题（Theme）相关的内容。
+我们看一看这个类，代码不多，它是Spring 框架中的一个辅助工具类，用于支持与用户界面（UI）相关的应用程序上下文（ApplicationContext）操作。主要功能是初始化和获取与主题（Theme）相关的内容。
 
 ```java
 public abstract class UiApplicationContextUtils {
@@ -1505,9 +1479,9 @@ public abstract class UiApplicationContextUtils {
 
 ```
 
-###### 前三个子类(它们的代码都一样)——onRefresh
+##### 前三个子类(它们的代码都一样)——onRefresh
 
-代码如下:
+代码如下：
 
 ```java
 	protected void onRefresh() {
@@ -1517,7 +1491,7 @@ public abstract class UiApplicationContextUtils {
 
 ```
 
-###### EventPublicationInterceptorTests——onRefresh
+##### EventPublicationInterceptorTests——onRefresh
 
 代码如下
 
@@ -1543,11 +1517,11 @@ public void testExpectedBehavior() {
 
 ```
 
-##### registerListeners
+#### registerListeners
 
-这个方法的主要作用: 注册监听器（检查监听器的bean并注册它们）
+这个方法的主要作用：注册监听器（检查监听器的bean并注册它们）
 
-代码如下:
+代码如下：
 
 ```java
 	/**
@@ -1591,11 +1565,11 @@ public void testExpectedBehavior() {
 
 ```
 
-##### finishBeanFactoryInitialization
+#### finishBeanFactoryInitialization
 
-###### 前置知识:ConfigurableApplicationContext
+##### 前置知识:ConfigurableApplicationContext
 
-核心代码:
+核心代码：
 
 ```java
 public interface ConfigurableApplicationContext extends ApplicationContext, Lifecycle, Closeable {
@@ -1624,7 +1598,7 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 
 ```
 
-代码如下:
+代码如下：
 
 ```java
 public interface ConfigurableApplicationContext extends ApplicationContext, Lifecycle, Closeable {
@@ -1675,9 +1649,9 @@ protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory b
 
 ```
 
-##### finishBeanFactoryInitialization
+#### finishBeanFactoryInitialization
 
-这部分内容没有什么太重点的内容,给出注释一起看看就行
+这部分内容没有什么太重点的内容，给出注释一起看看就行
 
 ```java
 protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {  
@@ -2051,7 +2025,7 @@ BeanFactoryPostProcessor               BeanPostProcessor
 
 ```
 
-### 五、实际案例:一个@Service Bean的完整生命周期
+### 五、实际案例：一个@Service Bean的完整生命周期
 
 ```java
 ┌────────────────────────────────────────────────────────────────┐
@@ -2276,4 +2250,4 @@ refresh() = 三大阶段
 
 ---
 
-希望这些图能帮你更清晰地理解 `refresh()` 方法!
+希望这些图能帮你更清晰地理解 `refresh()` 方法！

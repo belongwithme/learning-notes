@@ -99,11 +99,10 @@ html:not([data-has-sidebar]) .hero {
 	position: relative;
 	isolation: isolate;
 	overflow: hidden;
-	min-height: calc(72svh - var(--sl-nav-height));
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: clamp(6rem, 15vh, 10rem) max(1.5rem, calc((100vw - 76rem) / 2));
+	padding: clamp(3.5rem, 9vh, 5.5rem) max(1.5rem, calc((100vw - 76rem) / 2));
 	text-align: center;
 	background:
 		radial-gradient(circle at 50% 84%, rgba(36, 74, 55, 0.11), transparent 29rem),
@@ -145,7 +144,7 @@ html:not([data-has-sidebar]) .hero .copy {
 html:not([data-has-sidebar]) .hero h1 {
 	max-width: 7em;
 	margin: 0;
-	font-size: clamp(3.7rem, 8.8vw, 7.8rem);
+	font-size: clamp(3rem, 6.4vw, 5.6rem);
 	font-weight: 650;
 	line-height: 1.1;
 	letter-spacing: -0.04em;
@@ -267,7 +266,7 @@ html:not([data-has-sidebar]) .hero .sl-link-button.minimal {
 	--sl-color-text-accent: var(--archive-accent);
 	--sl-color-text-invert: var(--archive-paper);
 	--sl-color-bg: var(--archive-paper);
-	--sl-color-bg-nav: rgba(255, 254, 242, 0.94);
+	--sl-color-bg-nav: var(--archive-paper);
 	--sl-color-bg-sidebar: var(--archive-paper);
 	--sl-color-bg-inline-code: #ece8da;
 	--sl-color-bg-accent: var(--archive-accent);
@@ -307,9 +306,7 @@ html[data-has-sidebar] body {
 
 html[data-has-sidebar] header.header {
 	border-bottom: 1px solid var(--archive-line);
-	background: color-mix(in srgb, var(--archive-paper) 94%, transparent);
-	backdrop-filter: saturate(120%) blur(14px);
-	-webkit-backdrop-filter: saturate(120%) blur(14px);
+	background: var(--archive-paper);
 }
 
 html[data-has-sidebar] header.header .site-title {
@@ -659,11 +656,12 @@ html[data-has-sidebar][data-has-hero]
 	margin-top: 3rem;
 }
 
+/* Only the page title uses the serif; mixed Chinese/English headings read better in sans. */
 html[data-has-sidebar] .sl-markdown-content h2 {
-	font-family: var(--archive-serif);
+	font-family: var(--archive-sans);
 	font-size: inherit;
-	font-weight: 600;
-	letter-spacing: 0.005em;
+	font-weight: 700;
+	letter-spacing: -0.015em;
 	color: var(--archive-ink);
 }
 
@@ -992,7 +990,7 @@ html:not([data-has-sidebar]) body {
 
 html:not([data-has-sidebar]) header.header {
 	border-bottom-color: color-mix(in srgb, var(--home-line) 72%, transparent);
-	background: color-mix(in srgb, var(--home-paper) 92%, transparent);
+	background: var(--home-paper);
 }
 
 html:not([data-has-sidebar]) header.header .site-title {
@@ -1012,4 +1010,50 @@ html:not([data-has-sidebar]) header.header .site-title {
 		background: transparent;
 		box-shadow: none;
 	}
+}
+
+/* Images from many sources: a common frame makes screenshots sit on the paper background. */
+html[data-has-sidebar] .sl-markdown-content img {
+	border: 1px solid var(--archive-line);
+	border-radius: 0.375rem;
+	background: #fff;
+}
+
+/* Three aside roles used in notes: 要点 (tip), 易错 (caution), 面试怎么问 (note). */
+html[data-has-sidebar] .starlight-aside {
+	border-inline-start-width: 3px;
+	border-radius: 0 0.375rem 0.375rem 0;
+	font-size: 0.95rem;
+}
+
+html[data-has-sidebar] .starlight-aside--tip {
+	--sl-color-asides-text-accent: var(--archive-accent);
+	--sl-color-asides-border: var(--archive-accent);
+	background: var(--archive-accent-soft);
+}
+
+html[data-has-sidebar] .starlight-aside--note {
+	--sl-color-asides-text-accent: #2f4f6f;
+	--sl-color-asides-border: #5b7a99;
+	background: #e9eef2;
+}
+
+html[data-has-sidebar] .starlight-aside--caution {
+	--sl-color-asides-text-accent: #8a4b0f;
+	--sl-color-asides-border: #b7791f;
+	background: #f7eedc;
+}
+
+html[data-has-sidebar] .sl-markdown-content details {
+	margin-top: 0.75rem;
+	padding: 0.6rem 1rem;
+	border: 1px solid var(--archive-line);
+	border-radius: 0.375rem;
+	background: var(--archive-paper-deep);
+}
+
+html[data-has-sidebar] .sl-markdown-content details summary {
+	cursor: pointer;
+	font-weight: 600;
+	color: var(--archive-ink);
 }

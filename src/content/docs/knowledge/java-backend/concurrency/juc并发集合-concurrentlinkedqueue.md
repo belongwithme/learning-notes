@@ -1,24 +1,28 @@
 ---
 title: "JUC并发集合-ConcurrentLinkedQueue"
 description: "ConcurrentLinkedQueue是Java并发包(java.util.concurrent)中提供的一个线程安全的无界非阻塞队列，基于链表数据结构实现。它实现了Queue接口，遵循"
-status: draft
+status: curated
 sidebar:
   order: 28
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146808729)
+
+:::tip[要点]
+- `ConcurrentLinkedQueue` 是基于链表的无界非阻塞队列，用 CAS 实现入队和出队。
+- `head` 和 `tail` 允许暂时落后于真实的头尾（松弛不变量），以减少 CAS 次数。
+- `size()` 需要遍历整个队列，结果也不精确；判断是否为空用 `isEmpty()`。
+:::
 
 ## 1. 基础概念
 
 ### 1.1 什么是ConcurrentLinkedQueue
 
 ConcurrentLinkedQueue是Java并发包(java.util.concurrent)中提供的一个线程安全的无界非阻塞队列，基于链表数据结构实现。它实现了Queue接口，遵循
-FIFO 
+FIFO
 (先进先出)原则，专为高并发环境设计。
 
 作为一个非阻塞队列，ConcurrentLinkedQueue的操作永远不会导致线程阻塞。即使队列为空或者已满，相关操作也会立即返回，而不是等待条件满足。这种特性使其在高并发场景下表现出色，能够有效减少线程等待和上下文
-切换 
+切换
 的开销。
 
 ### 1.2 ConcurrentLinkedQueue与BlockingQueue的区别
@@ -238,7 +242,7 @@ ConcurrentLinkedQueue的松弛不变量设计是其高性能的关键因素之�
    * 增加了代码理解的难度
 
 松弛不变量设计体现了
-并发编程 
+并发编程
 中的一个重要思想：通过放宽不变量约束，可以减少同步操作，提高并发性能。这种设计在高并发、高吞吐量场景下特别有价值。
 
 ## 3. 核心方法源码分析
@@ -283,7 +287,7 @@ public ConcurrentLinkedQueue(Collection<? extends E> c) {
 4. 构造完成后，head指向第一个节点，tail指向最后一个节点
 
 这两个构造方法都很简单，主要是
-初始化 
+初始化
 队列的基本结构。值得注意的是，从集合构造的方法使用了lazySetNext方法而不是直接设置next引用，这是一种优化，减少了内存屏障的使用。
 
 ### 3.2 offer方法

@@ -1,13 +1,17 @@
 ---
 title: "JUC工具类-Phaser"
 description: "Phaser是java.util.concurrent包下的一个可重用的同步屏障（Synchronization Barrier）"
-status: draft
+status: curated
 sidebar:
   order: 21
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147240379)
+
+:::tip[要点]
+- `Phaser` 是可复用、可动态增减参与者的多阶段同步器，可以看作 `CountDownLatch` 和 `CyclicBarrier` 的增强版。
+- 参与者用 `register()` 加入、`arriveAndDeregister()` 退出，`arriveAndAwaitAdvance()` 等待本阶段所有参与者到达。
+- 重写 `onAdvance()` 可以在每个阶段结束时执行逻辑，返回 `true` 表示终止整个 `Phaser`。
+:::
 
 ## 一、 基础概念理解：Phaser是什么？
 
@@ -15,7 +19,7 @@ sidebar:
 
 **官方定义：**  
  `Phaser`是`java.util.concurrent`包下的一个可重用的同步屏障（Synchronization Barrier）
-类 
+类
 ，其功能类似于`CyclicBarrier`和`CountDownLatch`，但提供了更强的灵活性。它允许多个线程（称为参与者，Parties）分阶段地进行同步，等待彼此到达某个同步点（称为阶段屏障，Phase Barrier）后再继续执行。
 
 **核心作用：**  
@@ -444,7 +448,7 @@ public class PhaserAwaitAdvanceDemo {
 * `getPhase(): int`: 返回当前的阶段编号。阶段从0开始。如果`Phaser`已终止，返回负数。
 * `getRegisteredParties(): int`: 返回当前注册的总参与者数量。
 * `getArrivedParties(): int`: 返回在**当前阶段**已经到达（调用了`arrive`系列方法）的参与者数量。
-* `getUnarrivedParties(): int`: 返回在**当前阶段**尚未到达的参与者数量。 `getRegisteredParties() - getArrivedParties()`。
+* `getUnarrivedParties(): int`: 返回在**当前阶段**尚未到达的参与者数量。`getRegisteredParties() - getArrivedParties()`。
 * `isTerminated(): boolean`: 检查`Phaser`是否已终止。当`onAdvance`方法返回`true`时，或者当参与者数量降为0且没有父`Phaser`时（或有父Phaser但已在父级注销），`Phaser`会终止。
 * `getParent(): Phaser`: 返回此`Phaser`的父`Phaser`，如果没有则返回`null`。
 * `getRoot(): Phaser`: 返回层级结构中的根`Phaser`。
@@ -834,8 +838,7 @@ protected boolean onAdvance(int phase, int registeredParties) {
 这意味着，默认情况下，只有当所有参与者都注销了 (`registeredParties`变为0)，`Phaser`才会自动终止。
 
 **个人理解版:**  
- 可以称`onAdvance`为\*\*“阶段守门人”**或**“流程控制器”\*\*。  
- 它站在当前阶段的出口、下一阶段的入口处，手握决定权：是放行让大家继续前进，还是宣布“游戏结束”/“项目收工”。
+ 可以称`onAdvance`为\*\*“阶段守门人”**或**“流程控制器”\*\*。它站在当前阶段的出口、下一阶段的入口处，手握决定权：是放行让大家继续前进，还是宣布“游戏结束”/“项目收工”。
 
 **重写场景：**
 
@@ -959,7 +962,7 @@ protected boolean onAdvance(int phase, int registeredParties) {
 ### 3.4 层级Phaser (Hierarchical Phasers) - 概念与优势
 
 当需要协调的线程数量非常庞大时（比如成百上千甚至更多），让所有线程都注册到同一个`Phaser`实例上，可能会导致该`Phaser`内部状态更新的
-CAS 
+CAS
 操作竞争变得非常激烈，从而影响性能。
 
 为了解决这个问题，`Phaser`支持**层级结构（Hierarchical Structure）**，也称为**Phaser树（Phaser Tree）**。
@@ -1135,8 +1138,7 @@ class GroupWorker implements Runnable {
 
 ## 四、 总结
 
-`Phaser` 是 Java 并发包中一个极其强大和灵活的同步工具。  
- 它通过引入**阶段 (Phase)** 的概念，并支持**动态参与者管理**和**可定制的阶段推进逻辑 (`onAdvance`)**，极大地扩展了多线程协调的可能性。
+`Phaser` 是 Java 并发包中一个极其强大和灵活的同步工具。它通过引入**阶段 (Phase)** 的概念，并支持**动态参与者管理**和**可定制的阶段推进逻辑 (`onAdvance`)**，极大地扩展了多线程协调的可能性。
 
 **回顾核心优势：**
 

@@ -1,15 +1,17 @@
 ---
 title: "Java Lock 深度解析"
 description: "在 Java 并发编程里，synchronized 关键字是我们最早接触也最常用的同步机制。它简单易用，能解决大部分场景下的线程安全问题。然而，随着业务场景的复杂化和对性能、灵活性的更高要求，synchronized 的局限性也逐渐显现。此时，java.util.concurrent.lock..."
-status: draft
+status: curated
 sidebar:
   order: 13
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251093)
 
-## 前言
+:::tip[要点]
+- `Lock` 相比 `synchronized` 多了可中断获取、超时获取、尝试获取、公平锁和多个条件变量。
+- `Lock` 必须在 `finally` 里手动 `unlock()`，`synchronized` 在退出代码块或抛异常时自动释放。
+- 可重入意味着同一线程可以重复获取同一把锁，`state` 记录重入次数，释放同样次数后才真正释放。
+:::
 
 在 Java 并发编程里，`synchronized` 关键字是我们最早接触也最常用的同步机制。它简单易用，能解决大部分场景下的线程安全问题。然而，随着业务场景的复杂化和对性能、灵活性的更高要求，`synchronized` 的局限性也逐渐显现。此时，`java.util.concurrent.locks` 包下的 `Lock` 接口及其实现类应运而生，提供了更强大、更灵活的锁机制。
 
@@ -248,7 +250,6 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
         System.out.println("未能获取锁，稍后重试...");
     }
 
-
     - 1
     - 2
     - 3
@@ -279,7 +280,6 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
         Thread.currentThread().interrupt(); // 重新设置中断状态
         System.out.println("等待锁时被中断。");
     }
-
 
     - 1
     - 2
@@ -314,7 +314,6 @@ AQS 提供了一套标准的流程框架，而具体的锁（如 `ReentrantLock`
         System.out.println("获取锁的操作被中断。");
         // 可以进行中断处理，比如取消任务
     }
-
 
     - 1
     - 2
@@ -1043,7 +1042,7 @@ public class Cache<K, V> {
 1. 调用 AQS 的 `releaseShared(1)` 方法。
 2. `releaseShared(1)` 会调用子类实现的 `tryReleaseShared(1)`。
    * `tryReleaseShared()`:
-     + 在一个循环中，使用 CAS **原子地减少** `state` 的高 16 位（读计数）。 `newState = oldState - SHARED_UNIT`。
+     + 在一个循环中，使用 CAS **原子地减少** `state` 的高 16 位（读计数）。`newState = oldState - SHARED_UNIT`。
      + 如果 CAS 成功：
        - 检查新的读计数是否为 0 (`sharedCount(newState) == 0`)。如果是，表示最后一个读锁已释放，返回 `true`（表示可能需要唤醒等待写锁的线程）。
        - 如果新的读计数不为 0，返回 `false`。
@@ -1333,7 +1332,7 @@ public class BoundedBuffer<T> {
    * **`CANCELLED` (1)**：表示节点对应的线程因为超时或中断而取消了等待。处于此状态的节点会被忽略，并最终从队列中移除。
    * **`SIGNAL` (-1)**：表示**后继节点**（或即将成为后继节点的线程）需要被唤醒 (`unpark`)。当前节点在释放同步状态或被取消时，如果其 `waitStatus` 是 `SIGNAL`，它有责任唤醒它的后继节点。
    * **`CONDITION` (-2)**：表示节点当前在**条件队列** (`Condition` queue) 中等待，而不是在 AQS 的主同步队列中。当节点从条件队列转移到同步队列时，状态会被修改。
-   * **`PROPAGATE` (-3)**：主要用于共享模式 (`ReadWriteLock` 的读锁, `Semaphore` 等)。表示 `releaseShared` 操作需要向后传播，即使当前节点可能不需要唤醒，也需要确保唤醒动作能传递给后续节点。
+   * **`PROPAGATE` (-3)**：主要用于共享模式 (`ReadWriteLock` 的读锁，`Semaphore` 等)。表示 `releaseShared` 操作需要向后传播，即使当前节点可能不需要唤醒，也需要确保唤醒动作能传递给后续节点。
    * **`0` (初始状态)**：新创建的节点或刚从条件队列转移过来的节点的默认状态。
 4. **独占模式 (Exclusive) vs 共享模式 (Shared)**：AQS 支持两种资源访问模式，体现在获取和释放同步状态的方法上。
 
@@ -1347,71 +1346,49 @@ public class BoundedBuffer<T> {
 
 acquireQueued 循环
 
-
 成功
 
-
 失败
-
 
 是
 
-
 成功
-
 
 失败
 
-
 否
-
 
 需要 park
 
-
 不需要 park
-
 
 自旋循环
 
-
 获取前驱 P
-
 
 P 是 Head?
 
-
 再次尝试 tryAcquire
-
 
 检查是否需要 park
 
-
 调用 LockSupport.parkT挂起
-
 
 被 unpark 唤醒
 
-
 线程 T 调用 lock
-
 
 尝试 tryAcquire
 
-
-获取锁成功, lock 返回
-
+获取锁成功，lock 返回
 
 调用 addWaiter-Node.EXCLUSIVE
 
-
 将 T 封装成 Node, CAS 加入队尾
-
 
 调用 acquireQueuednode, 1
 
-
-将当前 Node 设为 Head, 获取锁成功
+将当前 Node 设为 Head，获取锁成功
 
 1. **`tryAcquire`**: 尝试获取锁。成功则直接返回。
 2. **`addWaiter`**: 如果 `tryAcquire` 失败，将当前线程包装成 `Node` 并通过 CAS 加入等待队列尾部。
@@ -1427,39 +1404,27 @@ P 是 Head?
 
 unparkSuccessor 逻辑
 
-
 成功-锁已完全释放
-
 
 是
 
-
 否
-
 
 失败 锁未完全释放/重入
 
-
 调用 unparkSuccessor
-
 
 找到 H 的下一个有效等待节点 S
 
-
 调用 LockSupport.unpark
-
 
 线程 T 调用 unlock
 
-
 尝试 tryRelease
-
 
 获取 Head 节点 H
 
-
 H != null 且 H.waitStatus != 0?
-
 
 unlock 返回
 
@@ -1560,7 +1525,7 @@ AQS 是一个设计精巧、功能强大的同步基础框架。它通过 `state
 
 
    ```
-3. **谨慎选择公平锁**：非公平锁通常具有更高的吞吐量。仅在确实需要保证获取锁的顺序性或防止饥饿时才使用公平锁 (`new ReentrantLock(true)` 或 `new ReentrantReadWriteLock(true)`), 并注意其可能带来的性能损耗。
+3. **谨慎选择公平锁**：非公平锁通常具有更高的吞吐量。仅在确实需要保证获取锁的顺序性或防止饥饿时才使用公平锁 (`new ReentrantLock(true)` 或 `new ReentrantReadWriteLock(true)`)，并注意其可能带来的性能损耗。
 4. **合理使用读写锁**：仅在**读多写少**且**读操作耗时相对较长**的场景下使用 `ReadWriteLock`。评估其引入的复杂性和开销是否值得。
 5. **`Condition.await()` 使用 `while` 循环**：在使用 `Condition.await()` 等待条件满足时，应始终在 `while` 循环中检查条件，以防止“虚假唤醒”。
 

@@ -1,13 +1,17 @@
 ---
 title: "JUC线程池-ThreadPoolExecutor"
 description: "在探讨ThreadPoolExecutor的细节之前，我们首先要理解为什么在Java并发编程中，线程池扮演着如此重要的角色。"
-status: draft
+status: curated
 sidebar:
   order: 31
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147244662)
+
+:::tip[要点]
+- 七个参数：核心线程数、最大线程数、空闲存活时间及单位、工作队列、线程工厂、拒绝策略。
+- 提交顺序：先建核心线程，满了进队列，队列满了才建非核心线程，再满就拒绝。
+- 不要用 `Executors` 的快捷方法：无界队列或无上限的线程数在高负载下会导致内存溢出。
+:::
 
 ## 1. 引言：为什么需要线程池？
 
@@ -39,9 +43,7 @@ while (true) {
 为了解决上述问题，“池化”（Pooling）技术应运而生。线程池的核心思想就是**复用**已经创建的线程，避免频繁创建和销毁带来的开销。
 
 想象一个工厂的流水线，工厂不会为每个零件都雇佣一个新工人，然后完工后解雇他。(如果这样做就很逆天了)  
- 而是会雇佣一批固定或有上限的工人（线程），让他们待在工厂里（线程池）。当有零件需要加工时（任务来了），就从空闲的工人中找一个去处理。如果所有工人都在忙，新的零件就在传送带上排队等待（任务队列）。  
- 如果传送带也满了，工厂可能临时加雇一些工人（非核心线程），但工人总数不能超过工厂的最大容量。  
- 如果连临时工都满了，工厂就只能拒绝接收新的零件（拒绝策略）。当零件加工高峰期过去，临时工没事干了就会被解雇（非核心线程回收）。
+ 而是会雇佣一批固定或有上限的工人（线程），让他们待在工厂里（线程池）。当有零件需要加工时（任务来了），就从空闲的工人中找一个去处理。如果所有工人都在忙，新的零件就在传送带上排队等待（任务队列）。如果传送带也满了，工厂可能临时加雇一些工人（非核心线程），但工人总数不能超过工厂的最大容量。如果连临时工都满了，工厂就只能拒绝接收新的零件（拒绝策略）。当零件加工高峰期过去，临时工没事干了就会被解雇（非核心线程回收）。
 
 这就是线程池的基本运作模式：
 
@@ -265,8 +267,7 @@ ExecutorService cachedPool = Executors.newCachedThreadPool();
 2. **`newCachedThreadPool` 的风险**：
    * 它的`maximumPoolSize`被设置为`Integer.MAX_VALUE`。如果短时间内有大量任务涌入，并且任务执行时间稍长，线程池会创建大量的线程（理论上可达2^31-1个），这同样可能耗尽系统资源（内存或线程数限制），导致系统崩溃或OOM。
 
-**最佳实践**：  
- 在阿里巴巴Java开发规约中，**强制**要求开发者**不允许**使用`Executors`去创建线程池，而是通过`ThreadPoolExecutor`的构造函数，这样可以让开发者更加明确线程池的运行规则，规避资源耗尽的风险。
+**最佳实践**：在阿里巴巴Java开发规约中，**强制**要求开发者**不允许**使用`Executors`去创建线程池，而是通过`ThreadPoolExecutor`的构造函数，这样可以让开发者更加明确线程池的运行规则，规避资源耗尽的风险。
 
 > **【强制】线程资源必须通过线程池提供，不允许在应用中自行显式创建线程。**  
 >  说明：使用线程池的好处是减少在创建和销毁线程上所消耗的时间以及系统资源的开销，解决资源不足的问题。如果不使用线程池，有可能造成系统创建大量同类线程而导致消耗完内存或者“过度切换”的问题。
@@ -410,7 +411,7 @@ public ThreadPoolExecutor(int corePoolSize,
    * **缺点**：
      + **无界时**：可能导致任务无限积压，最终耗尽内存（OOM风险），使得`maximumPoolSize`和`keepAliveTime`参数失效。**`Executors.newFixedThreadPool`和`newSingleThreadExecutor`使用的就是它！**
      + **有界时**：需要指定容量。
-   * **示例**：`new LinkedBlockingQueue<>()` (无界), `new LinkedBlockingQueue<>(1000)` (有界，容量1000)。
+   * **示例**：`new LinkedBlockingQueue<>()` (无界)，`new LinkedBlockingQueue<>(1000)` (有界，容量1000)。
 3. **`SynchronousQueue`**
 
    * **特点**：一个**不存储元素**的阻塞队列。每个插入操作必须等待一个相应的移除操作，反之亦然。可以看作是一个“直接传递”或“握手”通道。
@@ -460,8 +461,7 @@ public ThreadPoolExecutor(int corePoolSize,
   + **缺点**：如果`maximumPoolSize`无限制，可能创建过多线程导致OOM或系统崩溃。如果`maximumPoolSize`有限，则拒绝任务的阈值较低。
   + **适用场景**：处理大量、执行时间非常短、需要快速响应的任务，且系统资源充足或`maximumPoolSize`设置合理。
 
-**选择建议**：  
- 在绝大多数生产场景下，**优先考虑使用有界队列** (`ArrayBlockingQueue` 或 `LinkedBlockingQueue` 带容量)。容量大小需要根据任务特性、处理能力和可接受的延迟进行压测和调优。
+**选择建议**：在绝大多数生产场景下，**优先考虑使用有界队列** (`ArrayBlockingQueue` 或 `LinkedBlockingQueue` 带容量)。容量大小需要根据任务特性、处理能力和可接受的延迟进行压测和调优。
 
 ### 4.5 `threadFactory`：线程工厂
 
@@ -616,7 +616,6 @@ ThreadPoolExecutor executor = new ThreadPoolExecutor(
          }
      }
 
-
      + 1
      + 2
      + 3
@@ -644,7 +643,6 @@ ThreadPoolExecutor executor = new ThreadPoolExecutor(
              }
          }
      }
-
 
      + 1
      + 2
@@ -674,7 +672,6 @@ ThreadPoolExecutor executor = new ThreadPoolExecutor(
          }
      }
 
-
      + 1
      + 2
      + 3
@@ -702,7 +699,6 @@ ThreadPoolExecutor executor = new ThreadPoolExecutor(
              }
          }
      }
-
 
      + 1
      + 2
@@ -848,8 +844,7 @@ public static class ForcePutPolicy implements RejectedExecutionHandler {
 3. **系统资源有保障**：有足够的内存来支撑队列的增长，且有监控机制防止内存溢出。
 4. **临时性过载**：预期系统只是临时性过载，后续处理能力会跟上，队列不会无限增长。
 
-**更好的替代方案**：  
- 通常，使用`CallerRunsPolicy`提供的反压机制，或者自定义策略将任务持久化到外部存储（如MQ、DB）进行异步处理，是更健壮、更推荐的方案。强制使用`put()`阻塞提交线程往往是最后的、效果不佳的选择。
+**更好的替代方案**：通常，使用`CallerRunsPolicy`提供的反压机制，或者自定义策略将任务持久化到外部存储（如MQ、DB）进行异步处理，是更健壮、更推荐的方案。强制使用`put()`阻塞提交线程往往是最后的、效果不佳的选择。
 
 ## 5. 深入理解`ThreadPoolExecutor`工作原理
 
@@ -861,45 +856,31 @@ public static class ForcePutPolicy implements RejectedExecutionHandler {
 
 是
 
-
 否
 
-
 否
-
 
 是
 
-
 是
-
 
 否
 
-
-开始: 提交新任务task
-
+开始：提交新任务task
 
 当前运行线程数 < corePoolSize?
 
-
 创建新 \*\*核心线程\*\* 执行任务
 
-
-任务队列 `workQueue` 是否已满?
-
+任务队列 `workQueue` 是否已满？
 
 将任务添加到 `workQueue`
 
-
 当前运行线程数 < maximumPoolSize?
-
 
 创建新 \*\*非核心线程\*\* 执行任务
 
-
 执行 \*\*拒绝策略\*\* `rejectedExecutionHandler`
-
 
 结束
 
@@ -2008,8 +1989,7 @@ Java Management Extensions (JMX) 是一种标准的Java应用监控和管理框�
 
 ## 11. 总结
 
-`ThreadPoolExecutor`是Java并发编程的快刀了属于是，它强大、灵活，但也相对复杂。掌握它需要理解其核心参数、工作原理、状态转换和源码细节。  
- 这块部分多重要应该不需要多说了,学就完事了奥利给!  
+`ThreadPoolExecutor`是Java并发编程的快刀了属于是，它强大、灵活，但也相对复杂。掌握它需要理解其核心参数、工作原理、状态转换和源码细节。这块部分多重要应该不需要多说了，学就完事了奥利给！  
  **核心要点回顾**：
 
 * **目的**：复用线程，管理资源，提高性能，简化并发编程。

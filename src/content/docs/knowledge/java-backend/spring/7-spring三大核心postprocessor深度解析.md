@@ -5,19 +5,15 @@ status: draft
 sidebar:
   order: 153681145
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153681145)
 
-## 前言
-
 Spring的后处理器(PostProcessor)是Spring
-框架 
-对外开放的最重要扩展点之一,它允许我们深度介入到Bean的整个生命周期中,实现动态注册BeanDefinition、动态修改BeanDefinition以及动态修改Bean实例等强大功能。
+框架
+对外开放的最重要扩展点之一，它允许我们深度介入到Bean的整个生命周期中，实现动态注册BeanDefinition、动态修改BeanDefinition以及动态修改Bean实例等强大功能。
 
-本文将通过**大量核心源码分析**和**详细的流程图**,深入剖析Spring三大核心PostProcessor的执行原理。
+本文将通过**大量核心源码分析**和**详细的流程图**，深入剖析Spring三大核心PostProcessor的执行原理。
 
-> 如果你对BeanDefinition不太熟悉,建议先阅读:[Spring核心模块解析—BeanDefinition](https://blog.csdn.net/qq_45852626/article/details/128748042)
+> 如果你对BeanDefinition不太熟悉，建议先阅读:[Spring核心模块解析—BeanDefinition](https://blog.csdn.net/qq_45852626/article/details/128748042)
 
 ---
 
@@ -48,7 +44,7 @@ Spring PostProcessor体系
 
 ### 1.1 基本介绍
 
-`BeanFactoryPostProcessor` 是Spring提供的第一个核心扩展点,它允许我们在**所有BeanDefinition加载完成之后,Bean实例化之前**对BeanDefinition进行修改。
+`BeanFactoryPostProcessor` 是Spring提供的第一个核心扩展点，它允许我们在**所有BeanDefinition加载完成之后，Bean实例化之前**对BeanDefinition进行修改。
 
 #### 🔍 核心 接口源码
 
@@ -89,124 +85,91 @@ Spring容器启动
 
 ```
 
-流程图:
+流程图：
 
 是
 
-
 否
-
 
 是
 
-
 否
 
-
-开始: invokeBeanFactoryPostProcessors
-
+开始：invokeBeanFactoryPostProcessors
 
 beanFactory是否为
-  
+
 BeanDefinitionRegistry?
 
-
-第一部分: 处理BeanDefinitionRegistryPostProcessor
-
+第一部分：处理BeanDefinitionRegistryPostProcessor
 
 直接执行参数传入的
-  
-BeanFactoryPostProcessor
 
+BeanFactoryPostProcessor
 
 遍历参数传入的beanFactoryPostProcessors
 
-
 是否为
-  
+
 BeanDefinitionRegistryPostProcessor?
 
-
 立即执行postProcessBeanDefinitionRegistry
-  
+
 并加入registryProcessors列表
 
-
 加入regularPostProcessors列表
-  
+
 普通BeanFactoryPostProcessor
 
-
 从容器中查找
-  
+
 BeanDefinitionRegistryPostProcessor类型的Bean
 
-
-第1优先级: PriorityOrdered
-
+第1优先级：PriorityOrdered
 
 排序并执行
-  
+
 postProcessBeanDefinitionRegistry
 
-
-第2优先级: Ordered
-
+第2优先级：Ordered
 
 排序并执行
-  
+
 postProcessBeanDefinitionRegistry
 
-
-第3优先级: 无优先级接口
-
+第3优先级：无优先级接口
 
 循环执行直到没有新的
-  
+
 postProcessBeanDefinitionRegistry
 
-
 执行所有BeanDefinitionRegistryPostProcessor
-  
-的postProcessBeanFactory方法
 
+的postProcessBeanFactory方法
 
 执行参数传入的regularPostProcessors
-  
+
 的postProcessBeanFactory方法
 
-
-第二部分: 处理普通BeanFactoryPostProcessor
-
+第二部分：处理普通BeanFactoryPostProcessor
 
 从容器中查找BeanFactoryPostProcessor
-  
-排除已处理的
 
+排除已处理的
 
 分为3个优先级列表
 
-
 1. PriorityOrdered类型
-
 
 2. Ordered类型
 
-
 3. 无优先级类型
 
-
 排序并执行postProcessBeanFactory
-
-
-排序并执行postProcessBeanFactory
-
 
 执行postProcessBeanFactory
 
-
 清除元数据缓存
-
 
 结束
 
@@ -646,7 +609,7 @@ public class CustomScopeModifier implements BeanFactoryPostProcessor {
 
 ### 2.1 基本介绍
 
-`BeanDefinitionRegistryPostProcessor` 是 `BeanFactoryPostProcessor` 的子接口,它在父接口的基础上**新增了一个更早执行的方法**,允许我们**动态注册新的BeanDefinition**。
+`BeanDefinitionRegistryPostProcessor` 是 `BeanFactoryPostProcessor` 的子接口，它在父接口的基础上**新增了一个更早执行的方法**，允许我们**动态注册新的BeanDefinition**。
 
 这是Spring中**最强大的扩展点之一**!
 
@@ -709,7 +672,7 @@ Spring容器启动
 
 ### 2.3 ConfigurationClassPostProcessor 源码深度剖析 ⭐⭐⭐
 
-这是Spring中**最重要的一个PostProcessor**,它负责处理:
+这是Spring中**最重要的一个PostProcessor**，它负责处理：
 
 * `@Configuration` 类
 * `@ComponentScan` 扫描
@@ -1199,102 +1162,69 @@ class ConfigurationClassParser {
 
 是
 
-
 否
-
 
 Spring容器启动
 
-
 扫描初始BeanDefinition
-
 
 执行BeanDefinitionRegistryPostProcessor
 
-
 按优先级分类
-
 
 PriorityOrdered组
 
-
 Ordered组
-
 
 普通组
 
-
 ConfigurationClassPostProcessor执行
-
 
 processConfigBeanDefinitions
 
-
 ConfigurationClassParser.parse
-
 
 处理各种注解
 
-
 @ComponentScan扫描包
-
 
 @Import导入
 
-
 @Bean方法
-
 
 @PropertySource
 
-
 Import类型判断
-
 
 ImportSelector
 
-
 ImportBeanDefinitionRegistrar
-
 
 普通Configuration
 
-
 selectImports返回类名
-
 
 递归处理返回的类
 
-
 暂存Registrar稍后执行
-
 
 作为配置类递归处理
 
-
 注册扫描到的BeanDefinition
-
 
 注册@Bean方法的BeanDefinition
 
-
 添加PropertySource到Environment
-
 
 继续解析
 
-
 是否有新的配置类？
-
 
 loadBeanDefinitions
 
-
 执行postProcessBeanFactory
 
-
 增强@Configuration类（CGLIB）
-
 
 开始实例化Bean
 
@@ -1468,7 +1398,7 @@ public class MyComponentScanner implements BeanDefinitionRegistryPostProcessor,
 
 ### 3.1 基本介绍
 
-`BeanPostProcessor` 是在**Bean实例化之后,初始化前后**执行的后处理器。它操作的是**已经创建好的Bean实例**,而不是BeanDefinition。
+`BeanPostProcessor` 是在**Bean实例化之后，初始化前后**执行的后处理器。它操作的是**已经创建好的Bean实例**，而不是BeanDefinition。
 
 #### 🔍 核心接口源码
 
@@ -2139,158 +2069,113 @@ public class BeanValidationPostProcessor implements BeanPostProcessor {
 
 Application
 
-
 ApplicationContext
-
 
 PostProcessorRegistrationDelegate
 
-
 BeanDefinitionRegistryPostProcessor
-
 
 BeanFactoryPostProcessor
 
-
 BeanFactory
-
 
 BeanPostProcessor
 
-
 Bean实例
-
 
 SpringApplication.run()
 
-
 refresh()
-
 
 阶段1：准备BeanFactory
 
 obtainFreshBeanFactory()
 
-
 prepareBeanFactory()
-
 
 阶段2：执行BeanFactoryPostProcessor
 
 invokeBeanFactoryPostProcessors()
 
-
 2.1 执行BeanDefinitionRegistryPostProcessor
 
 PriorityOrdered组.postProcessBeanDefinitionRegistry()
-
 
 ConfigurationClassPostProcessor在这里执行!\n处理@Import、@ComponentScan等
 
 注册新的BeanDefinition
 
-
 Ordered组.postProcessBeanDefinitionRegistry()
 
-
 注册新的BeanDefinition
-
 
 普通组.postProcessBeanDefinitionRegistry()
 
-
 注册新的BeanDefinition
-
 
 2.2 执行postProcessBeanFactory()
 
 BeanDefinitionRegistryPostProcessor.postProcessBeanFactory()
 
-
 BeanFactoryPostProcessor.postProcessBeanFactory()
 
-
 修改BeanDefinition
-
 
 阶段3：注册BeanPostProcessor
 
 registerBeanPostProcessors()
 
-
 实例化并注册所有BeanPostProcessor
-
 
 阶段4：实例化Bean
 
 finishBeanFactoryInitialization()
 
-
 实例化Bean（构造函数）
-
 
 属性填充（依赖注入）
 
-
 Aware接口回调
 
-
 postProcessBeforeInitialization()
-
 
 @PostConstruct在这里执行
 
 返回Bean（可能是增强后的）
 
-
 初始化（InitializingBean, init-method）
 
-
 postProcessAfterInitialization()
-
 
 AOP代理在这里生成
 
 返回Bean（可能是代理）
 
-
 Bean就绪
-
 
 loop
 
-
 ["遍历所有BeanDefinition"]
-
 
 阶段5：完成刷新
 
 finishRefresh()
 
-
 容器启动完成
-
 
 Application
 
-
 ApplicationContext
-
 
 PostProcessorRegistrationDelegate
 
-
 BeanDefinitionRegistryPostProcessor
-
 
 BeanFactoryPostProcessor
 
-
 BeanFactory
 
-
 BeanPostProcessor
-
 
 Bean实例
 
@@ -2453,13 +2338,13 @@ class MyService {
 
 ## 五、常见面试题解析
 
-### Q1: BeanFactoryPostProcessor和BeanPostProcessor的区别?
+### Q1: BeanFactoryPostProcessor和BeanPostProcessor的区别？
 
 **回答:**
 
 | 维度 | BeanFactoryPostProcessor | BeanPostProcessor |
 | --- | --- | --- |
-| **执行时机** | Bean定义加载完成后,Bean实例化之前 | Bean实例化之后,初始化前后 |
+| **执行时机** | Bean定义加载完成后，Bean实例化之前 | Bean实例化之后，初始化前后 |
 | **操作对象** | BeanDefinition (设计图) | Bean实例 (成品对象) |
 | **方法数量** | 1个 (postProcessBeanFactory) | 2个 (Before/After) |
 | **典型应用** | 属性占位符替换、修改Bean作用域 | AOP代理、依赖注入 |
@@ -2467,14 +2352,14 @@ class MyService {
 
 **核心区别:**
 
-* **Factory**PostProcessor在Bean**实例化之前**,修改**定义**
-* **Bean**PostProcessor在Bean**实例化之后**,修改**实例**
+* **Factory**PostProcessor在Bean**实例化之前**，修改**定义**
+* **Bean**PostProcessor在Bean**实例化之后**，修改**实例**
 
-### Q2: 为什么ConfigurationClassPostProcessor最先执行?
+### Q2: 为什么ConfigurationClassPostProcessor最先执行？
 
 **回答:**
 
-虽然`ConfigurationClassPostProcessor`的`getOrder()`返回`LOWEST_PRECEDENCE` (最低优先级),但它仍然最先执行,原因是:
+虽然`ConfigurationClassPostProcessor`的`getOrder()`返回`LOWEST_PRECEDENCE` (最低优先级)，但它仍然最先执行，原因是：
 
 ```java
 public class ConfigurationClassPostProcessor
@@ -2492,9 +2377,9 @@ public class ConfigurationClassPostProcessor
 **关键点:**
 
 1. 它实现了`PriorityOrdered`接口
-2. Spring的执行顺序: **PriorityOrdered组 > Ordered组 > 普通组**
+2. Spring的执行顺序：**PriorityOrdered组 > Ordered组 > 普通组**
 3. `getOrder()`只在**同组内**排序
-4. 即使order值很大,只要是`PriorityOrdered`,就优先于所有`Ordered`
+4. 即使order值很大，只要是`PriorityOrdered`，就优先于所有`Ordered`
 
 **类比:**
 
@@ -2510,11 +2395,11 @@ VIP客户 (PriorityOrdered)
 
 ```
 
-### Q3: @Autowired是在哪个阶段注入的?
+### Q3: @Autowired是在哪个阶段注入的？
 
 **回答:**
 
-`@Autowired`注入发生在**Bean实例化之后,初始化之前**,具体是在`AutowiredAnnotationBeanPostProcessor`的`postProcessProperties()`方法中。
+`@Autowired`注入发生在**Bean实例化之后，初始化之前**，具体是在`AutowiredAnnotationBeanPostProcessor`的`postProcessProperties()`方法中。
 
 **完整流程:**
 
@@ -2554,11 +2439,11 @@ public class AutowiredAnnotationBeanPostProcessor
 
 ```
 
-### Q4: AOP代理是在什么时候生成的?
+### Q4: AOP代理是在什么时候生成的？
 
 **回答:**
 
-AOP代理在**Bean初始化之后**生成,具体在`AbstractAutoProxyCreator.postProcessAfterInitialization()`方法中。
+AOP代理在**Bean初始化之后**生成，具体在`AbstractAutoProxyCreator.postProcessAfterInitialization()`方法中。
 
 **时序:**
 
@@ -2581,9 +2466,9 @@ AOP代理在**Bean初始化之后**生成,具体在`AbstractAutoProxyCreator.pos
 
 **为什么在初始化后?**
 
-因为需要等Bean完全初始化完成,所有属性都设置好,才能安全地创建代理。
+因为需要等Bean完全初始化完成，所有属性都设置好，才能安全地创建代理。
 
-### Q5: 如何自定义一个starter的自动装配?
+### Q5: 如何自定义一个starter的自动装配？
 
 **回答:**
 
@@ -2836,7 +2721,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
 
 ## 结语
 
-希望本文能帮助你深入理解Spring的核心机制!如果有任何疑问,欢迎留言讨论。🙏
+希望本文能帮助你深入理解Spring的核心机制！如果有任何疑问，欢迎留言讨论。🙏
 
 ---
 
@@ -2858,8 +2743,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
 
 ### 前言
 
-Spring的后处理器是Spring对外开发的重要扩展点，允许我们介入到Bean的整个实例化流程中来，以达到动态注册BeanDefinition，动态修改BeanDefinition，以及动态修改Bean的作用。  
- 如果你不太清楚BeanDefinition是干嘛的，推进你看看我写的另外一篇文章，相信可以帮助到你：[Spring核心模块解析—BeanDifinition。](https://blog.csdn.net/qq_45852626/article/details/128748042)
+Spring的后处理器是Spring对外开发的重要扩展点，允许我们介入到Bean的整个实例化流程中来，以达到动态注册BeanDefinition，动态修改BeanDefinition，以及动态修改Bean的作用。如果你不太清楚BeanDefinition是干嘛的，推进你看看我写的另外一篇文章，相信可以帮助到你：[Spring核心模块解析—BeanDifinition。](https://blog.csdn.net/qq_45852626/article/details/128748042)
 
 #### Spring的后处理器
 
@@ -2873,14 +2757,12 @@ Sping的后处理器是Spring对外开发的重要扩展点，允许我们介入
 
 ##### 作用
 
-1.允许我们在**Spring容器加载Bean定义之后**，对Bean定义进行修改，从而影响到容器中实际实例化的Bean。  
- 2.主要用途是应用程序上下文准备就绪前，修改或添加Bean定义。  
- 3.也可以用来执行自定义的Bean验证或Bean初始化逻辑。
+1。允许我们在**Spring容器加载Bean定义之后**，对Bean定义进行修改，从而影响到容器中实际实例化的Bean。2。主要用途是应用程序上下文准备就绪前，修改或添加Bean定义。3。也可以用来执行自定义的Bean验证或Bean初始化逻辑。
 
 ##### 基本信息
 
 beanFactoryPostProcessor是一个接口规范，实现了该接口的
-类 
+类
 只要交由Spring容器管理的话，那么Spring就会回调该接口的方法，用于对**BeanDefinition注册和修改的功能**。
 
 我们先来关注一下接口里面方法的参数：`ConfigurableListableBeanFactory`  
@@ -2903,10 +2785,9 @@ public interface ListableBeanFactory extends BeanFactory
 
 ##### 经典场景
 
-业务场景：配置文件中的占位符替换为实际值的情况。比如将配置文件中的数据库连接URL，用户名和密码等信息替换为实际的值。  
- 经典用途是用它实现属性占位符的解析，通过实现`BeanFactoryPostProcessor`接口并重写`postProcessBeanFactory()`，我们使用Spring的占位符解析机制（如${…}）来解析Bean定义中的属性占位符，并将其替换为实际的属性值。  
- 下面我们来介绍一下代码实现：  
- 1.首先在Spring配置文件中定义`PropertyPlaceholderConfigurer`实例，用来解析占位符。
+业务场景：配置文件中的占位符替换为实际值的情况。比如将配置文件中的数据库连接URL，用户名和密码等信息替换为实际的值。经典用途是用它实现属性占位符的解析，通过实现`BeanFactoryPostProcessor`接口并重写`postProcessBeanFactory()`，我们使用Spring的占位符解析机制（如${…}）来解析Bean定义中的属性占位符，并将其替换为实际的属性值。
+
+下面我们来介绍一下代码实现：1。首先在Spring配置文件中定义`PropertyPlaceholderConfigurer`实例，用来解析占位符。
 
 ```xml
 <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -2916,8 +2797,7 @@ public interface ListableBeanFactory extends BeanFactory
 
 ```
 
-上面的配置中，`PropertyPlaceholderConfigurer`实例用于解析`jdbc.properties`文件中的占位符。  
- 2.实现一个`BeanFactoryPostProcessor`接口的实现类，用于在应用程序上下文准备就绪之前替换Bean定义中的占位符，例如：
+上面的配置中，`PropertyPlaceholderConfigurer`实例用于解析`jdbc.properties`文件中的占位符。2。实现一个`BeanFactoryPostProcessor`接口的实现类，用于在应用程序上下文准备就绪之前替换Bean定义中的占位符，例如：
 
 ```java
 public class PropertyPlaceholderReplacer implements BeanFactoryPostProcessor {
@@ -2953,7 +2833,7 @@ public class PropertyPlaceholderReplacer implements BeanFactoryPostProcessor {
 
 ```
 
-3.最后在Spring配置文件中注册`PropertyPlaceholderReplacer`实例，让它参与应用程序上下文创建过程：
+3。最后在Spring配置文件中注册`PropertyPlaceholderReplacer`实例，让它参与应用程序上下文创建过程：
 
 ```xml
 <bean class="com.example.PropertyPlaceholderReplacer"/>
@@ -2967,29 +2847,23 @@ Spring容器启动时，`PropertyPlaceholderReplacer`实例会被创建并自动
 
 ###### 基本介绍
 
-它是Spring框架的一个扩展点，用于对Bean定义的注册过程进行干预和定制。  
- 继承`BeanFactoryPostProcessor`接口，并在其基础上扩展了一个新的方法，即：`postProcessBeanDefinitionRegistry()`方法。
+它是Spring框架的一个扩展点，用于对Bean定义的注册过程进行干预和定制。继承`BeanFactoryPostProcessor`接口，并在其基础上扩展了一个新的方法，即：`postProcessBeanDefinitionRegistry()`方法。
 
 ###### 用途
 
-在Spring容器初始化时，首先会读取应用程序中的配置文件，并解析出所有的Bean定义，然后将这些Bean定义注册到容器中。  
- 在这个过程中，`BeanDefinitionRegistryProcessor`提供了一种机制，允许开发人员在Bean定义注册之前和之后对Bean定义进行自定义处理，例如添加，修改或删除Bean定义等。
+在Spring容器初始化时，首先会读取应用程序中的配置文件，并解析出所有的Bean定义，然后将这些Bean定义注册到容器中。在这个过程中，`BeanDefinitionRegistryProcessor`提供了一种机制，允许开发人员在Bean定义注册之前和之后对Bean定义进行自定义处理，例如添加，修改或删除Bean定义等。
 
 ###### 具体原理
 
 具体来说，`BeanDefinitionRegistryPostProcessor`提供了以下两个方法：
 
 1. `postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)`：该方法在所有**Bean定义加载完成之后，Bean实例化之前被调用**，允许开发人员对Bean定义进行自定义修改，例如添加，修改或删除Bean定义等。
-2. `postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)`: 该方法是继承自`BeanFactoryPostProcessor`接口的方法，用于在**BeanFactory完成实例化之后**对BeanFactory进行后置处理。  
-    那么我们通过`BeanDefinitionRegistryPostProcessor`接口，开发人员可以在Spring容器启动时干预Bean的注册过程，从而实现对Bean的自定义处理。  
-    例如：  
-    可以通过该接口来动态注册Bean定义，从而实现基于注解或者其他方式的自动发现和注册Bean。  
-    同时，该接口也提供了一种扩展点，允许开发人员在Bean定义注册之后再进行后置处理，例如对Bean的属性进行统一设置，验证等操作。
+2. `postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)`: 该方法是继承自`BeanFactoryPostProcessor`接口的方法，用于在**BeanFactory完成实例化之后**对BeanFactory进行后置处理。那么我们通过`BeanDefinitionRegistryPostProcessor`接口，开发人员可以在Spring容器启动时干预Bean的注册过程，从而实现对Bean的自定义处理。  
+    例如：可以通过该接口来动态注册Bean定义，从而实现基于注解或者其他方式的自动发现和注册Bean。同时，该接口也提供了一种扩展点，允许开发人员在Bean定义注册之后再进行后置处理，例如对Bean的属性进行统一设置，验证等操作。
 
 ###### 例子——注册BeanDefinition
 
-`BeanDefinitionRegistryPostProcessor`接口主要用于注册和修改`BeanDefinition`。  
- 在`postProcessBeanDefinitionRegistry()`方法中，开发人员可以通过`BeanDefinitionRegistry`对象注册新的`BeanDefinition`，例如：
+`BeanDefinitionRegistryPostProcessor`接口主要用于注册和修改`BeanDefinition`。在`postProcessBeanDefinitionRegistry()`方法中，开发人员可以通过`BeanDefinitionRegistry`对象注册新的`BeanDefinition`，例如：
 
 ```java
 import org.springframework.beans.BeansException;
@@ -3065,7 +2939,7 @@ public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegi
 * 注册 BeanDefinition 需要 `BeanDefinitionRegistry`，所以实现它的子接口 `BeanDefinitionRegistryPostProcessor`。
 * 扫描类路径不用自己遍历 class 文件，直接复用 Spring 的 `ClassPathBeanDefinitionScanner`，只要告诉它“认哪个注解”。
 
-1.定义注解：
+1。定义注解：
 
 ```java
 import java.lang.annotation.ElementType;
@@ -3079,7 +2953,7 @@ public @interface MyComponent {
 }
 ```
 
-2.在后处理器中扫描并注册：
+2。在后处理器中扫描并注册：
 
 ```java
 import org.springframework.beans.BeansException;
@@ -3108,7 +2982,7 @@ public class MyComponentScanPostProcessor implements BeanDefinitionRegistryPostP
 }
 ```
 
-3.使用：
+3。使用：
 
 ```java
 @MyComponent
@@ -3131,30 +3005,21 @@ Bean实例化之后，到最终缓存到名为singletonObjects的单例池之前
 
 ##### 基本原理
 
-它定义了两个方法：  
- `postProcessBeforeInitialization(Object bean, String beanName)`：在 Bean 初始化之前调用。  
- `postProcessAfterInitialization(Object bean, String beanName)`：在 Bean 初始化之后调用。
+它定义了两个方法：`postProcessBeforeInitialization(Object bean, String beanName)`：在 Bean 初始化之前调用。`postProcessAfterInitialization(Object bean, String beanName)`：在 Bean 初始化之后调用。
 
-我们可以通过实现`BeanPostProcessor`接口，并将其注册到Spring容器中，来实现对Bean初始化过程的控制和定制。  
- 在这两个方法中，我们可以根据需要对Bean进行一些自定义操作，例如：修改属性值，注入依赖，动态代理等等。
+我们可以通过实现`BeanPostProcessor`接口，并将其注册到Spring容器中，来实现对Bean初始化过程的控制和定制。在这两个方法中，我们可以根据需要对Bean进行一些自定义操作，例如：修改属性值，注入依赖，动态代理等等。
 
-在 Spring 容器启动的过程：  
- 1.当一个 Bean 被实例化后，Spring 容器会按照一定的顺序调用注册在容器中的所有 `BeanPostProcessor` 实现的`postProcessBeforeInitialization` 方法，  
- 2.然后调用 Bean 的 init 方法，最后再按照相反的顺序调用所有 `BeanPostProcessor` 实现的 `postProcessAfterInitialization` 方法。  
- 这个过程中，`BeanPostProcessor` 扮演着一个监听器的角色，允许开发人员在 Bean 初始化的过程中干预和修改 Bean 的行为，从而实现对 Spring 容器的定制和扩展。
+在 Spring 容器启动的过程：1。当一个 Bean 被实例化后，Spring 容器会按照一定的顺序调用注册在容器中的所有 `BeanPostProcessor` 实现的`postProcessBeforeInitialization` 方法，2。然后调用 Bean 的 init 方法，最后再按照相反的顺序调用所有 `BeanPostProcessor` 实现的 `postProcessAfterInitialization` 方法。
+
+这个过程中，`BeanPostProcessor` 扮演着一个监听器的角色，允许开发人员在 Bean 初始化的过程中干预和修改 Bean 的行为，从而实现对 Spring 容器的定制和扩展。
 
 ##### 运用的场景
 
-* 日志记录：  
-   可以使用BeanPostProcessor来实现在Bean实例化后、初始化前后打印日志，从而实现记录Bean生命周期的目的。
-* 数据库连接管理：  
-   可以使用BeanPostProcessor来在Bean实例化后、初始化前后获取并设置数据库连接，从而实现数据库连接的管理和复用。
-* 安全检查：  
-   可以使用BeanPostProcessor来实现在Bean实例化后、初始化前后对Bean的属性进行安全检查，例如检查是否有不安全的属性或敏感的数据，从而保证系统的安全性。
-* AOP（面向切面编程）：  
-   可以使用BeanPostProcessor来在Bean实例化后、初始化前后进行动态代理，从而实现AOP编程，例如实现事务控制、日志记录等功能。
-* 自定义注解：  
-   可以使用BeanPostProcessor来实现在Bean实例化后、初始化前后扫描并解析自定义注解，从而实现自定义注解的功能。例如，可以在Bean实例化后、初始化前后，扫描并解析所有的@MyAnnotation注解，并根据注解的内容进行相应的操作。
+* 日志记录：可以使用BeanPostProcessor来实现在Bean实例化后、初始化前后打印日志，从而实现记录Bean生命周期的目的。
+* 数据库连接管理：可以使用BeanPostProcessor来在Bean实例化后、初始化前后获取并设置数据库连接，从而实现数据库连接的管理和复用。
+* 安全检查：可以使用BeanPostProcessor来实现在Bean实例化后、初始化前后对Bean的属性进行安全检查，例如检查是否有不安全的属性或敏感的数据，从而保证系统的安全性。
+* AOP（面向切面编程）：可以使用BeanPostProcessor来在Bean实例化后、初始化前后进行动态代理，从而实现AOP编程，例如实现事务控制、日志记录等功能。
+* 自定义注解：可以使用BeanPostProcessor来实现在Bean实例化后、初始化前后扫描并解析自定义注解，从而实现自定义注解的功能。例如，可以在Bean实例化后、初始化前后，扫描并解析所有的@MyAnnotation注解，并根据注解的内容进行相应的操作。
 
 ##### 经典例子——时间日志增强
 
@@ -3232,18 +3097,19 @@ userService.show();
 * 代理对象只实现了接口，所以要按接口类型 `UserService` 获取，按 `UserServiceImpl` 获取会报类型不匹配。
 * 实际项目中不用自己写：Spring AOP 的 `AbstractAutoProxyCreator` 本身就是一个 `BeanPostProcessor`，也是在 `postProcessAfterInitialization` 中为 Bean 生成代理（有接口用 JDK 代理，没有接口用 CGLIB）。
 
-最后梳理一下，如果你前面耐心看完，这张图不用多解释了，一看就明白了🫡：  
- ![](./assets/129154666/706254fca1e8a72da9dd6f46.png)
+最后梳理一下，如果你前面耐心看完，这张图不用多解释了，一看就明白了🫡：
+
+![](./assets/129154666/706254fca1e8a72da9dd6f46.png)
 
 ##### BeanFactoryPostProcessor&&BeanPostProcessor的不同点
 
-`BeanFactoryPostProcessor`是Spring容器中用于在Bean定义加载到容器后、实例化之前对Bean的定义进行修改和扩展的扩展点。  
- 它可以通过实现`BeanFactoryPostProcessor`接口来注册自己的处理逻辑，对所有的Bean定义进行修改和扩展，包括修改Bean的属性值、修改Bean的依赖关系、注册新的Bean定义等等。  
- 通常情况下，我们可以使用`BeanFactoryPostProcessor`来实现一些与Bean定义相关的操作，例如通过解析外部配置文件动态修改Bean的属性值、实现Bean依赖的自动装配、注册新的Bean定义等等。
+`BeanFactoryPostProcessor`是Spring容器中用于在Bean定义加载到容器后、实例化之前对Bean的定义进行修改和扩展的扩展点。它可以通过实现`BeanFactoryPostProcessor`接口来注册自己的处理逻辑，对所有的Bean定义进行修改和扩展，包括修改Bean的属性值、修改Bean的依赖关系、注册新的Bean定义等等。
 
-`BeanPostProcessor`是Spring容器中用于在Bean实例化后、初始化前后对Bean进行自定义处理的扩展点。  
- 它可以通过实现`BeanPostProcessor`接口来注册自己的处理逻辑，对所有的Bean实例进行修改和扩展，包括修改Bean的属性值、动态代理Bean、实现AOP编程、记录日志等等。  
- 通常情况下，我们可以使用`BeanPostProcessor`来实现一些与Bean实例相关的操作，例如实现Bean的自定义初始化逻辑、记录Bean的生命周期、实现Bean的动态代理等等。
+通常情况下，我们可以使用`BeanFactoryPostProcessor`来实现一些与Bean定义相关的操作，例如通过解析外部配置文件动态修改Bean的属性值、实现Bean依赖的自动装配、注册新的Bean定义等等。
+
+`BeanPostProcessor`是Spring容器中用于在Bean实例化后、初始化前后对Bean进行自定义处理的扩展点。它可以通过实现`BeanPostProcessor`接口来注册自己的处理逻辑，对所有的Bean实例进行修改和扩展，包括修改Bean的属性值、动态代理Bean、实现AOP编程、记录日志等等。
+
+通常情况下，我们可以使用`BeanPostProcessor`来实现一些与Bean实例相关的操作，例如实现Bean的自定义初始化逻辑、记录Bean的生命周期、实现Bean的动态代理等等。
 
 #### 结尾
 

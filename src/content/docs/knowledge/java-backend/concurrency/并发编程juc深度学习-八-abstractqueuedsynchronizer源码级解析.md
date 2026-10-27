@@ -1,33 +1,35 @@
 ---
 title: "并发编程JUC深度学习(八）AbstractQueuedSynchronizer源码级解析"
 description: "如果看完这篇aqs看不明白的话，可以关注一下我后面要出的ReentrantLock，Semaphore，countdownlatch这些文章，因为aqs直接去理解的话有一点难度，我刚开始学习的时候也挺蒙，后面结合着看一看，触类旁通就简单很多了。"
-status: draft
+status: curated
 sidebar:
   order: 12
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126321073)
 
-## 前言
+:::tip[要点]
+- AQS 用一个 `volatile int state` 表示同步状态，用 CLH 变体的双向队列管理等待线程。
+- 子类只需实现 `tryAcquire` / `tryRelease`（独占）或 `tryAcquireShared` / `tryReleaseShared`（共享），排队、阻塞和唤醒由 AQS 完成。
+- `ConditionObject` 维护单独的条件队列，`signal` 时把节点转回同步队列。
+:::
 
 如果看完这篇aqs看不明白的话，可以关注一下我后面要出的`ReentrantLock，Semaphore，countdownlatch`这些文章，因为aqs直接去理解的话有一点难度，我刚开始学习的时候也挺蒙，后面结合着看一看，触类旁通就简单很多了。
 
-24年再来看之前写的文章发现还是有点太粗糙了,很多内容写的不明白,再整改一下.  
- 之前的缺点我总结了一下有下面几点:
+24年再来看之前写的文章发现还是有点太粗糙了，很多内容写的不明白，再整改一下。之前的缺点我总结了一下有下面几点：
 
-1. AQS的基本结构我没介绍清楚,`ConditionObject`,`CLH`队列的变体,`state`到底是怎么组成AQS的
-2. 3个基础构成部分写的不详细,
-3. 代码给的太长太乱,第一次读的朋友大概率会晕
-4. 图太粗糙了,我自己也看不下去了
+1. AQS的基本结构我没介绍清楚，`ConditionObject`,`CLH`队列的变体，`state`到底是怎么组成AQS的
+2. 3个基础构成部分写的不详细，
+3. 代码给的太长太乱，第一次读的朋友大概率会晕
+4. 图太粗糙了，我自己也看不下去了
 
-这几天动手改一改这些问题.
+这几天动手改一改这些问题。
 
 ## AQS简介
 
 1. AQS（`java.util.concurrent.locks.AbstractQueuedSynchronizer`）是用来构建锁或者其他同步组件（信号量，事件等）的基础框架类。
-2. AQS的设计是基于**模板方法模式**，开发者需要继承同步器并且重写指定的方法，将其组合在并发组件实现中，调用同步器模板方法，模板方法会调用使用者重写的方法。  
-    ![](./assets/126321073/a21e51c917ba24c511132570.png)
+2. AQS的设计是基于**模板方法模式**，开发者需要继承同步器并且重写指定的方法，将其组合在并发组件实现中，调用同步器模板方法，模板方法会调用使用者重写的方法。
+
+![](./assets/126321073/a21e51c917ba24c511132570.png)
 3. AQS主要使用方式是继承一个内部辅助类实现**同步原语**，简化我们并发工具中的内部实现，屏蔽同步状态管理，线程的排队，等待与唤醒等底层操作。
 
 JDK中许多并发工具类的内部实现都依赖于AQS，比如`ReentrantLock，Semaphore，CountDownLatch`等，学习AQS的使用与源码实现对深入理解`concurrent`包下的类有很大帮助。
@@ -43,9 +45,11 @@ JDK中许多并发工具类的内部实现都依赖于AQS，比如`ReentrantLock
 
 ### 继承结构
 
-结构图：  
- ![](./assets/126321073/3d8a44cbef40056094d27739.png)  
- 代码实现：
+结构图：
+
+![](./assets/126321073/3d8a44cbef40056094d27739.png)
+
+代码实现：
 
 ```java
 public abstract class AbstractQueuedSynchronizer
@@ -55,8 +59,7 @@ public abstract class AbstractQueuedSynchronizer
 
 ```
 
-1. `AbstractOwnableSynchronizer`：一种同步器，可以由一个线程独占。  
-    该类提供了**创建锁和相关同步器的基础**，本身并不管理或使用这些信息，但是子类和工具可以使用适当维护的值来帮助控制和监视访问并提供诊断。
+1. `AbstractOwnableSynchronizer`：一种同步器，可以由一个线程独占。该类提供了**创建锁和相关同步器的基础**，本身并不管理或使用这些信息，但是子类和工具可以使用适当维护的值来帮助控制和监视访问并提供诊断。
 2. 提供序列化功能  
     `AbstractOwnableSynchronizer`源码一览：
 
@@ -89,9 +92,11 @@ public abstract class AbstractOwnableSynchronizer
 ### 组成结构
 
 AQS由三部分组成：`state`同步状态，`CLH`队列变体（`Node`节点构成），`ConditionObject`条件变量（里面包含了`Node`节点构成的条件单向队列）  
- 简图介绍：  
- ![](./assets/126321073/eb4a25b683dd2ddf1d3dad6e.png)  
- 代码如下：
+ 简图介绍：
+
+![](./assets/126321073/eb4a25b683dd2ddf1d3dad6e.png)
+
+代码如下：
 
 ```java
  private transient volatile Node head;
@@ -137,10 +142,11 @@ AQS由三部分组成：`state`同步状态，`CLH`队列变体（`Node`节点�
 
 #### Node内部类
 
-作用：标识等待队列的节点类  
- ![](./assets/126321073/ffdc6675c558b4b8cabdc703.png)  
- Node，队列节点，每一个Node都持有了一个线程，对线程进行包装，方便操作。  
- 当线程中的对象调用AQS子类的方法尝试更改AQS维护的状态失败时，就会将Thread对象抽象成这样的Node对象，这样更加利于管理。
+作用：标识等待队列的节点类
+
+![](./assets/126321073/ffdc6675c558b4b8cabdc703.png)
+
+Node，队列节点，每一个Node都持有了一个线程，对线程进行包装，方便操作。当线程中的对象调用AQS子类的方法尝试更改AQS维护的状态失败时，就会将Thread对象抽象成这样的Node对象，这样更加利于管理。
 
 源码解析：
 
@@ -223,9 +229,9 @@ AQS由三部分组成：`state`同步状态，`CLH`队列变体（`Node`节点�
 
 ```
 
-通过Node我们可以实现两种队列:
+通过Node我们可以实现两种队列：
 
-* 通过prev和next实现CLH队列变体(线程同步队列,双向队列)
+* 通过prev和next实现CLH队列变体(线程同步队列，双向队列)
 * 通过nextWaiter实现Condition上的等待线程队列(单向队列)
 
 ##### 对于waitStatus进一步解释：
@@ -242,12 +248,11 @@ AQS由三部分组成：`state`同步状态，`CLH`队列变体（`Node`节点�
 
 #### ConditionObject内部类
 
-`ConditionObject`是同步器AQS的内部类,因为`Condition`的操作需要获取相关联的锁,所以作为同步器的内部类也合理.  
- 每个`Condition`对象都包含着一个队列(等待队列),该队列是`Condition`对象**实现等待/通知功能的关键**.
+`ConditionObject`是同步器AQS的内部类，因为`Condition`的操作需要获取相关联的锁，所以作为同步器的内部类也合理。每个`Condition`对象都包含着一个队列(等待队列)，该队列是`Condition`对象**实现等待/通知功能的关键**.
 
 ##### 数据结构
 
-`ConditionObject`的实现也是一个FIFO队列(等待队列/条件队列)，内部是由`Node`构成的链表，这个类中定义了首尾两个指针（`firstWaiter，lastWaiter`）在队列每个节点都包含了一个线程引用,该线程就是`Condition`对象上等待的线程。
+`ConditionObject`的实现也是一个FIFO队列(等待队列/条件队列)，内部是由`Node`构成的链表，这个类中定义了首尾两个指针（`firstWaiter，lastWaiter`）在队列每个节点都包含了一个线程引用，该线程就是`Condition`对象上等待的线程。
 
 ```
        /** First node of condition queue. */
@@ -260,21 +265,23 @@ AQS由三部分组成：`state`同步状态，`CLH`队列变体（`Node`节点�
 
 主要是用于`ReentrantLock`等锁对象的时候，作为派生的条件变量`Condition`。
 
-一个Lock类可以通过`newCondition`方法，创建多个`Condition`对象。  
- 而`Condition`对象就是一个队列，此使复用了AQS类中的Node节点，这个`Condition`实际上只是用到了`nextWaiter`指针，是一个单向链表结构。  
- ![](./assets/126321073/9740919063eff3275d2d6ad1.png)  
- 当前线程调用`Condition`的`awaitxxx`()方法,会将当前线程构造成一个新结点添加到条件队列的尾部.  
- 之类不再使用Node的next属性(他对于AQS的实例变量head,tail很有用),而只是使用`nextWaiter`属性,而且现在的Node的prev属性也不重要了,  
- 我们关注的是下一个等待条件唤醒的节点(线程).  
- Node的设计就是如此巧妙,可以在AQS的两个地方扮演着不同的角色.  
- ![](./assets/126321073/68344c001b80d0c6784ce948.png)  
- 上图可看出新增节点只需要将原有的尾节点nextWaiter指向它，并且更新尾节点即可。  
- 这里没有使用CAS的方式添加尾节点,因为在调用awaitxxx()方法时,已经获取到锁了.锁可以保证此更新过程是线程安全的.
+一个Lock类可以通过`newCondition`方法，创建多个`Condition`对象。而`Condition`对象就是一个队列，此使复用了AQS类中的Node节点，这个`Condition`实际上只是用到了`nextWaiter`指针，是一个单向链表结构。
 
-因为`ConditionObject`是AQS成员内部类,因为成员内部类的实例对象必须依赖于外部实例而存在,所以每个`ConditionObject`都与一个AQS对象(准确的说是AQS子类的对象,因为抽象类不可实例化)相绑定,`ConditionObject`对象可以访问AQS同步器的所有成员变量和方法.  
- 因为`Condition.newCondition()`方法可以调用多次,每次都产生一个与AQS对象绑定的Condition条件对象.  
- 因为ReentrantLock等锁都将AQS的子类类型的变量作为自身的实力变量,那么很明显在监视器模型上一个(锁)对象拥有一个同步队列和多个条件队列.  
- ![](./assets/126321073/6d0599cf97c8d97ca3df966b.png)
+![](./assets/126321073/9740919063eff3275d2d6ad1.png)
+
+当前线程调用`Condition`的`awaitxxx`()方法，会将当前线程构造成一个新结点添加到条件队列的尾部。之类不再使用Node的next属性(他对于AQS的实例变量head,tail很有用)，而只是使用`nextWaiter`属性，而且现在的Node的prev属性也不重要了，我们关注的是下一个等待条件唤醒的节点(线程)。
+
+Node的设计就是如此巧妙，可以在AQS的两个地方扮演着不同的角色。
+
+![](./assets/126321073/68344c001b80d0c6784ce948.png)
+
+上图可看出新增节点只需要将原有的尾节点nextWaiter指向它，并且更新尾节点即可。这里没有使用CAS的方式添加尾节点，因为在调用awaitxxx()方法时，已经获取到锁了。锁可以保证此更新过程是线程安全的。
+
+因为`ConditionObject`是AQS成员内部类，因为成员内部类的实例对象必须依赖于外部实例而存在，所以每个`ConditionObject`都与一个AQS对象(准确的说是AQS子类的对象，因为抽象类不可实例化)相绑定，`ConditionObject`对象可以访问AQS同步器的所有成员变量和方法。因为`Condition.newCondition()`方法可以调用多次，每次都产生一个与AQS对象绑定的Condition条件对象。
+
+因为ReentrantLock等锁都将AQS的子类类型的变量作为自身的实力变量，那么很明显在监视器模型上一个(锁)对象拥有一个同步队列和多个条件队列。
+
+![](./assets/126321073/6d0599cf97c8d97ca3df966b.png)
 
 ##### 为什么AQS里面要有ConditionObject
 
@@ -288,11 +295,9 @@ AQS由三部分组成：`state`同步状态，`CLH`队列变体（`Node`节点�
 
 #### 类比Monitor
 
-任意一个Java对象,都拥有一组监视器方法(定义在java.lang.Object上),主要包括:`wait(),wait(long timeout),notify(),notifyAll()`,这些方法与`synchronized`同步关键字配合,可以实现等待/通知模式.  
- 这种实现主要体现在JVM层面(对象头)和字节码(`monitoreter,monitorexit和synchronized方法修饰符`)层面的支持.
+任意一个Java对象，都拥有一组监视器方法(定义在java.lang.Object上)，主要包括:`wait(),wait(long timeout),notify(),notifyAll()`，这些方法与`synchronized`同步关键字配合，可以实现等待/通知模式。这种实现主要体现在JVM层面(对象头)和字节码(`monitoreter,monitorexit和synchronized方法修饰符`)层面的支持。
 
-Condition接口也提供了类似Object监视器方法,与Lock配合可以实现等待/通知模式,这种实现主要是通过数据库结构和算法使用java代码实现.  
- 这二者主要差别如下:
+Condition接口也提供了类似Object监视器方法，与Lock配合可以实现等待/通知模式，这种实现主要是通过数据库结构和算法使用java代码实现。这二者主要差别如下：
 
 | 对比项 | Object Monitor | Condition |
 | --- | --- | --- |
@@ -306,8 +311,7 @@ Condition接口也提供了类似Object监视器方法,与Lock配合可以实现
 | 唤醒等待队列中的一个线程 | 支持 | 支持 |
 | 唤醒等待队列中的所在线程 | 支持 | 支持 |
 
-由此可看出,二者之间最大不同就是一个支持多个等待队列,一个不支持.  
- 在复杂的并发编程中Condition明显有更大优势与便利.
+由此可看出，二者之间最大不同就是一个支持多个等待队列，一个不支持。在复杂的并发编程中Condition明显有更大优势与便利。
 
 #### 接口抽象方法用法说明
 
@@ -332,7 +336,7 @@ public interface Condition {
 
 ```
 
-#### 例子一: 只有当charList中元素个数大于22,out方法才输出并返回,否则一直等待.
+#### 例子一：只有当charList中元素个数大于22,out方法才输出并返回，否则一直等待。
 
 ```java
 class Printer {
@@ -393,8 +397,7 @@ class Printer {
 
 ### CLH队列变体
 
-一个**双向链表**组成的队列，Node是AQS的基本构成节点，内部维护的\*\*`FIFO`**（先进先出）双端双向队列，AQS通过CLH队列变体**管理竞争资源\*\*的线程。  
- 我们来聊聊CLH队列变体的入队与出队;
+一个**双向链表**组成的队列，Node是AQS的基本构成节点，内部维护的\*\*`FIFO`**（先进先出）双端双向队列，AQS通过CLH队列变体**管理竞争资源\*\*的线程。我们来聊聊CLH队列变体的入队与出队；
 
 #### 入队
 
@@ -465,9 +468,11 @@ class Printer {
 
 ```
 
-入队过程如下图：  
- ![](./assets/126321073/ea37ff6661f5c64129b471c3.png)  
- ![](./assets/126321073/8b582f3ee566fde3e0d41489.png)
+入队过程如下图：
+
+![](./assets/126321073/ea37ff6661f5c64129b471c3.png)
+
+![](./assets/126321073/8b582f3ee566fde3e0d41489.png)
 
 #### 出队
 
@@ -515,8 +520,9 @@ setHead方法：
 
 1. AQS采用**标记状态+队列**来实现，记录获取锁，竞争锁，释放锁等一系列操作，并不关心什么是锁，而是采用了一系列判断资源是否可以访问的API，并且对访问资源受限的时候，对请求线程的操作进行封装：加入队列，挂起，唤醒等操作。
 2. 对于线程的操作采用`LockSupport`的`park`和`unpark`方法，我们之前了解过，`LockSupport`底层是使用`Unsafe`类提供的方法，AQS本身也大量采用了`UnSafe`提供的底层API实现，这体现在`CAS`操作之上。  
-    3：所以，我们不能简单认为`synchronized`与`reentrantlock`等价，`reentrantlock`依赖于aqs，aqs本身并不是什么锁。  
-    ![](./assets/126321073/51018f961287a26d74a2580c.png)
+    3：所以，我们不能简单认为`synchronized`与`reentrantlock`等价，`reentrantlock`依赖于aqs，aqs本身并不是什么锁。
+
+![](./assets/126321073/51018f961287a26d74a2580c.png)
 
 #### 三个问题
 
@@ -526,7 +532,7 @@ setHead方法：
 
 ---
 
-回答:
+回答：
 
 1. 独占和共享两种模式，AQS分别对于独占和共享提供了相关的API方法，而其子类，要么实现了独占（ReentrantLock），要么实现了共享（ReentrantReadWriteLock），任何一个子类都不会同时实现两套API。
 2. 排队，在队列中等待。
@@ -534,8 +540,7 @@ setHead方法：
 
 #### AQS方法API
 
-AQS目的为了实现了一个`Lock`，那么我们类比实现`Lock`接口，然后再实现一个所谓的锁。注意：AQS还分为共享和独占两种实现，我们和`Lock`对照如下：  
- 我们先来浅看Lock的源码实现：
+AQS目的为了实现了一个`Lock`，那么我们类比实现`Lock`接口，然后再实现一个所谓的锁。注意：AQS还分为共享和独占两种实现，我们和`Lock`对照如下：我们先来浅看Lock的源码实现：
 
 ```java
 public interface Lock {
@@ -564,18 +569,17 @@ public interface Lock {
 
 | 锁方法 | AQS实现 | 说明 |
 | --- | --- | --- |
-| lock() | acquire(1)/acquireShared(1) | 获得锁，通过独占或者共享方法都能实现，传入的参数是1,这个锁不允许中断，如果调用中断方法将会无响应。 |
-| lockInterruptibly() | accquireInterruptibly(1)/acquireSharedInterruptibly(1) | 获得可以中断的锁，支持独占和共享两种方式。 |
-| tryLock() | tryAcquire(1)/tryAcquireShared(1) | 尝试获得锁，独占和共享都可以实现，但是不支持超时，会无限等待。 |
+| lock() | acquire(1)/acquireShared(1) | 获得锁，通过独占或者共享方法都能实现，传入的参数是1，这个锁不允许中断，如果调用中断方法将会无响应。|
+| lockInterruptibly() | accquireInterruptibly(1)/acquireSharedInterruptibly(1) | 获得可以中断的锁，支持独占和共享两种方式。|
+| tryLock() | tryAcquire(1)/tryAcquireShared(1) | 尝试获得锁，独占和共享都可以实现，但是不支持超时，会无限等待。|
 | tryLock(timeout) | tryAcquireNanos(1,nanos)/tryAcquireSharedNanos(1,nanos) | 支持超时时间的tryLock方法，当超时时间达到之后，不再等待 |
 | unlock() | release(1)/releaseShared(1) | 释放锁，可以通过共享或者独占的方式调用 |
-| unlock() | tryRelease(1)/tryReleaseShared(1) | unlock的时候，需要调用tryRelease尝试释放锁。 |
+| unlock() | tryRelease(1)/tryReleaseShared(1) | unlock的时候，需要调用tryRelease尝试释放锁。|
 | newCondition() | newCondition() | 这个方法将new一个条件变量ConditionObject，之后通过Condition产生的等待线程都将进入这个等待队列 |
 
 ### 独占式获取资源
 
-`acquire`作为一个模板函数，模板流程是线程获取共享资源：  
- 如果获取成功-----线程直接返回  
+`acquire`作为一个模板函数，模板流程是线程获取共享资源：如果获取成功-----线程直接返回  
  获取失败------进入CLH队列变体，直到获取资源成功为止（整个过程忽略中断影响，只有拿到锁之后才响应中断）
 
 acquire源码：
@@ -676,8 +680,7 @@ shouldParkAfterFailedAcquire源码：
 
 ### 独占式释放资源
 
-AQS提供了`release`模板函数来释放资源，流程为释放资源成功，唤醒CLH队列变体的第二个线程节点。  
- `release`源码：
+AQS提供了`release`模板函数来释放资源，流程为释放资源成功，唤醒CLH队列变体的第二个线程节点。`release`源码：
 
 ```java
   public final boolean release(int arg) {
@@ -723,8 +726,7 @@ AQS提供了`release`模板函数来释放资源，流程为释放资源成功�
 
 ### 共享式获取资源
 
-`acquireShared`是模板函数，流程为线程获取共享资源，如果获取到资源，线程直接返回。  
- 否则进入CLH队列变体，直到获取到资源为止（过程忽略中断影响）。
+`acquireShared`是模板函数，流程为线程获取共享资源，如果获取到资源，线程直接返回。否则进入CLH队列变体，直到获取到资源为止（过程忽略中断影响）。
 
 `acquireShared`源码：
 
@@ -797,8 +799,7 @@ doAcquireShared源码：
 1. propagate>0：说明获取锁成功，且有剩余资源可以获取，所以就继续唤醒队列中的线程把剩余的资源给占用了。
 2. h==null，(h=head)==null，这两个判断是防止空指针异常，因为我们向队列中加入了元素，至少会有一个节点。
 3. h.waitStatus<0 检测首节点后面还有没有节点，在shouldParkAfterFailedAcquire方法中，每个入队的节点都会把他前面一个节点的状态改成signal=-1的状态，目的是为了让前面一个节点把自己唤醒，这里就体现出来了，这个条件成立，则说明首节点后面还有未被唤醒的节点。
-4. 后面又有一个h.waitStatus<0,我们为什么还要再判断一次，难道前面判断不成立，后面我们再判断一次就成立了？我们先分析一下doReleaseShared方法，看能不能从里面找到答案。  
-    doReleaseShared源码：
+4. 后面又有一个h.waitStatus<0，我们为什么还要再判断一次，难道前面判断不成立，后面我们再判断一次就成立了？我们先分析一下doReleaseShared方法，看能不能从里面找到答案。doReleaseShared源码：
 
 ```java
  private void doReleaseShared() {
@@ -830,12 +831,9 @@ doAcquireShared源码：
 
 ```
 
-那么第二次判断h.waitStatus<0还有一种情况就是：  
- 当h.waitStatus=0时，说明有一个线程释放了资源，而且正在唤醒第二个节点，所以判断第一个h.waitStatus<0条件不成立。  
- 当第二个节点获取到锁之后，把第一个节点干掉，那新的首节点状态为signal=-1，所以第二个判断h.waitStatus<0成立。
+那么第二次判断h.waitStatus<0还有一种情况就是：当h.waitStatus=0时，说明有一个线程释放了资源，而且正在唤醒第二个节点，所以判断第一个h.waitStatus<0条件不成立。当第二个节点获取到锁之后，把第一个节点干掉，那新的首节点状态为signal=-1，所以第二个判断h.waitStatus<0成立。
 
-分析完了，我们来聊聊为什么这么写？  
- 作者在setHeadAndPropagate中有段doc注释里面有聊过：
+分析完了，我们来聊聊为什么这么写？作者在setHeadAndPropagate中有段doc注释里面有聊过：
 
 ```
   * The conservatism in both of these checks may cause
@@ -855,89 +853,111 @@ doAcquireShared源码：
 
 #### 情况一：队列里没有任何节点，我们要新加一个节点
 
-初始状态：  
- ![](./assets/126321073/438f6e2d4fff012c766879c4.png)  
- 我们一个线程节点A要来获取锁资源，调用了`acquireShared`方法：  
- ![](./assets/126321073/7c3653baedaff71f16690151.png)  
- 很不幸，第一次没有获取到资源，`tryAcquireShared`返回值为负数（失败），进入到了`doAcquireShared`方法里（我们这里截取起要执行的范围，一步步来）：  
- ![](./assets/126321073/577d4bbb7646a14fd81ba41b.png)  
- 执行`addWaiter`，将线程封装为Node节点A放到CLH队列变体中，结果如下（前面我们已经解析过addWaiter了，不太熟悉了再看看）：  
- ![](./assets/126321073/d528ac6187eee814e9eb0954.png)  
- 然后执行代码流程如下：  
- ![](./assets/126321073/c8431e9ef50e73e135f87cc1.png)  
- 我们进入到for循环里：
+初始状态：
+
+![](./assets/126321073/438f6e2d4fff012c766879c4.png)
+
+我们一个线程节点A要来获取锁资源，调用了`acquireShared`方法：
+
+![](./assets/126321073/7c3653baedaff71f16690151.png)
+
+很不幸，第一次没有获取到资源，`tryAcquireShared`返回值为负数（失败），进入到了`doAcquireShared`方法里（我们这里截取起要执行的范围，一步步来）：
+
+![](./assets/126321073/577d4bbb7646a14fd81ba41b.png)
+
+执行`addWaiter`，将线程封装为Node节点A放到CLH队列变体中，结果如下（前面我们已经解析过addWaiter了，不太熟悉了再看看）：
+
+![](./assets/126321073/d528ac6187eee814e9eb0954.png)
+
+然后执行代码流程如下：
+
+![](./assets/126321073/c8431e9ef50e73e135f87cc1.png)
+
+我们进入到for循环里：
 
 1. 先得到A节点的前驱节点（在这里为哨兵节点）
 2. 进入到if判断中：前驱节点=头节点（哨兵节点）
-3. 再次调用`tryAcquireShared`尝试获取锁资源，并把返回值赋给r  
-    ![](./assets/126321073/3b5e485d5ab379989f067cf2.png)
+3. 再次调用`tryAcquireShared`尝试获取锁资源，并把返回值赋给r
 
-这里我必须要说一下，卡了我真的好久！！！  
- 我们这里学习的是AQS，它是一个抽象类，它里面的state在子类中扮演不同的角色，我举个例子：  
- 在独立式资源中，`ReentrantLock`子类中state=0代表了线程有资源，可以加竞争锁，线程上锁后要把0改为1，如果是可重入锁，每重入一次+1。  
- 而在共享式资源中，`Semaphore`子类中state=0代表了没有资源，state=n，代表有n个资源。  
- 所以，我们重新看上图中的代码，这里我们假设是有三个资源，所以`available=3`，这里我们需要一个资源，`acquires=1`，所以3-1=2，代表还有两个资源，最后cas更新state的值。
+![](./assets/126321073/3b5e485d5ab379989f067cf2.png)
+
+这里我必须要说一下，卡了我真的好久！！！我们这里学习的是AQS，它是一个抽象类，它里面的state在子类中扮演不同的角色，我举个例子：在独立式资源中，`ReentrantLock`子类中state=0代表了线程有资源，可以加竞争锁，线程上锁后要把0改为1，如果是可重入锁，每重入一次+1。而在共享式资源中，`Semaphore`子类中state=0代表了没有资源，state=n，代表有n个资源。
+
+所以，我们重新看上图中的代码，这里我们假设是有三个资源，所以`available=3`，这里我们需要一个资源，`acquires=1`，所以3-1=2，代表还有两个资源，最后cas更新state的值。
 
 4. 这里假设我们获取到了锁资源，r=2，代表还有两个资源。
-5. 因为r>0,所以我们进入到了`setHeadAndPropagate`方法里（注意方法参数，node=节点A，r=2）  
-    ![](./assets/126321073/55959f0702692e95d6318d27.png)
+5. 因为r>0，所以我们进入到了`setHeadAndPropagate`方法里（注意方法参数，node=节点A，r=2）
+
+![](./assets/126321073/55959f0702692e95d6318d27.png)
 6. 我们进来先获取到头节点（哨兵节点）
 7. 执行setHead，因为我们已经获取到线程A了，所以这里开始清楚线程A的内容，把线程A设置为哨兵节点，原先的哨兵节点不要了。  
-    执行前：  
-    ![](./assets/126321073/7f2c7db74c58649a12986a7d.png)  
-    执行后：  
-    ![](./assets/126321073/51930ed9358ba2dd56405314.png)
+    执行前：
+
+![](./assets/126321073/7f2c7db74c58649a12986a7d.png)
+
+执行后：
+
+![](./assets/126321073/51930ed9358ba2dd56405314.png)
 8. 然后执行if里面的方法判断：  
     注意这里我们CLH队列变体里的状态，我们满足的条件有`Propagate>0`(我们的`Progapate=2`）所以可以进入if方法块里  
     9：执行`Node s= node.next`，（这里的`node`为节点A，也就是哨兵节点）  
     10：第二个if语句中，我们满足了`s==null`，因为新哨兵节点后面没有节点了。  
-    11：进入`doReleaseShared`方法  
-    ![](./assets/126321073/d69f2dbebde7cdddc72a00e8.png)
+    11：进入`doReleaseShared`方法
+
+![](./assets/126321073/d69f2dbebde7cdddc72a00e8.png)
 9. 进入for循环，首先我们拿到新哨兵节点
 10. if语句判断，我们不符合判断，进入到第二个`if（h==head）`，这个我们符合，直接退出，这里我们完成了共享式资源获取（情况一：队列里没有任何节点，我们要新加一个节点）
 
 #### 情况二：队列里已经有节点了。
 
-线程A，C同时争夺一个锁资源，C线程竞争成功，A进入CLH变体，过一段时间B和C争夺锁资源。  
- 这里我们假设C争夺成功。  
- ![](./assets/126321073/717ee8e47aa7a0a0dc996460.png)  
- 所以，`tryAcquireShared`返回负数，执行`doAcquireShared`方法：  
- ![](./assets/126321073/53474cb21f289995116bb1fc.png)
+线程A，C同时争夺一个锁资源，C线程竞争成功，A进入CLH变体，过一段时间B和C争夺锁资源。这里我们假设C争夺成功。
 
-1. 添加节点到CLH队列变体中  
-    ![](./assets/126321073/fc2fe9fece1addfae6179a62.png)
+![](./assets/126321073/717ee8e47aa7a0a0dc996460.png)
+
+所以，`tryAcquireShared`返回负数，执行`doAcquireShared`方法：
+
+![](./assets/126321073/53474cb21f289995116bb1fc.png)
+
+1. 添加节点到CLH队列变体中
+
+![](./assets/126321073/fc2fe9fece1addfae6179a62.png)
 2. 进入for循环，首先获取前驱节点`Node p`，不同的是，这里我们获取到的前驱节点为节点A
 3. 进入if判断，`p！=head`，所以进入第三个if语句中（画红线的）
 
-![](./assets/126321073/a5c0050361d0c3d845def77f.png)  
- 我们先进入到`shouldParkAfterFailedAcquire`方法中（注意参数，p为节点A，node为节点B）：  
- ![](./assets/126321073/9b061ecbf57d23d602a31173.png)
+![](./assets/126321073/a5c0050361d0c3d845def77f.png)
+
+我们先进入到`shouldParkAfterFailedAcquire`方法中（注意参数，p为节点A，node为节点B）：
+
+![](./assets/126321073/9b061ecbf57d23d602a31173.png)
 
 4. 我们先获得节点A的状态ws，注意我们在CLH队列变体中节点A的状态为SHARED
 5. 第一个if判断，显然我们状态不为SIGNAL
 6. 进入第二个if判断，显然不符合
-7. 进入else语句块里，这里我们执行CAS操作，把SHARED转化为SIGNAL。  
-    为什么要这么做呢？因为们需要在节点A被唤醒释放后，还能去来通知唤醒我们。  
-    ![](./assets/126321073/c754cab9f8e9b806bd64375d.png)
-8. 返回false,回到`doAcquireShared`方法里  
-    ![](./assets/126321073/c61b2c74c2724d87ac9fbe51.png)
+7. 进入else语句块里，这里我们执行CAS操作，把SHARED转化为SIGNAL。为什么要这么做呢？因为们需要在节点A被唤醒释放后，还能去来通知唤醒我们。
+
+![](./assets/126321073/c754cab9f8e9b806bd64375d.png)
+8. 返回false，回到`doAcquireShared`方法里
+
+![](./assets/126321073/c61b2c74c2724d87ac9fbe51.png)
 9. 因为我们返回false，所以 `if (shouldParkAfterFailedAcquire(p, node)&&`  
     `parkAndCheckInterrupt())`中，后面的`parkAndCheckInterrupt`这个方法不执行了。
-10. 重新开始一轮for循环，前面都一样，就是重新进入到`shouldParkAfterFailedAcquire`方法里面有不同了，我们来看看  
-     ![](./assets/126321073/1419a69bb5094196f4be96de.png)
+10. 重新开始一轮for循环，前面都一样，就是重新进入到`shouldParkAfterFailedAcquire`方法里面有不同了，我们来看看
+
+![](./assets/126321073/1419a69bb5094196f4be96de.png)
 11. 我们先获得前驱节点（节点A），注意此时的节点A的状态已经改为了`SIGNAL`，所以这一次直接返回true。
-12. 我们回到`doAcquireShared`方法里的if语句中  
-     ![](./assets/126321073/07da7a33f01c65d36f5391f6.png)
-13. 因为`shouldParkAfterFailedAcquire`已经返回了true，所以我们可以执行`parkAndCheckInterrupt`方法  
-     ![](./assets/126321073/c04f5725e23564fc1a6f8258.png)
+12. 我们回到`doAcquireShared`方法里的if语句中
+
+![](./assets/126321073/07da7a33f01c65d36f5391f6.png)
+13. 因为`shouldParkAfterFailedAcquire`已经返回了true，所以我们可以执行`parkAndCheckInterrupt`方法
+
+![](./assets/126321073/c04f5725e23564fc1a6f8258.png)
 14. 这个方法非常简单，就是将我们当前节点B阻塞。
 
 到这为止，节点B获取资源流程**暂时结束**，当线程A获取到资源并且释放后会来通知节点B来竞争资源，可以看到，`shouldParkAfterFailedAcquire`方法就是确保了当节点阻塞后，节点的前驱节点在释放后可以把我们唤醒去竞争资源，非常重要，如果你还体会不到，继续往下看吧，**我们在这个场景里插个眼记为wang**，后面我们`Fenix`完共享式释放资源，还要回来看。
 
 #### 共享式释放资源
 
-AQS提供了`releaseShared`模板函数来释放资源，流程是线程释放资源成功，唤醒CLH队列变体的第二个线程节点（头节点的下一个节点）。  
- 我们先来看`releaseShared`源码
+AQS提供了`releaseShared`模板函数来释放资源，流程是线程释放资源成功，唤醒CLH队列变体的第二个线程节点（头节点的下一个节点）。我们先来看`releaseShared`源码
 
 ```java
   public final boolean releaseShared(int arg) {
@@ -1029,27 +1049,37 @@ unparkSuccessor源码：
 
 ### 场景
 
-还记得我们之前插的眼吗，这里我们回来继续看  
- ![](./assets/126321073/c2f4deae0951846c26ba9ce1.png)  
- 某一时间点，节点A被释放了，它唤醒了节点B，那么节点B该如何运行呢？  
- ![](./assets/126321073/24d9e228c9cac1fa77a520af.png)  
- 注意，此时已经没有节点A了，这里只是为了好区分。
+还记得我们之前插的眼吗，这里我们回来继续看
+
+![](./assets/126321073/c2f4deae0951846c26ba9ce1.png)
+
+某一时间点，节点A被释放了，它唤醒了节点B，那么节点B该如何运行呢？
+
+![](./assets/126321073/24d9e228c9cac1fa77a520af.png)
+
+注意，此时已经没有节点A了，这里只是为了好区分。
 
 首先我们来看节点B是在哪里阻塞的。![](./assets/126321073/9fc56652402cb17b9f8155cf.png)
 
 1. 节点B在画红线处阻塞，这时它收到了节点A对节点B的唤醒通知，接着运行if语句块，将`interrupted`置为了true
-2. 又开始了一轮for循环  
-    ![](./assets/126321073/739243ee20f152ea948a272e.png)  
-    这时我们获取到前驱节点A（此时A已经为哨兵节点了），所以if语句能进入。
+2. 又开始了一轮for循环
+
+![](./assets/126321073/739243ee20f152ea948a272e.png)
+
+这时我们获取到前驱节点A（此时A已经为哨兵节点了），所以if语句能进入。
 3. 这这里调用`tryAcquireShared`，这一次获取到了所资源，返回r<0。
-4. 然后执行`setHeadPropagate`方法  
-    ![](./assets/126321073/3622da87dbbec288b79b0301.png)  
-    a. 简单来说就是节点A（哨兵节点）可以拜拜了，让我（节点B）来当新的哨兵节点==`setHead(node)`  
-    b. 同时我还要看看有没有资源(`propagate`是否>0),后驱节点是否为null（这里为null）  
-    c. 后驱节点为null，或者后驱节点状态是`shared`，进去`doReleaseShared`方法  
-    ![](./assets/126321073/dc18bb6c741a716e0dbfac98.png)
-5. 我们首先获取了h，注意此时的h就是线程B了，注意第一个判断是不成立的，因为此时我们只有一个哨兵了，队列为null，所以直接执最后的if语句（h==head），直接退出了。  
-    ![](./assets/126321073/9bf2d83b41d7f674e88ec334.png)
+4. 然后执行`setHeadPropagate`方法
+
+![](./assets/126321073/3622da87dbbec288b79b0301.png)
+
+a. 简单来说就是节点A（哨兵节点）可以拜拜了，让我（节点B）来当新的哨兵节点==`setHead(node)`  
+    b. 同时我还要看看有没有资源(`propagate`是否>0)，后驱节点是否为null（这里为null）  
+    c. 后驱节点为null，或者后驱节点状态是`shared`，进去`doReleaseShared`方法
+
+![](./assets/126321073/dc18bb6c741a716e0dbfac98.png)
+5. 我们首先获取了h，注意此时的h就是线程B了，注意第一个判断是不成立的，因为此时我们只有一个哨兵了，队列为null，所以直接执最后的if语句（h==head），直接退出了。
+
+![](./assets/126321073/9bf2d83b41d7f674e88ec334.png)
 
 ## 结尾
 

@@ -1,21 +1,26 @@
 ---
 title: "并发编程JUC深度学习(二）进程与线程（源码描述部分）"
 description: "本文着重分析代码，理清里面的逻辑，我们主要分析Thread。"
-status: draft
+status: curated
 sidebar:
   order: 2
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125993672)
+
+:::tip[要点]
+- `Thread` 实现了 `Runnable`，真正要执行的逻辑来自构造时传入的 `target` 或子类重写的 `run()`。
+- 各个构造方法最终都走到 `init`，决定线程组、名字、是否守护线程、优先级和栈大小，这些默认继承自创建它的父线程。
+- 调用 `start()` 才会创建新线程，直接调用 `run()` 只是在当前线程里执行一个普通方法。
+:::
 
 ## Thread源码解析
  本文着重分析代码，理清里面的逻辑，我们主要分析Thread。
 
 ## 继承结构
 
-![](./assets/125993672/ce9f706fb0418d00519d9ad1.png)  
- 代码实现：
+![](./assets/125993672/ce9f706fb0418d00519d9ad1.png)
+
+代码实现：
 
 ```java
 public
@@ -251,8 +256,9 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-传入Runnable同时也可以指定AccessControlContext（根据其封装的上下文做出系统资源访问决策。）  
- ![](./assets/125993672/632d4c5c338699fab3dbec67.png)
+传入Runnable同时也可以指定AccessControlContext（根据其封装的上下文做出系统资源访问决策。）
+
+![](./assets/125993672/632d4c5c338699fab3dbec67.png)
 
 ### Thread(ThreadGroup group, Runnable target)
 
@@ -264,10 +270,9 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-![](./assets/125993672/0d1055e10f0cf6d29678d5c4.png)  
- 使用线程组。  
- 如果有安全管理器，则线程由安全管理器返回SecurityManager.getThreadGroup()。  
- 如果没有安全管理器或者SecurityManager.getThreadGroup()返回为空，则返回当前的线程组。
+![](./assets/125993672/0d1055e10f0cf6d29678d5c4.png)
+
+使用线程组。如果有安全管理器，则线程由安全管理器返回SecurityManager.getThreadGroup()。如果没有安全管理器或者SecurityManager.getThreadGroup()返回为空，则返回当前的线程组。
 
 ### Thread(String name)
 
@@ -341,8 +346,9 @@ private volatile Interruptible blocker;     //此线程在可中断的IO操作�
 
 ```
 
-![](./assets/125993672/3d78534ab7b0835ffe4b1b1f.png)  
- 我们来详细的介绍一下最后一个构造方法，因为前面所有的构造方法中的this，最后指向的都是最后一个构造方法  
+![](./assets/125993672/3d78534ab7b0835ffe4b1b1f.png)
+
+我们来详细的介绍一下最后一个构造方法，因为前面所有的构造方法中的this，最后指向的都是最后一个构造方法  
  我们看看this里面的代码：
 
 ```java

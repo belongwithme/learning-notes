@@ -3,10 +3,8 @@ title: "MySQL的存储引擎对比(InnoDB和MyISAM)"
 description: "+ 事务支持：InnoDB 是 MySQL 默认的事务型存储引擎，支持 ACID（原子性、一致性、隔离性、持久性）事务。"
 status: draft
 sidebar:
-  order: 145479328
+  order: 2
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/145479328)
 
 * **特点**：
@@ -26,7 +24,7 @@ sidebar:
   + **压缩表**：支持表压缩，可以减少存储空间的使用。
 * **使用场景**：适合于读多写少，且对事务一致性要求不高的场景，如日志记录、数据仓库等。
 
-## InnoDB和MyISAM的区别有哪些?
+## InnoDB和MyISAM的区别有哪些？
 
 InnoDB 和 MyISAM 是 MySQL 中两种常用的存储引擎，它们在性能、事务处理、数据安全等方面有显著区别：
 

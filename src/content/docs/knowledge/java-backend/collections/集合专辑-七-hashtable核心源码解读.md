@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 125968262
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125968262)
 
 ## 简单介绍
@@ -19,7 +17,8 @@ sidebar:
 
 ### 继承结构关系
 
-![](./assets/125968262/85c94cfe8b035b5674d06b58.png)  
+![](./assets/125968262/85c94cfe8b035b5674d06b58.png)
+
 代码实现如下：
 
 ```java
@@ -30,8 +29,8 @@ public class Hashtable<K,V>
 
 ```
 
-DIctionary： 表示键值存储库，操作与Map相似，但是已经过时了，在
-java 
+DIctionary：表示键值存储库，操作与Map相似，但是已经过时了，在
+java
 的后续发展中，逐渐被Map取代了。
 
 ### Doc解读
@@ -279,8 +278,7 @@ private static class Entry<K,V> implements Map.Entry<K,V> {
 
 ```
 
-HashMap以及HashTable相关存储元素的数组等属性都是transient修饰，在序列化的时候不会被序列化，而是类自己实现了序列化和反序列化的方法。  
-不同的虚拟机或者不同操作系统上，hashcode的算法可能会造成相同的值经过hash之后其hashcode不一致。这样就容易造成实际上反序列化之后的HashTable与之前的HashTable不同。
+HashMap以及HashTable相关存储元素的数组等属性都是transient修饰，在序列化的时候不会被序列化，而是类自己实现了序列化和反序列化的方法。不同的虚拟机或者不同操作系统上，hashcode的算法可能会造成相同的值经过hash之后其hashcode不一致。这样就容易造成实际上反序列化之后的HashTable与之前的HashTable不同。
 
 ### 静态变量
 
@@ -303,12 +301,13 @@ private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 ```
 
 这里对为啥MAX\_ARRAY\_SIZE不是Integer.MAX\_VALUE进行了解释。再某些
-jvm 
+jvm
 中，数组是需要一些头信息的，因此如果直接将int数组分配为Integer.MAX\_VALUE，则会造成OOM。所以这里的长度是Integer.MAX\_VALUE - 8;
 
 ### HashTable的 数据结构
 
-![](./assets/125968262/16e2071f791fa503d360f68b.png)  
+![](./assets/125968262/16e2071f791fa503d360f68b.png)
+
 我们学过了HashMap，现在来看HashTable就很简单了，内部构成是通过拉链法实现单向链表。
 
 ### HashTable的构造函数
@@ -328,7 +327,7 @@ jvm
 
 ```
 
-2：有参（参数为初始容量,负载因子默认为0.75）
+2：有参（参数为初始容量，负载因子默认为0.75）
 
 ```
   public Hashtable(int initialCapacity) {

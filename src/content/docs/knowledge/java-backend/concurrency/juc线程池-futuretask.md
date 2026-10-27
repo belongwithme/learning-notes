@@ -1,18 +1,22 @@
 ---
 title: "JUC线程池-FutureTask"
 description: "在现代软件开发中，尤其是后端服务开发，高并发和高性能是永恒的追求。为了充分利用多核处理器的能力，提升应用的响应速度和吞吐量，异步编程和"
-status: draft
+status: curated
 sidebar:
   order: 32
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147245941)
+
+:::tip[要点]
+- `FutureTask` 同时实现 `Runnable` 和 `Future`，既能交给线程执行，又能取回结果。
+- 用 `volatile int state` 加 CAS 管理任务状态，保证任务只执行一次。
+- 调用 `get()` 的线程在结果出来前被 `LockSupport.park` 挂起，任务完成或取消后逐个唤醒。
+:::
 
 ## 引言
 
 在现代软件开发中，尤其是后端服务开发，高并发和高性能是永恒的追求。为了充分利用多核处理器的能力，提升应用的响应速度和吞吐量，异步编程和
-多线程 
+多线程
 技术变得不可或缺。然而，传统的线程编程模型往往伴随着复杂性，例如线程管理、线程间通信、结果获取以及异常处理等问题。
 
 想象一下，当主线程需要执行一个非常耗时的计算任务（比如复杂的数据库查询、网络请求或大
@@ -135,15 +139,14 @@ public class WithoutFutureTaskExample {
 6. **代码冗余**：为了实现一个简单的异步获取结果，编写了大量模板化的同步和状态管理代码。
 
 这些痛点使得
-并发编程 
+并发编程
 门槛较高，代码难以维护。
 
-真让哥们天天敲这些真的会疯掉了(崩溃脸).
+真让哥们天天敲这些真的会疯掉了(崩溃脸)。
 
 ### 1.2 FutureTask 的优雅解决方案
 
-`FutureTask` 的出现，正是为了解决上述痛点，提供一套标准、简洁、健壮的异步任务处理方案。  
- 它将任务的执行逻辑 (`Callable` 或 `Runnable`) 封装起来，并提供了一系列方法来控制任务的生命周期（执行、取消）和获取结果（阻塞、超时、非阻塞）。
+`FutureTask` 的出现，正是为了解决上述痛点，提供一套标准、简洁、健壮的异步任务处理方案。它将任务的执行逻辑 (`Callable` 或 `Runnable`) 封装起来，并提供了一系列方法来控制任务的生命周期（执行、取消）和获取结果（阻塞、超时、非阻塞）。
 
 **使用 FutureTask 的简洁实现:**
 
@@ -324,7 +327,7 @@ public interface Future<V> {
 ```
 
 `Future<V>` 接口定义了与异步计算交互的标准方法。`V` 是泛型参数，代表计算结果的
-类 
+类
 型。
 
 通过同时实现这两个接口，`FutureTask` 成为了连接任务执行和结果获取的桥梁，极大地简化了 Java 异步编程。
@@ -404,8 +407,7 @@ INTERRUPTING --> INTERRUPTED ---> (Done)
    * `runner` (类型 `volatile Thread`): 存储正在执行 `run()` 方法的线程。`volatile` 确保当一个线程成功设置 `runner` 后，其他尝试执行 `run()` 的线程能立刻看到 `runner` 不再是 `null`，从而避免任务被重复执行。
    * `waiters` (类型 `volatile WaitNode`): 指向等待结果的线程组成的链表的头节点。`volatile` 确保对等待链表的修改（添加新等待者、移除等待者）能被其他线程及时观察到。
    * `outcome` (类型 `volatile Object`): 存储计算结果或异常。虽然结果设置主要依赖 CAS 控制状态转换，但 `volatile` 提供了额外的内存屏障，确保结果对读取线程的可见性。
-2. **CAS (Compare-And-Swap) 原子操作**：  
-    CAS 是一种非阻塞的原子操作，通常由 CPU 指令直接支持。它的思想是：“我认为内存地址 `V` 的值应该是 `A`，如果是的话，就把它更新为 `B`，否则什么都不做并告诉我更新失败了。” 这个比较和交换的过程是原子的，不会被其他线程打断。
+2. **CAS (Compare-And-Swap) 原子操作**：CAS 是一种非阻塞的原子操作，通常由 CPU 指令直接支持。它的思想是：“我认为内存地址 `V` 的值应该是 `A`，如果是的话，就把它更新为 `B`，否则什么都不做并告诉我更新失败了。” 这个比较和交换的过程是原子的，不会被其他线程打断。
 
    `FutureTask` 大量使用 CAS 来原子性地更新 `state` 变量，这是其无锁设计的核心。例如：
 
@@ -417,7 +419,6 @@ INTERRUPTING --> INTERRUPTED ---> (Done)
      if (state == NEW && UNSAFE.compareAndSwapObject(this, runnerOffset, null, Thread.currentThread())) {
          // ... 开始执行任务 ...
      }
-
 
      + 1
      + 2
@@ -438,7 +439,6 @@ INTERRUPTING --> INTERRUPTED ---> (Done)
          finishCompletion(); // 唤醒等待者
      }
 
-
      + 1
      + 2
      + 3
@@ -458,7 +458,6 @@ INTERRUPTING --> INTERRUPTED ---> (Done)
          UNSAFE.putOrderedInt(this, stateOffset, EXCEPTIONAL); // 设置最终状态 EXCEPTIONAL
          finishCompletion(); // 唤醒等待者
      }
-
 
      + 1
      + 2
@@ -498,7 +497,6 @@ INTERRUPTING --> INTERRUPTED ---> (Done)
      }
      return false; // CAS 失败，说明状态已改变，取消失败
 
-
      + 1
      + 2
      + 3
@@ -529,8 +527,7 @@ INTERRUPTING --> INTERRUPTED ---> (Done)
      CAS 确保了取消操作的原子性，避免了与 `run()` 方法或其他 `cancel()` 调用发生竞态条件。
 
    **为什么用 CAS 而不是 `synchronized`？**  
-    `synchronized` 是悲观锁，它假设总会发生并发冲突，所以在访问共享资源前先加锁，阻塞其他线程。在高并发场景下，线程阻塞和唤醒的开销可能很大。  
-    CAS 是乐观锁的思想，它假设冲突是小概率事件，先尝试更新，如果失败了（说明有冲突），再重试或采取其他策略。在很多并发场景下，CAS 比 `synchronized` 具有更好的性能，因为它避免了线程上下文切换的开销。`FutureTask` 的设计者选择了基于 CAS 的无锁（或称轻量级锁）方案来实现核心状态管理，以追求更高的执行效率。
+    `synchronized` 是悲观锁，它假设总会发生并发冲突，所以在访问共享资源前先加锁，阻塞其他线程。在高并发场景下，线程阻塞和唤醒的开销可能很大。CAS 是乐观锁的思想，它假设冲突是小概率事件，先尝试更新，如果失败了（说明有冲突），再重试或采取其他策略。在很多并发场景下，CAS 比 `synchronized` 具有更好的性能，因为它避免了线程上下文切换的开销。`FutureTask` 的设计者选择了基于 CAS 的无锁（或称轻量级锁）方案来实现核心状态管理，以追求更高的执行效率。
 
 ### 2.3 等待/通知机制：`WaitNode` 与 `LockSupport`
 
@@ -554,7 +551,7 @@ INTERRUPTING --> INTERRUPTED ---> (Done)
     `FutureTask` 内部维护一个 `volatile WaitNode waiters` 字段，它指向一个单向链表的头节点。这个链表被称为 Treiber stack（一种无锁栈结构），用于存储所有等待任务完成的线程节点。
 
    * **入队 (添加等待者)**: 当一个线程调用 `get()` 发现任务未完成，它会创建一个新的 `WaitNode`，然后使用 CAS 操作将其原子性地添加到 `waiters` 链表的头部。
-   * **出队 (唤醒等待者)**: 当任务完成时（状态变为 `NORMAL`, `EXCEPTIONAL`, `CANCELLED`, 或 `INTERRUPTED`），执行 `finishCompletion()` 方法。该方法会遍历 `waiters` 链表，并使用 `LockSupport.unpark(node.thread)` 逐个唤醒所有等待的线程。
+   * **出队 (唤醒等待者)**: 当任务完成时（状态变为 `NORMAL`, `EXCEPTIONAL`, `CANCELLED`，或 `INTERRUPTED`），执行 `finishCompletion()` 方法。该方法会遍历 `waiters` 链表，并使用 `LockSupport.unpark(node.thread)` 逐个唤醒所有等待的线程。
 3. **`LockSupport.park()` / `unpark()`**:
 
    * `LockSupport.park()`: 使当前线程阻塞，放弃 CPU，进入等待状态。它不需要持有任何锁。
@@ -683,7 +680,7 @@ private void removeWaiter(WaitNode node) {
 **如何让任务响应中断？**  
  如果希望 `cancel(true)` 能真正停止任务，任务代码（`Callable` 或 `Runnable` 的实现）需要：
 
-* 在耗时操作（如循环、`sleep`, `wait`, `join`, IO 操作）前后检查中断状态: `if (Thread.currentThread().isInterrupted()) { throw new InterruptedException("Task cancelled"); }`
+* 在耗时操作（如循环、`sleep`, `wait`, `join`, IO 操作）前后检查中断状态：`if (Thread.currentThread().isInterrupted()) { throw new InterruptedException("Task cancelled"); }`
 * 或者，直接捕获由阻塞方法（如 `Thread.sleep()`, `Object.wait()`, `BlockingQueue.take()`）抛出的 `InterruptedException`，并进行清理和退出。
 
 ```java
@@ -1164,7 +1161,7 @@ Java 8 引入了 `CompletableFuture`，它提供了比 `FutureTask` 更强大、
 | 特性 | FutureTask | CompletableFuture |
 | --- | --- | --- |
 | **核心模型** | 阻塞式 (`get()` 会阻塞) | 回调式、非阻塞 (主要通过 `thenApply`, `thenAccept` 等) |
-| **任务组合** | 不支持 | 支持 (串行 `thenApply`, 并行 `thenCombine`, `allOf`, `anyOf`) |
+| **任务组合** | 不支持 | 支持 (串行 `thenApply`，并行 `thenCombine`, `allOf`, `anyOf`) |
 | **结果转换** | 不支持 | 支持 (`thenApply`, `thenCompose`) |
 | **异常处理** | `get()` 抛 `ExecutionException` | 专门方法 (`exceptionally`, `handle`) |
 | **回调注册** | 不直接支持 (有 `done()` 钩子，但功能有限) | 核心特性 (`thenRun`, `thenAccept`, `thenApply` 等) |
@@ -1267,7 +1264,7 @@ System.out.println("Main thread finished.");
 
 ## 五、 源码分析：揭秘关键方法
 
-通过分析 `FutureTask` 的核心方法源码（基于 
+通过分析 `FutureTask` 的核心方法源码（基于
 OpenJDK
  8，注释和部分代码可能简化以便理解），可以更深刻地理解其工作机制。
 
@@ -1627,4 +1624,4 @@ public boolean cancel(boolean mayInterruptIfRunning) {
 6. **应用场景**：线程池任务提交、简单异步计算、`ExecutorCompletionService` 结合、简单缓存实现等。
 7. **与 `CompletableFuture` 对比**：`FutureTask` 更基础，交互以阻塞 `get()` 为主；`CompletableFuture` 更强大，支持非阻塞回调、任务组合与流式 API。
 
-虽然 Java 8 引入的 `CompletableFuture` 在功能和灵活性上超越了 `FutureTask`，成为了现代 Java 异步编程的主流选择。但 `FutureTask` 作为一个设计精良、实现高效的基础并发工具，其内部蕴含的并发编程思想（如无锁设计、状态机）仍然值得我们深入学习和理解.
+虽然 Java 8 引入的 `CompletableFuture` 在功能和灵活性上超越了 `FutureTask`，成为了现代 Java 异步编程的主流选择。但 `FutureTask` 作为一个设计精良、实现高效的基础并发工具，其内部蕴含的并发编程思想（如无锁设计、状态机）仍然值得我们深入学习和理解。

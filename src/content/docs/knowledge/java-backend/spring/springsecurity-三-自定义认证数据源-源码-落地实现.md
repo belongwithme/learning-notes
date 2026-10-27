@@ -5,19 +5,15 @@ status: draft
 sidebar:
   order: 131399623
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131399623)
-
-## 前言
 
 看这篇文章前，请确保有一定security基础或者看过上篇文章，没基础看不太好理解。
 
 ## 认证流程分析
 
-流程分析我们在上一篇每一步都debug看一了下，这里我们进行一个梳理。  
- 我们先看一下这张图：  
- ![](./assets/131399623/4fdd31ffa3ecf0bde2d0f676.png)
+流程分析我们在上一篇每一步都debug看一了下，这里我们进行一个梳理。我们先看一下这张图：
+
+![](./assets/131399623/4fdd31ffa3ecf0bde2d0f676.png)
 
 1. 发起认证请求，请求中携带⽤户名、密码，该请求会被  
     `UsernamePasswordAuthenticationFilter` 拦截
@@ -29,8 +25,7 @@ sidebar:
 
 ### 易混梳理
 
-不知道在上一篇我们debug时，你是不是有点迷，搞不清`AuthenticationManager`，`ProviderManager`，`AuthenticationProvider` 的关系，  
- `AuthenticationManager` 是认证的核⼼类，但实际上在底层真正认  
+不知道在上一篇我们debug时，你是不是有点迷，搞不清`AuthenticationManager`，`ProviderManager`，`AuthenticationProvider` 的关系，`AuthenticationManager` 是认证的核⼼类，但实际上在底层真正认  
  证时还离不开 `ProviderManager` 以及 `AuthenticationProvider` 。下面我们来梳理一下：
 
 * `AuthenticationManager` 是⼀个认证管理器，它定义了 `Spring Security` 过滤  
@@ -138,20 +133,22 @@ public interface AuthenticationProvider {
 
 #### AuthenticationManager 与 ProviderManager
 
-先看一下结构图：  
- ![](./assets/131399623/552d704d6cd0b3a3b4d950e5.png)  
- 为什么列表有五个，但是我只显示了`ProviderManager`，因为其他四个都是内部类（感兴趣可以去看看）。  
- 所以我们可以看出来：`ProviderManager` 是`AuthenticationManager`的唯⼀实现，也是 `Spring Security`默认使⽤实现。从这⾥不难看出默认情况下`AuthenticationManager` 就是⼀个ProviderManager。
+先看一下结构图：
+
+![](./assets/131399623/552d704d6cd0b3a3b4d950e5.png)
+
+为什么列表有五个，但是我只显示了`ProviderManager`，因为其他四个都是内部类（感兴趣可以去看看）。所以我们可以看出来：`ProviderManager` 是`AuthenticationManager`的唯⼀实现，也是 `Spring Security`默认使⽤实现。从这⾥不难看出默认情况下`AuthenticationManager` 就是⼀个ProviderManager。
 
 #### ProviderManager 与 AuthenticationProvider
 
-看一下官网的介绍图：  
- ![](./assets/131399623/ffe08f70bd65c823a15f75b4.png)  
- 在 `Spring Seourity`中，允许系统同时⽀持多种不同的认证⽅式，例如同时⽀持⽤  
+看一下官网的介绍图：
+
+![](./assets/131399623/ffe08f70bd65c823a15f75b4.png)
+
+在 `Spring Seourity`中，允许系统同时⽀持多种不同的认证⽅式，例如同时⽀持⽤  
  户名/密码认证、`ReremberMe` 认证、⼿机号码动态认证等，⽽不同的认证⽅式对应了不同  
  的 `AuthenticationProvider`，所以⼀个完整的认证流程可能由多个  
- `AuthenticationProvider` 来提供。  
- 多个 `AuthenticationProvider` 将组成⼀个列表，这个列表将由  
+ `AuthenticationProvider` 来提供。多个 `AuthenticationProvider` 将组成⼀个列表，这个列表将由  
  `ProviderManager` 代理。换句话说，在`ProviderManager` 中存在⼀个  
  `AuthenticationProvider` 列表，在`Provider Manager` 中遍历列表中的每⼀个  
  `AuthenticationProvider` 去执⾏身份认证，最终得到认证结果。
@@ -176,46 +173,51 @@ ProviderManager 本身也可以有多个，多个ProviderManager 共⽤同⼀个
  提供者的后备资源。
 
 根据上⾯的介绍，我们绘出新的 `AuthenticationManager`、`ProvideManager` 和  
- `AuthentictionProvider`关系：  
- ![](./assets/131399623/299732dcde2de4ca6275a8ad.png)
+ `AuthentictionProvider`关系：
+
+![](./assets/131399623/299732dcde2de4ca6275a8ad.png)
 
 ## 数据源的获取
 
 默认情况下`AuthenticationProvider` 是由 `DaoAuthenticationProvider` 类来实现认证的(上篇文章有提到过，不清楚的可以去看一下debug的过程，这个是parent的默认provider），在`DaoAuthenticationProvider` 认证时⼜通过 `UserDetailsService` 完成数据源的  
- 校验。  
- 下面我们debug看一下这个流程：
+ 校验。下面我们debug看一下这个流程：
 
-1. 首先我们执行到DaoAuthenticationProvider这块内容：  
-    ![](./assets/131399623/b87ddabee9c2356a0af8bc42.png)
-2. 执行到authenticate方法下：  
-    ![](./assets/131399623/736a6e3dfbfef4316d0ef6a4.png)
-3. 执行`authenticate`方法，跳转到`AbstractUserDetailsAuthenticationProvider`这个方法下的`authenticate`：  
-    为什么会跳转到跳转到`AbstractUserDetailsAuthenticationProvider`，因为`DaoAuthenticationProvider`没有覆盖这个方法，所以用的是父类`AbstractUserDetailsAuthenticationProvider`的。  
-    ![](./assets/131399623/472bb1ffea477b51a9ca431a.png)
-4. 一路执行到执行`retrieveUser`方法并进入到方法里面：  
-    ![](./assets/131399623/6ca09eca56d9f98f0fc81e3c.png)
-5. 往下执行到`loadUserByUsername`方法并进入，通过调用内存中的数据完成认证：  
-    ![](./assets/131399623/318133264ee8cc8db2d1001f.png)  
-    下面是一个流程图：  
-    ![](./assets/131399623/16702d3b80a23b8e2934eca7.png)  
-    总结：  
-    `AuthenticationManager` 是认证管理器，在 `Spring Security` 中有全局  
-    `AuthenticationManager`，也可以有局部`AuthenticationManager`。  
-    全局的`AuthenticationManager`⽤来对全局认证进⾏处理，局部的`AuthenticationManager`⽤来对某些特殊资源认证处理。  
-    当然⽆论是全局认证管理器还是局部认证管理器都是由`ProviderManger` 进⾏实现。  
-    每⼀个`ProviderManger`中都代理⼀个`AuthenticationProvider`的列表，列表中每⼀个实现代表⼀种身份认证⽅式。认证时底层数据源需要调⽤ `UserDetailService`来实现。
+1. 首先我们执行到DaoAuthenticationProvider这块内容：
+
+![](./assets/131399623/b87ddabee9c2356a0af8bc42.png)
+2. 执行到authenticate方法下：
+
+![](./assets/131399623/736a6e3dfbfef4316d0ef6a4.png)
+3. 执行`authenticate`方法，跳转到`AbstractUserDetailsAuthenticationProvider`这个方法下的`authenticate`：为什么会跳转到跳转到`AbstractUserDetailsAuthenticationProvider`，因为`DaoAuthenticationProvider`没有覆盖这个方法，所以用的是父类`AbstractUserDetailsAuthenticationProvider`的。
+
+![](./assets/131399623/472bb1ffea477b51a9ca431a.png)
+4. 一路执行到执行`retrieveUser`方法并进入到方法里面：
+
+![](./assets/131399623/6ca09eca56d9f98f0fc81e3c.png)
+5. 往下执行到`loadUserByUsername`方法并进入，通过调用内存中的数据完成认证：
+
+![](./assets/131399623/318133264ee8cc8db2d1001f.png)
+
+下面是一个流程图：
+
+![](./assets/131399623/16702d3b80a23b8e2934eca7.png)
+
+总结：`AuthenticationManager` 是认证管理器，在 `Spring Security` 中有全局  
+    `AuthenticationManager`，也可以有局部`AuthenticationManager`。全局的`AuthenticationManager`⽤来对全局认证进⾏处理，局部的`AuthenticationManager`⽤来对某些特殊资源认证处理。当然⽆论是全局认证管理器还是局部认证管理器都是由`ProviderManger` 进⾏实现。
+
+每⼀个`ProviderManger`中都代理⼀个`AuthenticationProvider`的列表，列表中每⼀个实现代表⼀种身份认证⽅式。认证时底层数据源需要调⽤ `UserDetailService`来实现。
 
 ## 配置AuthenticationManager
 
 上面我们了解到`AuthenticationManager`的作用是什么，接下来我们去写一下这个，如果业务工作有需求，可以自定义配置。
 
-首先，我们之前在`application.properties`里面配置的账号信息（名称，密码，权限）注释一下。  
- ![](./assets/131399623/30a4247e03bbc3f431d43a62.png)
+首先，我们之前在`application.properties`里面配置的账号信息（名称，密码，权限）注释一下。
+
+![](./assets/131399623/30a4247e03bbc3f431d43a62.png)
 
 ### 默认的全局 AuthenticationManager
 
-springboot 对 security 进⾏⾃动配置时⾃动在⼯⼚中创建⼀个全局`AuthenticationManager`。  
- 代码例子如下(不优化版本)：
+springboot 对 security 进⾏⾃动配置时⾃动在⼯⼚中创建⼀个全局`AuthenticationManager`。代码例子如下(不优化版本)：
 
 ```java
 @Configuration
@@ -234,12 +236,12 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 ```
 
-结果如下：  
- ![](./assets/131399623/35ac748288893fe090e5290b.png)  
- 第二种(优化后版本)：  
- 优化思路：  
- `AuthenticationManagerBuilder`是默认配置对象，它默认找当前项目中是否存在自定义`UserDetailService`实例自动将当前项目`UserDetailService`实例设置为数据源。  
- 我们看一下`UserDetailServiceAutoConfigutation`源码：
+结果如下：
+
+![](./assets/131399623/35ac748288893fe090e5290b.png)
+
+第二种(优化后版本)：  
+ 优化思路：`AuthenticationManagerBuilder`是默认配置对象，它默认找当前项目中是否存在自定义`UserDetailService`实例自动将当前项目`UserDetailService`实例设置为数据源。我们看一下`UserDetailServiceAutoConfigutation`源码：
 
 ```java
 @AutoConfiguration
@@ -348,9 +350,11 @@ public class UserDetailsServiceAutoConfiguration {
 
 ```
 
-结果如下：  
- ![](./assets/131399623/bf0280b275221af70f8b3d8e.png)  
- 但是上面还存在一个问题——自定义的`AuthenticationManager`并没有在工厂中暴露出来，只能这个类中使用。
+结果如下：
+
+![](./assets/131399623/bf0280b275221af70f8b3d8e.png)
+
+但是上面还存在一个问题——自定义的`AuthenticationManager`并没有在工厂中暴露出来，只能这个类中使用。
 
 如果我们想让它在工厂中暴露，可以在任何位置注入，添加覆盖下面的方法即可：
 
@@ -390,8 +394,7 @@ protected AuthenticationManager authenticationManager() throws Exception {
 
 ## 库表设计
 
-从上面的内容我们可以看出，真正帮我们做底层用户认证的是`UserDetailsService`，它有一个`loadUserByUsername`方法，传入一个用户名，默认是在内存中。  
- 所以我们自己写实现这个方法，并设置给`AuthenticationManager`，实现更换数据源。
+从上面的内容我们可以看出，真正帮我们做底层用户认证的是`UserDetailsService`，它有一个`loadUserByUsername`方法，传入一个用户名，默认是在内存中。所以我们自己写实现这个方法，并设置给`AuthenticationManager`，实现更换数据源。
 
 我们来看一下`UserDetailsService`的`loadUserByUsername`方法：
 
@@ -860,5 +863,6 @@ public class MyUserDetailService implements UserDetailsService {
 
 1. 请确保你的数据库版本
 2. 确保你的数据在数据库里面  
-    最后结果：  
-    ![](./assets/131399623/017b0ba67556d8e70fc907cc.png)
+    最后结果：
+
+![](./assets/131399623/017b0ba67556d8e70fc907cc.png)

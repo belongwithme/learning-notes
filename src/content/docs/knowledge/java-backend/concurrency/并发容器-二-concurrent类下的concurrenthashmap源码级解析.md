@@ -1,24 +1,23 @@
 ---
 title: "并发容器（二）：Concurrent类下的ConcurrentHashMap源码级解析"
 description: "之前我们在集合篇里聊完了HashMap和HashTable，我们又学习了并发编程的基本内容，现在我们来聊一聊Concurrent类下的重要容器，ConcurrentHashMap。"
-status: draft
+status: curated
 sidebar:
   order: 26
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/126124080)
 
-## 并发容器-ConcurrentHashMap
-## 前言
+:::tip[要点]
+- JDK 1.7 用 `Segment` 分段锁；JDK 1.8 改为数组 + 链表 / 红黑树，桶为空时 CAS 插入，否则 `synchronized` 锁住桶的头节点。
+- 扩容时多个线程可以协助迁移，迁移完的桶放一个 `ForwardingNode` 指向新表。
+- `size()` 通过 `baseCount` 加 `CounterCell` 数组汇总，思路和 `LongAdder` 相同。
+:::
 
-之前我们在集合篇里聊完了HashMap和HashTable，我们又学习了并发编程的基本内容，现在我们来聊一聊Concurrent类下的重要容器，ConcurrentHashMap。  
- HashTable被逐渐废弃，离不开ConcurrentHashMap的出现，可以想象HashMap做为一个高频使用的集合框架，如果每次使用过程中都将整个方法synchronized，这样意味着全局加锁，肯定会导致并发的低效，所以ConcurrentHashMap的出现，改变了这种情况，接下来我们来看一看ConcurrentHashMap的神奇之处。
+之前我们在集合篇里聊完了HashMap和HashTable，我们又学习了并发编程的基本内容，现在我们来聊一聊Concurrent类下的重要容器，ConcurrentHashMap。HashTable被逐渐废弃，离不开ConcurrentHashMap的出现，可以想象HashMap做为一个高频使用的集合框架，如果每次使用过程中都将整个方法synchronized，这样意味着全局加锁，肯定会导致并发的低效，所以ConcurrentHashMap的出现，改变了这种情况，接下来我们来看一看ConcurrentHashMap的神奇之处。
 
 ## 什么是ConcurrentHashMap
 
-ConcurrentHashMap是Java并发包(java.util.concurrent)中提供的线程安全哈希表实现，它专门为并发环境优化设计。  
- 与其他类似数据结构的对比：
+ConcurrentHashMap是Java并发包(java.util.concurrent)中提供的线程安全哈希表实现，它专门为并发环境优化设计。与其他类似数据结构的对比：
 
 | 特性 | HashMap | Hashtable | ConcurrentHashMap |
 | --- | --- | --- | --- |
@@ -38,20 +37,19 @@ ConcurrentHashMap是Java并发包(java.util.concurrent)中提供的线程安全�
 
 ### JDK1.7版本
 
-ConcurrentHashMap在JDK1.7中,提供了一种颗粒度更细的加锁机制.  
- 这种机制叫分段锁(Lock Sriping).  
- 整个哈希表被分为了多个段,每个段都能独立锁定.
+ConcurrentHashMap在JDK1.7中，提供了一种颗粒度更细的加锁机制。这种机制叫分段锁(Lock Sriping)。整个哈希表被分为了多个段，每个段都能独立锁定。
 
-机制的优点:读取操作不需要锁,写入操作仅锁定相关的段.这减小了锁冲突的概率,从而提高了并发性能.  
- 在并发环境下实现更高的吞吐量,在单线程环境下只损失非常小的性能.
+机制的优点：读取操作不需要锁，写入操作仅锁定相关的段。这减小了锁冲突的概率，从而提高了并发性能。在并发环境下实现更高的吞吐量，在单线程环境下只损失非常小的性能。
 
 * 默认分为16个Segment，每个Segment相当于一个小的Hashtable
 * 每个Segment继承自ReentrantLock，可以独立上锁
 * 结构为Segment数组 + HashEntry数组 + 链表
 
-这种设计可以理解为"化整为零"的思想，就像一个小区有16个门，每个门都有独立的保安，居民只需要跟自己门的保安打交道，大大减少了排队等待的时间。  
- ![](./assets/126124080/842fbe2a2ce69c6c50fd02d0.png)  
- (图片转载自网络)
+这种设计可以理解为"化整为零"的思想，就像一个小区有16个门，每个门都有独立的保安，居民只需要跟自己门的保安打交道，大大减少了排队等待的时间。
+
+![](./assets/126124080/842fbe2a2ce69c6c50fd02d0.png)
+
+(图片转载自网络)
 
 #### HashEntry
 
@@ -72,7 +70,7 @@ static final class HashEntry<K,V> {
 
 ```
 
-这个老朋友我们在介绍HashMap的时候应该非常熟悉它了.不太明白的朋友可以翻看一下HashMap那一章.
+这个老朋友我们在介绍HashMap的时候应该非常熟悉它了。不太明白的朋友可以翻看一下HashMap那一章。
 
 #### Segment
 
@@ -98,12 +96,12 @@ static final class Segment<K,V> extends ReentrantLock implements Serializable {
 
 ```
 
-从上面代码可以看到,有一个volatile修饰的HashEntry数组  
- 所以可以看出,Segment的结构和HashEntry是非常类似的,都是一种数据和链表相结合的结构.  
- 即每个Segment守护着n个HashEntry,而每一个HashEntry本身可以当作一条链表连接n个HashEntry.
+从上面代码可以看到，有一个volatile修饰的HashEntry数组  
+ 所以可以看出，Segment的结构和HashEntry是非常类似的，都是一种数据和链表相结合的结构。即每个Segment守护着n个HashEntry，而每一个HashEntry本身可以当作一条链表连接n个HashEntry。
 
-那么可以用图来表示一下segment和hashEntry的关系  
- ![](./assets/126124080/7de062a1d1b2895867b8a2be.png)
+那么可以用图来表示一下segment和hashEntry的关系
+
+![](./assets/126124080/7de062a1d1b2895867b8a2be.png)
 
 ### JDK1.8版本
 
@@ -153,7 +151,7 @@ public ConcurrentHashMap() {
 
 ```
 
-无参构造里面调用了有参构造,传入了三个参数的默认值,它们的值是:
+无参构造里面调用了有参构造，传入了三个参数的默认值，它们的值是：
 
 ```
 // 默认初始化容量
@@ -405,11 +403,11 @@ JDK 1.8放弃分段锁的原因：
 #### 1.1 什么是ConcurrentHashMap
 
 ConcurrentHashMap是Java并发包(java.util.concurrent)中提供的一个线程安全的
-哈希表 
+哈希表
 实现，专门为并发环境设计。它允许多个线程同时进行读写操作，并且在设计上避免了全表锁定，提供了远高于Hashtable的并发性能。
 
 ConcurrentHashMap的核心设计目标是在保证线程安全的同时，提供尽可能高的并发性能。它通过精细的锁粒度和无锁技术，实现了高效的并发访问，是Java
-并发编程 
+并发编程
 中最常用的线程安全集合之一。
 
 #### 1.2 ConcurrentHashMap与HashMap和Hashtable的区别

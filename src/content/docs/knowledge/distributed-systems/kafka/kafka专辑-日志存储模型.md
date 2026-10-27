@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 156488012
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/156488012)
 
 ## 前置知识
@@ -38,41 +36,27 @@ Kafka 的 Partition（分区）在物理磁盘上对应一个目录，目录下�
 * **生命周期管理**：便于删除过期数据。直接删除整个旧文件比在在一个大文件中修剪头部要高效得多。
 * **索引性能**：将大索引切分为小的索引文件，便于加载到内存（mmap）。
 
-Partition 目录: topic-0
-
-
-文件名=BaseOffset
-
+Partition 目录：topic-0
 
 文件名=BaseOffset
-
 
 当前写入
 
-
 Segment 0
-
 
 00...000.log
 
-
 00...000.index
-
 
 Segment 1000
 
-
 00...1000.log
-
 
 00...1000.index
 
-
 Active Segment
 
-
 00...2000.log
-
 
 逻辑日志流
 
@@ -119,29 +103,21 @@ Active Segment
 * 数据直接从 **OS Page Cache** 复制到 **网卡缓冲区**。
 * **不经过 Kafka 应用层内存**，极大降低了 CPU 消耗。
 
-找到最近点: Offset=360, Pos=1024
-
+找到最近点：Offset=360, Pos=1024
 
 顺序扫描
 
-
 4. Zero-Copy
-
 
 Read Offset=368
 
-
 1. 定位 Segment: 00...000
-
 
 2. 二分查找 .index
 
-
 3. 定位 .log 物理位置
 
-
 找到 Offset=368
-
 
 网卡发送
 
@@ -176,8 +152,8 @@ Kafka 的数据不会永久保留，主要通过两种策略清理。
 
 | 指针 | 全称 | 含义 | 作用 |
 | --- | --- | --- | --- |
-| **LEO** | Log End Offset | 日志末端下一位 | 标识该副本自己写到了哪里（包括未提交数据）。 |
-| **HW** | High Watermark | 高水位 | **ISR 集合中所有副本**都已同步的最小 LEO。 |
+| **LEO** | Log End Offset | 日志末端下一位 | 标识该副本自己写到了哪里（包括未提交数据）。|
+| **HW** | High Watermark | 高水位 | **ISR 集合中所有副本**都已同步的最小 LEO。|
 
 * **可见性**：消费者只能拉取到 **HW** 之前的消息。
 * **安全性**：HW 之前的数据被认为是“已提交（Committed）”的，即便 Leader 挂了也不会丢失。

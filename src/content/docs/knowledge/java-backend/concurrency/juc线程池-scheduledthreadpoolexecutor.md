@@ -1,13 +1,17 @@
 ---
 title: "JUC线程池-ScheduledThreadPoolExecutor"
 description: "在 Java 开发中，我们经常会遇到需要延迟执行或周期性执行任务的场景。比如："
-status: draft
+status: curated
 sidebar:
   order: 33
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147246468)
+
+:::tip[要点]
+- `ScheduledThreadPoolExecutor` 继承 `ThreadPoolExecutor`，用按执行时间排序的 `DelayedWorkQueue` 实现延迟和周期任务。
+- `scheduleAtFixedRate` 按固定频率计算下次时间，`scheduleWithFixedDelay` 在上次结束后再等固定间隔。
+- 周期任务抛出未捕获的异常后，后续执行会被悄悄取消，任务里要自己捕获异常。
+:::
 
 ## 1. 引言：为什么需要 ScheduledThreadPoolExecutor？
 
@@ -310,13 +314,12 @@ public class ScheduledThreadPoolDemo {
                  }
              }
              if (t != null) {
-                 System.err.println("任务执行异常: " + t);
+                 System.err.println("任务执行异常：" + t);
                  // 在这里添加日志记录逻辑
                  // logger.error("Scheduled task threw an exception", t);
              }
          }
      };
-
 
      + 1
      + 2
@@ -1079,7 +1082,7 @@ ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(corePoolSiz
 * **`poolSize`**: 当前线程池中的线程总数。
 * **`queueSize`**: `DelayedWorkQueue` 中等待执行的任务数。持续增长的队列通常意味着 `corePoolSize` 不足或者任务执行时间过长。
 * **`taskCount`**: 已提交到线程池的任务总数（包括已完成、正在执行和等待中的）。
-* **`completedTaskCount`**: 已完成执行的任务总数。 `taskCount` - `completedTaskCount` - `activeCount` 约等于 `queueSize`。
+* **`completedTaskCount`**: 已完成执行的任务总数。`taskCount` - `completedTaskCount` - `activeCount` 约等于 `queueSize`。
 * **任务执行延迟/超时**：除了线程池本身的指标，更重要的是监控业务任务是否按时执行。可以在任务执行前后记录时间戳，计算实际执行时间与预期时间的偏差。
 
 ## 5. 与其他定时任务工具的比较
@@ -1146,7 +1149,8 @@ ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(corePoolSiz
 * **监控**：利用 JMX、Getter 方法或 Micrometer 等监控线程池状态。
 * **线程命名**：使用自定义 `ThreadFactory` 提高可维护性。
 
-相比于老旧的 `Timer`，`ScheduledThreadPoolExecutor` 提供了巨大的改进。虽然在 Spring 环境下我们可能更常用 `@Scheduled` 注解，但理解其底层依赖的 `ScheduledThreadPoolExecutor` 的工作原理，对于编写高效、可靠的定时任务，以及排查相关问题都大有裨益。  
- 希望本教程能帮助你更深入地理解和应用这个强大的 JUC 工具。
+相比于老旧的 `Timer`，`ScheduledThreadPoolExecutor` 提供了巨大的改进。虽然在 Spring 环境下我们可能更常用 `@Scheduled` 注解，但理解其底层依赖的 `ScheduledThreadPoolExecutor` 的工作原理，对于编写高效、可靠的定时任务，以及排查相关问题都大有裨益。
+
+希望本教程能帮助你更深入地理解和应用这个强大的 JUC 工具。
 
 Happy coding!

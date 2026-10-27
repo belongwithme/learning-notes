@@ -1,19 +1,21 @@
 ---
 title: "深入学习 ReentrantReadWriteLock"
 description: "在并发编程中，保护共享资源是核心问题之一。"
-status: draft
+status: curated
 sidebar:
   order: 16
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147251482)
+
+:::tip[要点]
+- 读锁共享、写锁独占，适合读多写少；读写、写写互斥。
+- AQS 的 `state` 被拆成两半：高 16 位记录读锁，低 16 位记录写锁重入次数。
+- 支持写锁降级为读锁，不支持读锁升级为写锁，否则多个读线程同时升级会死锁。
+:::
 
 ## 1. 基础概念：为什么需要 ReentrantReadWriteLock？
 
-在并发编程中，保护共享资源是核心问题之一。  
- 我们最常用的工具是互斥锁，例如 `synchronized` 关键字或 `ReentrantLock`。  
- 它们遵循一个简单的原则：**同一时刻，只允许一个线程访问被保护的资源**。
+在并发编程中，保护共享资源是核心问题之一。我们最常用的工具是互斥锁，例如 `synchronized` 关键字或 `ReentrantLock`。它们遵循一个简单的原则：**同一时刻，只允许一个线程访问被保护的资源**。
 
 这在很多情况下是有效的，但考虑以下场景：
 

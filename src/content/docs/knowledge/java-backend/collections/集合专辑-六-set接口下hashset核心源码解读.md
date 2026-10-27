@@ -5,18 +5,14 @@ status: draft
 sidebar:
   order: 125951275
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125951275)
 
-## HashSet解读
-## 前言
-
 我们之前已经学习了HashMap的核心思想和逻辑，现在再来看HashSet就已经很简单了，因为HashSet的底层就是HashMap= =。  
- 简单看一眼：  
- ![](./assets/125951275/a79b2fa515f1e8279b78d3c2.png)
+ 简单看一眼：
 
-## 一： 简单介绍
+![](./assets/125951275/a79b2fa515f1e8279b78d3c2.png)
+
+## 一：简单介绍
 
 1：Hashset实现了set接口，实际上是HashMap，  
  2：它可以存放null，但是只能存一个。  
@@ -26,16 +22,15 @@ sidebar:
 
 ### HashMap和HashSet的区别
 
-HashSet 的底层实现确实是基于 HashMap 的，但这并不意味着 HashSet 必须提供键值对的存储功能。  
- HashSet 是 HashMap 的一个“视图”或“封装”，它只使用了 HashMap 的键（key）部分来存储元素，而忽略了值（value）部分。  
- 在 HashSet 的内部实现中，每个元素都被存储为 HashMap 的一个键，而对应的值通常是一个固定的对象（例如，PRESENT），因为这个值对于 HashSet 的功能来说并不重要。HashSet 的主要目的是提供一个不包含重复元素的集合，因此它只需要利用 HashMap 的键的唯一性特性。  
- HashSet 提供了一个简洁的接口来存储不重复的元素集合，而隐藏了其底层实现的复杂性。我们不需要关心键值对的概念，只需要将元素添加到集合中，并确保它们的唯一性。  
- 简言之,HashSet使用HashMap作为底层实现是一种设计上的选择,旨在重用代码,提高性能和简化实现,同时为用户提供了一个专注于元素唯一性的简洁接口.
+HashSet 的底层实现确实是基于 HashMap 的，但这并不意味着 HashSet 必须提供键值对的存储功能。HashSet 是 HashMap 的一个“视图”或“封装”，它只使用了 HashMap 的键（key）部分来存储元素，而忽略了值（value）部分。在 HashSet 的内部实现中，每个元素都被存储为 HashMap 的一个键，而对应的值通常是一个固定的对象（例如，PRESENT），因为这个值对于 HashSet 的功能来说并不重要。HashSet 的主要目的是提供一个不包含重复元素的集合，因此它只需要利用 HashMap 的键的唯一性特性。
+
+HashSet 提供了一个简洁的接口来存储不重复的元素集合，而隐藏了其底层实现的复杂性。我们不需要关心键值对的概念，只需要将元素添加到集合中，并确保它们的唯一性。简言之，HashSet使用HashMap作为底层实现是一种设计上的选择，旨在重用代码，提高性能和简化实现，同时为用户提供了一个专注于元素唯一性的简洁接口。
 
 ## 二：继承图&结构
 
-![](./assets/125951275/1973d1e4ee523389ae37ab9e.png)  
- 代码实现如下：
+![](./assets/125951275/1973d1e4ee523389ae37ab9e.png)
+
+代码实现如下：
 
 ```java
 public class HashSet<E>
@@ -46,11 +41,10 @@ public class HashSet<E>
 ```
 
 1:AbstractSet：此
-类 
+类
 提供了Set接口的骨干实现，从而最大限度地减少了实现此接口所需的工作。  
  2:Cloneable：提供可拷贝功能  
- 3:Serializable: 提供可序列化功能。  
- 在这里的描述都不细致，因为在ArrayList那节都已经解读过了，感兴趣可以去看看前面的ArrayList解读。
+ 3:Serializable: 提供可序列化功能。在这里的描述都不细致，因为在ArrayList那节都已经解读过了，感兴趣可以去看看前面的ArrayList解读。
 
 ## 三：源码分析
 
@@ -216,9 +210,8 @@ static final long serialVersionUID = -5024744406713321676L;//序列号
 
 ```
 
-(3)： 方法举例  
- 因为HashSet就是依赖HashMap，所以它的底层就是HashMap，你可以把HashSet看做一个人偶，背后操作它的是HashMap。  
- 以add方法举例  
+(3)：方法举例  
+ 因为HashSet就是依赖HashMap，所以它的底层就是HashMap，你可以把HashSet看做一个人偶，背后操作它的是HashMap。以add方法举例  
  浅看一眼源码：
 
 ```java
@@ -229,5 +222,4 @@ static final long serialVersionUID = -5024744406713321676L;//序列号
 
 ```
 
-所以看到这我们明白了，HashMap会了，HashSet自然就会了，不多说了。  
- 后面我们会更加深入去探讨集合，目前了解这么多已经足够了。
+所以看到这我们明白了，HashMap会了，HashSet自然就会了，不多说了。后面我们会更加深入去探讨集合，目前了解这么多已经足够了。

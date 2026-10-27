@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 132541601
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/132541601)
 
 ## 什么是MinIO框架
@@ -27,8 +25,7 @@ MinIO对象存储系统是为海量数据存储、人工智能、大数据分析
 
 ## 如何安装（Docker版）
 
-MinIO安装非常的简单，在网上你很少会看到有关于MinIo的安装问题，所以基本上你去搜一下就能很容易成功安装，在这里我采用的是Docker去安装它。  
- 但是Docker中会有一些坑在，我基本上凭实力全踩上一遍，所以你跟着我去安装，基本不会出什么问题 。
+MinIO安装非常的简单，在网上你很少会看到有关于MinIo的安装问题，所以基本上你去搜一下就能很容易成功安装，在这里我采用的是Docker去安装它。但是Docker中会有一些坑在，我基本上凭实力全踩上一遍，所以你跟着我去安装，基本不会出什么问题 。
 
 ### 安装步骤
 
@@ -50,10 +47,11 @@ docker pull minio/minio
 
 ```
 
-操作如下图所示  
- ![](./assets/132541601/e891f4fd54e6864def59b267.png)
+操作如下图所示
 
-#### 3.启动
+![](./assets/132541601/e891f4fd54e6864def59b267.png)
+
+#### 3。启动
 
 **注意端口要起两个（一个9090，一个9000）！！！查了2个小时！！！**  
  下面的代码不能完全套用，关于用户名，密码，数据卷的绑定记得
@@ -75,15 +73,17 @@ See https://docs.docker.com/desktop/mac for more info.
 
 ```
 
-解决:
+解决：
 
 1. 打开Docker客户端的首选项（Preference）
 2. 找到 Resources下的 FILE SHARING
 3. 配置你允许让Docker访问使用的目录
 
-![](./assets/132541601/7d4ae0bdbb633e454681b74e.png)  
- 然后就大功告成!!!  
- ![](./assets/132541601/382809883b316f50913c9f6a.png)
+![](./assets/132541601/7d4ae0bdbb633e454681b74e.png)
+
+然后就大功告成!!!
+
+![](./assets/132541601/382809883b316f50913c9f6a.png)
 
 #### 4. 访问
 
@@ -92,27 +92,35 @@ See https://docs.docker.com/desktop/mac for more info.
 
 ## 简单配置
 
-### 1.找到创建用户界面
+### 1。找到创建用户界面
 
-在导航栏中找到identity/user处创建一个用户，点击create user按钮  
- ![](./assets/132541601/d93f168be220f844dae8147e.png)
+在导航栏中找到identity/user处创建一个用户，点击create user按钮
+
+![](./assets/132541601/d93f168be220f844dae8147e.png)
 
 ### 2. 设置用户信息
 
-用户名密码以及权限写完之后，就可以使用该用户登录MinIO控制台了。  
- ![](./assets/132541601/9819b1f42a8b155827bb7625.png)  
- 创建用户之后，点击用户弹出用户的基本信息，点击导航栏中的`Service Accounts`，出现下面的界面
+用户名密码以及权限写完之后，就可以使用该用户登录MinIO控制台了。
 
-![](./assets/132541601/70323cd6dfc435f47513a792.png)  
- 点击右边的`Create Access Key`，系统会随机生成`Create Access Key`，点击create按钮后，会展示出它们的信息，**这时记得将它们复制粘贴到你的笔记或者存储文件中，后续使用代码上传文件时需要用到这两个key。**  
- ![](./assets/132541601/4326414ee2bd0ebfe04e0d64.png)
+![](./assets/132541601/9819b1f42a8b155827bb7625.png)
+
+创建用户之后，点击用户弹出用户的基本信息，点击导航栏中的`Service Accounts`，出现下面的界面
+
+![](./assets/132541601/70323cd6dfc435f47513a792.png)
+
+点击右边的`Create Access Key`，系统会随机生成`Create Access Key`，点击create按钮后，会展示出它们的信息，**这时记得将它们复制粘贴到你的笔记或者存储文件中，后续使用代码上传文件时需要用到这两个key。**
+
+![](./assets/132541601/4326414ee2bd0ebfe04e0d64.png)
 
 ### 3. 创建一个桶
 
-在页面导航栏中找到`Administrator/Buckets`，点击右上角创建桶按钮  
- ![](./assets/132541601/fca32570ed148c0e12fc0139.png)  
- 然后输入桶的名字，就大功告成了！  
- ![](./assets/132541601/726bc5db499bceac6fb77bd0.png)
+在页面导航栏中找到`Administrator/Buckets`，点击右上角创建桶按钮
+
+![](./assets/132541601/fca32570ed148c0e12fc0139.png)
+
+然后输入桶的名字，就大功告成了！
+
+![](./assets/132541601/726bc5db499bceac6fb77bd0.png)
 
 ## 使用MinIO
 
@@ -223,8 +231,9 @@ MinioClient minioClient =
 
 ```
 
-结果如下：  
- ![](./assets/132541601/d8f52b6d1cf4ea654792834f.png)
+结果如下：
+
+![](./assets/132541601/d8f52b6d1cf4ea654792834f.png)
 
 ##### 3. 查询所有桶的列表信息
 
@@ -249,8 +258,9 @@ MinioClient minioClient =
 ```
 
 注意：桶的创建时间默认是美国时间，创建桶时我们可以指定桶的时区或者设置 MinIO服务器时区。  
- 结果如下：  
- ![](./assets/132541601/e55ffee33e4eddc675fc2e32.png)
+ 结果如下：
+
+![](./assets/132541601/e55ffee33e4eddc675fc2e32.png)
 
 ##### 4. 删除存储桶
 
@@ -314,9 +324,11 @@ MinioClient minioClient =
 
 ```
 
-结果如下：  
- ![](./assets/132541601/65a2678e273bc71ad9d831c7.png)  
- **需要注意几个点：**
+结果如下：
+
+![](./assets/132541601/65a2678e273bc71ad9d831c7.png)
+
+**需要注意几个点：**
 
 * 添加的Object大小不能超过 5GB。
 * 默认情况下，如果已存在同名Object且对该Object有访问权限，则新添加的Object将覆盖原有的Object，并返回 200 OK。
@@ -350,8 +362,9 @@ MinioClient minioClient =
 
 ```
 
-结果如下：  
- ![](./assets/132541601/908a52f32c1d3905d11fb171.png)
+结果如下：
+
+![](./assets/132541601/908a52f32c1d3905d11fb171.png)
 
 ###### downloadObject方法
 
@@ -369,15 +382,13 @@ MinioClient minioClient =
 
 ```
 
-结果  
- ![](./assets/132541601/f33726d0cabd621b0b69b30c.png)
+结果
+
+![](./assets/132541601/f33726d0cabd621b0b69b30c.png)
 
 ###### getPresignedObjectUrl方法
 
-* public String getPresignedObjectUrl(GetPresignedObjectUrlArgs args)：获取HTTP方法，到期时间和自定义请求参数的对象的预签名URL。  
-   这个方法的用途在于：  
-   可以提供给不用登录进行图片浏览，第三方共享访问等。  
-   我们还可以对返回 URL，根据业务做一些参数验签等控制。  
+* public String getPresignedObjectUrl(GetPresignedObjectUrlArgs args)：获取HTTP方法，到期时间和自定义请求参数的对象的预签名URL。这个方法的用途在于：可以提供给不用登录进行图片浏览，第三方共享访问等。我们还可以对返回 URL，根据业务做一些参数验签等控制。  
    代码如下：
 
 ```java
@@ -470,8 +481,9 @@ public static void uploadFile() throws InsufficientDataException, ErrorResponseE
 
 ```
 
-结果：  
- ![](./assets/132541601/335dbccd3f03a81248d43516.png)
+结果：
+
+![](./assets/132541601/335dbccd3f03a81248d43516.png)
 
 ##### 复制对象
 
@@ -503,8 +515,9 @@ public static void uploadFile() throws InsufficientDataException, ErrorResponseE
 
 ```
 
-结果如下：  
- ![](./assets/132541601/f7dd809db7d7bd7f12dc130c.png)
+结果如下：
+
+![](./assets/132541601/f7dd809db7d7bd7f12dc130c.png)
 
 ##### 删除对象
 
@@ -530,8 +543,9 @@ public static void uploadFile() throws InsufficientDataException, ErrorResponseE
 
 ```
 
-结果如下：  
- ![](./assets/132541601/aea136d38065c96545bc87e0.png)
+结果如下：
+
+![](./assets/132541601/aea136d38065c96545bc87e0.png)
 
 ###### removeObjects方法
 
@@ -553,8 +567,9 @@ public static void uploadFile() throws InsufficientDataException, ErrorResponseE
 
 ```
 
-结果如下：  
- ![](./assets/132541601/bf146950e558ce57ec19c374.png)
+结果如下：
+
+![](./assets/132541601/bf146950e558ce57ec19c374.png)
 
 ##### 桶对象的信息查询
 
@@ -583,8 +598,9 @@ public static void uploadFile() throws InsufficientDataException, ErrorResponseE
 
 ```
 
-结果如下：  
- ![](./assets/132541601/146b415cde58f567aa5baa8b.png)
+结果如下：
+
+![](./assets/132541601/146b415cde58f567aa5baa8b.png)
 
 ###### 递归查询桶下对象
 
@@ -612,8 +628,9 @@ public static void uploadFile() throws InsufficientDataException, ErrorResponseE
 
 ```
 
-结果如下：  
- ![](./assets/132541601/966174f694c34436083cce58.png)
+结果如下：
+
+![](./assets/132541601/966174f694c34436083cce58.png)
 
 ###### 条件查询
 

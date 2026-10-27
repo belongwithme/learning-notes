@@ -5,25 +5,18 @@ status: draft
 sidebar:
   order: 128748042
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/128748042)
 
-## 前言
+Spring中的BeanDifinition在Bean的实例化流程中占有着非常重要的角色，如果你不了解BeanDifinition的话，面试或者学习Bean的生命周期的话，如同空中楼阁，应付面试可以，如果你想真的成体系化，这部分内容推荐你仔细阅读。本文结合自己平时笔记和大牛博客整理得出，例子都是自己手敲验证过的，放心阅读。
 
-Spring中的BeanDifinition在Bean的实例化流程中占有着非常重要的角色，如果你不了解BeanDifinition的话，面试或者学习Bean的生命周期的话，如同空中楼阁，应付面试可以，如果你想真的成体系化，这部分内容推荐你仔细阅读。  
- 本文结合自己平时笔记和大牛博客整理得出，例子都是自己手敲验证过的，放心阅读。
+## 什么是BeanDefinition？
 
-### 什么是BeanDefinition？
-
-这个概念在Spring官网的文档里面介绍的很清楚，参考别人的大致说一下：  
- SpringIOC容器管理一个或多个Bean，这些Bean通过我们提供给容器配置的元数据被创建出来（比如，在xml的定义），在容器中，这些Bean的定义用BeanDefinition对象来表示，包含以下元数据：
+这个概念在Spring官网的文档里面介绍的很清楚，参考别人的大致说一下：SpringIOC容器管理一个或多个Bean，这些Bean通过我们提供给容器配置的元数据被创建出来（比如，在xml的定义），在容器中，这些Bean的定义用BeanDefinition对象来表示，包含以下元数据：
 
 * 全限定类名，通过是Bean的实际实现类；
 * Bean行为配置元素，它们说明Bean在容器中的行为（作用域，生命周期回调等）；
 * Bean执行工作所需要的其他Bean的引用；
-* 其他配置信息，比如（管理连接池的bean中，限制池的大小或者使用的连接数量）；  
-   大概总结一下，BeanDefinition可以看做是Bean的一个定义或者是一个半成品,是 Spring 框架中用来描述 Bean 的元数据接口，它包含了创建和管理 Bean 所需的所有配置信息。
+* 其他配置信息，比如（管理连接池的bean中，限制池的大小或者使用的连接数量）；大概总结一下，BeanDefinition可以看做是Bean的一个定义或者是一个半成品，是 Spring 框架中用来描述 Bean 的元数据接口，它包含了创建和管理 Bean 所需的所有配置信息。
 
 可以把 BeanDefinition 理解为 **Bean 的"设计图纸"或"配方"**：
 
@@ -42,25 +35,26 @@ Spring中的BeanDifinition在Bean的实例化流程中占有着非常重要的�
 
 ---
 
-### 为什么要有BeanDefinition？
+## 为什么要有BeanDefinition？
 
-为什么要这样去设计呢？还要多此一举再添加一个中间状态，直接把Bean创建出来不就好了吗？  
- 举个不同方式创建Bean的例子就明白为什么BeanDefinition是有必要存在的：
+为什么要这样去设计呢？还要多此一举再添加一个中间状态，直接把Bean创建出来不就好了吗？举个不同方式创建Bean的例子就明白为什么BeanDefinition是有必要存在的：
 
-* 普普通通创建一个Java bean：  
-   ![](./assets/128748042/dc36ac5475635ea3b710aae9.png)
-* Spring创建Bean：  
-   ![](./assets/128748042/99e0a790e05196ed10f513f9.png)
+* 普普通通创建一个Java bean：
+
+![](./assets/128748042/dc36ac5475635ea3b710aae9.png)
+* Spring创建Bean：
+
+![](./assets/128748042/99e0a790e05196ed10f513f9.png)
 
 ![](./assets/128748042/ee7facde18b1fc002b9d2a10.png)
 
-BeanDefinition 它遵循了"配置与实例分离"的原则。,我可以从源码和实际场景来说明:
+BeanDefinition 它遵循了"配置与实例分离"的原则。，我可以从源码和实际场景来说明：
 
-#### 延迟实例化,提前验证
+### 延迟实例化，提前验证
 
-如果直接创建 Bean,在启动时就要实例化所有对象。但有了 BeanDefinition:
+如果直接创建 Bean，在启动时就要实例化所有对象。但有了 BeanDefinition:
 
-* 先解析配置,生成 BeanDefinition(元数据)
+* 先解析配置，生成 BeanDefinition(元数据)
 * 验证配置的正确性(循环依赖、类型冲突等)
 * 需要时才创建真正的 Bean 实例
 
@@ -85,9 +79,9 @@ BeanDefinition 它遵循了"配置与实例分离"的原则。,我可以从源�
 
 ```
 
-#### 动态修改 Bean 的元数据
+### 动态修改 Bean 的元数据
 
-看 `AbstractDependsOnBeanFactoryPostProcessor.java:116` 的关键代码:
+看 `AbstractDependsOnBeanFactoryPostProcessor.java:116` 的关键代码：
 
 ```java
   public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
@@ -108,17 +102,17 @@ BeanDefinition 它遵循了"配置与实例分离"的原则。,我可以从源�
 
 ```
 
-#### 支持条件化注册
+### 支持条件化注册
 
-BeanDefinition 可以在注册后,实例化前被移除或修改:
+BeanDefinition 可以在注册后，实例化前被移除或修改：
 
 * @Conditional 注解的实现
 * 自动配置的覆盖机制
 * Bean 定义的合并(父子 BeanDefinition)
 
-#### 元数据的丰富性
+### 元数据的丰富性
 
-BeanDefinition 包含大量元数据,这些在 Bean 实例中没有:
+BeanDefinition 包含大量元数据，这些在 Bean 实例中没有：
 
 * scope (singleton/prototype)
 * lazyInit (是否懒加载)
@@ -127,7 +121,7 @@ BeanDefinition 包含大量元数据,这些在 Bean 实例中没有:
 * initMethod / destroyMethod
 * factoryMethod (工厂方法)
 
-从源码 `SpringApplication.java:49-58` 可以看到这些导入:
+从源码 `SpringApplication.java:49-58` 可以看到这些导入：
 
 ```java
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -139,9 +133,9 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 
 ```
 
-### 实际应用场景
+## 实际应用场景
 
-#### 动态添加依赖
+### 动态添加依赖
 
 ```
   // 确保所有 DataSource Bean 在 DatabaseInitializer 之后初始化
@@ -151,7 +145,7 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 
 ```
 
-#### 修改作用域
+### 修改作用域
 
 ```
   BeanDefinition def = beanFactory.getBeanDefinition("userService");
@@ -160,7 +154,7 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 
 ```
 
-#### 条件覆盖
+### 条件覆盖
 
 ```
   if (环境是测试环境) {
@@ -171,7 +165,7 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 
 ```
 
-### 在 Spring 容器中的位置
+## 在 Spring 容器中的位置
 
 ```java
 ┌─────────────────────────────────────────────────────────┐
@@ -201,7 +195,7 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 
 ---
 
-### 主要实现类
+## 主要实现类
 
 Spring 提供了几个重要的实现类：
 
@@ -221,9 +215,9 @@ BeanDefinition (接口)
 
 ```
 
-### BeanDefinition 的上下游关系
+## BeanDefinition 的上下游关系
 
-#### 上游：BeanDefinition 的来源
+### 上游：BeanDefinition 的来源
 
 ```java
 ┌──────────────────────────────────────────────────────┐
@@ -248,7 +242,7 @@ BeanDefinition (接口)
 
 ```
 
-#### 中游：BeanDefinition 的注册和存储
+### 中游：BeanDefinition 的注册和存储
 
 ```java
 // BeanDefinitionRegistry 接口（核心注册表）
@@ -295,7 +289,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 ```
 
-#### 下游：从 BeanDefinition 到 Bean 实例
+### 下游：从 BeanDefinition 到 Bean 实例
 
 ```java
 BeanDefinition
@@ -329,7 +323,7 @@ AbstractAutowireCapableBeanFactory.createBean()
 
 ---
 
-### BeanDifinition重点源码
+## BeanDifinition重点源码
 
 ```java
 package org.springframework.beans.factory.config;
@@ -383,9 +377,9 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
 我们从源码中也可以到看，BeanDIfinition就是对Bean的一个封装。
 
-### 实战案例：完整流程演示
+## 实战案例：完整流程演示
 
-#### 创建示例类
+### 创建示例类
 
 ```java
 package com.example.demo.service;
@@ -433,7 +427,7 @@ class UserRepository {
 
 ```
 
-#### 查看 BeanDefinition 信息
+### 查看 BeanDefinition 信息
 
 ```java
 package com.example.demo;
@@ -515,7 +509,7 @@ Bean类名: com.example.demo.service.UserService
 
 ```
 
-#### 编程方式创建 BeanDefinition
+### 编程方式创建 BeanDefinition
 
 ```java
 package com.example.demo.config;
@@ -583,7 +577,7 @@ class CustomService {
 
 ---
 
-#### BeanDefinition 的修改：BeanFactoryPostProcessor
+### BeanDefinition 的修改：BeanFactoryPostProcessor
 
 Spring 允许在 Bean 实例化之前修改 BeanDefinition：
 
@@ -639,9 +633,9 @@ public class CustomBeanFactoryPostProcessor implements BeanFactoryPostProcessor 
 
 ---
 
-### 关键源码流程
+## 关键源码流程
 
-#### 注解扫描生成 BeanDefinition
+### 注解扫描生成 BeanDefinition
 
 ```java
 // ClassPathBeanDefinitionScanner.doScan() 核心代码
@@ -684,7 +678,7 @@ protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
 
 ```
 
-#### 根据 BeanDefinition 创建实例
+### 根据 BeanDefinition 创建实例
 
 ```java
 // AbstractAutowireCapableBeanFactory.createBean() 简化版
@@ -708,11 +702,11 @@ protected Object doCreateBean(String beanName, RootBeanDefinition mbd, Object[] 
 
 ---
 
-### 总结
+## 总结
 
 BeanDifinition初学时不容易，如果没有一个整体的理解，不太容易明白为什么会有BeanDifinition，以及它对于Bean整个生命周期的影响，后面我们聊到生命周期的时候，还会把它拿出来仔细说一说。
 
-#### BeanDefinition 的本质
+### BeanDefinition 的本质
 
 | 概念 | 说明 |
 | --- | --- |
@@ -720,7 +714,7 @@ BeanDifinition初学时不容易，如果没有一个整体的理解，不太容
 | **作用** | 作为 Spring 容器和 Bean 实例之间的桥梁 |
 | **时机** | 在Bean实例化之前存在，用于指导Bean的创建过程 |
 
-#### 核心要点
+### 核心要点
 
 ```java
 1. 配置来源多样化
@@ -742,14 +736,14 @@ BeanDifinition初学时不容易，如果没有一个整体的理解，不太容
 
 ```
 
-#### 关键接口
+### 关键接口
 
 * **BeanDefinition**：定义Bean元数据的接口
 * **BeanDefinitionRegistry**：注册和管理BeanDefinition
 * **BeanDefinitionReader**：读取配置并生成BeanDefinition
 * **BeanFactoryPostProcessor**：在实例化前修改BeanDefinition
 
-#### 生命周期位置
+### 生命周期位置
 
 ```
 应用启动

@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 147141866
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141866)
 
 ## 2. TCP协议详解

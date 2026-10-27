@@ -5,19 +5,13 @@ status: draft
 sidebar:
   order: 131454099
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131454099)
-
-## 前言
 
 和上一篇一样，从上倒下复制粘贴，所有代码贴完再运行，代码没有问题，只要贴对，都可以顺利跑出来的。
 
 ## 难点分析
 
-前端系统给后端传递的数据为json，就会导致后端系统不能再用`request.getParameter`获取用户数据。  
- 所以我们要将请求中json格式转换为对象，提取用户数据，然后进行认证。  
- 在web传统项目进行认证请求时，底层调用的是`FormLoginConfigurer`，里面用`UsernamePasswordAuthenticationFilter`过滤器中的`attempAuthentication`试图认证的方法进行处理。下面看一下关键代码：
+前端系统给后端传递的数据为json，就会导致后端系统不能再用`request.getParameter`获取用户数据。所以我们要将请求中json格式转换为对象，提取用户数据，然后进行认证。在web传统项目进行认证请求时，底层调用的是`FormLoginConfigurer`，里面用`UsernamePasswordAuthenticationFilter`过滤器中的`attempAuthentication`试图认证的方法进行处理。下面看一下关键代码：
 
 ```java
 	if (this.postOnly && !request.getMethod().equals("POST")) {
@@ -33,17 +27,15 @@ sidebar:
 
 ```
 
-我们可以看到，在前后端分离项目中，上面获取用户名和密码的方式肯定是不可以的（基于request请求获取）。  
- 所以我们就不能再用传统的`formLogin`中的`AuthenticationFilter`，我们 要把这个filter做一个重写。
+我们可以看到，在前后端分离项目中，上面获取用户名和密码的方式肯定是不可以的（基于request请求获取）。所以我们就不能再用传统的`formLogin`中的`AuthenticationFilter`，我们 要把这个filter做一个重写。
 
 重写的重点是如何获取参数的信息，而且要想有认证功能，最后还是要调用`return this.getAuthenticationManager().authenticate(authRequest);`这行代码。
 
-实现的思路：  
- 创建一个`UsernamePasswordAuthenticationFilter`的子类实现，让字类去替换`attempAuthentication`。
+实现的思路：创建一个`UsernamePasswordAuthenticationFilter`的子类实现，让字类去替换`attempAuthentication`。
 
-我们确定了`UsernamePasswordAuthenticationFilter`不适合作为我们要用的过滤器，所以我们自己创建一个名为`LoginFilter`的过滤器。  
- 但是security里面是有一系列的过滤器的，我们要确保`LoginFilter`替换`UsernamePasswordAuthenticationFilter`后位置不变。  
- ![](./assets/131454099/dec6c5f88449b7ed241922ed.png)
+我们确定了`UsernamePasswordAuthenticationFilter`不适合作为我们要用的过滤器，所以我们自己创建一个名为`LoginFilter`的过滤器。但是security里面是有一系列的过滤器的，我们要确保`LoginFilter`替换`UsernamePasswordAuthenticationFilter`后位置不变。
+
+![](./assets/131454099/dec6c5f88449b7ed241922ed.png)
 
 ## Controller层
 

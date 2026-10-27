@@ -5,19 +5,13 @@ status: draft
 sidebar:
   order: 131176456
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131176456)
-
-## 前言
 
 内容是根据b站视频黑马作为一个引子，期间不断的翻阅书和查官网的英语文档一句句翻译过来的，相信能做到相对来说全一些，当时学完收获还是很大的，目前整理的时候又回头翻看，收获还是有的，希望也可以帮助到你，目前不断更新，有时间就来补充了，内容整理比较辛苦，码字不易，希望点个关注一起进步。
 
 ## 权限管理
 
-涉及到用户参与到系统都需要进行权限管理，权限管理实现了**对用户访问系统的控制**，按照**安全规则**或者**安全策略**去控制用户**可以访问且只能访问自己被授权的资源**。  
- 权限管理包括用户**身份认证**和**授权**两部分，简称认证授权。  
- 对于需要访问控制的资源用户首先进行身份认证，认证通过后用户具有改资源的访问权限方可访问。
+涉及到用户参与到系统都需要进行权限管理，权限管理实现了**对用户访问系统的控制**，按照**安全规则**或者**安全策略**去控制用户**可以访问且只能访问自己被授权的资源**。权限管理包括用户**身份认证**和**授权**两部分，简称认证授权。对于需要访问控制的资源用户首先进行身份认证，认证通过后用户具有改资源的访问权限方可访问。
 
 ### 认证
 
@@ -38,27 +32,17 @@ Java企业级开发中，安全管理框架非常少，目前比较常见的是�
 
 ## 整体架构
 
-在架构设计中，**认证**和**授权**是分开的，两个是独立的存在，好处在于可以非常方便的整合一些外部的解决方案。  
- ![](./assets/131176456/33429b6c31464364f9642ce4.png)  
- 下面我们对于里面的细节做一些基本的了解。
+在架构设计中，**认证**和**授权**是分开的，两个是独立的存在，好处在于可以非常方便的整合一些外部的解决方案。
+
+![](./assets/131176456/33429b6c31464364f9642ce4.png)
+
+下面我们对于里面的细节做一些基本的了解。
 
 ### 认证
 
 认证这块更到后面好好和大家聊聊
 
-#### AuthenticationManager
-
-#### Authentication
-
-#### SecurityContextHolder
-
 ### 授权
-
-#### AccessDecisionManager
-
-#### AccessDecisionVoter
-
-#### ConfigAttribute
 
 ## 环境搭建
 
@@ -69,12 +53,15 @@ Java企业级开发中，安全管理框架非常少，目前比较常见的是�
 
 ### 创建项目
 
-1.创建springboot单体项目  
- ![](./assets/131176456/9409004ed809c32b8b494ea1.png)  
+1。创建springboot单体项目
+
+![](./assets/131176456/9409004ed809c32b8b494ea1.png)  
  2. 创建controller  
- 项目结构：  
- ![](./assets/131176456/3d59bd1352328e9f34262e60.png)  
- 项目代码：
+ 项目结构：
+
+![](./assets/131176456/3d59bd1352328e9f34262e60.png)
+
+项目代码：
 
 ```java
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -93,9 +80,10 @@ public class HelloController {
 
 ```
 
-3.启动项目测试  
- 如果和我的配置是一样的，默认端口是8080，那么就行下面这个地址:`http://localhost:8080/hello`  
- ![](./assets/131176456/40bbb8c497fdc78573316719.png)
+3。启动项目测试  
+ 如果和我的配置是一样的，默认端口是8080，那么就行下面这个地址:`http://localhost:8080/hello`
+
+![](./assets/131176456/40bbb8c497fdc78573316719.png)
 
 ### 整合Spring Security
 
@@ -110,32 +98,34 @@ public class HelloController {
 
 ```
 
-2.再次启动项目
+2。再次启动项目
 
 * 启动后控制台生成一个密码
-* 访问hello发现直接跳转到登陆页面  
-   ![](./assets/131176456/ae84320f5150090025ab7be9.png)  
-   ![](./assets/131176456/f323c0724c015fa862255bdf.png)  
-   3.登陆系统
+* 访问hello发现直接跳转到登陆页面
+
+![](./assets/131176456/ae84320f5150090025ab7be9.png)
+
+![](./assets/131176456/f323c0724c015fa862255bdf.png)
+
+3。登陆系统
 * 默认用户名：user
-* 默认密码：控制台打印的uuid  
-   ![](./assets/131176456/3568c364b6f39794fa40ab1c.png)
+* 默认密码：控制台打印的uuid
+
+![](./assets/131176456/3568c364b6f39794fa40ab1c.png)
 
 看到这相信你能体会到它的强大，只需引入一个依赖，所有的接口都会自动保护起来！  
  思考一下：
 
-* 为什么引⼊ Spring Security 之后没有任何配置所有请求就要认证呢?
+* 为什么引⼊ Spring Security 之后没有任何配置所有请求就要认证呢？
 * 在项⽬中明明没有登录界⾯，登录界⾯怎么来的呢？
 * 为什么使⽤user和控制台密码能登陆，登录时验证数据源存在哪⾥呢？
 
 ## 实现原理
 
-虽然开发者只需要引⼊⼀个依赖，就可以让 Spring Security 对应⽤进⾏保护。Spring Security ⼜是如何做到的呢？  
- 在 Spring Security 中认证、授权等功能都是基于过滤器完成的。
+虽然开发者只需要引⼊⼀个依赖，就可以让 Spring Security 对应⽤进⾏保护。Spring Security ⼜是如何做到的呢？在 Spring Security 中认证、授权等功能都是基于过滤器完成的。
 
 假设我们现在不用Spring Security，自己去开发一个权限管理，我们应该如何做权限管理？  
- 需求：我们希望在访问一个资源的时候，先认证再访问，如果没有认证，则先要去做认证。  
- 那么我们的设计思路应该如下图所示：![](./assets/131176456/ea0172a1bcf3e56a5d33ab4f.png)提供一个官方的网址来参考：`https://docs.spring.io/spring-security/site/docs/5.5.x-SNAPSHOT/reference/html5/#servlet-architecture`
+ 需求：我们希望在访问一个资源的时候，先认证再访问，如果没有认证，则先要去做认证。那么我们的设计思路应该如下图所示：![](./assets/131176456/ea0172a1bcf3e56a5d33ab4f.png)提供一个官方的网址来参考：`https://docs.spring.io/spring-security/site/docs/5.5.x-SNAPSHOT/reference/html5/#servlet-architecture`
 
 ### 官方文档解读
 
@@ -199,8 +189,9 @@ DelegatingFilterProxy可以通过标准的Servlet容器机制进行注册，但�
 
 ```
 
-这是DelegatingFilterProxy如何与过滤器和FilterChain相结合的示意图，如下图：  
- ![](./assets/131176456/79096e77910586ad155d483c.png)
+这是DelegatingFilterProxy如何与过滤器和FilterChain相结合的示意图，如下图：
+
+![](./assets/131176456/79096e77910586ad155d483c.png)
 
 ```
 DelegatingFilterProxy looks up Bean Filter0 from the ApplicationContext and then invokes Bean Filter0.
@@ -242,8 +233,7 @@ DelegatingFilterProxy的另一个好处是它允许延迟查找过滤器Bean实�
 
 ##### 为什么会有DelegatingFileterProxy的出现？
 
-主要是为了解决Spring应用程序中的过滤器集成和管理的需求。  
- 在传统的Servlet容器中，过滤器是通过容器的标准机制进行注册和管理的，而与Spring的ApplicationContext没有直接的集成。
+主要是为了解决Spring应用程序中的过滤器集成和管理的需求。在传统的Servlet容器中，过滤器是通过容器的标准机制进行注册和管理的，而与Spring的ApplicationContext没有直接的集成。
 
 由于Spring框架提供了丰富的依赖注入、生命周期管理和其他高级特性，开发人员希望能够在Spring应用程序中更好地利用这些特性来管理过滤器。他们希望能够像管理其他Spring Bean一样管理过滤器，而不仅仅局限于Servlet容器的机制。
 
@@ -257,8 +247,7 @@ DelegatingFilterProxy的出现使得过滤器的集成和管理更加灵活、�
 2. **DelegatingFilterProxy初始化**：在Servlet容器启动时，DelegatingFilterProxy将被实例化并初始化。它会获取应用程序的ApplicationContext，通常是通过ContextLoaderListener或其他Spring配置来加载。
 3. **查找目标过滤器Bean**：DelegatingFilterProxy在初始化阶段会从ApplicationContext中查找指定的目标过滤器Bean。这个目标过滤器Bean是开发人员定义的实际过滤器实现，它实现了Spring的Filter接口。
 4. **运行过滤器链**：当收到请求时，DelegatingFilterProxy会将请求和响应传递给目标过滤器Bean的doFilter方法。目标过滤器Bean可以执行自定义的过滤逻辑，并通过调用FilterChain的doFilter方法将请求传递给下一个过滤器或Servlet。  
-    举个栗子🌰：  
-    1.实现一个Filter接口的自定义过滤器类：
+    举个栗子🌰：1。实现一个Filter接口的自定义过滤器类：
 
 ```java
 import javax.servlet.*;
@@ -289,7 +278,7 @@ public class MyFilter implements Filter {
 
 ```
 
-2.在Spring的配置文件（如applicationContext.xml）中配置DelegatingFilterProxy和自定义过滤器的Bean：
+2。在Spring的配置文件（如applicationContext.xml）中配置DelegatingFilterProxy和自定义过滤器的Bean：
 
 ```xml
 <bean id="myFilter" class="com.example.MyFilter" />
@@ -301,7 +290,7 @@ public class MyFilter implements Filter {
 
 ```
 
-3.在web.xml中注册DelegatingFilterProxy：
+3。在web.xml中注册DelegatingFilterProxy：
 
 ```xml
 <filter>
@@ -317,8 +306,7 @@ public class MyFilter implements Filter {
 
 ```
 
-通过以上配置，DelegatingFilterProxy将会在应用程序启动时被实例化，并根据targetBeanName属性查找并委托给MyFilter过滤器的处理逻辑。  
- 这样，我们就实现了通过DelegatingFilterProxy将Servlet容器和Spring的ApplicationContext进行桥接，从而能够在Spring应用程序中管理和配置自定义过滤器。
+通过以上配置，DelegatingFilterProxy将会在应用程序启动时被实例化，并根据targetBeanName属性查找并委托给MyFilter过滤器的处理逻辑。这样，我们就实现了通过DelegatingFilterProxy将Servlet容器和Spring的ApplicationContext进行桥接，从而能够在Spring应用程序中管理和配置自定义过滤器。
 
 ##### DelegatingFilterProxy的好处都有什么？
 
@@ -342,17 +330,17 @@ FilterChainProxy是由Spring Security提供的特殊过滤器，通过SecurityFi
 
 ```
 
-下图展示了FilterChainProxy的信息：  
- ![](./assets/131176456/922b1f5afd41abc084d41546.png)
+下图展示了FilterChainProxy的信息：
+
+![](./assets/131176456/922b1f5afd41abc084d41546.png)
 
 ##### 为什么会有FilterChainProxy的出现
 
-FilterChainProxy的出现主要是**为了实现灵活且可配置的安全过滤器链管理**。  
- 在Web应用程序中，安全性是一个重要的方面，需要对请求进行身份验证、授权和其他安全操作。为了实现这些安全功能，需要使用多个过滤器来处理不同的安全任务。  
- 然而，**每个过滤器通常只能处理特定的安全任务**，例如身份验证或授权。而在实际的应用程序中，可能需要**使用不同的过滤器来处理不同的URL路径、请求条件或安全需求。**此外，过滤器的**顺序和执行流程**也可能因应用程序的特定需求而有所不同。  
- 为了解决这些灵活性和可配置性的问题，Spring Security引入了FilterChainProxy。  
- FilterChainProxy允许我们根据特定的URL路径、请求条件或安全需求，配置多个过滤器链并指定它们的顺序和执行流程。通过FilterChainProxy，可以动态地选择适当的过滤器链来处理不同的请求，并按照预定义的顺序依次执行过滤器。  
- FilterChainProxy的出现使得安全过滤器链的管理更加灵活、可配置和易于扩展。**它提供了一种集中管理和调度多个过滤器的机制**，将请求路由到适当的过滤器链中，并确保按照指定的顺序执行。同时，它还提供了**嵌套过滤器链的支持**，使得可以构建复杂的安全逻辑。
+FilterChainProxy的出现主要是**为了实现灵活且可配置的安全过滤器链管理**。在Web应用程序中，安全性是一个重要的方面，需要对请求进行身份验证、授权和其他安全操作。为了实现这些安全功能，需要使用多个过滤器来处理不同的安全任务。然而，**每个过滤器通常只能处理特定的安全任务**，例如身份验证或授权。而在实际的应用程序中，可能需要**使用不同的过滤器来处理不同的URL路径、请求条件或安全需求。**此外，过滤器的**顺序和执行流程**也可能因应用程序的特定需求而有所不同。
+
+为了解决这些灵活性和可配置性的问题，Spring Security引入了FilterChainProxy。FilterChainProxy允许我们根据特定的URL路径、请求条件或安全需求，配置多个过滤器链并指定它们的顺序和执行流程。通过FilterChainProxy，可以动态地选择适当的过滤器链来处理不同的请求，并按照预定义的顺序依次执行过滤器。
+
+FilterChainProxy的出现使得安全过滤器链的管理更加灵活、可配置和易于扩展。**它提供了一种集中管理和调度多个过滤器的机制**，将请求路由到适当的过滤器链中，并确保按照指定的顺序执行。同时，它还提供了**嵌套过滤器链的支持**，使得可以构建复杂的安全逻辑。
 
 #### SecurityFilterChain
 
@@ -365,8 +353,9 @@ FilterChainProxy使用SecurityFilterChain来确定在该请求中应该调用哪
 
 ```
 
-如下图所示：  
- ![](./assets/131176456/ced02f8fcac186f666c40c21.png)
+如下图所示：
+
+![](./assets/131176456/ced02f8fcac186f666c40c21.png)
 
 ```
 The Security Filters in SecurityFilterChain are typically Beans, but they are registered with FilterChainProxy instead of DelegatingFilterProxy. 
@@ -438,18 +427,15 @@ In fact, a SecurityFilterChain might have zero security Filters if the applicati
 
 SecurityFilterChain和FilterChainProxy是Spring Security中用于处理安全过滤器链的两个关键组件。
 
-* SecurityFilterChain是一个接口，用于定义一组安全过滤器链。  
-   每个SecurityFilterChain都包含了一系列的过滤器，用于处理特定的请求或URL路径。它定义了一个方法boolean matches(HttpServletRequest request)，用于确定当前请求是否与该过滤器链匹配。当请求匹配到某个SecurityFilterChain时，其中的过滤器将被调用以完成安全处理。
-* FilterChainProxy是Spring Security提供的特殊过滤器，用于管理和调度多个SecurityFilterChain。  
-   它充当了整个安全过滤器链的入口点，并根据请求的特征选择合适的SecurityFilterChain来处理请求。FilterChainProxy是一个Servlet过滤器，通过实现javax.servlet.Filter接口来处理请求和响应，并根据配置的SecurityFilterChain来调用相应的安全过滤器链。
+* SecurityFilterChain是一个接口，用于定义一组安全过滤器链。每个SecurityFilterChain都包含了一系列的过滤器，用于处理特定的请求或URL路径。它定义了一个方法boolean matches(HttpServletRequest request)，用于确定当前请求是否与该过滤器链匹配。当请求匹配到某个SecurityFilterChain时，其中的过滤器将被调用以完成安全处理。
+* FilterChainProxy是Spring Security提供的特殊过滤器，用于管理和调度多个SecurityFilterChain。它充当了整个安全过滤器链的入口点，并根据请求的特征选择合适的SecurityFilterChain来处理请求。FilterChainProxy是一个Servlet过滤器，通过实现javax.servlet.Filter接口来处理请求和响应，并根据配置的SecurityFilterChain来调用相应的安全过滤器链。
 
 **因此，SecurityFilterChain是定义安全过滤器链的接口，而FilterChainProxy是实现了该接口的特殊过滤器，用于管理和调度多个SecurityFilterChain。**  
  FilterChainProxy充当了整个安全过滤器链的代理，根据请求特征选择合适的过滤器链进行处理。
 
 ### Security Filters
 
-Spring Security 中给我们提供那些过滤器? 默认情况下那些过滤器会被加载呢？  
- 看一下官方文档的描述：
+Spring Security 中给我们提供那些过滤器？默认情况下那些过滤器会被加载呢？看一下官方文档的描述：
 
 ```
  The Security Filters are inserted into the FilterChainProxy with the SecurityFilterChain API.

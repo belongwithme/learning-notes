@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 147141877
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147141877)
 
 ## 3. TCP可靠传输机制
@@ -110,7 +108,7 @@ __u32 secure_tcp_seq(__be32 saddr, __be32 daddr, __be16 sport, __be16 dport)
 ```
 
 这个函数使用源IP地址、目的IP地址、源端口、目的端口以及一个密钥和时间戳来生成随机的初始序列号，增加了序列号被猜测的难度，提高了
-安全性 
+安全性
 。
 
 ##### 发送数据时的序列号处理
@@ -246,7 +244,7 @@ TCP通过时间戳选项解决了这个问题。时间戳选项为每个数据�
 ##### 初始序列号的安全性
 
 如果初始序列号是可预测的，攻击者可能会猜测序列号并伪造TCP段，导致连接劫持或数据注入。为了提高安全性，现代TCP实现使用加密
-算法 
+算法
 生成随机的初始序列号，如前面介绍的`secure_tcp_seq`函数。
 
 ##### 确认延迟
@@ -297,7 +295,7 @@ void tcp_fastretrans_alert(struct sock *sk, int pkts_acked, int flag)
 #### 3.2.1 超时重传的基本概念
 
 \*\*超时重传（
-Timeout 
+Timeout
  Retransmission）\*\*是指当发送方在一定时间内没有收到已发送数据的确认时，假定数据已丢失，并重新发送该数据的机制。
 
 超时重传机制基于以下假设：

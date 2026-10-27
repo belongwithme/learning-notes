@@ -5,15 +5,13 @@ status: draft
 sidebar:
   order: 153635511
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153635511)
 
 ## Spring为什么要自己实现SPI
 
 ### Java SPI的不足
 
-虽然Java SPI机制很强大,但在实际应用中存在一些限制:
+虽然Java SPI机制很强大，但在实际应用中存在一些限制：
 
 **1. 无法按需加载**
 
@@ -66,13 +64,13 @@ ServiceLoader<Driver> loader = ServiceLoader.load(Driver.class);
 
 ### Spring SPI的改进
 
-Spring设计了自己的SPI机制,主要改进:
+Spring设计了自己的SPI机制，主要改进：
 
 | 特性 | Java SPI | Spring SPI |
 | --- | --- | --- |
 | **配置文件** | 每个接口一个文件 | 统一在spring.factories |
 | **文件格式** | 纯文本(每行一个类名) | Properties格式(key=value) |
-| **加载方式** | 只能获取实例 | 可以只获取类名,按需实例化 |
+| **加载方式** | 只能获取实例 | 可以只获取类名，按需实例化 |
 | **批量操作** | ❌ | ✅ 支持批量获取 |
 | **条件过滤** | ❌ | ✅ 支持条件注解过滤 |
 | **缓存策略** | 简单缓存 | 多级缓存 |
@@ -297,7 +295,7 @@ private static <T> T instantiateFactory(String factoryImplementationName,
 
 ---
 
-#### 核心方法3: loadSpringFactories() - 最重要!
+#### 核心方法3: loadSpringFactories() - 最重要！
 
 **这是整个Spring SPI机制的核心方法!**
 
@@ -650,11 +648,11 @@ com.example.Listener2
 
 ### 上游调用者(谁在用它)
 
-下面我指举例了一些比较常见的,还有其他上游路径没有展示~
+下面我指举例了一些比较常见的，还有其他上游路径没有展示~
 
 #### SpringBoot启动流程核心入口
 
-流程如下:
+流程如下：
 
 SpringApplication构造器  
  ↓  
@@ -664,7 +662,7 @@ SpringApplication构造器
  ↓  
  SpringFactoriesLoader.loadFactoryNames()
 
-代码路径: `SpringApplication.java`
+代码路径：`SpringApplication.java`
 
 ```java
 public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySources) {
@@ -689,7 +687,7 @@ private <T> Collection<T> getSpringFactoriesInstances(Class<T> type) {
 
 #### 自动配置核心流程
 
-流程如下:
+流程如下：
 
 @EnableAutoConfiguration  
  ↓  
@@ -699,7 +697,7 @@ private <T> Collection<T> getSpringFactoriesInstances(Class<T> type) {
  ↓  
  SpringFactoriesLoader.loadFactoryNames(EnableAutoConfiguration.class)
 
-代码路径: `AutoConfigurationImportSelector.java`
+代码路径：`AutoConfigurationImportSelector.java`
 
 ```java
 protected List<String> getCandidateConfigurations(AnnotationMetadata metadata,
@@ -721,7 +719,7 @@ protected List<String> getCandidateConfigurations(AnnotationMetadata metadata,
 
 #### EnableAutoConfiguration - 自动配置类(最重要!)
 
-spring.factories配置示例:
+spring.factories配置示例：
 
 ```
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
@@ -735,7 +733,7 @@ org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
 
 ```
 
-这些自动配置类会:
+这些自动配置类会：
 
 * 根据条件注解决定是否生效
 * 自动创建Bean
@@ -752,7 +750,7 @@ org.springframework.boot.context.config.DelegatingApplicationContextInitializer
 
 ```
 
-作用时机: 在容器刷新(refresh)之前执行
+作用时机：在容器刷新(refresh)之前执行
 
 #### ApplicationListener - 应用监听器
 
@@ -766,9 +764,9 @@ org.springframework.boot.context.logging.LoggingApplicationListener
 
 ```
 
-作用: 监听Spring Boot启动过程中的各种事件
+作用：监听Spring Boot启动过程中的各种事件
 
-还有其他下游,不一一显示了,遇见应该也能认出来的.
+还有其他下游，不一一显示了，遇见应该也能认出来的。
 
 ### 完整上下游调用链路图
 
@@ -917,7 +915,7 @@ T5: 启动失败(如果有)
 
 ### 代码对比
 
-**场景: 获取所有自动配置类**  
+**场景：获取所有自动配置类**  
  **Java SPI方式:**
 
 ```java

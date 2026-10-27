@@ -1,13 +1,17 @@
 ---
 title: "Java Fork/Join 框架详解"
 description: "在多核处理器时代，充分利用计算资源已成为提升应用性能的关键因素。然而，编写高效的并行程序一直是软件开发中的难题。开发者不仅需要考虑如何合理拆分任务，还要处理线程同步、负载均衡等复杂问题。Java作为企业级应用的主流语言，在并发编程领域不断演进，而Fork/Join框架的引入则是这一演进过程中的..."
-status: draft
+status: curated
 sidebar:
   order: 35
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/146907780)
+
+:::tip[要点]
+- Fork/Join 框架用分治解决可以递归拆分的大任务：拆到足够小直接计算，再合并子结果。
+- 核心组件是 `ForkJoinPool`（执行）和 `ForkJoinTask`（任务，常用子类 `RecursiveTask`、`RecursiveAction`）。
+- 每个工作线程有自己的双端队列，空闲线程从其他线程的队列里窃取任务，实现负载均衡。
+:::
 
 ## Java Fork/Join框架详解
 
@@ -1345,7 +1349,6 @@ class ProcessTask extends CountedCompleter<Void> {
          rightTask = new MyTask(array, mid, end);
      }
 
-
      + 1
      + 2
      + 3
@@ -1368,7 +1371,6 @@ class ProcessTask extends CountedCompleter<Void> {
              tasks[i] = new MyTask(array, partStart, partEnd);
          }
      }
-
 
      + 1
      + 2
@@ -1393,7 +1395,6 @@ class ProcessTask extends CountedCompleter<Void> {
          leftTask = new MyTask(array, start, splitPoint);
          rightTask = new MyTask(array, splitPoint, end);
      }
-
 
      + 1
      + 2
@@ -1422,7 +1423,6 @@ class ProcessTask extends CountedCompleter<Void> {
          return computeDirectly();
      }
 
-
      + 1
      + 2
      + 3
@@ -1440,7 +1440,6 @@ class ProcessTask extends CountedCompleter<Void> {
          return computeDirectly();
      }
 
-
      + 1
      + 2
      + 3
@@ -1457,7 +1456,6 @@ class ProcessTask extends CountedCompleter<Void> {
          // 直接计算
          return computeDirectly();
      }
-
 
      + 1
      + 2
@@ -1664,7 +1662,6 @@ fork()和invoke()方法在执行原理上有本质区别：
          return this;
      }
 
-
      + 1
      + 2
      + 3
@@ -1695,7 +1692,6 @@ fork()和invoke()方法在执行原理上有本质区别：
          else
              return externalInvoke();
      }
-
 
      + 1
      + 2
@@ -1736,7 +1732,6 @@ fork()和invoke()方法在执行原理上有本质区别：
      leftResult = leftTask.join();
      return leftResult + rightResult;
 
-
      + 1
      + 2
      + 3
@@ -1755,7 +1750,6 @@ fork()和invoke()方法在执行原理上有本质区别：
      resultA = taskA.join();
      resultB = taskB.join();
      resultC = computeC(resultA, resultB);
-
 
      + 1
      + 2
@@ -1776,7 +1770,6 @@ fork()和invoke()方法在执行原理上有本质区别：
      rightTask.fork();
      leftResult = leftTask.join();
      rightResult = rightTask.join();
-
 
      + 1
      + 2
@@ -4106,6 +4099,4 @@ Fork/Join框架在并行计算领域有其独特价值。它比低级线程API�
 
 ## 结语
 
-Fork/Join框架代表了Java并发编程的一个重要里程碑，它将复杂的并行算法封装在简洁的API背后，使得开发者能够轻松地利用多核处理器的能力。  
- 从个人理解来看，Fork/Join框架的价值不仅在于其技术实现，更体现并行编程思想：  
- 分解问题、并行处理、动态平衡。这些思想超越了特定的框架和语言，是构建高效并行系统的普遍原则。
+Fork/Join框架代表了Java并发编程的一个重要里程碑，它将复杂的并行算法封装在简洁的API背后，使得开发者能够轻松地利用多核处理器的能力。从个人理解来看，Fork/Join框架的价值不仅在于其技术实现，更体现并行编程思想：分解问题、并行处理、动态平衡。这些思想超越了特定的框架和语言，是构建高效并行系统的普遍原则。

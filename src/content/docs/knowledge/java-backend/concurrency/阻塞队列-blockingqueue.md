@@ -1,15 +1,18 @@
 ---
 title: "阻塞队列-BlockingQueue"
 description: "想象一下现实生活中的流水线：上游工序不断生产零件（生产者），下游工序不断取用零件进行组装（消费者）。为了保证流水线顺畅运行，通常会在上下游之间设置一个传送带或缓冲区。这个缓冲区有几个关键作用："
-status: draft
+status: curated
 sidebar:
   order: 29
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147334606)
 
-## Java BlockingQueue 深度教程
+:::tip[要点]
+- `BlockingQueue` 在队列满时阻塞生产者、队列空时阻塞消费者，是生产者-消费者模式的标准实现。
+- 四组方法行为不同：`add` / `remove` 抛异常，`offer` / `poll` 返回特殊值，`put` / `take` 阻塞，带超时的 `offer` / `poll` 等待一段时间。
+- 常见实现各有用途：`ArrayBlockingQueue` 有界、`LinkedBlockingQueue` 两把锁、`SynchronousQueue` 不存元素、`DelayQueue` 按到期时间出队。
+:::
+
 ## 0. 前言：为什么需要 BlockingQueue？
 
 想象一下现实生活中的流水线：上游工序不断生产零件（生产者），下游工序不断取用零件进行组装（消费者）。为了保证流水线顺畅运行，通常会在上下游之间设置一个传送带或缓冲区。这个缓冲区有几个关键作用：
@@ -19,7 +22,7 @@ sidebar:
 3. **协作**：提供了一个明确的交接点，让生产者和消费者有序地传递工作成果。
 
 在
-多线程 
+多线程
 编程的世界里，我们也面临类似的问题：不同的线程可能扮演着生产者和消费者的角色，它们需要一种安全、高效的方式来传递数据或任务。如果直接让它们共享一个普通的集合（如 `ArrayList` 或 `LinkedList`），就会遇到很多麻烦：
 
 * **线程安全问题**：多个线程同时读写同一个集合，需要开发者手动添加复杂的锁机制来保证数据一致性，否则可能导致数据错乱、丢失甚至程序崩溃。
@@ -31,7 +34,7 @@ sidebar:
 ## 1. 什么是 BlockingQueue？核心特性概览
 
 `BlockingQueue` 是 `java.util.concurrent` 包下的一个**接口**，它继承自 `java.util.Queue` 接口。顾名思义，它首先是一个**队列**，遵循先进先出（
-FIFO 
+FIFO
 ）的基本原则（但也有例外，如 `PriorityBlockingQueue`）。
 
 它的核心特性在于 “**阻塞 (Blocking)**”：
@@ -302,7 +305,7 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
 
 **源码解读要点：**
 
-* **单一锁 `lock`**：所有修改队列状态的操作（`enqueue`, `dequeue`）以及阻塞操作（`put`, `take`, 带超时的 `offer`/`poll`）都需要先获取 `lock`。
+* **单一锁 `lock`**：所有修改队列状态的操作（`enqueue`, `dequeue`）以及阻塞操作（`put`, `take`，带超时的 `offer`/`poll`）都需要先获取 `lock`。
 * **两个条件变量 `notEmpty`, `notFull`**：它们都**绑定**在同一个 `lock` 上。`notEmpty` 用于在队列为空时阻塞 `take` 操作，`notFull` 用于在队列满时阻塞 `put` 操作。
 * **`await()` 与 `signal()`**：当 `put` 时发现队列满，线程调用 `notFull.await()` 释放 `lock` 并进入等待状态。当 `take` 成功执行 `dequeue()` 后，会调用 `notFull.signal()` 来唤醒一个（可能存在的）因队列满而等待的 `put` 线程。`take` 操作的等待和 `put` 操作的唤醒逻辑类似，使用 `notEmpty` 条件变量。
 * **`while` 循环检查条件**：在调用 `await()` 之前，必须使用 `while (condition)` 而不是 `if (condition)` 来检查条件。这是为了防止**虚假唤醒 (Spurious Wakeup)**。线程可能在没有被 `signal()` 的情况下被唤醒，使用 `while` 循环可以确保线程被唤醒后再次检查条件是否真正满足。
@@ -1961,7 +1964,7 @@ public class ProducerConsumerWithNonBlockingQueue {
 
 ### 7.3 中断处理 (`InterruptedException`)
 
-* `BlockingQueue` 的阻塞方法 (`put`, `take`, 带超时的 `offer`/`poll`) 都是**响应中断**的。如果在这些方法阻塞等待时，线程的 `interrupt()` 方法被调用，阻塞方法会抛出 `InterruptedException`。
+* `BlockingQueue` 的阻塞方法 (`put`, `take`，带超时的 `offer`/`poll`) 都是**响应中断**的。如果在这些方法阻塞等待时，线程的 `interrupt()` 方法被调用，阻塞方法会抛出 `InterruptedException`。
 * **最佳实践**：捕获 `InterruptedException` 后，通常应该：
 
   1. 执行必要的清理工作。
@@ -2020,8 +2023,7 @@ public ThreadPoolExecutor(int corePoolSize,        // 核心线程数
 
 ## 8. 总结
 
-`BlockingQueue` 优雅解决了多线程环境下生产者-消费者模式中的核心挑战：线程安全、状态同步和线程通信。  
- 通过将复杂的并发控制逻辑封装在队列内部，`BlockingQueue` 提供了简洁易用的接口，显著降低了并发编程的难度。  
+`BlockingQueue` 优雅解决了多线程环境下生产者-消费者模式中的核心挑战：线程安全、状态同步和线程通信。通过将复杂的并发控制逻辑封装在队列内部，`BlockingQueue` 提供了简洁易用的接口，显著降低了并发编程的难度。  
  **回顾：**
 
 * `BlockingQueue` 的**核心概念**：阻塞特性、线程安全、多种操作策略。

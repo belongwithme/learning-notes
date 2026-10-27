@@ -5,19 +5,18 @@ status: draft
 sidebar:
   order: 125781311
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125781311)
 
 一：简单介绍  
 它的底层是一个对象数组`protected Object[] elementData`，和ArrayList有一些
-类 
-似，其内部都是通过一个容量能够动态增长的数组来实现的。  
-不同点是Vector是线程安全的（但只是相对来说。。。），用以用于
-多线程 
+类
+似，其内部都是通过一个容量能够动态增长的数组来实现的。不同点是Vector是线程安全的（但只是相对来说。。。），用以用于
+多线程
 的环境下。  
-二：继承关系  
-![](./assets/125781311/369a93a76aa8d410d9fb12ad.png)  
+二：继承关系
+
+![](./assets/125781311/369a93a76aa8d410d9fb12ad.png)
+
 代码实现：
 
 ```java
@@ -28,10 +27,10 @@ public class Vector<E>
 
 ```
 
-1.继承了AbstractList，作用是实现了List接口，这个在ArrayList那篇有详细解读  
+1。继承了AbstractList，作用是实现了List接口，这个在ArrayList那篇有详细解读  
 2:实现了RandomAccess接口，提供随机访问功能  
 3：实现了Cloneable接口，提供
-克隆 
+克隆
 功能  
 4：实现了Serializable，支持序列化
 
@@ -224,9 +223,7 @@ The {@link Enumeration Enumerations} returned by the {@link #elements() elements
 
 ```
 
-(5)：扩容机制解读：  
-之前我们已经学习过ArrayList的扩容机制，那么现在再来看Vector就很简单了，它和ArrayList的扩容思想非常类似，只是关键地方有一点点不同而已。  
-我们先来简单介绍一下这几个方法，最后用一个add方法的例子串起来，学习时注意观察参数。
+(5)：扩容机制解读：之前我们已经学习过ArrayList的扩容机制，那么现在再来看Vector就很简单了，它和ArrayList的扩容思想非常类似，只是关键地方有一点点不同而已。我们先来简单介绍一下这几个方法，最后用一个add方法的例子串起来，学习时注意观察参数。
 
 a：ensureCapacity(int minCapacity)方法：
 
@@ -242,7 +239,7 @@ a：ensureCapacity(int minCapacity)方法：
 ```
 
 目的是确定Vector容量  
-b： ensureCapacityHelper(int minCapacity)方法： 确定Vector容量的帮助方法
+b：ensureCapacityHelper(int minCapacity)方法：确定Vector容量的帮助方法
 
 ```java
 private void ensureCapacityHelper(int minCapacity) {
@@ -310,9 +307,12 @@ private static int hugeCapacity(int minCapacity) {
 
 ```
 
-![](./assets/125781311/4a55d5f4df88676c98c1f3b3.png)  
-运行到11行，准备进行扩容：  
-![](./assets/125781311/6be6019c2b62845bfdc00e46.png)  
+![](./assets/125781311/4a55d5f4df88676c98c1f3b3.png)
+
+运行到11行，准备进行扩容：
+
+![](./assets/125781311/6be6019c2b62845bfdc00e46.png)
+
 进入add代码里：
 
 ```java
@@ -326,15 +326,22 @@ private static int hugeCapacity(int minCapacity) {
 
 ```
 
-![](./assets/125781311/6cc2fe2e1bef4805243149fb.png)  
-进入ensureCapacityHelper(elementCount + 1)方法：  
-![](./assets/125781311/9cf05354ef7dc934f1e71bc5.png)  
-这里进入if判断，minCapacity为11，element.length为10，所以进入if方法块,执行grow方法：
+![](./assets/125781311/6cc2fe2e1bef4805243149fb.png)
 
-![](./assets/125781311/3f8a3c90bfcd220699053a54.png)  
-执行完后完成扩容：  
-![](./assets/125781311/0f9b3339f8452d2a84200746.png)  
-最后完成赋值：  
+进入ensureCapacityHelper(elementCount + 1)方法：
+
+![](./assets/125781311/9cf05354ef7dc934f1e71bc5.png)
+
+这里进入if判断，minCapacity为11，element.length为10，所以进入if方法块，执行grow方法：
+
+![](./assets/125781311/3f8a3c90bfcd220699053a54.png)
+
+执行完后完成扩容：
+
+![](./assets/125781311/0f9b3339f8452d2a84200746.png)
+
+最后完成赋值：
+
 ![](./assets/125781311/97b9792877a3dea331ee0557.png)
 
 到这里Vector方法就介绍完了，感兴趣自己去debug再看一看。

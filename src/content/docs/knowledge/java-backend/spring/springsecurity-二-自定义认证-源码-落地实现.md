@@ -5,16 +5,15 @@ status: draft
 sidebar:
   order: 131230561
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/131230561)
 
 ## 自定义资源权限规则
 
 ### 资源分 类
 
-对于资源来说，并不是所有的资源都需要认证和授权，有些公共的资源是可以直接访问的，所以我们要对资源有一个分类。  
- ![](./assets/131230561/b5f42643069c3e24197feecb.png)
+对于资源来说，并不是所有的资源都需要认证和授权，有些公共的资源是可以直接访问的，所以我们要对资源有一个分类。
+
+![](./assets/131230561/b5f42643069c3e24197feecb.png)
 
 ### 自定义资源权限规则
 
@@ -45,8 +44,7 @@ sidebar:
 
 ```
 
-上面表示了对所有的http请求都开启了权限认证，并且任何请求都需要认证后才可以访问。  
- 所以如果我们要根据不同的资源去划分不同的认证方式， 我们就要覆盖上面这个方法。
+上面表示了对所有的http请求都开启了权限认证，并且任何请求都需要认证后才可以访问。所以如果我们要根据不同的资源去划分不同的认证方式，我们就要覆盖上面这个方法。
 
 #### 如何去覆盖呢？
 
@@ -82,8 +80,7 @@ class DefaultWebSecurityCondition extends AllNestedConditions {
 * `@ConditionalOnClass({ SecurityFilterChain.class, HttpSecurity.class })`  
    那么只要我们引入了Spring Security这个依赖，这两个就自动满足了。
 * `@ConditionalOnMissingBean({ WebSecurityConfigurerAdapter.class, SecurityFilterChain.class })`  
-   同时不能存在 `WebSecurityConfigurerAdapter.class`或者 `SecurityFilterChain.class`。  
-   如果不满足上面的条件，那么`DefaultWebSecurityCondition`就会失效。
+   同时不能存在 `WebSecurityConfigurerAdapter.class`或者 `SecurityFilterChain.class`。如果不满足上面的条件，那么`DefaultWebSecurityCondition`就会失效。
 
 所以就很明显了，我们有两种方式就是去写`WebSecurityConfigurerAdapter`或`SecurityFilterChain`，这里先去写WebSecurityConfigurerAdapter，后面再说另一种。
 
@@ -92,7 +89,7 @@ class DefaultWebSecurityCondition extends AllNestedConditions {
 ##### 它是干什么用的
 
 WebSecurityConfigurerAdapter是Spring Security提供的一个**方便的基类**，用于配置和自定义Web应用程序的
-安全性 
+安全性
 。**通过扩展WebSecurityConfigurerAdapter类并覆盖其方法**，您可以定义应用程序的安全规则、访问权限和身份验证配置。
 
 WebSecurityConfigurerAdapter提供了一组可覆盖的方法，让我们进行以下配置：
@@ -105,7 +102,7 @@ WebSecurityConfigurerAdapter提供了一组可覆盖的方法，让我们进行�
    可以通过覆盖`configure(WebSecurity web)`方法来配置Web安全性。我们可以忽略某些URL路径的安全性检查，例如静态资源文件。
 
 通过使用`WebSecurityConfigurerAdapter`，可以将
-Spring Security 
+Spring Security
 集成到Web应用程序中，并定义细粒度的安全规则和配置。它提供了一种简单且灵活的方式来自定义应用程序的安全性需求。
 
 这里我们看一个要被覆盖的configure方法去实现授权：
@@ -124,14 +121,15 @@ Spring Security
 
 我们可以看到，它的默认实现也是所有请求都必须认证，认证方式是表单或者
 Basic
-认证。  
- 所以，我们只需要写这个类的实现，并且覆盖这个方法就可以了。
+认证。所以，我们只需要写这个类的实现，并且覆盖这个方法就可以了。
 
 ##### 实例
 
-新构建一个module模块，项目结构如下：  
- ![](./assets/131230561/395929582670ecaded7b3d3f.png)  
- 其中config包下的代码如下所示：
+新构建一个module模块，项目结构如下：
+
+![](./assets/131230561/395929582670ecaded7b3d3f.png)
+
+其中config包下的代码如下所示：
 
 ```java
 import org.springframework.context.annotation.Configuration;
@@ -156,8 +154,8 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 ```
 
-* permitAll() 代表放⾏该资源,该资源为公共资源 ⽆需认证和授权可以直接访问
-* anyRequest().authenticated() 代表所有请求,必须认证之后才能访问
+* permitAll() 代表放⾏该资源，该资源为公共资源 ⽆需认证和授权可以直接访问
+* anyRequest().authenticated() 代表所有请求，必须认证之后才能访问
 * formLogin() 代表开启表单认证
 
 **注意：放⾏资源必须放在所有认证请求之前!**
@@ -241,7 +239,7 @@ public class LoginController {
 
 ```
 
-在这里里面我们发现了一个过滤器为`UsernamePasswordAuthenticationFilter`,进去看看,关键代码如下：
+在这里里面我们发现了一个过滤器为`UsernamePasswordAuthenticationFilter`，进去看看，关键代码如下：
 
 ```java
 public class UsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
@@ -319,7 +317,7 @@ if (this.postOnly && !request.getMethod().equals("POST")) {
 
 ```
 
-2. action的请求路径为/login.
+2. action的请求路径为/login。
 
 ```java
 	private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/login",
@@ -419,9 +417,11 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 ```
 
 它接受一个`AuthenticationSuccessHandler`，那么我们来看看这个：  
- 它的结构图如下：  
- ![](./assets/131230561/25743665d10fd6bb09cefe4c.png)  
- 这里我们可以看到上面我们提到的`successForwardUrl`和`defaultSuccessUrl`分别是这里的`ForwardAuthenticationSuccessHandler`和`SavedRequestAwareAuthenticationSuccessHandler`。
+ 它的结构图如下：
+
+![](./assets/131230561/25743665d10fd6bb09cefe4c.png)
+
+这里我们可以看到上面我们提到的`successForwardUrl`和`defaultSuccessUrl`分别是这里的`ForwardAuthenticationSuccessHandler`和`SavedRequestAwareAuthenticationSuccessHandler`。
 
 ```java
 public interface AuthenticationSuccessHandler {
@@ -437,15 +437,11 @@ public interface AuthenticationSuccessHandler {
 
 ```
 
-这是一个接口类型，后面我们要写它的实现类，它的实现类默认是有3个，在上面的结构图里面都有介绍。  
- 里面有两个默认方法：  
- 第一个默认方法是处理一些特殊情况，这里我们先忽略就行。  
- 第二个方法是提供了让我们实现类去实现的方法。
+这是一个接口类型，后面我们要写它的实现类，它的实现类默认是有3个，在上面的结构图里面都有介绍。里面有两个默认方法：第一个默认方法是处理一些特殊情况，这里我们先忽略就行。第二个方法是提供了让我们实现类去实现的方法。
 
 #### 自定义AuthenticationSucccessHandler实现
 
-在前后端分离开发中不需要成功之后跳转⻚⾯。  
- 只需要给前端返回⼀个 JSON 通知登录成功还是失败与否。这个时候可以通过⾃定义  
+在前后端分离开发中不需要成功之后跳转⻚⾯。只需要给前端返回⼀个 JSON 通知登录成功还是失败与否。这个时候可以通过⾃定义  
  `AuthenticationSucccessHandler`实现。
 
 ```java
@@ -492,14 +488,17 @@ public class MyAuthenticatioinSuccessHandler implements AuthenticationSuccessHan
 
 ### 显示登录失败处理
 
-首先我们在登陆页面输入错误的信息，然后再进入到`attemptAuthentication`中，如下图：  
- ![](./assets/131230561/7a20fbfbbcbe7d64bfa0f6f1.png)  
- 然后我们进入到最后一行代码里的`authenticate`方法：  
- ![](./assets/131230561/a521bbc304b8ff045de4b6c2.png)  
- 这个方法是在ProviderManager里面，上面有个变量：`private List<AuthenticationProvider> providers = Collections.emptyList();`  
+首先我们在登陆页面输入错误的信息，然后再进入到`attemptAuthentication`中，如下图：
+
+![](./assets/131230561/7a20fbfbbcbe7d64bfa0f6f1.png)
+
+然后我们进入到最后一行代码里的`authenticate`方法：
+
+![](./assets/131230561/a521bbc304b8ff045de4b6c2.png)
+
+这个方法是在ProviderManager里面，上面有个变量：`private List<AuthenticationProvider> providers = Collections.emptyList();`  
  存储了AuthenticationProvider，那么在这里是存储了一个基于内存方式的一个认证`AnonymousAuthenticationProvider`  
- 。  
- 此时provider为：`AnonymousAuthenticationProvider`  
+ 。此时provider为：`AnonymousAuthenticationProvider`  
  解析一下这个方法：
 
 ```java
@@ -591,17 +590,18 @@ public Authentication authenticate(Authentication authentication) throws Authent
 
 ```
 
-我们debug流程走一遍，看看它如是如何存储失败的信息的。  
- 进入到for循环里面：![](./assets/131230561/f0f8c52223b749f662db9892.png)  
+我们debug流程走一遍，看看它如是如何存储失败的信息的。进入到for循环里面：![](./assets/131230561/f0f8c52223b749f662db9892.png)  
  我们看到，唯一的`AuthenticationProvider`不支持待验证的Authentication对象的类，所以直接进入方法体里面执行
 continue
-。  
- 然后因为只有一个，所以再次执行for循环时跳出for循环，执行下面的代码：  
- ![](./assets/131230561/a9b73d7a49c8a6bb2a94ba40.png)  
- 这个时候发现：所有的Provider在上面的for循环里都无法验证通过（因为执行continue了，根本没执行for循环里面的代码），并且存在父级`AuthenticationManager`，则调用父级`AuthenticationManager`进行验证。  
- 接下来执行父级`AuthenticationManager`进行验证，依旧是走这个方法，注意下面的providers中只有`DaoAuthticationProvider`：  
- ![](./assets/131230561/3f607fc109ec552823881b7d.png)  
- 走到for循环的第一个if判断时，因为支持待验证的Authentication对象的类，所以不进去方法体，当走到下图时：![](./assets/131230561/7cf9d1f05fad844d6951f5e1.png)  
+。然后因为只有一个，所以再次执行for循环时跳出for循环，执行下面的代码：
+
+![](./assets/131230561/a9b73d7a49c8a6bb2a94ba40.png)
+
+这个时候发现：所有的Provider在上面的for循环里都无法验证通过（因为执行continue了，根本没执行for循环里面的代码），并且存在父级`AuthenticationManager`，则调用父级`AuthenticationManager`进行验证。接下来执行父级`AuthenticationManager`进行验证，依旧是走这个方法，注意下面的providers中只有`DaoAuthticationProvider`：
+
+![](./assets/131230561/3f607fc109ec552823881b7d.png)
+
+走到for循环的第一个if判断时，因为支持待验证的Authentication对象的类，所以不进去方法体，当走到下图时：![](./assets/131230561/7cf9d1f05fad844d6951f5e1.png)  
  此时provider为`DaoAuthticationProvider`，进入验证方法，我们先解析方法：
 
 ```java
@@ -673,12 +673,16 @@ public Authentication authenticate(Authentication authentication) throws Authent
 
 ```
 
-下面走debug的流程，执行到第一个判断，发现不是从缓存中拿到的用户数据：  
- ![进入第一个循环](./assets/131230561/e55ec375022ce9ff6cb7e49e.png)  
- 然后进入try，执行retrieveUser，从数据源拿用户数据，发现拿不到（因为我们输入的是错误的数据），执行下面的catch方法：![](./assets/131230561/1db2bc5d442dc57a4a920ba2.png)  
- 然后继续向下执行，看最后报错是哪个：  
- ![](./assets/131230561/5944f1362f2fcddacdb495f0.png)  
- 发现最后没有抛出ex，而是抛出`BadCredentialsException`错误类型，那么你是否会好奇，这个`hideUserNotFoundExceptions`是干什么的呢？
+下面走debug的流程，执行到第一个判断，发现不是从缓存中拿到的用户数据：
+
+![进入第一个循环](./assets/131230561/e55ec375022ce9ff6cb7e49e.png)
+
+然后进入try，执行retrieveUser，从数据源拿用户数据，发现拿不到（因为我们输入的是错误的数据），执行下面的catch方法：![](./assets/131230561/1db2bc5d442dc57a4a920ba2.png)  
+ 然后继续向下执行，看最后报错是哪个：
+
+![](./assets/131230561/5944f1362f2fcddacdb495f0.png)
+
+发现最后没有抛出ex，而是抛出`BadCredentialsException`错误类型，那么你是否会好奇，这个`hideUserNotFoundExceptions`是干什么的呢？
 
 #### 扩展：hideUserNotFoundExceptions
 
@@ -689,34 +693,54 @@ public Authentication authenticate(Authentication authentication) throws Authent
 通过隐藏具体的用户名信息，可以增加系统的安全性，因为攻击者无法通过错误消息得知系统中是否存在特定的用户账号，从而减少了可能的信息泄露和攻击风险。
 
 好的我们继续回来，抛出`BadCredentialsException`后，接着回调到provider为`DaoAuthenticationProvider`中：![](./assets/131230561/fac93b86f3203699bd67f71b.png)  
- 执行完catch中的方法后,跳出for循环，因为只有一个provider：  
- ![](./assets/131230561/98d1d3237f554e1ab29f30a9.png)  
- 接着往下走，到if条件中发现，都不符合：  
- ![](./assets/131230561/d43f8e78650544dd63a6436b.png)  
- 到第三个if判断中，还是不符合：  
- ![](./assets/131230561/053ef8ebf4ba57b35e232e61.png)  
- 接着进入下一个if判断，我们此时lastException不为空，所以不符合：  
- ![](./assets/131230561/e75b10321d8a445be10bc2ad.png)  
- 走到最后一个if条件时，发现我们的parentException为空，符合条件：
+ 执行完catch中的方法后，跳出for循环，因为只有一个provider：
 
-![](./assets/131230561/ad0ec1bc43b1d98cd1462667.png)  
- 进入方法里面，执行`prepareException`, 如果父级AuthenticationManager存在并且验证失败，则父级AuthenticationManager会发布一个AbstractAuthenticationFailureEvent事件。为避免重复发布事件，这里进行了检查。
+![](./assets/131230561/98d1d3237f554e1ab29f30a9.png)
 
-接着抛出错误：  
- ![](./assets/131230561/89505057dca7de349d2132af.png)  
- 最后回到provider为`AnonymousAuthenticationProvider`，执行完catch里面的方法后，进入if判断，此时result为空，不符合：  
- ![](./assets/131230561/a3a298dbb62cc5409f7f54bb.png)  
- 进入下一个判断，这里lastException不为空，所以不符合：  
- ![](./assets/131230561/c83dd37a0274195c8ac2aaa6.png)  
- 最后一个判断，此时parentException不为空，不符合：
+接着往下走，到if条件中发现，都不符合：
 
-![](./assets/131230561/c83dd37a0274195c8ac2aaa6.png)  
- 最后抛出错误：  
- ![](./assets/131230561/075fa0952acea1a2cf3228c0.png)  
- 抛出错误后，错误回调，来到`AbstractAuthenticationProcessingFilter`  
- 类的doFileter里面，在这里面catch房啊捕获到异常，执行方法体里面的`unsuccessfulAuthentication`方法：  
- ![](./assets/131230561/023a72cb6982e67116abadd7.png)  
- 进入`unsuccessfulAuthentication`方法里面，我们来看看这里面的内容：
+![](./assets/131230561/d43f8e78650544dd63a6436b.png)
+
+到第三个if判断中，还是不符合：
+
+![](./assets/131230561/053ef8ebf4ba57b35e232e61.png)
+
+接着进入下一个if判断，我们此时lastException不为空，所以不符合：
+
+![](./assets/131230561/e75b10321d8a445be10bc2ad.png)
+
+走到最后一个if条件时，发现我们的parentException为空，符合条件：
+
+![](./assets/131230561/ad0ec1bc43b1d98cd1462667.png)
+
+进入方法里面，执行`prepareException`，如果父级AuthenticationManager存在并且验证失败，则父级AuthenticationManager会发布一个AbstractAuthenticationFailureEvent事件。为避免重复发布事件，这里进行了检查。
+
+接着抛出错误：
+
+![](./assets/131230561/89505057dca7de349d2132af.png)
+
+最后回到provider为`AnonymousAuthenticationProvider`，执行完catch里面的方法后，进入if判断，此时result为空，不符合：
+
+![](./assets/131230561/a3a298dbb62cc5409f7f54bb.png)
+
+进入下一个判断，这里lastException不为空，所以不符合：
+
+![](./assets/131230561/c83dd37a0274195c8ac2aaa6.png)
+
+最后一个判断，此时parentException不为空，不符合：
+
+![](./assets/131230561/c83dd37a0274195c8ac2aaa6.png)
+
+最后抛出错误：
+
+![](./assets/131230561/075fa0952acea1a2cf3228c0.png)
+
+抛出错误后，错误回调，来到`AbstractAuthenticationProcessingFilter`  
+ 类的doFileter里面，在这里面catch房啊捕获到异常，执行方法体里面的`unsuccessfulAuthentication`方法：
+
+![](./assets/131230561/023a72cb6982e67116abadd7.png)
+
+进入`unsuccessfulAuthentication`方法里面，我们来看看这里面的内容：
 
 ```java
 protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
@@ -736,9 +760,11 @@ protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServle
 
 ```
 
-我们执行到最后一步，进入到身份验证失败处理器方法里面：  
- ![](./assets/131230561/0d97d0f84f081e2eabfdae06.png)  
- 进入`onAuthenticationFailure`方法，我们先看看里面的内容：
+我们执行到最后一步，进入到身份验证失败处理器方法里面：
+
+![](./assets/131230561/0d97d0f84f081e2eabfdae06.png)
+
+进入`onAuthenticationFailure`方法，我们先看看里面的内容：
 
 ```java
 public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -768,11 +794,15 @@ public void onAuthenticationFailure(HttpServletRequest request, HttpServletRespo
 
 ```
 
-debug走一下里面的流程,刚进入时，注意里面的默认失败url，此时默认失败url不为null，不符合：  
- ![](./assets/131230561/a77bff78bc6366595e71d3f3.png)  
- 然后执行saveException，将异常保存到请求属性中：  
- ![](./assets/131230561/6efe9ea08d3832e7428c6aaa.png)  
- 它里面的内容如下：
+debug走一下里面的流程，刚进入时，注意里面的默认失败url，此时默认失败url不为null，不符合：
+
+![](./assets/131230561/a77bff78bc6366595e71d3f3.png)
+
+然后执行saveException，将异常保存到请求属性中：
+
+![](./assets/131230561/6efe9ea08d3832e7428c6aaa.png)
+
+它里面的内容如下：
 
 ```java
 protected final void saveException(HttpServletRequest request, AuthenticationException exception) {
@@ -794,21 +824,20 @@ protected final void saveException(HttpServletRequest request, AuthenticationExc
 
 接着执行下一个if条件，因为forwardToDestination为false，也就是没有设置为跳转转发，所以不会为true，不符合，然后直接进入到else里面，进行重定向转发。![](./assets/131230561/7e4ff504daa82af486212912.png)
 
-所以，我们默认为redirect，报错信息存储在session中，命名属性为SPRING\_SECURITY\_LAST\_EXCEPTION。  
- 如果是forward，报错信息存储在reqeust中，后面是一样的。
+所以，我们默认为redirect，报错信息存储在session中，命名属性为SPRING\_SECURITY\_LAST\_EXCEPTION。如果是forward，报错信息存储在reqeust中，后面是一样的。
 
 那么我们如何设置认证失败后的跳转方式呢，security给我们提供了两个方法：
 
 * failureForwardUrl() // 认证失败后，forward跳转。
 * failureUrl() // 认证失败后，redirect跳转。
 
-最后实现效果：  
- ![](./assets/131230561/9476159d07a5bee2ed5af6ef.png)
+最后实现效果：
+
+![](./assets/131230561/9476159d07a5bee2ed5af6ef.png)
 
 ### 自定义登录失败处理
 
-和自定义登陆成功的使用场景一样，在面对前后端分离时，上面`failureForwardUrl`和`failureUrl`两个方法就力不从心了，所以security提供了`failureHandler`方法用来自定义认证失败之后处理。  
- 我们来看一看里面的内容：
+和自定义登陆成功的使用场景一样，在面对前后端分离时，上面`failureForwardUrl`和`failureUrl`两个方法就力不从心了，所以security提供了`failureHandler`方法用来自定义认证失败之后处理。我们来看一看里面的内容：
 
 ```java
 	public final T failureHandler(AuthenticationFailureHandler authenticationFailureHandler) {
@@ -822,8 +851,9 @@ protected final void saveException(HttpServletRequest request, AuthenticationExc
 
 #### AuthenticationFailureHandler
 
-它的结构如下图：  
- ![](./assets/131230561/4bfaee34998f5bae8499eada.png)
+它的结构如下图：
+
+![](./assets/131230561/4bfaee34998f5bae8499eada.png)
 
 我们来看看里面的内容：
 
@@ -910,8 +940,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 ### 注销登录配置
 
-Security提供默认的注销登录配置，开发时也可以按照自己的需求对注销进行个性化定制。  
- 过滤器`LogoutFilter`专门处理注销登陆，默认是加载的。
+Security提供默认的注销登录配置，开发时也可以按照自己的需求对注销进行个性化定制。过滤器`LogoutFilter`专门处理注销登陆，默认是加载的。
 
 * 开启注销登录 默认开启
 
@@ -1018,8 +1047,7 @@ public interface LogoutSuccessHandler {
 #### SecurityContextHolder解析
 
 Spring Security 会将登录⽤户数据保存在 Session 中。但是，为了使⽤⽅  
- 便,Spring Security在此基础上还做了⼀些改进，其中最主要的⼀个变化就是线程绑定。  
- 当⽤户登录成功后,Spring Security 会将登录成功的⽤户信息保存到  
+ 便，Spring Security在此基础上还做了⼀些改进，其中最主要的⼀个变化就是线程绑定。当⽤户登录成功后，Spring Security 会将登录成功的⽤户信息保存到  
  SecurityContextHolder 中。
 
 SecurityContextHolder 中的数据保存默认是通过ThreadLocal 来实现的，使⽤  
@@ -1034,29 +1062,25 @@ SecurityContextHolder 中的数据保存默认是通过ThreadLocal 来实现的�
  拿出来保存到 Session 中，然后将SecurityContextHolder 中的数据清空。
 
 实际上 SecurityContextHolder 中存储是 SecurityContext，在  
- SecurityContext 中存储是 Authentication。  
- ![](./assets/131230561/93e23fb5f0edc41ce144aa87.png)
+ SecurityContext 中存储是 Authentication。
 
-下面我们来看一看这个来类里面的内容：  
- 先解释一下类里面的常量是什么意思：
+![](./assets/131230561/93e23fb5f0edc41ce144aa87.png)
+
+下面我们来看一看这个来类里面的内容：先解释一下类里面的常量是什么意思：
 
 * MODE\_THREADLOCAL:  
-   使用线程本地变量（`ThreadLocal`）来存储 `SecurityContext`，每个线程拥有独立的 `SecurityContext`。  
-   Threadlocal 的特点是在哪个线程中存储就要在哪个线程中读取，⾮常适合 web 应⽤，因为在默认情况下，⼀个请求⽆论经过多少 Filter 到达  
+   使用线程本地变量（`ThreadLocal`）来存储 `SecurityContext`，每个线程拥有独立的 `SecurityContext`。Threadlocal 的特点是在哪个线程中存储就要在哪个线程中读取，⾮常适合 web 应⽤，因为在默认情况下，⼀个请求⽆论经过多少 Filter 到达  
    Servlet，都是由⼀个线程来处理的。这也是 SecurityContextHolder 的默认存储  
    策略，但这种存储策略意味着如果在具体的业务处理代码中，开启了⼦线程，在⼦线程中  
    去获取登录⽤户数据，就会获取不到。
 * MODE\_INHERITABLETHREADLOCAL:  
-   使用可继承的线程本地变量（`InheritableThreadLocal`）来存储 `SecurityContext`，子线程可以继承父线程的 `SecurityContext`。  
-   这种存储模式适⽤于多线程环境，如果希望在⼦  
+   使用可继承的线程本地变量（`InheritableThreadLocal`）来存储 `SecurityContext`，子线程可以继承父线程的 `SecurityContext`。这种存储模式适⽤于多线程环境，如果希望在⼦  
    线程中也能够获取到登录⽤户数据，那么可以使⽤这种存储模式。
 * MODE\_GLOBAL  
-   使用全局静态变量来存储 `SecurityContext`，所有线程共享同一个 `SecurityContext`。  
-   这种存储模式实际上是将数据保存在⼀个静态变量中，在 JavaWeb开  
+   使用全局静态变量来存储 `SecurityContext`，所有线程共享同一个 `SecurityContext`。这种存储模式实际上是将数据保存在⼀个静态变量中，在 JavaWeb开  
    发中，这种模式很少使⽤到。
 * MODE\_PRE\_INITIALIZED:  
-   预初始化模式，要求在使用时先设置完整的 `SecurityContextHolderStrategy`实例。  
-   基本没有业务场景（据我了解所知），欢迎评论区讨论。
+   预初始化模式，要求在使用时先设置完整的 `SecurityContextHolderStrategy`实例。基本没有业务场景（据我了解所知），欢迎评论区讨论。
 
 ```java
 public class SecurityContextHolder {
@@ -1218,9 +1242,9 @@ return "hello security";
 
 * 多线程情况下获取⽤户数据  
    如果需要在⼦线程中获取必须使⽤第  
-   ⼆种策略，默认策略是通过 `System.getProperty` 加载的，因此我们可以通过增加`VM Options`参数进⾏修改。  
-   添加-Dspring.security.strategy=MODE\_INHERITABLETHREADLOCAL  
-   ![](./assets/131230561/12e19ca89702f5721f95f34c.png)
+   ⼆种策略，默认策略是通过 `System.getProperty` 加载的，因此我们可以通过增加`VM Options`参数进⾏修改。添加-Dspring.security.strategy=MODE\_INHERITABLETHREADLOCAL
+
+![](./assets/131230561/12e19ca89702f5721f95f34c.png)
 
 ```java
 @RestController
@@ -1246,8 +1270,7 @@ return "hello security";
 
 #### 总结一下
 
-通过上面的代码可以看到，`SecurityContextHolder`提供了一系列方法，用于获取（`getContext`）设置（`setContext`）和清除（`clearContext`）`SecurityContext`。  
- 另外，`SecurityContextHolder`还提供了一些辅助方法：
+通过上面的代码可以看到，`SecurityContextHolder`提供了一系列方法，用于获取（`getContext`）设置（`setContext`）和清除（`clearContext`）`SecurityContext`。另外，`SecurityContextHolder`还提供了一些辅助方法：
 
 1. `getInitializeCount`：用于获取`SecurityContextHolder`的初始化次数。
 2. `setInitializeCount`：用于设置策略名称并重新初始化。
@@ -1293,8 +1316,9 @@ xmlns:sec="http:!"www.thymeleaf.org/extras/spring-security">
 
 ```
 
-结果如下：  
- ![](./assets/131230561/c4411f3a9d1c3aaecc47c40f.png)
+结果如下：
+
+![](./assets/131230561/c4411f3a9d1c3aaecc47c40f.png)
 
 ## 结尾
 

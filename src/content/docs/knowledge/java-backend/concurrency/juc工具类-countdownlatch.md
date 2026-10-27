@@ -1,19 +1,23 @@
 ---
 title: "JUC工具类-CountDownLatch"
 description: "则是并发控制的重要武器。CountDownLatch 是 java.util.concurrent 包中最经典的同步器之一，它通过一个计数器让线程间实现灵活的协作机制。"
-status: draft
+status: curated
 sidebar:
   order: 17
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147238294)
+
+:::tip[要点]
+- `CountDownLatch` 让一个或多个线程等待其他线程完成一组操作，计数减到 0 时放行所有等待者。
+- 基于 AQS 共享模式实现，`state` 就是计数。
+- 计数不能重置，只能用一次；需要重复使用时考虑 `CyclicBarrier`。
+:::
 
 ## 一、引言
 
-并发编程 
+并发编程
 是Java开发中的一大难点，而同步工具
-类 
+类
 则是并发控制的重要武器。`CountDownLatch` 是 `java.util.concurrent` 包中最经典的同步器之一，它通过一个计数器让线程间实现灵活的协作机制。
 
 > 📌 本文目标：全面、系统、深入理解 CountDownLatch 的使用与实现原理，掌握高质量并发编程技术。

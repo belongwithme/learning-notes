@@ -1,7 +1,6 @@
 ---
 title: Java 并发编程学习路线
 description: 从线程基础、内存模型到 AQS、并发容器、线程池与 Fork/Join，按前置关系串起站内全部 Java 并发笔记。
-status: draft
 sidebar:
   order: 2
 ---
@@ -12,7 +11,7 @@ sidebar:
 - **前置知识**：Java 语法与面向对象、集合框架的基本用法、操作系统中进程与线程的基本概念。
 - **完成后的预期能力**：能从可见性、原子性、有序性定位并发 Bug；能讲清 `synchronized`、CAS、AQS 三条实现路线；能为业务场景选择合适的锁、同步工具、并发容器和线程池参数。
 
-路线共 10 个阶段，前一阶段是后一阶段的前置。每个阶段末尾的「自测」答不上来时，回到本阶段重读，不要急着往下走。标注为「补充」的文章与主读文章主题重叠，可按需跳过。
+路线共 10 个阶段，前一阶段是后一阶段的前置。每个阶段末尾的「自测」先自己作答，再展开参考答案对照；答不上来时回到本阶段重读，不要急着往下走。每篇文章前的勾选框记录你读到哪里，只保存在当前浏览器。标注为「补充」的文章与主读文章主题重叠，可按需跳过。
 
 ## 阶段 1：线程基础
 
@@ -25,6 +24,15 @@ sidebar:
 
 **自测**：`BLOCKED` 和 `WAITING` 有什么区别？捕获 `InterruptedException` 后为什么通常要恢复中断状态？
 
+<details>
+<summary>参考答案</summary>
+
+`BLOCKED` 是在等别的线程释放 `synchronized` 的监视器锁，属于锁竞争；`WAITING` 是线程自己调用 `wait()`、`join()` 或 `LockSupport.park()` 后主动等待，要靠 `notify`、目标线程结束或 `unpark` 才能回来。
+
+抛出 `InterruptedException` 时，线程的中断标志已经被清除。如果当前方法处理不了这次中断，就要调用 `Thread.currentThread().interrupt()` 把标志设回去，让上层代码还能知道有人请求停止。
+
+</details>
+
 ## 阶段 2：共享问题与 synchronized
 
 理解「临界区」和「竞态条件」，掌握最基础的互斥手段，以及 JVM 对 `synchronized` 的优化。
@@ -33,6 +41,15 @@ sidebar:
 2. [并发编程JUC深度学习(四）共享模型之管程进阶学习](/knowledge/java-backend/concurrency/并发编程juc深度学习-四-共享模型之管程进阶学习/)：轻量级锁、锁膨胀、自旋与偏向锁。
 
 **自测**：局部变量引用的对象在什么情况下会变得线程不安全？轻量级锁在什么时候膨胀为重量级锁？
+
+<details>
+<summary>参考答案</summary>
+
+对象「逃逸」出方法时：作为返回值交出去、赋给成员变量或静态变量，或者传给了另一个线程（例如提交到线程池，或被子类重写的方法在新线程里使用）。
+
+轻量级锁靠 CAS 把对象头的 Mark Word 换成指向锁记录的指针。持锁期间另一个线程也来竞争、CAS 失败时，锁会膨胀为重量级锁，竞争失败的线程进入监视器的等待队列。
+
+</details>
 
 ## 阶段 3：Java 内存模型
 
@@ -43,6 +60,15 @@ sidebar:
 
 **自测**：`volatile` 能保证 `count++` 的线程安全吗？为什么？双重检查单例中 `volatile` 防止的是什么？
 
+<details>
+<summary>参考答案</summary>
+
+不能。`count++` 是读、加一、写回三步，`volatile` 只保证可见性和禁止重排序，不保证这三步的原子性。要用 `AtomicInteger` 或加锁。
+
+`instance = new Singleton()` 可能被重排序成「分配内存 → 把引用赋给 `instance` → 执行构造方法」。`volatile` 禁止这种重排序，避免另一个线程拿到一个还没初始化完的对象。
+
+</details>
+
 ## 阶段 4：无锁与 CAS
 
 `synchronized` 之外的第二条路线：乐观锁。CAS 也是 AQS、原子类和大部分并发容器的底层原语。
@@ -50,6 +76,15 @@ sidebar:
 1. [并发编程JUC深度学习(七）无锁（乐观锁）](/knowledge/java-backend/concurrency/并发编程juc深度学习-七-无锁-乐观锁/)：版本号机制、CAS 与原子类家族。
 
 **自测**：ABA 问题是什么，`AtomicStampedReference` 如何解决？CAS 自旋在什么场景下反而比加锁更慢？
+
+<details>
+<summary>参考答案</summary>
+
+值从 A 改成 B 又改回 A，CAS 只比较值，会误以为没人动过。`AtomicStampedReference` 给引用配一个版本号，CAS 时引用和版本号一起比较，版本号每次修改都递增。
+
+竞争激烈或临界区较长时，大量线程反复 CAS 失败、空转消耗 CPU；而加锁会让竞争失败的线程挂起，不占 CPU。
+
+</details>
 
 ## 阶段 5：Lock 体系与 AQS
 
@@ -65,6 +100,17 @@ sidebar:
 
 **自测**：非公平锁「不公平」在哪一步？`await()` 被唤醒后，线程要经过哪两个队列才能继续执行？为什么读写锁不支持锁升级？
 
+<details>
+<summary>参考答案</summary>
+
+新线程调用 `lock()` 时，会先直接 CAS 抢一次 `state`，`tryAcquire` 里也不检查队列里是否有人在等（公平锁会先调用 `hasQueuedPredecessors()`），所以能插队。
+
+`await()` 的线程在条件队列里等待；被 `signal()` 后先转移到 AQS 的同步队列，重新竞争到锁才能从 `await()` 返回。
+
+如果两个持有读锁的线程同时想升级，各自都要等对方释放读锁，就会死锁。所以 `ReentrantReadWriteLock` 只支持写锁降级为读锁。
+
+</details>
+
 ## 阶段 6：同步工具与线程隔离
 
 基于 AQS 或 `Lock` + `Condition` 构建的协作工具。重点比较它们各自解决什么协作问题。
@@ -78,6 +124,15 @@ sidebar:
 7. [JUC工具类-ThreadLocal](/knowledge/java-backend/concurrency/juc工具类-threadlocal/)：换个思路，用线程隔离代替同步，以及 `ThreadLocalMap` 的内存泄漏问题。
 
 **自测**：`CountDownLatch` 和 `CyclicBarrier` 的底层实现有什么不同？线程池场景下使用 `ThreadLocal` 要注意什么？
+
+<details>
+<summary>参考答案</summary>
+
+`CountDownLatch` 基于 AQS 的共享模式，`state` 就是计数，减到 0 时唤醒所有等待者，只能用一次。`CyclicBarrier` 基于 `ReentrantLock` 和 `Condition`，所有线程到齐后可以执行一个回调，然后重置计数，可以循环使用。
+
+线程池里的线程会被复用，上一个任务设置的值会留给下一个任务，值对象也一直被线程引用着、无法回收。要在 `finally` 里调用 `remove()`。另外父线程的 `ThreadLocal` 值不会自动传给线程池里的线程。
+
+</details>
 
 ## 阶段 7：并发容器与阻塞队列
 
@@ -93,6 +148,15 @@ sidebar:
 
 **自测**：`ConcurrentHashMap` 1.8 为什么放弃分段锁？`ArrayBlockingQueue` 和 `LinkedBlockingQueue` 的锁设计有何不同？
 
+<details>
+<summary>参考答案</summary>
+
+1.8 把锁的粒度从段缩小到每个桶的头节点：桶为空时用 CAS 插入，不为空时用 `synchronized` 锁住头节点。并发度随桶数增长，内存占用更小，实现也更简单；加上 JVM 对 `synchronized` 做了大量优化，不再需要 `Segment`。
+
+`ArrayBlockingQueue` 的 `put` 和 `take` 共用一把 `ReentrantLock`（两个条件 `notEmpty`、`notFull`）；`LinkedBlockingQueue` 用 `putLock` 和 `takeLock` 两把锁，生产和消费可以同时进行，元素个数用 `AtomicInteger` 维护。
+
+</details>
+
 ## 阶段 8：线程池与异步编程
 
 把前面的阻塞队列、AQS、CAS 组合起来，就是线程池。再往上是异步结果与任务编排。
@@ -104,6 +168,15 @@ sidebar:
 
 **自测**：核心线程数满了以后，新任务是先进队列还是先创建非核心线程？`CompletableFuture` 默认使用哪个线程池，生产环境为什么要自定义？
 
+<details>
+<summary>参考答案</summary>
+
+先进队列。顺序是：核心线程未满就创建核心线程；满了放进工作队列；队列也满了才创建非核心线程，直到最大线程数；再满就执行拒绝策略。
+
+默认用 `ForkJoinPool.commonPool()`，它是整个 JVM 共享的，线程数约为 CPU 核数减一。业务里常有阻塞 IO，会把公共池占满，拖慢并行流等其他使用者。自定义线程池可以隔离业务、按任务类型定大小、给线程命名并选择拒绝策略。
+
+</details>
+
 ## 阶段 9：Fork/Join 并行计算
 
 面向可递归拆分任务的另一种线程池模型：分治与工作窃取。
@@ -114,6 +187,15 @@ sidebar:
 
 **自测**：工作窃取为什么从队列另一端偷任务？什么样的任务不适合交给 `ForkJoinPool`？
 
+<details>
+<summary>参考答案</summary>
+
+线程自己从双端队列的一端放入和取出任务，窃取者从另一端拿。两端分开操作可以减少竞争，而且另一端是更早放入、通常也更大的任务，偷一次能分到更多工作。
+
+会阻塞的任务（如 IO）、无法拆分的任务、拆分开销大于计算本身的小任务，以及子任务之间需要互相同步等待的任务。
+
+</details>
+
 ## 阶段 10：工程实践与复习
 
 把并发知识放回真实系统，最后用面试题检验整体掌握程度。
@@ -122,3 +204,10 @@ sidebar:
 2. [并发编程-基础八股](/knowledge/java-backend/concurrency/并发编程-基础八股/)：作为总复习清单，逐题检查能否用前面阶段的知识作答。
 
 **自测**：单机的 `synchronized` 为什么解决不了多实例部署下的缓存并发更新？
+
+<details>
+<summary>参考答案</summary>
+
+`synchronized` 锁的是当前 JVM 里的监视器。多实例部署时每个实例各有一把锁，打到不同实例上的请求互不排斥。需要分布式锁，或者把并发控制下沉到数据库（乐观锁版本号、行锁）这类共享的地方。
+
+</details>

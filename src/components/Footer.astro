@@ -1,0 +1,118 @@
+---
+import Default from '@astrojs/starlight/components/Footer.astro';
+import { noteRelations } from '../lib/notes';
+import ImageZoom from './ImageZoom.astro';
+import PathProgress from './PathProgress.astro';
+
+const { entry } = Astro.locals.starlightRoute;
+const relations = await noteRelations(entry);
+const isPath = entry.id.startsWith('learning-paths/');
+// Keep the list short: the overview page has the full directory.
+const siblings = relations?.siblings.slice(0, 6) ?? [];
+---
+
+{relations && (
+  <aside class="note-relations" aria-label="相关阅读">
+    {relations.paths.map(path => (
+      <section class="relation-path">
+        <h2>学习路线</h2>
+        <p><a href={path.href}>{path.title}</a>{path.stage && <span> · {path.stage}</span>}</p>
+        <label class="path-read">
+          <input type="checkbox" data-read-toggle /> 已读完这篇
+        </label>
+      </section>
+    ))}
+    {relations.backlinks.length > 0 && (
+      <section>
+        <h2>引用了本篇</h2>
+        <ul>{relations.backlinks.map(link => <li><a href={link.href}>{link.title}</a></li>)}</ul>
+      </section>
+    )}
+    {siblings.length > 0 && (
+      <section>
+        <h2>{relations.location.sub.label}</h2>
+        <ul>{siblings.map(link => <li><a href={link.href}>{link.title}</a></li>)}</ul>
+        {relations.siblings.length > siblings.length && (
+          <a class="relation-more" href={relations.location.sub.href}>全部 {relations.siblings.length + 1} 篇</a>
+        )}
+      </section>
+    )}
+  </aside>
+)}
+
+{isPath && <PathProgress />}
+<Default />
+<ImageZoom />
+
+<script>
+  import { isRead, setRead } from '../scripts/path-progress';
+
+  for (const box of document.querySelectorAll<HTMLInputElement>('[data-read-toggle]')) {
+    box.checked = isRead(location.pathname);
+    box.addEventListener('change', () => setRead(location.pathname, box.checked));
+  }
+</script>
+
+<style>
+  .note-relations {
+    display: grid;
+    gap: 1.75rem;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--archive-line, var(--sl-color-hairline));
+  }
+  .note-relations h2 {
+    margin: 0 0 0.6rem;
+    font-family: var(--archive-sans, var(--sl-font));
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--archive-muted, var(--sl-color-gray-3));
+  }
+  .note-relations p,
+  .note-relations ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .note-relations li + li {
+    margin-top: 0.35rem;
+  }
+  .note-relations a {
+    color: var(--sl-color-text);
+    text-decoration: none;
+  }
+  .note-relations a:hover {
+    color: var(--sl-color-text-accent);
+  }
+  .note-relations span {
+    color: var(--archive-muted, var(--sl-color-gray-3));
+  }
+  .relation-path {
+    padding: 1rem 1.1rem;
+    border-radius: 0.5rem;
+    background: var(--archive-accent-soft, var(--sl-color-accent-low));
+  }
+  .relation-path a {
+    font-weight: 600;
+  }
+  .path-read {
+    display: inline-flex;
+    gap: 0.45rem;
+    align-items: center;
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .path-read input {
+    accent-color: var(--archive-accent, var(--sl-color-accent));
+  }
+  .relation-more {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--sl-color-text-accent) !important;
+  }
+</style>

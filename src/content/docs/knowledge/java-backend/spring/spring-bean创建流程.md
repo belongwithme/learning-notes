@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 153726679
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/153726679)
 
 > **深入解析Spring IoC容器Bean创建的核心机制**  
@@ -14,12 +12,11 @@ sidebar:
 
 ---
 
-
 ## 一、前置知识
 
 ### 1.1 核心概念
 
-在深入Bean创建流程之前,需要理解以下核心概念:
+在深入Bean创建流程之前，需要理解以下核心概念：
 
 #### 1.1.1 BeanFactory vs ApplicationContext
 
@@ -58,7 +55,7 @@ DefaultListableBeanFactory (默认实现,最常用)
 
 #### 1.1.2 BeanDefinition
 
-**BeanDefinition** 是Spring对Bean的描述信息,类似于"菜谱"或"设计图":
+**BeanDefinition** 是Spring对Bean的描述信息，类似于"菜谱"或"设计图":
 
 ```java
 public interface BeanDefinition {
@@ -92,16 +89,16 @@ public interface BeanDefinition {
 
 **BeanDefinition的来源:**
 
-* XML配置: `<bean id="user" class="com.example.User"/>`
-* 注解配置: `@Component`, `@Service`, `@Controller`
-* Java配置: `@Configuration` + `@Bean`
-* 编程式注册: `BeanDefinitionRegistry.registerBeanDefinition()`
+* XML配置：`<bean id="user" class="com.example.User"/>`
+* 注解配置：`@Component`, `@Service`, `@Controller`
+* Java配置：`@Configuration` + `@Bean`
+* 编程式注册：`BeanDefinitionRegistry.registerBeanDefinition()`
 
 #### 1.1.3 Bean的作用域(Scope)
 
 | 作用域 | 说明 | 生命周期 |
 | --- | --- | --- |
-| **singleton** | 单例模式(默认) | 容器启动创建,容器销毁时销毁 |
+| **singleton** | 单例模式(默认) | 容器启动创建，容器销毁时销毁 |
 | **prototype** | 原型模式 | 每次getBean()都创建新实例 |
 | **request** | Web请求范围 | 每个HTTP请求创建一个实例 |
 | **session** | Web会话范围 | 每个HTTP Session创建一个实例 |
@@ -110,7 +107,7 @@ public interface BeanDefinition {
 
 #### 1.1.4 FactoryBean
 
-`FactoryBean` 是一个特殊的Bean,它不是普通的Bean实例,而是**生产Bean的工厂**:
+`FactoryBean` 是一个特殊的Bean，它不是普通的Bean实例，而是**生产Bean的工厂**:
 
 ```java
 public interface FactoryBean<T> {
@@ -160,7 +157,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory> {
 
 ### 1.2 BeanPostProcessor机制
 
-**BeanPostProcessor** 是Spring的扩展点,可以在Bean初始化前后进行自定义处理:
+**BeanPostProcessor** 是Spring的扩展点，可以在Bean初始化前后进行自定义处理：
 
 ```java
 public interface BeanPostProcessor {
@@ -286,9 +283,9 @@ public interface BeanPostProcessor {
 
 | 组件 | 职责 | 核心方法 |
 | --- | --- | --- |
-| **DefaultSingletonBeanRegistry** | 单例Bean的缓存和管理 | getSingleton(), addSingleton() |
-| **AbstractBeanFactory** | Bean的获取和基础管理 | doGetBean(), getBean() |
-| **AbstractAutowireCapableBeanFactory** | Bean的创建和自动装配 | createBean(), doCreateBean() |
+| **DefaultSingletonBeanRegistry** | 单例Bean的缓存和管理 | getSingleton()，addSingleton() |
+| **AbstractBeanFactory** | Bean的获取和基础管理 | doGetBean()，getBean() |
+| **AbstractAutowireCapableBeanFactory** | Bean的创建和自动装配 | createBean()，doCreateBean() |
 
 ---
 
@@ -531,8 +528,8 @@ protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 | 缓存 | 变量名 | 存储内容 | 作用 |
 | --- | --- | --- | --- |
 | 一级 | singletonObjects | 完整的单例Bean | 常规单例池 |
-| 二级 | earlySingletonObjects | 早期暴露的Bean(已实例化,未填充属性) | 解决循环依赖 |
-| 三级 | singletonFactories | ObjectFactory(Bean工厂) | 延迟创建,支持AOP代理 |
+| 二级 | earlySingletonObjects | 早期暴露的Bean(已实例化，未填充属性) | 解决循环依赖 |
+| 三级 | singletonFactories | ObjectFactory(Bean工厂) | 延迟创建，支持AOP代理 |
 
 #### 步骤3: Prototype循环依赖检查
 
@@ -546,7 +543,7 @@ if (isPrototypeCurrentlyInCreation(beanName)) {
 
 ```
 
-**原因:** Prototype作用域的Bean每次都创建新实例,无法使用缓存解决循环依赖。
+**原因:** Prototype作用域的Bean每次都创建新实例，无法使用缓存解决循环依赖。
 
 **示例:**
 
@@ -717,7 +714,7 @@ else if (mbd.isPrototype()) {
 
 ```
 
-**特点:** 每次getBean()都创建新实例,不缓存。
+**特点:** 每次getBean()都创建新实例，不缓存。
 
 ##### 6.3 自定义Scope创建
 
@@ -1239,7 +1236,7 @@ public class DefaultSingletonBeanRegistry {
 | --- | --- | --- | --- | --- | --- |
 | **一级** | singletonObjects | Map<String, Object> | 完整的单例Bean | Bean完全创建后 | 容器销毁 |
 | **二级** | earlySingletonObjects | Map<String, Object> | 早期Bean(半成品) | 从三级缓存获取后 | 放入一级缓存时 |
-| **三级** | singletonFactories | Map<String, ObjectFactory> | Bean工厂(Lambda) | 实例化后,属性填充前 | 从三级缓存获取后 |
+| **三级** | singletonFactories | Map<String, ObjectFactory> | Bean工厂(Lambda) | 实例化后，属性填充前 | 从三级缓存获取后 |
 
 ### 5.3 循环依赖的类型
 
@@ -1269,7 +1266,7 @@ public class B {
 
 ```
 
-**原因:** 构造方法执行时Bean还没有实例化,无法提前暴露到缓存中。
+**原因:** 构造方法执行时Bean还没有实例化，无法提前暴露到缓存中。
 
 **异常信息:**
 
@@ -1353,17 +1350,17 @@ public class B {
 
 ```
 
-**原因:** Prototype Bean每次都创建新实例,不使用缓存,无法解决循环依赖。
+**原因:** Prototype Bean每次都创建新实例，不使用缓存，无法解决循环依赖。
 
-### 5.4 为什么需要三级缓存?
+### 5.4 为什么需要三级缓存？
 
-**核心问题:** 为什么不能只用两级缓存?
+**核心问题:** 为什么不能只用两级缓存？
 
-**答案:** 为了支持AOP代理!
+**答案:** 为了支持AOP代理！
 
-#### 场景分析:
+#### 场景分析：
 
-假设A和B循环依赖,且A需要被AOP代理:
+假设A和B循环依赖，且A需要被AOP代理：
 
 **只有两级缓存的情况:**
 
@@ -1560,7 +1557,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 ### 6.1 父子容器概念
 
-在Spring中,容器可以有层级关系,一个容器可以设置另一个容器作为父容器:
+在Spring中，容器可以有层级关系，一个容器可以设置另一个容器作为父容器：
 
 ```
         父容器 (Parent BeanFactory)
@@ -1578,7 +1575,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 * 父容器**不能**访问子容器的Bean
 * 子容器的Bean可以覆盖父容器的同名Bean(就近原则)
 
-### 6.2 经典应用场景: Spring MVC
+### 6.2 经典应用场景：Spring MVC
 
 ```java
 ┌─────────────────────────────────────┐
@@ -1735,7 +1732,7 @@ protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, 
 
 ### 6.4 Bean查找流程
 
-假设有如下Bean定义:
+假设有如下Bean定义：
 
 ```java
 // 父容器中
@@ -1842,7 +1839,7 @@ Web层 (Controller)  →  Spring MVC容器管理
 
 ```
 
-**好处:** 防止Service层依赖Controller层,保证分层架构的合理性。
+**好处:** 防止Service层依赖Controller层，保证分层架构的合理性。
 
 #### 3. 多模块共享
 
@@ -2261,8 +2258,8 @@ public class CustomScopeTest {
 
 ## 参考资料
 
-* Spring官方文档: https://docs.spring.io/spring-framework/docs/current/reference/html/
-* Spring源码: https://github.com/spring-projects/spring-framework
+* Spring官方文档：https://docs.spring.io/spring-framework/docs/current/reference/html/
+* Spring源码：https://github.com/spring-projects/spring-framework
 * 《Spring源码深度解析》- 郝佳
 
 本教程基于Spring Framework 5.x源码分析整理。

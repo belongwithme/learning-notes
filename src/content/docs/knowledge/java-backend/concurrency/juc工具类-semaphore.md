@@ -1,19 +1,21 @@
 ---
 title: "JUC工具类-Semaphore"
 description: "你正在管理一个停车场，这个停车场只有 10 个停车位。同一时间，可能有几十辆甚至上百辆车想要进入停车场。"
-status: draft
+status: curated
 sidebar:
   order: 19
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147242254)
+
+:::tip[要点]
+- `Semaphore` 维护一组许可，控制同时访问某个资源的线程数，常用于限流和资源池。
+- `acquire()` 拿不到许可就阻塞，`release()` 归还许可；许可数可以大于 1，这是它和互斥锁的根本区别。
+- 有公平和非公平两种模式，基于 AQS 共享模式实现。
+:::
 
 ## 0. 前言：为什么需要 Semaphore？
 
-你正在管理一个停车场，这个停车场只有 10 个停车位。同一时间，可能有几十辆甚至上百辆车想要进入停车场。  
- 作为管理员，你不能让所有的车都挤进来，因为车位是有限的。  
- 你需要一个机制来控制：最多只允许 10 辆车同时停放。当有车离开时，你才能允许下一辆车进入。
+你正在管理一个停车场，这个停车场只有 10 个停车位。同一时间，可能有几十辆甚至上百辆车想要进入停车场。作为管理员，你不能让所有的车都挤进来，因为车位是有限的。你需要一个机制来控制：最多只允许 10 辆车同时停放。当有车离开时，你才能允许下一辆车进入。
 
 在开发中，我们经常遇到类似的情况。系统中的某些资源是有限的，比如：
 
@@ -41,8 +43,7 @@ Java 并发包（`java.util.concurrent`，简称 JUC）为我们提供了丰富�
 
 ### 1.1 什么是 Semaphore？它在 JUC 包中的作用是什么？
 
-`Semaphore` 是 `java.util.concurrent` 包下的一个同步辅助类，可以翻译为“信号量”。  
- 它的核心作用是 **控制同时访问特定资源的线程数量**。
+`Semaphore` 是 `java.util.concurrent` 包下的一个同步辅助类，可以翻译为“信号量”。它的核心作用是 **控制同时访问特定资源的线程数量**。
 
 你可以把 Semaphore 想象成一个持有固定数量“许可证”（Permits）的实体。
 
@@ -71,10 +72,9 @@ Semaphore 在 JUC 中扮演着 **并发流量控制器** 的角色。它主要�
 * 如果当前已经有 5 个人在里面了，后面想刷卡的人就得在门口排队等着（阻塞）。
 * 当里面有人出来时，他需要再次刷卡（`release()`），计数器减 1。这时，门禁系统会通知排在最前面的人（唤醒等待线程），让他可以刷卡进入。
 
-这个门禁系统（Semaphore）并不关心进去的人具体是谁，也不关心他们在里面做什么，它只关心 **当前有多少个人在里面**，确保这个数量不超过设定的最大容量 5。  
- 这对于管理那些数量有限但可以被多个线程同时使用的资源（比如多个数据库连接、多个处理线程）非常有用。  
- 现代系统往往有各种性能瓶颈点，比如数据库连接数、文件句柄数等都是有限的。  
- Semaphore 恰好能够优雅地解决这类问题，它允许我们精确控制并发量，避免系统因资源耗尽而崩溃。
+这个门禁系统（Semaphore）并不关心进去的人具体是谁，也不关心他们在里面做什么，它只关心 **当前有多少个人在里面**，确保这个数量不超过设定的最大容量 5。这对于管理那些数量有限但可以被多个线程同时使用的资源（比如多个数据库连接、多个处理线程）非常有用。现代系统往往有各种性能瓶颈点，比如数据库连接数、文件句柄数等都是有限的。
+
+Semaphore 恰好能够优雅地解决这类问题，它允许我们精确控制并发量，避免系统因资源耗尽而崩溃。
 
 ---
 
@@ -212,7 +212,7 @@ try {
 
 ## 2. 实际应用
 
-### 2.1 你能描述一个使用 Semaphore 解决的实际问题吗? (数据库连接池示例)
+### 2.1 你能描述一个使用 Semaphore 解决的实际问题吗？(数据库连接池示例)
 
 最经典、也最常见的 Semaphore 应用场景之一就是 **资源池管理**，特别是 **数据库连接池**。
 
@@ -909,7 +909,7 @@ Semaphore 本身功能强大，但与其他 JUC 工具结合使用，可以构�
                      } finally {
                          semaphore.release(); // 释放许可
                          latch.countDown(); // 通知任务完成
-                         System.out.println("任务 " + taskId + " 释放许可并通知完成, 剩余任务: " + latch.getCount());
+                         System.out.println("任务 " + taskId + " 释放许可并通知完成，剩余任务：" + latch.getCount());
                      }
                  });
              }
@@ -920,7 +920,6 @@ Semaphore 本身功能强大，但与其他 JUC 工具结合使用，可以构�
              executor.shutdown();
          }
      }
-
 
      + 1
      + 2
@@ -1025,7 +1024,6 @@ Semaphore 本身功能强大，但与其他 JUC 工具结合使用，可以构�
              System.out.println("所有任务处理完毕。");
          }
      }
-
 
      + 1
      + 2
@@ -1150,10 +1148,9 @@ Semaphore 本身功能强大，但与其他 JUC 工具结合使用，可以构�
              }
              executor.shutdown();
              executor.awaitTermination(1, TimeUnit.MINUTES);
-             System.out.println("最终缓存状态: " + sharedCache);
+             System.out.println("最终缓存状态：" + sharedCache);
          }
      }
-
 
      + 1
      + 2
@@ -1279,7 +1276,6 @@ Semaphore 本身功能强大，但与其他 JUC 工具结合使用，可以构�
          } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
      }).start();
 
-
      + 1
      + 2
      + 3
@@ -1344,7 +1340,6 @@ Semaphore 本身功能强大，但与其他 JUC 工具结合使用，可以构�
              // s.release(1); // 无法到达
          } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
      }).start();
-
 
      + 1
      + 2
@@ -1646,7 +1641,7 @@ class MyConnectionPool {
 
 1. **基于 Redis 实现**:
 
-   * **思路**: 利用 Redis 的原子操作（如 `SETNX`, Lua 脚本, `INCR`/`DECR` 配合 list/zset 做等待队列）来模拟信号量的计数和排队。
+   * **思路**: 利用 Redis 的原子操作（如 `SETNX`, Lua 脚本，`INCR`/`DECR` 配合 list/zset 做等待队列）来模拟信号量的计数和排队。
    * **优点**: Redis 性能高，延迟低，很多系统已经在使用 Redis，集成方便。
    * **实现库**: 很多 Redis 客户端库提供了分布式锁和信号量的实现，例如 **Redisson** 库就提供了 `RSemaphore` 接口，其 API 与 JUC 的 `Semaphore` 非常相似，但其状态是存储在 Redis 中的。
    * **示例 (使用 Redisson)**:
@@ -1681,7 +1676,6 @@ class MyConnectionPool {
      } finally {
          // redisson.shutdown(); // 关闭 Redisson 客户端
      }
-
 
      + 1
      + 2
@@ -1752,6 +1746,6 @@ Semaphore 体现了并发编程中的一种重要思想：**不是完全禁止�
 
 希望这篇万字长文能让你理解和使用 Semaphore .
 
-码字不易,且看且珍惜bro.
+码字不易，且看且珍惜bro。
 
 Happy coding!

@@ -1,19 +1,21 @@
 ---
 title: "JUC工具类-ThreadLocal"
 description: "多线程的世界里，线程安全是一个永恒的主题。"
-status: draft
+status: curated
 sidebar:
   order: 23
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/147243211)
+
+:::tip[要点]
+- 每个 `Thread` 持有一个 `ThreadLocalMap`，`ThreadLocal` 对象本身只是访问这个 Map 的 key。
+- key 是弱引用、value 是强引用：`ThreadLocal` 被回收后 value 仍挂在线程上，线程不结束就可能泄漏。
+- 在线程池里使用时，必须在 `finally` 中调用 `remove()`，否则值会串到下一个任务。
+:::
 
 ## 引言：为何需要 ThreadLocal？
 
-多线程的世界里，线程安全是一个永恒的主题。  
- 当多个线程需要访问共享的可变数据时，为了保证数据的一致性和正确性，我们通常需要引入同步机制:例如 `synchronized` 关键字或 `Lock` 接口。  
- 然而，同步往往伴随着性能开销，如锁竞争、线程阻塞和上下文切换。
+多线程的世界里，线程安全是一个永恒的主题。当多个线程需要访问共享的可变数据时，为了保证数据的一致性和正确性，我们通常需要引入同步机制：例如 `synchronized` 关键字或 `Lock` 接口。然而，同步往往伴随着性能开销，如锁竞争、线程阻塞和上下文切换。
 
 有没有一种方法，可以在多线程环境下，既能保证线程安全，又能避免显式的同步带来的性能损耗呢？`ThreadLocal` 应运而生。
 

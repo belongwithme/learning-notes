@@ -5,8 +5,6 @@ status: draft
 sidebar:
   order: 125694580
 ---
-
-
 > 原文：[CSDN](https://blog.csdn.net/qq_45852626/article/details/125694580)
 
 ## 简介
@@ -17,55 +15,57 @@ sidebar:
 
 ### 结构图
 
-![](./assets/125694580/5ee3917de485e523e8d1ecb8.png)  
- 代码实现（实现继承关系)：  
- ![](./assets/125694580/709f7555310d772d83aa49f8.png)
+![](./assets/125694580/5ee3917de485e523e8d1ecb8.png)
+
+代码实现（实现继承关系)：
+
+![](./assets/125694580/709f7555310d772d83aa49f8.png)
 
 1. AbstractList：继承AbstractList抽象类，使用实现的公共方法。  
-    解读：  
-    AbstactList:查看Java Doc发现**此类提供List接口的基本实现**，以最大程度地减少实现由“随机访问”数据存储（例如数组）支持的此接口所需的工作。 对于顺序访问数据（例如链表），应优先使用AbstractSequentialList代替此类。  
-    对于这段话的解释，我刚开始是比较蒙的，平时也没有接触过，后来学习后发现里面大有文章。
+    解读：AbstactList:查看Java Doc发现**此类提供List接口的基本实现**，以最大程度地减少实现由“随机访问”数据存储（例如数组）支持的此接口所需的工作。对于顺序访问数据（例如链表），应优先使用AbstractSequentialList代替此类。对于这段话的解释，我刚开始是比较蒙的，平时也没有接触过，后来学习后发现里面大有文章。
 
-首先给出两个图  
- ![](./assets/125694580/e0c417debe0029e060bb88f4.png)![](./assets/125694580/bcba19c61fa341711ee58369.png)  
- List 接口继承了 Collection 接口，在 Collection 接口的基础上增加了一些方法。  
- 对比 Collection 接口，可以发现，**List 加了很多根据下标操作集合的方法**，所以当你要分析方法的抽象方法是来自于List还是Collection时，你可以观察一下参数里面是否有下标，如果有就是来自List，没有就是Collection。综上我们了解到了，**List接口在Collection基础上，进一步加强了List根据下标去操作的特性**。
+首先给出两个图
 
-有了这个铺垫，结合上面给的AbstractList概念，我们再来看AbstractList 抽象类:  
- 我们现在已经了解到了**此类提供List接口的基本实现**，它是对 List 接口的初步实现，也是对 Collection 的进一步实现。**进一步解释就是实现了 List 的抽象类，他实现了 List 接口中的大部分方法，同时他继承了 AbstractCollection ，沿用了一些 AbstractCollection 中的实现。这两个抽象类可以看成是模板方法模式的一种体现。**  
- 聪明的你看到这里是不是发现一个问题？  
- ![](./assets/125694580/d4744fa8b3c3005558d4f5de.png)  
- 既然AbstractList 抽象类是对 List 接口的初步实现，也是对 Collection 的进一步实现，那么为什么在ArrayList的继承关系中，在已经继承了AbstractList还要去实现List接口？  
+![](./assets/125694580/e0c417debe0029e060bb88f4.png)![](./assets/125694580/bcba19c61fa341711ee58369.png)  
+ List 接口继承了 Collection 接口，在 Collection 接口的基础上增加了一些方法。对比 Collection 接口，可以发现，**List 加了很多根据下标操作集合的方法**，所以当你要分析方法的抽象方法是来自于List还是Collection时，你可以观察一下参数里面是否有下标，如果有就是来自List，没有就是Collection。综上我们了解到了，**List接口在Collection基础上，进一步加强了List根据下标去操作的特性**。
+
+有了这个铺垫，结合上面给的AbstractList概念，我们再来看AbstractList 抽象类：我们现在已经了解到了**此类提供List接口的基本实现**，它是对 List 接口的初步实现，也是对 Collection 的进一步实现。**进一步解释就是实现了 List 的抽象类，他实现了 List 接口中的大部分方法，同时他继承了 AbstractCollection ，沿用了一些 AbstractCollection 中的实现。这两个抽象类可以看成是模板方法模式的一种体现。**  
+ 聪明的你看到这里是不是发现一个问题？
+
+![](./assets/125694580/d4744fa8b3c3005558d4f5de.png)
+
+既然AbstractList 抽象类是对 List 接口的初步实现，也是对 Collection 的进一步实现，那么为什么在ArrayList的继承关系中，在已经继承了AbstractList还要去实现List接口？  
  如图：![](./assets/125694580/949ea50a9d59788d8bfd004b.png)  
- 其实这个问题无关紧要，查了查网上的解释，觉得是因为可读性。，查stackoverflow上有个回答这么说的：I’ve asked Josh Bloch, and he informs me that it was a mistake. He used to think, long ago, that there was some value in it, but he since “saw the light”. Clearly JDK maintainers haven’t considered 
-this 
+ 其实这个问题无关紧要，查了查网上的解释，觉得是因为可读性。，查stackoverflow上有个回答这么说的：I’ve asked Josh Bloch, and he informs me that it was a mistake. He used to think, long ago, that there was some value in it, but he since “saw the light”. Clearly JDK maintainers haven’t considered
+this
  to be worth backing out later.  
  翻译过来大概就是：我问过 Josh Bloch，他告诉我这是一个错误。很久以前，他曾经认为它有一些价值，但他后来“看到了光明”。很明显，JDK 维护者认为这不值得以后撤销。
 
 ### 如何实现AbstractList
 
-* 要实现不可修改的AbstractList。  
-   只需要扩展此类并为get(int)和size()方法提供实现即可。  
-   实现如下![](./assets/125694580/ec21533b08136567f8112609.png)  
-   如果直接去用，则报错（语法也不通过），如图：  
-   ![](./assets/125694580/a09a0c2c8e2698760437ca80.png)
-* 实现可修改的AbstractList。  
-   必须另外重写set(int, E)方法（否则抛出UnsupportedOperationException ）。
+* 要实现不可修改的AbstractList。只需要扩展此类并为get(int)和size()方法提供实现即可。实现如下![](./assets/125694580/ec21533b08136567f8112609.png)  
+   如果直接去用，则报错（语法也不通过），如图：
+
+![](./assets/125694580/a09a0c2c8e2698760437ca80.png)
+* 实现可修改的AbstractList。必须另外重写set(int, E)方法（否则抛出UnsupportedOperationException ）。
 * 实现可变大小的AbstractList。
 * 必须另外重写add(int, E)和remove(int)方法。举个add的例子，remove同理，感兴趣可以试一试，如图：![](./assets/125694580/263be055e95f567b3369a5ed.png)  
-   所以，看到这我们都明白了，这个类不支持一些实现与抽象方法，比如set()，add()，remove()等List新引入的接口。  
-   要使用就必须由子类去重写，那么子类都有谁呢？  
-   ArrayList类，Vector类，AbstractSequentialList抽象类。  
-   顺便提一嘴：get()不能确定子类是链表还是数组，所以get()需要强制要求子类去实现。  
-   ![](./assets/125694580/2c79d70135bb23c959a02e11.png)
+   所以，看到这我们都明白了，这个类不支持一些实现与抽象方法，比如set()，add()，remove()等List新引入的接口。要使用就必须由子类去重写，那么子类都有谁呢？ArrayList类，Vector类，AbstractSequentialList抽象类。  
+   顺便提一嘴：get()不能确定子类是链表还是数组，所以get()需要强制要求子类去实现。
+
+![](./assets/125694580/2c79d70135bb23c959a02e11.png)
 
 2. List：实现List接口操作规范，增删遍历等操作。
 3. RandomAccess：提供随机访问功能。  
-    解读：ist集合中用的较多的就是ArrayList 和 LinkedList 两个类，这两者作比较你可以发现，**ArrayList有这个接口，但是LinkedList没有**，如图：![](./assets/125694580/ad36c560e821f5cf77b9aaec.png)  
-    ![](./assets/125694580/c6d70d72027f47e30913b8b0.png)  
-    现在我们去看看这个RandomAccess，进入后发现接口里面什么都没有= =。  
-    ![](./assets/125694580/8f5fabb29be710b958945031.png)  
-    不慌，我们去看看doc，通过这个我们了解到，这个接口是作为标志接口。
+    解读：ist集合中用的较多的就是ArrayList 和 LinkedList 两个类，这两者作比较你可以发现，**ArrayList有这个接口，但是LinkedList没有**，如图：![](./assets/125694580/ad36c560e821f5cf77b9aaec.png)
+
+![](./assets/125694580/c6d70d72027f47e30913b8b0.png)
+
+现在我们去看看这个RandomAccess，进入后发现接口里面什么都没有= =。
+
+![](./assets/125694580/8f5fabb29be710b958945031.png)
+
+不慌，我们去看看doc，通过这个我们了解到，这个接口是作为标志接口。
 
 ```java
 Marker interface used by <tt>List</tt> implementations to indicate that
@@ -74,19 +74,18 @@ Marker interface used by <tt>List</tt> implementations to indicate that
 
 ```
 
-意思大概是这个RandomAccess 是一个标志接口，\*\*它的作用是实现List集合支持快速随机访问。\*\*主要用途是允许通用算法更改其行为，以便在应用于随机或顺序访问列表时提供良好的性能，如果有实现了这个接口的 List，那么使用for循环的方式获取数据会优于用迭代器获取数据。  
- 总结就是实现RandomAccess接口的的List可以通过简单的for循环来访问数据比使用iterator访问来的高效快速。
+意思大概是这个RandomAccess 是一个标志接口，\*\*它的作用是实现List集合支持快速随机访问。\*\*主要用途是允许通用算法更改其行为，以便在应用于随机或顺序访问列表时提供良好的性能，如果有实现了这个接口的 List，那么使用for循环的方式获取数据会优于用迭代器获取数据。总结就是实现RandomAccess接口的的List可以通过简单的for循环来访问数据比使用iterator访问来的高效快速。
 
 4. Cloneable：提供可拷贝功能  
     a.**java对象要支持clone这个功能，但不是所有对象都应该可以clone**，所以这里需要让用户自己标记出哪些类可以clone。  
     b.clone是一个特殊的多态操作，最好有JVM的直接支持，即使是自己自定义的clone()最好也要调用JVM提供的基础实现再去添加自己要添加的功能  
-    c.从JVM的角度看，这就是一个标记接口而已，实现了就打上cloneable标记，没实现就没有。  
-    这段参考一个知乎大牛的文章，这是老早之前做的笔记，现在链接找不到了= =。
+    c。从JVM的角度看，这就是一个标记接口而已，实现了就打上cloneable标记，没实现就没有。这段参考一个知乎大牛的文章，这是老早之前做的笔记，现在链接找不到了= =。
 5. Serializable: 提供可序列化功能。  
-    解读：这块要详细解读有点复杂，后面我会连接上redis相关的数据库知识揉在一起说，保证过瘾，先挖个坑嘿嘿= =。  
-    咳咳，先看一下这个接口发现什么都没有  
-    ![](./assets/125694580/3b6502fc1f1709d95e1d93c2.png)  
-    目前我们先简单认定实现这个接口会提供可序列化功能。
+    解读：这块要详细解读有点复杂，后面我会连接上redis相关的数据库知识揉在一起说，保证过瘾，先挖个坑嘿嘿= =。咳咳，先看一下这个接口发现什么都没有
+
+![](./assets/125694580/3b6502fc1f1709d95e1d93c2.png)
+
+目前我们先简单认定实现这个接口会提供可序列化功能。
 
 ## 源码分析
 
@@ -200,24 +199,17 @@ This is typically accomplished by synchronizing on some object that naturally en
 
 ```
 
-纯中文如下：  
- 可变化的数组 实现了list接口，实现了所有list操作，并允许有所有元素，包括null。  
- 除了实现list接口之外，它还在提供了方法在内部去使用，操作存储list的数组大小（等价于不加synchronized的Vector），  
+纯中文如下：可变化的数组 实现了list接口，实现了所有list操作，并允许有所有元素，包括null。除了实现list接口之外，它还在提供了方法在内部去使用，操作存储list的数组大小（等价于不加synchronized的Vector），  
  上面说的方法的运行
-时间复杂度 
+时间复杂度
 都是常数（恒定）（O（1）），add操作方法 均摊时间复杂度是O（1）；那么添加n个元素需要O(n)  
- 所有其他方法的时间复杂度都是线性的，现实是稳定性不如LinkedList的实现。  
- 每一个ArrayList 实例都有一个容量，这个容量代表了用于存储list元素的数组大小，它总是和list大小一样大，  
- 当有元素添加到ArrayList时，容量的也会自动增加。  
- 但是这个扩容机制并不是完全确定的，而且每次添加一个元素会消耗特定不变的缓冲时间，  
- 程序可以在添加大量元素前选择增加一些容量，这个举动可能会减少扩容次数从而降低额外时间开销。
+ 所有其他方法的时间复杂度都是线性的，现实是稳定性不如LinkedList的实现。每一个ArrayList 实例都有一个容量，这个容量代表了用于存储list元素的数组大小，它总是和list大小一样大，当有元素添加到ArrayList时，容量的也会自动增加。但是这个扩容机制并不是完全确定的，而且每次添加一个元素会消耗特定不变的缓冲时间，程序可以在添加大量元素前选择增加一些容量，这个举动可能会减少扩容次数从而降低额外时间开销。
 
-ArrayList线程是不安全的。如果多个线程同时进入了同一个ArrayList，同时至少有一个线程操作list结构，则必需在外部加锁（synchronized）。  
- 结构修改是添加或删除一个或多个元素，或者调整数组大小的任何操作;仅仅设置元素的值不是结构修改，  
- 这通常是通过对一些自然封装的list对象进行同步来实现的，如果这样的对象不存在，list应该使用Collections.synchronizedList方法，最好是用在创建时，防止意外无锁进入到list中 例子：List list = Collections.synchronizedList(new ArrayList(…))。
+ArrayList线程是不安全的。如果多个线程同时进入了同一个ArrayList，同时至少有一个线程操作list结构，则必需在外部加锁（synchronized）。结构修改是添加或删除一个或多个元素，或者调整数组大小的任何操作；仅仅设置元素的值不是结构修改，这通常是通过对一些自然封装的list对象进行同步来实现的，如果这样的对象不存在，list应该使用Collections.synchronizedList方法，最好是用在创建时，防止意外无锁进入到list中 例子：List list = Collections.synchronizedList(new ArrayList(…))。
 
-当一个线程进行iterators操作时，如果有其他线程对ArrayList进行修改，会触发fail-fast机制，抛出ConcurrentModificationException异常，通常是ListIterator#remove() remove或ListIterator#add(Object) add这两种情况。因此。在这种并行修改情况下，线程会明确快速的触发失败fail-fast，而不是在未来不确定的时间里冒着武断、不确定性行为的风险。  
- 但是在非同步的情况下，fail-fast并不确保每次都会触发，因此依赖此异常的代码都是错误的，这个异常仅仅只是为了发现代码bug而已。
+当一个线程进行iterators操作时，如果有其他线程对ArrayList进行修改，会触发fail-fast机制，抛出ConcurrentModificationException异常，通常是ListIterator#remove() remove或ListIterator#add(Object) add这两种情况。因此。在这种并行修改情况下，线程会明确快速的触发失败fail-fast，而不是在未来不确定的时间里冒着武断、不确定性行为的风险。
+
+但是在非同步的情况下，fail-fast并不确保每次都会触发，因此依赖此异常的代码都是错误的，这个异常仅仅只是为了发现代码bug而已。
 
 ### 静态变量
 
@@ -249,15 +241,14 @@ ArrayList线程是不安全的。如果多个线程同时进入了同一个Array
 
 ```
 
-解释一下`EMPTY_ELEMENTDATA`和`DEFAULTCAPACITY_EMPTY_ELEMENTDATA`的用途:
+解释一下`EMPTY_ELEMENTDATA`和`DEFAULTCAPACITY_EMPTY_ELEMENTDATA`的用途：
 
 * EMPTY\_ELEMENTDATA  
-   这是一个空数组,当我们创建一个空的`ArrayList`并且不打算立刻添加元素时,这个数组会被使用.  
-   主要目的是节省内存,因为所有这样的空`ArrayList`都会共享同一个空数组实例.而不是为每个新的空`ArrayList`分配新的内存.
+   这是一个空数组，当我们创建一个空的`ArrayList`并且不打算立刻添加元素时，这个数组会被使用。主要目的是节省内存，因为所有这样的空`ArrayList`都会共享同一个空数组实例。而不是为每个新的空`ArrayList`分配新的内存。
 * DEFAULTCAPCITY\_EMPTY\_ELEMENTDATA  
-   这是一个空数组,当我们使用无参构造函数(例如`new ArrayList<>()`)创建一个`ArrayList`时,这个数组会被用作初始的内部存储.  
-   主要目的是为了延迟容量分配,当我们首次向这个`ArrayList`添加元素时,它就知道目前是一个默认大小的空列表,并且需要扩容到默认的初始容量(`ArrayList中通常是10`).  
-   这样可以避免在列表创建时就立即分配更多的内存,而是等到真正需要时才进行扩容
+   这是一个空数组，当我们使用无参构造函数(例如`new ArrayList<>()`)创建一个`ArrayList`时，这个数组会被用作初始的内部存储。主要目的是为了延迟容量分配，当我们首次向这个`ArrayList`添加元素时，它就知道目前是一个默认大小的空列表，并且需要扩容到默认的初始容量(`ArrayList中通常是10`)。
+
+这样可以避免在列表创建时就立即分配更多的内存，而是等到真正需要时才进行扩容
 
 ### 成员变量
 
@@ -288,12 +279,10 @@ ArrayList线程是不安全的。如果多个线程同时进入了同一个Array
 有两个个问题需要我们去思考，
 
 1. 首先是如果我们用transient去修饰elementData，它代表了变量不参与序列化和反序列化，那么当我们对ArrayList反序列化后是不是没有数据了？
-2. 为什么elementData不是private呢？  
-    首先我们回答第一个问题：  
-    a.ArrayList 基于数组实现，并且具有动态扩容特性，因此保存元素的数组不一定都会被使用，那么就没必要全部进行序列化。  
-    对于elementData它是一个缓存数组，它通常会预留一些容量，等容量不足时再扩充容量，那么有些空间可能就没有实际存储元素.  
-    b.由于ArrayList仍然需要序列化其实际内容,因此它实现了writeObject和readObject方法来自定义序列化过程,这样保证只序列化实际存储的那些元素，而不是整个数组，从而节省空间和时间。  
-    c.注意:element不参与默认的序列化和反序列化，不代表没有进行序列化和反序列化。
+2. 为什么elementData不是private呢？首先我们回答第一个问题：  
+    a.ArrayList 基于数组实现，并且具有动态扩容特性，因此保存元素的数组不一定都会被使用，那么就没必要全部进行序列化。对于elementData它是一个缓存数组，它通常会预留一些容量，等容量不足时再扩充容量，那么有些空间可能就没有实际存储元素。b。由于ArrayList仍然需要序列化其实际内容，因此它实现了writeObject和readObject方法来自定义序列化过程，这样保证只序列化实际存储的那些元素，而不是整个数组，从而节省空间和时间。
+
+c。注意:element不参与默认的序列化和反序列化，不代表没有进行序列化和反序列化。
 
 代码如下：
 
@@ -327,7 +316,7 @@ ArrayList线程是不安全的。如果多个线程同时进入了同一个Array
 
 ```
 
-d.反序列化时调用readObject，从ObjectInputStream获取size和element，再恢复到elementData。  
+d。反序列化时调用readObject，从ObjectInputStream获取size和element，再恢复到elementData。  
  代码如下：
 
 ```java
@@ -367,15 +356,12 @@ e:综上ArrayList 实现了 writeObject() 和 readObject() 来只序列化数组
  首先看这段英文  
  non-private to simplify nested class access：非私有以简化嵌套类访问  
  为什么要设置为非私有，目的是简化嵌套类的访问，那么我们来解释一下嵌套类的访问。  
- 解释如下：内部类虽然可以直接访问外部类的成员，但是当访问的成员是私有的时候，是有些不同的。  
- 虽然我们在编码时，外部类和内部类是写在同一个源码文件中的，但是要知道的是在编译之后，内部类和外部类会被编译为不同的 class 文件，那么此时如何维持外部类的私有属性在内部类中的可见性？  
- java 使用了 `synthetic method`(合成方法) 来解决这个问题。  
- 当内部类中直接使用了外部类的某个私有成员时，会在外部类中自动生成一个静态方法，方法权限是包可见的，方法参数是外部类的实例，方法实现就是返回了传入实例的该私有变量。  
- 这样，在内部类中也可以通过使用此静态方法来访问外部类的私有成员了，当然，前提是内部类要持有外部类对象的引用。  
- 同理，外部类中在创建了内部类的对象之后，也是能够直接使用内部类的私有成员和方法的，也是用过 `synthetic method` 来实现的。  
- 这就是 `elementData` 直接声明为包可见的原因，简化了通过 `synthetic` `method` 来访问这一步骤。  
- 我们下面用代码举个例子,展示Java
-编译器 
+ 解释如下：内部类虽然可以直接访问外部类的成员，但是当访问的成员是私有的时候，是有些不同的。虽然我们在编码时，外部类和内部类是写在同一个源码文件中的，但是要知道的是在编译之后，内部类和外部类会被编译为不同的 class 文件，那么此时如何维持外部类的私有属性在内部类中的可见性？java 使用了 `synthetic method`(合成方法) 来解决这个问题。
+
+当内部类中直接使用了外部类的某个私有成员时，会在外部类中自动生成一个静态方法，方法权限是包可见的，方法参数是外部类的实例，方法实现就是返回了传入实例的该私有变量。这样，在内部类中也可以通过使用此静态方法来访问外部类的私有成员了，当然，前提是内部类要持有外部类对象的引用。同理，外部类中在创建了内部类的对象之后，也是能够直接使用内部类的私有成员和方法的，也是用过 `synthetic method` 来实现的。
+
+这就是 `elementData` 直接声明为包可见的原因，简化了通过 `synthetic` `method` 来访问这一步骤。我们下面用代码举个例子，展示Java
+编译器
 如何使用合成方法来维持外部类的私有属性在内部类中的可见性。
 
 ```java
@@ -402,11 +388,9 @@ public class OuterClass {
 
 ```
 
-`OuterClass`有一个私有变量`privateVar`,而内部类`InnerClass`直接访问了这个私有变量.  
- 编辑这段代码时,Java编译器会生成两个.class文件:`OuterClass.class`和`OuterClass$InnerClass.class`.  
- 为了允许`InnerClass`访问`OuterClass`的私有成员`privateVar`,编译器会在`OuterClass`中生成一个合成方法.  
- 这个方法是包级私有的(默认访问权限),它的命名会遵循特定的规则,比如:`access$000`(注意是编译器自动生成的,每次编辑都可能不同)  
- 我们使用反编译工具(比如:javap)来查看编译后的字节码,如下:
+`OuterClass`有一个私有变量`privateVar`，而内部类`InnerClass`直接访问了这个私有变量。编辑这段代码时，Java编译器会生成两个.class文件:`OuterClass.class`和`OuterClass$InnerClass.class`.  
+ 为了允许`InnerClass`访问`OuterClass`的私有成员`privateVar`，编译器会在`OuterClass`中生成一个合成方法。这个方法是包级私有的(默认访问权限)，它的命名会遵循特定的规则，比如:`access$000`(注意是编译器自动生成的，每次编辑都可能不同)  
+ 我们使用反编译工具(比如:javap)来查看编译后的字节码，如下：
 
 ```
 // Synthetic method, not visible in source code  
@@ -417,7 +401,7 @@ static int access$000(OuterClass outerClassInstance) {
 
 ```
 
-这个合成方法允许`InnerClass`在其内部实现中通过调用`OuterClass.access$000(this$0)`来间接访问`privateVar`,其中`this$0`是编译器自动生成的另一个引用,它指向包含当前内部类实例的外部类实例.
+这个合成方法允许`InnerClass`在其内部实现中通过调用`OuterClass.access$000(this$0)`来间接访问`privateVar`，其中`this$0`是编译器自动生成的另一个引用，它指向包含当前内部类实例的外部类实例。
 
 ### 构造方法
 
@@ -494,32 +478,32 @@ public ArrayList(int initialCapacity) {
 
 ### 扩容机制
 
-当`ArrayList`的元素数量超过其当前容量时,就会触发扩容操作.  
+当`ArrayList`的元素数量超过其当前容量时，就会触发扩容操作。  
  **关键参数**
 
 * elementData:存储实际元素的数组
 * EMPTY\_ELEMENTDATA: 共享空数组
-* DEFAULTCAPCITY\_EMPTY\_ELEMENTDATA:空数组,方便添加元素后容量计算需要添加多少
+* DEFAULTCAPCITY\_EMPTY\_ELEMENTDATA:空数组，方便添加元素后容量计算需要添加多少
 * size: 当前ArrayList中元素的个数
-* DEFAULT\_CAPACITY: 默认初始容量,一般为10
-* MAX\_ARRAY\_SIZE: 数组的最大容量,一般为Integer.MAX\_VALUE -  
+* DEFAULT\_CAPACITY: 默认初始容量，一般为10
+* MAX\_ARRAY\_SIZE: 数组的最大容量，一般为Integer.MAX\_VALUE -  
    8
 * minCapacity: 最小需要容量
 * modCount: 记录被修改的次数
 
 **扩容触发条件**  
- 扩容会在两种情况下触发:
+ 扩容会在两种情况下触发：
 
-1. 添加元素时,`size`超过`elementData`的长度
-2. 使用带有指定初始容量的构造方法,并且该初始容量大于默认容量,也会触发扩容
+1. 添加元素时，`size`超过`elementData`的长度
+2. 使用带有指定初始容量的构造方法，并且该初始容量大于默认容量，也会触发扩容
 
 **扩容机制**  
- 扩容机制分为两种:
+ 扩容机制分为两种：
 
 * 自动扩容机制  
    `grow`方法是`ArrayList`需要时自动调用的内部扩容机制
 * 手动扩容机制  
-   `ensureCapacity`方法提供了一个公开的接口,允许用户根据需求手动触发扩容操作,以优化性能.
+   `ensureCapacity`方法提供了一个公开的接口，允许用户根据需求手动触发扩容操作，以优化性能。
 
 #### 手动扩容
 
@@ -550,8 +534,7 @@ public ArrayList(int initialCapacity) {
 
 ```
 
-解读：  
- 作用是根据参数`minCapacity`确保内部数据数组`elementData`有足够的容量.  
+解读：作用是根据参数`minCapacity`确保内部数据数组`elementData`有足够的容量。  
  解释一下
 关键代码
 :计算最小扩展容量
@@ -698,7 +681,7 @@ private void ensureExplicitCapacity(int minCapacity) {
 
 ##### ensureCapacityInternal(int minCapacity)方法
 
-辅助方法,用于确保列表的内部数组elementData具有足够的容量来存储至少DEFAULT\_CAPACITY个元素
+辅助方法，用于确保列表的内部数组elementData具有足够的容量来存储至少DEFAULT\_CAPACITY个元素
 
 ```java
  private void ensureCapacityInternal(int minCapacity) {
@@ -713,9 +696,9 @@ private void ensureExplicitCapacity(int minCapacity) {
 解读一下doc的描述：  
  /\*\*  
  \* The maximum size of array to allocate. 要分配的最大数组大小。  
- \* Some VMs reserve some 
+ \* Some VMs reserve some
 header
- words in an array.一些虚拟机在数组中保留一些头字。  
+ words in an array。一些虚拟机在数组中保留一些头字。  
  \* Attempts to allocate larger arrays may result in 尝试分配更大的阵列可能会导致内存不足错误  
  \* OutOfMemoryError: Requested array size exceeds VM limit 报错：OutOfMemoryError  
  \*/
@@ -767,50 +750,80 @@ private void ensureCapacityInternal(int minCapacity) {
 
 ```
 
-上面我们解读过这个方法，我们把注意力放在参数的传递上，当我们第一次调用add方法时，传入到calculateCapacity里面的参数：第一个为elementData对象，第二个为我们在add方法里面写的size+1（也就是后面的minCapacity）。  
- 那么第一次调用add时，这个minCapacity是为1，填上一个坑!  
- 参数明白是干嘛的了，现在看calculateCapacity里面的代码，它的目的就是确定你传进来的这个数组，是不是无参构造创建的对象，如果是的话，则将`DEFAULT_CAPACITY（10）`作为ArrayList的容量，然后返回确认的容量值。
+上面我们解读过这个方法，我们把注意力放在参数的传递上，当我们第一次调用add方法时，传入到calculateCapacity里面的参数：第一个为elementData对象，第二个为我们在add方法里面写的size+1（也就是后面的minCapacity）。那么第一次调用add时，这个minCapacity是为1，填上一个坑！
 
-接着运行外边的方法ensureExplicitCapacity。  
- 首先它先将modCount++，这个成员变量记录着集合的修改次数，也就每次add或者remove它的值都会加1。  
- 接着重点来了，**它有一个判断，判断你确认的容量值是不是大于原数组的大小，如果是的，则扩容。**  
- 举个例子：如果我们是第一次add，且我们是无参构造的对象。（这个例子看完，聪明的你可以去尝试一下debug，去再了解一下有参构造的流程，只要你好好的看这个例子，有参的过程不在话下）  
- ![](./assets/125694580/9272bb228e4c69cd4d9f66e1.png)  
- 接着进入无参构造方法，且elementData对象是DEFAULTCAPACITY\_EMPTY\_ELEMENTDATA  
- ![](./assets/125694580/3126e13b952a560bfba3160e.png)  
- 接着进入第一次add的过程如下：  
- ![](./assets/125694580/2f2453ee269b21d2a486c1ae.png)  
- 首先要执行 ensureCapacityInternal(size + 1)，注意此时的参数size=0,e=1![](./assets/125694580/a8184acf06149fc2b1edc9c3.png)接着进入ensureCapacityInternal(int minCapacity)，这里们很清楚，这里的minCapacity是1  
- ![](./assets/125694580/6ece0a86111dec83e987b945.png)  
- 然后执行ensureExplicitCapacity嵌套的方法calculateCapacity(Object[] elementData, int minCapacity)  
- 进入之后首先判断我们构造函数的对象是不是无参的。  
- ![](./assets/125694580/d683c206c216b4c37fd44825.png)  
- 这里因为我们是无参的构造，所以进入的if判断，注意这里的max参数的值，DEFAULT\_CAPACITY=10，minCapacity=1，所以我们将要返回的无疑是DEFAULT\_CAPACITY=10.  
- ![](./assets/125694580/a2506032c531e919a9493f25.png)  
- 这里我们看到了minCapacity变为了10.  
- 接着我们要进入if判断，**我们要扩容的值-原数组大小，如果>0，则进行扩容。**  
- ![](./assets/125694580/db0d19d22d8fce3d0ee949f2.png)  
- 然后我们在上面已经介绍过，这里简单看一下执行过程里面的参数大小和改变。  
- 刚进入时：  
- ![](./assets/125694580/24f7b5bdc7511a49784dbbf8.png)  
- 执行扩容算法后：因为原先老数组大小为0，所以扩容1.5倍依旧为0  
- ![](./assets/125694580/bebf4ea9b1c565ea4eafa379.png)  
- 下面执行判断逻辑，第一个判断：newCapacity - minCapacity < 0，新容量大小是否大于预设容量大小，这里明显0-10<0,所以进入方法块：  
- ![](./assets/125694580/728c21b343896e9b3fc6ecb9.png)  
- 我们可以看到，新数组容量变为了10，之后执行第二个判断：newCapacity - MAX\_ARRAY\_SIZE > 0，目的是看一下新扩容大小是否超过最大标准，这里显然不大于，所以进行下一步：  
- ![](./assets/125694580/268f45b3f4ae4c6ce176f854.png)  
- 接下来是数组的拷贝转移：  
- 首先进入  
- ![](./assets/125694580/0c668f82374777f37636639f.png)  
- 接着进入：注意参数  
- ![](./assets/125694580/e00611a3583c56932c72cd44.png)  
- 这里先比较数组类型，然后创建数组。然后进行拷贝，最后返回拷贝好的数组copy。  
- ![](./assets/125694580/dedb354635b8365ddb549342.png)  
- 之后一步步返回到开始的地方：  
- ![](./assets/125694580/b3d7e4ac3f31f2d126e8004b.png)  
- 执行代码后add方法完成：  
- ![](./assets/125694580/4b95c1a7e28f829aae93d2e0.png)  
- 至此，我们add的过程和ArrayList的扩容机制已经相当熟悉啦= =。
+参数明白是干嘛的了，现在看calculateCapacity里面的代码，它的目的就是确定你传进来的这个数组，是不是无参构造创建的对象，如果是的话，则将`DEFAULT_CAPACITY（10）`作为ArrayList的容量，然后返回确认的容量值。
+
+接着运行外边的方法ensureExplicitCapacity。首先它先将modCount++，这个成员变量记录着集合的修改次数，也就每次add或者remove它的值都会加1。接着重点来了，**它有一个判断，判断你确认的容量值是不是大于原数组的大小，如果是的，则扩容。**  
+ 举个例子：如果我们是第一次add，且我们是无参构造的对象。（这个例子看完，聪明的你可以去尝试一下debug，去再了解一下有参构造的流程，只要你好好的看这个例子，有参的过程不在话下）
+
+![](./assets/125694580/9272bb228e4c69cd4d9f66e1.png)
+
+接着进入无参构造方法，且elementData对象是DEFAULTCAPACITY\_EMPTY\_ELEMENTDATA
+
+![](./assets/125694580/3126e13b952a560bfba3160e.png)
+
+接着进入第一次add的过程如下：
+
+![](./assets/125694580/2f2453ee269b21d2a486c1ae.png)
+
+首先要执行 ensureCapacityInternal(size + 1)，注意此时的参数size=0,e=1![](./assets/125694580/a8184acf06149fc2b1edc9c3.png)接着进入ensureCapacityInternal(int minCapacity)，这里们很清楚，这里的minCapacity是1
+
+![](./assets/125694580/6ece0a86111dec83e987b945.png)
+
+然后执行ensureExplicitCapacity嵌套的方法calculateCapacity(Object[] elementData, int minCapacity)  
+ 进入之后首先判断我们构造函数的对象是不是无参的。
+
+![](./assets/125694580/d683c206c216b4c37fd44825.png)
+
+这里因为我们是无参的构造，所以进入的if判断，注意这里的max参数的值，DEFAULT\_CAPACITY=10，minCapacity=1，所以我们将要返回的无疑是DEFAULT\_CAPACITY=10.
+
+![](./assets/125694580/a2506032c531e919a9493f25.png)
+
+这里我们看到了minCapacity变为了10.  
+ 接着我们要进入if判断，**我们要扩容的值-原数组大小，如果>0，则进行扩容。**
+
+![](./assets/125694580/db0d19d22d8fce3d0ee949f2.png)
+
+然后我们在上面已经介绍过，这里简单看一下执行过程里面的参数大小和改变。  
+ 刚进入时：
+
+![](./assets/125694580/24f7b5bdc7511a49784dbbf8.png)
+
+执行扩容算法后：因为原先老数组大小为0，所以扩容1.5倍依旧为0
+
+![](./assets/125694580/bebf4ea9b1c565ea4eafa379.png)
+
+下面执行判断逻辑，第一个判断：newCapacity - minCapacity < 0，新容量大小是否大于预设容量大小，这里明显0-10<0，所以进入方法块：
+
+![](./assets/125694580/728c21b343896e9b3fc6ecb9.png)
+
+我们可以看到，新数组容量变为了10，之后执行第二个判断：newCapacity - MAX\_ARRAY\_SIZE > 0，目的是看一下新扩容大小是否超过最大标准，这里显然不大于，所以进行下一步：
+
+![](./assets/125694580/268f45b3f4ae4c6ce176f854.png)
+
+接下来是数组的拷贝转移：  
+ 首先进入
+
+![](./assets/125694580/0c668f82374777f37636639f.png)
+
+接着进入：注意参数
+
+![](./assets/125694580/e00611a3583c56932c72cd44.png)
+
+这里先比较数组类型，然后创建数组。然后进行拷贝，最后返回拷贝好的数组copy。
+
+![](./assets/125694580/dedb354635b8365ddb549342.png)
+
+之后一步步返回到开始的地方：
+
+![](./assets/125694580/b3d7e4ac3f31f2d126e8004b.png)
+
+执行代码后add方法完成：
+
+![](./assets/125694580/4b95c1a7e28f829aae93d2e0.png)
+
+至此，我们add的过程和ArrayList的扩容机制已经相当熟悉啦= =。
 
 ## 结尾
 
