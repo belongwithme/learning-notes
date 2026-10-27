@@ -72,7 +72,7 @@ import { Routes } from '../config/site-routing';
 }
 
 .home-card:focus-visible {
-	outline: 3px solid #0071e3;
+	outline: 3px solid var(--home-green);
 	outline-offset: 4px;
 }
 
@@ -122,8 +122,8 @@ import { Routes } from '../config/site-routing';
 .home-card--dark {
 	color: #f5f5f7;
 	background:
-		radial-gradient(circle at 84% 18%, rgba(255, 255, 255, 0.14), transparent 15rem),
-		#000000;
+		radial-gradient(circle at 84% 18%, rgba(255, 254, 242, 0.12), transparent 15rem),
+		var(--home-ink);
 }
 
 .home-card--dark :is(h3, p, span),
@@ -132,8 +132,8 @@ import { Routes } from '../config/site-routing';
 }
 
 .home-card--soft {
-	color: #1d1d1f;
-	background: #f5f5f7;
+	color: var(--home-ink);
+	background: var(--home-paper-deep);
 }
 
 .home-card--soft h3 {
@@ -151,17 +151,12 @@ import { Routes } from '../config/site-routing';
 	min-height: 31rem;
 	color: #ffffff;
 	background:
-		radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.28), transparent 19rem),
-		linear-gradient(145deg, #0071e3 0%, #0062c4 100%);
+		radial-gradient(circle at 78% 18%, rgba(255, 254, 242, 0.18), transparent 19rem),
+		linear-gradient(145deg, #315a45 0%, var(--home-green) 100%);
 }
 
 .home-card--blue h3 {
 	max-width: 12em;
-}
-
-:global(:root[data-theme='dark']) .home-card--soft {
-	color: #f5f5f7;
-	background: #1c1c1e;
 }
 
 @media (max-width: 50rem) {
@@ -187,23 +182,5 @@ import { Routes } from '../config/site-routing';
 	.home-card-topline span:last-child {
 		transition: none;
 	}
-}
-
-.home-card--dark {
-	background:
-		radial-gradient(circle at 84% 18%, rgba(255, 254, 242, 0.12), transparent 15rem),
-		var(--home-ink);
-}
-
-.home-card--soft,
-:global(:root[data-theme='dark']) .home-card--soft {
-	color: var(--home-ink);
-	background: var(--home-paper-deep);
-}
-
-.home-card--blue {
-	background:
-		radial-gradient(circle at 78% 18%, rgba(255, 254, 242, 0.18), transparent 19rem),
-		linear-gradient(145deg, #315a45 0%, var(--home-green) 100%);
 }
 </style>

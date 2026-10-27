@@ -6,10 +6,10 @@ const data = entry?.data || {};
 const { status, difficulty, tags } = data;
 
 // 页面标题是文章的唯一主视觉层，状态元信息保持安静。
+// 草稿是绝大多数导入文章的默认状态，不再单独标出。
 const statusMap: Record<string, { label: string, class: string }> = {
   verified: { label: '已验证', class: 'status-verified' },
   outdated: { label: '已过期', class: 'status-outdated' },
-  draft: { label: '草稿', class: 'status-draft' },
   evergreen: { label: '持续维护', class: 'status-evergreen' },
 };
 
@@ -22,6 +22,8 @@ const diffMap: Record<string, string> = {
 
 const currentStatus = status ? statusMap[status] : null;
 const currentDiff = difficulty ? diffMap[difficulty] : null;
+// 专题概览页带 hero，不计入首页的"继续阅读"。
+const recordVisit = entry?.id?.startsWith('knowledge/') && !data.hero;
 ---
 
 <Default {...Astro.props} />
@@ -43,6 +45,17 @@ const currentDiff = difficulty ? diffMap[difficulty] : null;
       <span class="badge badge-tag">#{tag}</span>
     ))}
   </div>
+)}
+
+{recordVisit && (
+  <script is:inline define:vars={{ title: data.title }}>
+    try {
+      const notes = JSON.parse(localStorage.getItem('recent-notes') || '[]')
+        .filter(note => note.href !== location.pathname);
+      notes.unshift({ href: location.pathname, title });
+      localStorage.setItem('recent-notes', JSON.stringify(notes.slice(0, 4)));
+    } catch {}
+  </script>
 )}
 
 <style>
