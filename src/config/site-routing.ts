@@ -127,6 +127,7 @@ export const KnowledgeSubcategories: Record<string, SubcategoryItem[]> = {
     { id: 'infrastructure-tools', label: '工程与基础设施工具' },
   ],
   'system-design': [
+    { id: 'foundations', label: '系统设计基础' },
     { id: 'business-design', label: '业务系统设计' },
   ],
   'business-logic': [
